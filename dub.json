@@ -1,0 +1,11 @@
+{
+	"authors": [
+		"Herringway"
+	],
+	"description": "metroid II",
+	"license": "proprietary",
+	"dependencies": {
+		"libgb": "*"
+	},
+	"name": "metroid2"
+}
