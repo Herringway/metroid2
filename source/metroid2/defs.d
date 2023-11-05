@@ -1,5 +1,24 @@
 module metroid2.defs;
 
+enum samusJumpArrayBaseOffset = 0x40;
+enum samusUnmorphJumpTime = 0x10;
+
+enum ccwTry1 = 0;
+enum ccwTry2 = 1;
+enum cwTry1 = 2;
+enum cwTry2 = 3;
+
+enum ItemFlag {
+	bomb = 1 << 0,
+	hiJump = 1 << 1,
+	screwAttack = 1 << 2,
+	spaceJump = 1 << 3,
+	springBall = 1 << 4,
+	spiderBall = 1 << 5,
+	variaSuit = 1 << 6,
+	unused = 1 << 7,
+}
+
 enum Pad : ubyte {
 	a = 1 << 0,
 	b = 1 << 1,
@@ -37,7 +56,7 @@ enum GameMode : ubyte {
 enum Square1SFX {
 	nothing = 0x0,
 	jumping = 0x1,
-	hijumping = 0x2,
+	hiJumping = 0x2,
 	screwAttacking = 0x3,
 	standingTransition = 0x4,
 	crouchingTransition = 0x5,
@@ -158,32 +177,36 @@ enum Song2 {
 }
 
 enum SamusPose {
-	standing = 0x00,
-	jumping = 0x01,
-	spinJumping = 0x02,
-	running = 0x03,
-	crouching = 0x04,
-	morphBall = 0x05,
-	morphBallJumping = 0x06,
-	falling = 0x07,
-	morphBallFalling = 0x08,
-	startingToJump = 0x09,
-	startingToSpinJump = 0x0A,
-	spiderBallRolling = 0x0B,
-	spiderBallFalling = 0x0C,
-	spiderBallJumping = 0x0D,
-	spiderBall = 0x0E,
-	knockBack = 0x0F,
-	morphBallKnockBack = 0x10,
-	standingBombed = 0x11,
-	morphBallBombed = 0x12,
-	facingScreen = 0x13,
-	eatenByMetroidQueen = 0x18,
-	inMetroidQueenMouth = 0x19,
-	swallowedByMetroidQueen = 0x1A,
-	inMetroidQueenStomach = 0x1B,
-	escapingMetroidQueen = 0x1C,
-	escapedMetroidQueen = 0x1D,
+	standing = 0x00, //pose_standing
+	jumping = 0x01, //pose_jump
+	spinJumping = 0x02, //pose_spinJump
+	running = 0x03, //pose_run
+	crouching = 0x04, //pose_crouch
+	morphBall = 0x05, //pose_morph
+	morphBallJumping = 0x06, //pose_morphJump
+	falling = 0x07, //pose_fall
+	morphBallFalling = 0x08, //pose_morphFall
+	startingToJump = 0x09, //pose_nJumpStart
+	startingToSpinJump = 0x0A, //pose_spinStart
+	spiderBallRolling = 0x0B, //pose_spiderRoll
+	spiderBallFalling = 0x0C, //pose_spiderFall
+	spiderBallJumping = 0x0D, //pose_spiderJump
+	spiderBall = 0x0E, //pose_spider
+	knockBack = 0x0F, //pose_hurt
+	morphBallKnockBack = 0x10, //pose_morphHurt
+	standingBombed = 0x11, //pose_bombed
+	morphBallBombed = 0x12, //pose_morphBombed
+	facingScreen = 0x13, //pose_faceScreen
+	facingScreen2 = 0x14, //pose_unusedA
+	facingScreen3 = 0x15, //pose_unusedB
+	facingScreen4 = 0x16, //pose_unusedC
+	facingScreen5 = 0x17, //pose_unusedD
+	eatenByMetroidQueen = 0x18, //pose_beingEaten
+	inMetroidQueenMouth = 0x19, //pose_inMouth
+	swallowedByMetroidQueen = 0x1A, //pose_toStomach
+	inMetroidQueenStomach = 0x1B, //pose_inStomach
+	escapingMetroidQueen = 0x1C, //pose_outStomach
+	escapedMetroidQueen = 0x1D, //pose_exitQueen
 }
 
 struct EnemySlot {
@@ -210,7 +233,7 @@ struct EnemySlot {
 }
 
 struct MapUpdate {
-	void* dest;
+	ushort destAddr;
 	ubyte srcScreen;
 	ubyte srcBlock;
 	ubyte size;
@@ -220,4 +243,26 @@ struct VRAMTransfer {
 	const(void)* src;
 	void* dest;
 	ushort size;
+}
+
+struct GraphicsInfo {
+	const(ubyte)[] data;
+	ushort destination;
+	ushort length;
+}
+
+ubyte rr(ubyte value) @safe pure {
+	const bit = value & 1;
+	value >>= 1;
+	value |= (bit << 7);
+	return value;
+}
+ubyte rl(ubyte value) @safe pure {
+	const bit = !!(value & 0x80);
+	value <<= 1;
+	value |= bit;
+	return value;
+}
+ubyte swap(ubyte value) @safe pure {
+	return cast(ubyte)((value >> 4) | (value << 4));
 }

@@ -223,7 +223,14 @@ __gshared ubyte resumeScrewAttackSoundEffectFlag;
 __gshared ubyte songTranspose;
 __gshared void* songInstructionTimerArrayPointer;
 
-__gshared ubyte[4] tempMetaTile;
+
+struct TempMetaTile {
+	ubyte topLeft;
+	ubyte topRight;
+	ubyte bottomLeft;
+	ubyte bottomRight;
+}
+__gshared TempMetaTile tempMetaTile;
 __gshared ubyte samusPrevYPixel;
 __gshared ubyte samusBeamCooldown;
 __gshared ubyte doorScrollDirection;
@@ -289,6 +296,7 @@ __gshared ubyte samusInvulnerableTimer;
 __gshared ubyte samusEnergyTanks;
 __gshared ushort samusCurHealth;
 __gshared ushort samusCurMissiles;
+__gshared ubyte samusBeam;
 __gshared ubyte samusSolidityIndex;
 __gshared ubyte samusScreenSpritePriority;
 __gshared ubyte currentLevelBank;
@@ -318,7 +326,7 @@ __gshared ubyte maxOAMPrevFrame;
 __gshared ubyte itemOrbCollisionType;
 __gshared void* itemOrbEnemyWRAM;
 
-__gshared ubyte samusSpinAnimationFlag;
+__gshared ubyte samusSpinAnimationTimer;
 
 __gshared void* creditsTextPointer;
 __gshared ubyte creditsUnusedVar;
@@ -363,7 +371,7 @@ __gshared ubyte queenEatingState;
 
 __gshared ubyte nextEarthquakeTimer;
 
-__gshared ubyte currentRoomSong;
+__gshared Song currentRoomSong;
 
 __gshared ubyte itemCollectedCopy;
 __gshared ubyte unusedItemOrbYPos;
@@ -433,13 +441,13 @@ __gshared ubyte saveBufSamusFacingDirection;
 __gshared ubyte saveBufAcidDamageValue;
 __gshared ubyte saveBufSpikeDamageValue;
 __gshared ubyte saveBufMetroidCountReal;
-__gshared ubyte saveBufCurrentRoomSong;
+__gshared Song saveBufCurrentRoomSong;
 __gshared ubyte saveBufGameTimeMinutes;
 __gshared ubyte saveBufGameTimeHours;
 __gshared ubyte saveBufMetroidCountDisplayed;
 
 __gshared ubyte[0x100] respawningBlockArray;
-__gshared ubyte[0x200] tiletableArray;
+__gshared ubyte[0x200] tileTableArray;
 __gshared ubyte[0x100] collisionArray;
 __gshared ubyte[0x10][3] projectileArray;
 __gshared ubyte[0x10][3] bombArray;
