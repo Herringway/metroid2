@@ -18,3 +18,4 @@ metroid2-test-*
 dub.selections.json
 *.gb
 *.bin
+*.sav

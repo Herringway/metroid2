@@ -8,7 +8,10 @@ import bindbc.sdl;
 
 import core.thread;
 import std.file;
+import std.logger;
 import std.stdio;
+
+enum saveFile = "metroid2.sav";
 
 Renderer renderer;
 void main() {
@@ -24,9 +27,12 @@ void main() {
 	vram = () { return renderer.ppu.vram; };
 	bgTilemap = &getBGTilemap;
 	windowTilemap = &getWindowTilemap;
+	enableSRAM = &loadSRAM;
+	disableSRAM = &saveSRAM;
 
 	const data = cast(ubyte[])read("metroid2.gb");
 	loadData(data);
+	bool frameLimit = true;
 
 	loop: while (true) {
 		while(SDL_PollEvent(&event)) {
@@ -34,6 +40,9 @@ void main() {
 				case SDL_QUIT:
 					break loop;
 				case SDL_KEYUP:
+					if (event.key.keysym.scancode == SDL_SCANCODE_TAB) {
+						frameLimit = true;
+					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
 						break loop;
 					}
@@ -43,6 +52,9 @@ void main() {
 					input &= ~getButtonMask(event.key.keysym.scancode);
 					break;
 				case SDL_KEYDOWN:
+					if (event.key.keysym.scancode == SDL_SCANCODE_TAB) {
+						frameLimit = false;
+					}
 					input |= getButtonMask(event.key.keysym.scancode);
 					break;
 				default: break;
@@ -55,6 +67,9 @@ void main() {
 		vblank();
 		copyRegisters(renderer.ppu);
 		renderer.draw();
+		if (frameLimit) {
+			renderer.waitNextFrame();
+		}
 	}
 }
 ref ubyte[0x400] getBGTilemap() @safe {
@@ -89,4 +104,25 @@ void copyRegisters(ref PPU ppu) {
 	ppu.registers.obp1 = OBP1;
 	ppu.registers.wy = WY;
 	ppu.registers.wx = WX;
+}
+void loadSRAM() {
+	import metroid2.sram : SRAM, sram;
+	static bool loaded;
+	if (loaded || !saveFile.exists) {
+		return;
+	}
+	auto file = File(saveFile, "r");
+	if (file.size != sram.sizeof) {
+		infof("Discarding save file with incorrect size: Expected %s, got %s", sram.sizeof, file.size);
+		return;
+	}
+	infof("Loaded save file %s", saveFile);
+	SRAM[1] tmp;
+	file.rawRead(tmp[]);
+	sram = tmp[0];
+}
+void saveSRAM() {
+	import metroid2.sram : SRAM, sram;
+	SRAM[1] tmp = [sram];
+	File(saveFile, "w").rawWrite(tmp[]);
 }

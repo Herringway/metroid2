@@ -11,3 +11,6 @@ private ref ubyte[0x400] defaultTilemapFunc() {
 __gshared ubyte[] function() vram = () { return cast(ubyte[])[]; };
 __gshared TilemapFunc bgTilemap = &defaultTilemapFunc;
 __gshared TilemapFunc windowTilemap = &defaultTilemapFunc;
+
+__gshared void function() disableSRAM = () {};
+__gshared void function() enableSRAM = () {};

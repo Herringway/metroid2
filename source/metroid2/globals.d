@@ -3,6 +3,7 @@ module metroid2.globals;
 import libgb;
 
 import metroid2.defs;
+import metroid2.sram;
 
 __gshared OAMEntry[40] oamBuffer;
 
@@ -10,12 +11,12 @@ __gshared ubyte tileX;
 __gshared ubyte tileY;
 __gshared ubyte scrollX;
 __gshared ubyte scrollY;
-__gshared ubyte* tilemapDest;
+__gshared ushort tilemapDest;
 __gshared ubyte gameOverLCDCCopy;
 __gshared ubyte unknownC227;
 
 __gshared ubyte[0x60] oamScratchpad;
-__gshared ubyte[4] hitboxC360;
+__gshared Rectangle hitboxC360;
 
 __gshared ubyte blobThrowerActionTimer;
 __gshared ubyte blobThrowerWaitTimer;
@@ -113,6 +114,14 @@ __gshared ubyte samusHurtFlag;
 __gshared ubyte samusDamageBoostDirection;
 __gshared ubyte samusDamageValue;
 
+struct NumEnemies {
+	ubyte total;
+	ubyte active;
+	ubyte offscreen;
+}
+
+__gshared NumEnemies numEnemies;
+
 __gshared ubyte unknownC42D;
 
 __gshared ubyte drawEnemyYPos;
@@ -128,7 +137,7 @@ __gshared ubyte zetaXProximityFlag;
 
 __gshared ubyte enemySameEnemyFrameFlag;
 
-__gshared ubyte enemiestLeftToProcess;
+__gshared ubyte enemiesLeftToProcess;
 
 __gshared ubyte samusOnSolidSprite;
 
@@ -168,7 +177,13 @@ __gshared ubyte cutsceneActive;
 __gshared ubyte alphaStunCounter;
 __gshared ubyte metroidFightActive;
 
-__gshared ubyte[4] enSprCollision;
+
+struct EnSprCollision {
+	ubyte weaponType;
+	void* enemy;
+	ubyte weaponDir;
+}
+__gshared EnSprCollision enSprCollision;
 
 __gshared ubyte gammaStunCounter;
 __gshared ubyte enemyWeaponType;
@@ -192,8 +207,6 @@ __gshared ubyte[0x40] enemySpawnFlagsUnsaved;
 __gshared ubyte[0x40] enemySpawnFlagsSaved;
 
 __gshared EnemySlot[16] enemyDataSlots;
-
-__gshared ubyte[448] saveBufEnemySpawnFlags;
 
 __gshared Square1SFX sfxRequestSquare1;
 __gshared Square1SFX sfxPlayingSquare1;
@@ -219,10 +232,91 @@ __gshared ubyte sfxActiveSquare2;
 __gshared ubyte sfxActiveWave;
 __gshared ubyte sfxActiveNoise;
 __gshared ubyte resumeScrewAttackSoundEffectFlag;
-
+__gshared ubyte[0x60] songProcessingState;
 __gshared ubyte songTranspose;
 __gshared void* songInstructionTimerArrayPointer;
+__gshared ubyte workingSoundChannel;
+__gshared ubyte songChannelEnableSquare1;
+__gshared ubyte songChannelEnableSquare2;
+__gshared ubyte songChannelEnableWave;
+__gshared ubyte songChannelEnableNoise;
+__gshared ubyte songOptionsSetFlagWorking;
+__gshared const(void)* songWavePatternDataPointer;
+//__gshared ubyte songSweepWorking;
+__gshared ubyte songEnableWorking;
+__gshared ubyte songSoundLengthWorking;
+//__gshared ubyte songEnvelopeWorking;
+__gshared ubyte songVolumeWorking;
+__gshared ubyte songFrequencyWorking;
+__gshared ubyte songPolynomialCounterWorking;
+__gshared ubyte songCounterControlWorking;
+__gshared ubyte songSweepSquare1;
+__gshared ubyte songSoundLengthSquare1;
+__gshared ubyte songEnvelopeSquare1;
+__gshared ushort songFrequencySquare1;
 
+__gshared ubyte songSoundLengthSquare2;
+__gshared ubyte songEnvelopeSquare2;
+__gshared ushort songFrequencySquare2;
+
+__gshared ubyte songEnableOptionWave;
+__gshared ubyte songSoundLengthWave;
+__gshared ubyte songVolumeWave;
+__gshared ushort songFrequencyWave;
+
+__gshared ubyte songSoundLengthNoise;
+__gshared ubyte songEnvelopeNoise;
+__gshared ubyte songPolynomialCounterNoise;
+__gshared ubyte songCounterControlNoise;
+
+__gshared void* songChannelInstructionPointerSquare1;
+__gshared void* songChannelInstructionPointerSquare2;
+__gshared void* songChannelInstructionPointerWave;
+__gshared void* songChannelInstructionPointerNoise;
+
+__gshared ubyte songSoundChannelEffectTimer;
+
+struct ChannelSongProcessingState {
+	void* sectionPointer;
+	ushort repeatCount;
+	ubyte repeatPoint;
+	ubyte instructionLength;
+	// noteEnvelope
+	ubyte noteVolume;
+	ubyte instructionTimer;
+	ubyte effectIndex;
+}
+__gshared ChannelSongProcessingState songWorkingState;
+__gshared ChannelSongProcessingState songSquare1State;
+__gshared ChannelSongProcessingState songSquare2State;
+__gshared ChannelSongProcessingState songWaveState;
+__gshared ChannelSongProcessingState songNoiseState;
+
+__gshared ubyte songFadeoutTimer;
+__gshared ubyte ramCF5D;
+__gshared ubyte ramCF5E;
+__gshared ubyte ramCF5F;
+__gshared ubyte songFrequencyTweakSquare2;
+
+__gshared ubyte[97] songProcessingStateBackup;
+
+__gshared ushort songPlayingBackup;
+__gshared ubyte audioPauseControl;
+__gshared ubyte audioPauseSoundEffectTimer;
+__gshared ubyte songSweepBackupSquare1;
+__gshared ubyte sfxVariableFrequencySquare1;
+__gshared ushort ramCFE3;
+__gshared ubyte sfxRequestLowHealthBeep;
+__gshared ubyte sfxRequestWave;
+__gshared ubyte sfxPlayingLowHealthBeep;
+__gshared ubyte sfxPlayingWave;
+__gshared ubyte sfxPlayingBackupLowHealthBeep;
+__gshared ubyte sfxTimerWave;
+__gshared ubyte sfxLengthWave;
+__gshared ubyte ramCFEB;
+__gshared ubyte audioChannelOutputStereoFlags;
+__gshared ubyte audioChannelOutputStereoFlagsBackup;
+__gshared ubyte loudLowHealthBeepTimer;
 
 struct TempMetaTile {
 	ubyte topLeft;
@@ -244,17 +338,12 @@ __gshared ubyte cameraScrollDirection;
 __gshared ubyte samusFallArcCounter;
 __gshared ubyte samusJumpArcCounter;
 
-__gshared ubyte prevSamusXPixel;
-__gshared ubyte prevSamusXScreen;
-__gshared ubyte prevSamusYPixel;
-__gshared ubyte prevSamusYScreen;
+__gshared ushort prevSamusX;
+__gshared ushort prevSamusY;
 
 __gshared ubyte samusFacingDirection;
 __gshared ubyte samusTurnAnimTimer;
-__gshared ubyte collisionSamusYOffsetA;
-__gshared ubyte collisionSamusYOffsetB;
-__gshared ubyte collisionSamusYOffsetC;
-__gshared ubyte collisionSamusYOffsetD;
+__gshared ubyte[4] collisionSamusYOffsets;
 
 __gshared ubyte projectileIndex;
 
@@ -397,7 +486,7 @@ __gshared ubyte creditsScrollingDone;
 
 __gshared ubyte debugFlag;
 
-__gshared ubyte samusPrevHealth;
+__gshared ushort samusPrevHealth;
 
 __gshared ubyte gameTimeSeconds;
 
@@ -414,47 +503,24 @@ __gshared ubyte wramUnknownD0A8;
 __gshared ubyte[0x20] creditsStarArray;
 __gshared ubyte[0x40] doorScriptBuffer;
 
-__gshared ubyte saveBufSamusYPixel;
-__gshared ubyte saveBufSamusYScreen;
-__gshared ubyte saveBufSamusXPixel;
-__gshared ubyte saveBufSamusXScreen;
-__gshared ubyte saveBufCameraYPixel;
-__gshared ubyte saveBufCameraYScreen;
-__gshared ubyte saveBufCameraXPixel;
-__gshared ubyte saveBufCameraXScreen;
-__gshared const(ubyte)* saveBufEnGfxSrc;
-__gshared ubyte saveBufBGGfxSrcBank;
-__gshared const(ubyte)* saveBufBGGfxSrc;
-__gshared const(ubyte)* saveBufTiletableSrc;
-__gshared const(ubyte)* saveBufCollisionSrc;
-__gshared ubyte saveBufCurrentLevelBank;
-__gshared ubyte saveBufSamusSolidityIndex;
-__gshared ubyte saveBufEnemySolidityIndex;
-__gshared ubyte saveBufBeamSolidityIndex;
-__gshared ubyte saveBufSamusItems;
-__gshared ubyte saveBufSamusBeam;
-__gshared ubyte saveBufSamusEnergyTanks;
-__gshared ushort saveBufSamusHealth;
-__gshared ushort saveBufSamusMaxMissiles;
-__gshared ushort saveBufSamusCurMissiles;
-__gshared ubyte saveBufSamusFacingDirection;
-__gshared ubyte saveBufAcidDamageValue;
-__gshared ubyte saveBufSpikeDamageValue;
-__gshared ubyte saveBufMetroidCountReal;
-__gshared Song saveBufCurrentRoomSong;
-__gshared ubyte saveBufGameTimeMinutes;
-__gshared ubyte saveBufGameTimeHours;
-__gshared ubyte saveBufMetroidCountDisplayed;
+
+__gshared SaveFileData saveBuf;
 
 __gshared ubyte[0x100] respawningBlockArray;
 __gshared ubyte[0x200] tileTableArray;
 __gshared ubyte[0x100] collisionArray;
-__gshared ubyte[0x10][3] projectileArray;
+struct Projectile {
+	ubyte type = ProjectileType.invalid;
+	ubyte direction;
+	ubyte y;
+	ubyte x;
+	ubyte[0xC] u;
+}
+__gshared Projectile[3] projectileArray;
 __gshared ubyte[0x10][3] bombArray;
 
 __gshared ubyte[0xA0] unusedDD60;
-__gshared ubyte[0x100] mapUpdateBuffer;
-__gshared ubyte mapUpdateFlag;
+__gshared MapUpdateBufferEntry[42] mapUpdateBuffer;
 
 __gshared ubyte inputPressed;
 __gshared ubyte inputRisingEdge;
@@ -472,11 +538,7 @@ __gshared ubyte beamType;
 __gshared ubyte beamWaveIndex;
 __gshared ubyte beamFrameCounter;
 
-__gshared ubyte tank1;
-__gshared ubyte tank2;
-__gshared ubyte tank3;
-__gshared ubyte tank4;
-__gshared ubyte tank5;
+__gshared ubyte[5] hudTanks;
 
 __gshared ubyte collisionEnY;
 __gshared ubyte collisionEnX;
@@ -488,23 +550,47 @@ __gshared ubyte collisionEnRight;
 __gshared ubyte collisionEnIce;
 __gshared ubyte collisionEnAttr;
 
-__gshared ubyte samusYPixel;
-__gshared ubyte samusYScreen;
-__gshared ubyte samusXPixel;
-__gshared ubyte samusXScreen;
+__gshared ushort samusY;
+__gshared ushort samusX;
 
 __gshared ubyte spriteYPixel;
 __gshared ubyte spriteXPixel;
 __gshared ubyte spriteID;
 __gshared ubyte spriteAttr;
 
-__gshared ubyte cameraYPixel;
-__gshared ubyte cameraYScreen;
-__gshared ubyte cameraXPixel;
-__gshared ubyte cameraXScreen;
+__gshared ushort cameraY;
+__gshared ushort cameraX;
 
 __gshared ubyte mapSourceYPixel;
 __gshared ubyte mapSourceYScreen;
 __gshared ubyte mapSourceXPixel;
 __gshared ubyte mapSourceXScreen;
+
+struct EnemyWorking {
+	ubyte status = 0xFF;
+	ubyte y = 0xFF;
+	ubyte x = 0xFF;
+	ubyte spriteType = 0xFF;
+	ubyte baseAttr = 0xFF;
+	ubyte attr = 0xFF;
+	ubyte stunCounter = 0xFF;
+	ubyte generalVar = 0xFF;
+	ubyte directionFlags = 0xFF;
+	ubyte counter = 0xFF;
+	ubyte state = 0xFF;
+	ubyte iceCounter = 0xFF;
+	ubyte health = 0xFF;
+	ubyte dropType = 0xFF;
+	ubyte explosionFlag = 0xFF;
+	ubyte spawnFlag = 0xFF;
+	ubyte spawnNumber = 0xFF;
+	void* ai;
+	ubyte yScreen = 0xFF;
+	ubyte xScreen = 0xFF;
+	ubyte maxHealth = 0xFF;
+}
+EnemyWorking enemyWorking;
+
+// Temporary state, but stored in SRAM
+__gshared ubyte[0x800] creditsTextBuffer;
 

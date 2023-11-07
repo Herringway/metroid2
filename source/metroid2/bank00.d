@@ -2,7 +2,13 @@ module metroid2.bank00;
 
 import std.logger;
 
+import metroid2.bank01;
+import metroid2.bank02;
+import metroid2.bank03;
+import metroid2.bank04;
+import metroid2.bank05;
 import metroid2.bank06;
+import metroid2.bank08;
 import metroid2.data;
 import metroid2.defs;
 import metroid2.external;
@@ -10,6 +16,8 @@ import metroid2.globals;
 import metroid2.mapbanks;
 import metroid2.registers;
 import metroid2.sram;
+
+import libgb;
 
 void vblank() {
 	SCY = scrollY;
@@ -21,27 +29,28 @@ void vblank() {
 		countdownTimer--;
 	}
 	if (creditsNextLineReady) {
-		//vblankDrawCreditsLine();
+		vblankDrawCreditsLine();
 	}
 	if (deathAnimTimer) {
-		//vblankDeathSequence();
+		vblankDeathSequence();
 	}
 	if (vramTransferFlag) {
-		//vblankVRAMDataTransfer();
+		vblankVRAMDataTransfer();
 	}
 	if (doorIndex) {
 		vblankUpdateMapDuringTransition();
 	}
 	if (queenRoomFlag == 0x11) {
-		//vblankUpdateStatusBar();
+		vblankUpdateStatusBar();
 		oamDMA();
 		//vblankDrawQueen();
 		vblankDoneFlag = 1;
 	} else {
-		if (mapUpdateFlag) {
+		if (mapUpdateBuffer[0].dest) {
+			switchMapBank(currentLevelBank);
 			vblankUpdateMap();
 		} else {
-			//vblankUpdateStatusBar();
+			vblankUpdateStatusBar();
 		}
 		oamDMA();
 		vblankDoneFlag = 1;
@@ -62,27 +71,32 @@ void start() {
 		bgPalette = 0x93;
 		obPalette0 = 0x93;
 		obPalette1 = 0x43;
-		//initializeAudio();
+		initializeAudio();
+		enableSRAM();
 		// some ram initialization happened here
-		//clearTilemaps();
+		clearTilemaps();
 		IE = 1;
 		WX = 7;
 		LCDC = 0x80;
 		IF = 0;
 		WY = 0;
 		TMA = 0;
+		enableSRAM();
 		activeSaveSlot = 0;
 		if (sram.saveLastSlot < 3) {
 			activeSaveSlot = sram.saveLastSlot;
 		}
 		gameMode = GameMode.boot;
+		disableSRAM();
 		gameLoop: while (true) {
-			mapUpdateFlag = 0;
+			mapUpdateBuffer[0].dest = 0;
 			if (doorScrollDirection == 0) {
 				readInput();
 			}
-			handleGameMode();
-			//handleAudio();
+			if (handleGameMode()) {
+				break gameLoop;
+			}
+			handleAudio();
 			executeDoorScript();
 			if ((inputPressed & (Pad.start | Pad.select | Pad.b | Pad.a)) == (Pad.start | Pad.select | Pad.b | Pad.a)) {
 				infof("resetting");
@@ -94,13 +108,13 @@ void start() {
 	}
 }
 
-void handleGameMode() {
+bool handleGameMode() {
 	final switch (gameMode) {
 		case GameMode.boot:
-			//handleBoot();
+			handleBoot();
 			break;
 		case GameMode.title:
-			//handleTitle();
+			handleTitle();
 			break;
 		case GameMode.loadA:
 			handleLoadA();
@@ -112,28 +126,30 @@ void handleGameMode() {
 			handleMain();
 			break;
 		case GameMode.dead:
-			//handleDead();
+			handleDead();
 			break;
 		case GameMode.dying:
 			handleDying();
 			break;
 		case GameMode.gameOver:
-			//handleGameOver();
+			if (handleGameOver()) {
+				return true;
+			}
 			break;
 		case GameMode.paused:
-			//handlePaused();
+			handlePaused();
 			break;
 		case GameMode.saveGame:
-			//handleSaveGame();
+			handleSaveGame();
 			break;
 		case GameMode.unusedA:
-			//handleUnusedA();
+			handleUnusedA();
 			break;
 		case GameMode.newGame:
-			//handleNewGame();
+			handleNewGame();
 			break;
 		case GameMode.loadSave:
-			//handleLoadSave();
+			handleLoadSave();
 			break;
 		case GameMode.none:
 			handleNone();
@@ -142,13 +158,15 @@ void handleGameMode() {
 			handleNone();
 			break;
 		case GameMode.unusedB:
-			//handleUnusedB();
+			if (handleUnusedB()) {
+				return true;
+			}
 			break;
 		case GameMode.unusedC:
-			//handleUnusedC();
+			handleUnusedC();
 			break;
 		case GameMode.unusedD:
-			//handleUnusedD();
+			handleUnusedD();
 			break;
 		case GameMode.prepareCredits:
 			//handlePrepareCredits();
@@ -157,6 +175,7 @@ void handleGameMode() {
 			//handleCredits();
 			break;
 	}
+	return false;
 }
 
 void handleNone() {} //nothing
@@ -184,7 +203,7 @@ void waitNextFrame() {
 
 void oamClearTable() {
 	for (int i = oamBuffer.length; i != 0; i--) {
-		oamBuffer[i] = oamBuffer[i].init;
+		oamBuffer[i - 1] = oamBuffer[i - 1].init;
 	}
 }
 void clearTilemaps() {
@@ -220,27 +239,27 @@ void disableLCD() {
 
 void handleLoadA() {
 	loadGameSamusData();
-	const(ubyte)* src = saveBufTiletableSrc;
+	const(ubyte)* src = &metatileTable[saveBuf.tiletableID][0];
 	ubyte* dest = &tileTableArray[0];
 	for (int i = 0; i < tileTableArray.length; i++) {
 		*(dest++) = *(src++);
 	}
-	src = saveBufCollisionSrc;
+	src = &collisionTable[saveBuf.collisionID][0];
 	dest = &collisionArray[0];
 	for (int i = 0; i < collisionArray.length; i++) {
 		*(dest++) = *(src++);
 	}
-	currentLevelBank = saveBufCurrentLevelBank;
-	samusSolidityIndex = saveBufSamusSolidityIndex;
-	enemySolidityIndexCanon = saveBufEnemySolidityIndex;
-	beamSolidityIndex = saveBufBeamSolidityIndex;
-	acidDamageValue = saveBufAcidDamageValue;
-	spikeDamageValue = saveBufSpikeDamageValue;
-	metroidCountReal = saveBufMetroidCountReal;
-	currentRoomSong = saveBufCurrentRoomSong;
-	gameTimeMinutes = saveBufGameTimeMinutes;
-	gameTimeHours = saveBufGameTimeHours;
-	metroidCountDisplayed = saveBufMetroidCountDisplayed;
+	currentLevelBank = saveBuf.currentLevelBank;
+	samusSolidityIndex = saveBuf.samusSolidityIndex;
+	enemySolidityIndexCanon = saveBuf.enemySolidityIndex;
+	beamSolidityIndex = saveBuf.beamSolidityIndex;
+	acidDamageValue = saveBuf.acidDamageValue;
+	spikeDamageValue = saveBuf.spikeDamageValue;
+	metroidCountReal = saveBuf.metroidCountReal;
+	currentRoomSong = saveBuf.currentRoomSong;
+	gameTimeMinutes = saveBuf.gameTimeMinutes;
+	gameTimeHours = saveBuf.gameTimeHours;
+	metroidCountDisplayed = saveBuf.metroidCountDisplayed;
 
 	doorScrollDirection = 0;
 	deathAnimTimer = 0;
@@ -254,34 +273,28 @@ void handleLoadA() {
 	for (int i = 0; i < respawningBlockArray.length; i += 0x10) {
 		respawningBlockArray[i] = 0;
 	}
-	//saveAndLoadEnemySaveFlags();
+	ingameSaveAndLoadEnemySaveFlags();
 	gameMode = GameMode.loadB;
 }
 
 void handleLoadB() {
 	disableLCD();
 	loadGameLoadGraphics();
-	//loadGameSamusItemGraphics();
-	cameraYPixel = saveBufCameraYPixel;
-	cameraYScreen = saveBufCameraYScreen;
-	cameraXPixel = saveBufCameraXPixel;
-	cameraXScreen = saveBufCameraXScreen;
+	loadGameSamusItemGraphics();
+	cameraY = saveBuf.cameraY;
+	cameraX = saveBuf.cameraX;
+	switchMapBank(currentLevelBank);
 	do {
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		prepMapUpdateForceRow();
 		vblankUpdateMap();
-		cameraYPixel += 16;
-		if (cameraYPixel < 16) {
-			cameraYScreen = (cameraYScreen + 1) & 15;
-		}
-	} while (cameraYPixel != saveBufCameraYPixel);
-	cameraYPixel = saveBufCameraYPixel;
-	cameraYScreen = saveBufCameraYScreen;
-	cameraXPixel = saveBufCameraXPixel;
-	cameraXScreen = saveBufCameraXScreen;
+		cameraY = (cameraY + 16) & 0xFFF;
+	} while (cameraY.pixel != saveBuf.cameraY.pixel);
+	cameraY = saveBuf.cameraY;
+	cameraX = saveBuf.cameraX;
 
-	scrollY = cast(ubyte)(cameraYPixel - 0x78);
-	scrollX = cast(ubyte)(cameraXPixel - 0x30);
+	scrollY = (cast(ushort)(cameraY - 0x78)).pixel;
+	scrollX = (cast(ushort)(cameraX - 0x30)).pixel;
 	LCDC = 0xE3;
 	unusedD011 = 0;
 	gameMode = GameMode.main;
@@ -289,105 +302,101 @@ void handleLoadB() {
 
 void handleMain() {
 	if ((samusPose & 0x7F) == SamusPose.eatenByMetroidQueen) {
-		//miscInGameTasks();
+		miscInGameTasks();
 		if (samusDispHealth == 0) {
-			//killSamus();
+			killSamus();
 		}
-		prevSamusYPixel = samusYPixel;
-		prevSamusYScreen = samusYScreen;
-		prevSamusXPixel = samusXPixel;
-		prevSamusXScreen = samusXScreen;
+		prevSamusY = samusY;
+		prevSamusX = samusX;
 
 		samusSpriteCollisionProcessedFlag = 0;
 
 		samusHandlePose();
-		//collisionSamusEnemiesStandard();
+		collisionSamusEnemiesStandard();
 		samusTryShooting();
-		//handleProjectiles();
+		handleProjectiles();
 		//handleBombs();
 		prepMapUpdate();
 		handleCamera();
-		//convertCameraToScroll();
-		//drawSamus();
+		convertCameraToScroll();
+		drawSamus();
 		//drawProjectiles();
 		//handleRespawningBlocks();
-		//adjustHudValues();
+		adjustHUDValues();
 		if (samusUnmorphJumpTimer) {
 			samusUnmorphJumpTimer--;
 		}
-		//drawHudMetroid();
+		drawHUDMetroid();
 		samusTopOAMOffset = oamBufferIndex;
 		handleEnemiesOrQueen();
-		//clearUnusedOAMSlots();
-		//tryPausng();
+		clearUnusedOAMSlots();
+		tryPausing();
 	}
-	//miscInGameTasks();
+	miscInGameTasks();
 	if (samusDispHealth == 0) {
-		//killSamus();
+		killSamus();
 	}
-	prevSamusYPixel = samusYPixel;
-	prevSamusYScreen = samusYScreen;
-	prevSamusXPixel = samusXPixel;
-	prevSamusXScreen = samusXScreen;
+	prevSamusY = samusY;
+	prevSamusX = samusX;
 	if (cutsceneActive) {
 		samusPose &= 0x7F;
 		if (inputRisingEdge & Pad.select) {
 			samusTryShootingToggleMissiles();
 		}
 	} else {
-		if (doorScrollDirection) {
+		if (!doorScrollDirection) {
 			samusSpriteCollisionProcessedFlag = 0;
 			hurtSamus();
 			samusHandlePose();
-			//collisionSamusEnemiesStandard();
+			collisionSamusEnemiesStandard();
 			samusTryShooting();
-			//handleProjectiles();
+			handleProjectiles();
 			//handleBombs();
 		}
 	}
 	prepMapUpdate();
 	handleCamera();
-	//convertCameraToScroll();
-	//handleItemPickup();
-	//drawSamus();
+	convertCameraToScroll();
+	handleItemPickup();
+	drawSamus();
 	//drawProjectiles();
 	//handleRespawningBlocks();
-	//adjustHudValues();
+	adjustHUDValues();
 	if (samusUnmorphJumpTimer) {
 		samusUnmorphJumpTimer--;
 	}
-	//drawHudMetroid();
+	drawHUDMetroid();
 	samusTopOAMOffset = oamBufferIndex;
 	if (!doorIndex) {
 		handleEnemiesOrQueen();
 	}
-	//clearUnusedOAMSlots();
+	clearUnusedOAMSlots();
 	tryPausing();
 }
 
 void handleEnemiesOrQueen() {
-	if (queenRoomFlag == 0x11) {
-		//enemyHandler();
+	if (queenRoomFlag != 0x11) {
+		enemyHandler();
 	} else {
 		//queenHandler();
 	}
 }
 
 void loadGameLoadGraphics() {
-	copyToVRAM(&graphicsCommonItems[0], &(vram()[0x8F00]), graphicsCommonItems.length);
-	copyToVRAM(&graphicsSamusPowerSuit[0], &(vram()[0x8000]), graphicsSamusPowerSuit.length);
-	copyToVRAM(saveBufEnGfxSrc, &(vram()[0x8B00]), 0x400);
+	copyToVRAM(&graphicsCommonItems[0], &(vram()[VRAMDest.commonItems]), graphicsCommonItems.length);
+	copyToVRAM(&graphicsSamusPowerSuit[0], &(vram()[VRAMDest.samus]), graphicsSamusPowerSuit.length);
+	copyToVRAM(enGfx(saveBuf.enGfxID), &(vram()[VRAMDest.enemies]), 0x400);
 	if (loadingFromFile) {
-		copyToVRAM(&graphicsItemFont[0], &(vram()[0x8C00]), 0x200);
+		copyToVRAM(&graphicsItemFont[0], &(vram()[VRAMDest.itemFont]), 0x200);
 	}
-	copyToVRAM(saveBufBGGfxSrc, &(vram()[0x9000]), 0x800);
+	copyToVRAM(bgGfx(saveBuf.bgGfxID), &(vram()[VRAMDest.bgTiles]), 0x800);
 }
 
 void queenRenderRoom() {
 	mapSourceYPixel = 0;
 	mapSourceXPixel = 0;
-	mapSourceYScreen = cameraYScreen;
-	mapSourceXScreen = cameraXScreen;
+	mapSourceYScreen = cameraY.screen;
+	mapSourceXScreen = cameraX.screen;
 	do {
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		prepMapUpdateRow();
@@ -412,17 +421,11 @@ void prepMapUpdate() {
 				return;
 			}
 			mapUpdateUnusedVar = 0xFF;
-			mapSourceXPixel = cast(ubyte)(cameraXPixel - 0x80);
-			if (cameraXPixel >= 0x80) {
-				cameraXScreen--;
-			}
-			mapSourceXScreen = cameraXScreen & 0xF;
+			mapSourceXPixel = ((cameraX - 0x80) & 0xFFF).pixel;
+			mapSourceXScreen = ((cameraX - 0x80) & 0xFFF).screen;
 
-			mapSourceYPixel = cast(ubyte)(cameraYPixel + 0x78);
-			if (cameraYPixel < 0x78) {
-				cameraYScreen++;
-			}
-			mapSourceYScreen = cameraYScreen & 0xF;
+			mapSourceYPixel = ((cameraY + 0x78) & 0xFFF).pixel;
+			mapSourceYScreen = ((cameraY + 0x78) & 0xFFF).screen;
 			cameraScrollDirection &= ~(1 << 7);
 			prepMapUpdateRow();
 			break;
@@ -431,17 +434,11 @@ void prepMapUpdate() {
 				return;
 			}
 			mapUpdateUnusedVar = 0xFF;
-			mapSourceXPixel = cast(ubyte)(cameraXPixel - 0x80);
-			if (cameraXPixel >= 0x80) {
-				cameraXScreen--;
-			}
-			mapSourceXScreen = cameraXScreen & 0xF;
+			mapSourceXPixel = ((cameraX - 0x80) & 0xFFF).pixel;
+			mapSourceXScreen = ((cameraX - 0x80) & 0xFFF).screen;
 
-			mapSourceYPixel = cast(ubyte)(cameraYPixel - 0x78);
-			if (cameraYPixel >= 0x88) {
-				cameraYScreen--;
-			}
-			mapSourceYScreen = cameraYScreen & 0xF;
+			mapSourceYPixel = ((cameraY - 0x78) & 0xFFF).pixel;
+			mapSourceYScreen = ((cameraY - 0x78) & 0xFFF).screen;
 			cameraScrollDirection &= ~(1 << 5);
 			prepMapUpdateColumn();
 			break;
@@ -450,17 +447,11 @@ void prepMapUpdate() {
 				return;
 			}
 			mapUpdateUnusedVar = 0xFF;
-			mapSourceXPixel = cast(ubyte)(cameraXPixel + 0x70);
-			if (cameraXPixel < 0x70) {
-				cameraXScreen++;
-			}
-			mapSourceXScreen = cameraXScreen & 0xF;
+			mapSourceXPixel = ((cameraX + 0x70) & 0xFFF).pixel;
+			mapSourceXScreen = ((cameraX + 0x70) & 0xFFF).screen;
 
-			mapSourceYPixel = cast(ubyte)(cameraYPixel - 0x78);
-			if (cameraYPixel >= 0x88) {
-				cameraYScreen--;
-			}
-			mapSourceYScreen = cameraYScreen & 0xF;
+			mapSourceYPixel = ((cameraY - 0x78) & 0xFFF).pixel;
+			mapSourceYScreen = ((cameraY - 0x78) & 0xFFF).screen;
 			cameraScrollDirection &= ~(1 << 4);
 			prepMapUpdateColumn();
 			break;
@@ -468,17 +459,11 @@ void prepMapUpdate() {
 	}
 }
 void prepMapUpdateForceRow() {
-	mapSourceXPixel = cast(ubyte)(cameraXPixel - 0x80);
-	if (cameraXPixel >= 0x80) {
-		cameraXScreen--;
-	}
-	mapSourceXScreen = cameraXScreen & 0xF;
+	mapSourceXPixel = ((cameraX - 0x80) & 0xFFF).pixel;
+	mapSourceXScreen = ((cameraX - 0x80) & 0xFFF).screen;
 
-	mapSourceYPixel = cast(ubyte)(cameraYPixel - 0x78);
-	if (cameraYPixel >= 0x88) {
-		cameraYScreen--;
-	}
-	mapSourceYScreen = cameraYScreen & 0xF;
+	mapSourceYPixel = cast(ubyte)((cameraY - 0x78) & 0xFFF).pixel;
+	mapSourceYScreen = cast(ubyte)((cameraY - 0x78) & 0xFFF).screen;
 	cameraScrollDirection &= ~(1 << 6);
 	prepMapUpdateRow();
 }
@@ -498,8 +483,7 @@ void prepMapUpdateRow() {
 			bc = mapScreenPointers[mapUpdate.srcScreen];
 		}
 	} while (--mapUpdate.size != 0);
-	*cast(ubyte*)mapUpdate.buffer = 0;
-	*(cast(ubyte*)mapUpdate.buffer + 1) = 0;
+	mapUpdate.buffer.dest = 0;
 }
 
 void prepMapUpdateColumn() {
@@ -516,8 +500,7 @@ void prepMapUpdateColumn() {
 			bc = mapScreenPointers[mapUpdate.srcScreen];
 		}
 	} while (--mapUpdate.size != 0);
-	*cast(ubyte*)mapUpdate.buffer = 0;
-	*(cast(ubyte*)mapUpdate.buffer + 1) = 0;
+	mapUpdate.buffer.dest = 0;
 }
 const(ubyte)[] mapUpdateGetSrcAndDest() {
 	mapUpdate.srcScreen = ((mapSourceYScreen << 4) & 0xF0) | (mapSourceXScreen & 0xF);
@@ -531,40 +514,146 @@ void mapUpdateWriteToBuffer(const(ubyte)[] bc) {
 	tempMetaTile.topRight = tileTableArray[bc[mapUpdate.srcBlock] * 4 + 1];
 	tempMetaTile.bottomLeft = tileTableArray[bc[mapUpdate.srcBlock] * 4 + 2];
 	tempMetaTile.bottomRight = tileTableArray[bc[mapUpdate.srcBlock] * 4 + 3];
-	*cast(ushort*)mapUpdate.buffer = mapUpdate.destAddr;
-	mapUpdate.buffer += 2;
-	*cast(ubyte*)(mapUpdate.buffer++) = tempMetaTile.topLeft;
-	*cast(ubyte*)(mapUpdate.buffer++) = tempMetaTile.topRight;
-	*cast(ubyte*)(mapUpdate.buffer++) = tempMetaTile.bottomLeft;
-	*cast(ubyte*)(mapUpdate.buffer++) = tempMetaTile.bottomRight;
+	mapUpdate.buffer.dest = mapUpdate.destAddr;
+	mapUpdate.buffer.topLeft = tempMetaTile.topLeft;
+	mapUpdate.buffer.topRight = tempMetaTile.topRight;
+	mapUpdate.buffer.bottomLeft = tempMetaTile.bottomLeft;
+	mapUpdate.buffer.bottomRight = tempMetaTile.bottomRight;
+	mapUpdate.buffer++;
 }
 
 void vblankUpdateMap() {
-	auto de = &mapUpdateBuffer[0] - 1;
+	auto de = cast(MapUpdateBufferEntry*)&mapUpdateBuffer[0];
 	do {
-		ushort hl = *cast(ushort*)de;
+		ushort hl = de.dest;
 		if ((hl & 0xFF00) == 0) {
 			break;
 		}
-		de += 2;
 		// top left
-		vram()[hl] = *(de++);
-		hl = (hl + 1) & 0x9BFF;
+		vram()[hl] = de.topLeft;
 		// top right
-		vram()[hl] = *(de++);
 		hl = (hl + 1) & 0x9BFF;
+		vram()[hl] = de.topRight;
 		// bottom left
-		vram()[hl] = *(de++);
 		hl = (hl + 0x1F) & 0x9BFF;
+		vram()[hl] = de.bottomLeft;
 		// bottom right
-		vram()[hl] = *(de++);
 		hl = (hl + 1) & 0x9BFF;
+		vram()[hl] = de.bottomRight;
+		de++;
 	} while(true);
-	mapUpdateFlag = 0;
+	mapUpdateBuffer[0].dest = 0;
 }
 
 void handleCamera() {
-	assert(0, "NYI");
+	if (doorScrollDirection) {
+		handleCameraDoor();
+		return;
+	}
+	const tmp = scrollData[(cameraY.screen << 4) | cameraX.screen];
+	// righrward
+	if (tmp & 1) { // right blocked
+		if (cameraX.pixel == 176) {
+			if (samusOnScreenXPos >= 161) {
+				doorScrollDirection = 1;
+				loadDoorIndex();
+			}
+			goto rightDone;
+		} else if (cameraX.pixel >= 176) {
+			cameraX = (cameraX - 1) & 0xFFF;
+			goto rightDone;
+		}
+	}
+	if (cameraSpeedRight) {
+		cameraX = (cameraX + cameraSpeedRight) & 0xFFF;
+		cameraScrollDirection |= ScrollDirection.right;
+		if (samusX.pixel - cameraX.pixel + 96 >= 64) {
+			cameraX = (cameraX + 1) & 0xFFF;
+		} else if (samusX.pixel - cameraX.pixel + 96 < 63) {
+			cameraX = (cameraX - 1) & 0xFFF;
+		}
+	}
+	rightDone:
+	// leftward
+	if (tmp & 2) { // left blocked
+		if (cameraX.pixel == 80) {
+			if (samusOnScreenXPos < 15) {
+				doorScrollDirection = 2;
+				samusX += 0x100;
+				loadDoorIndex();
+			}
+			goto leftDone;
+		} else if (cameraX.pixel < 80) {
+			cameraX = (cameraX + 1) & 0xFFF;
+			goto leftDone;
+		}
+	}
+	if (cameraSpeedLeft) {
+		cameraX = (cameraX - cameraSpeedLeft) & 0xFFF;
+		cameraScrollDirection |= ScrollDirection.left;
+		if (samusX.pixel - cameraX.pixel + 96 < 112) {
+			cameraX = (cameraX - 1) & 0xFFF;
+		} else if (samusX.pixel - cameraX.pixel + 96 >= 113) {
+			cameraX = (cameraX + 1) & 0xFFF;
+		}
+	}
+	leftDone:
+	cameraSpeedRight = 0;
+	cameraSpeedLeft = 0;
+
+	// downward
+	auto tmp2 = cast(ubyte)(samusY.pixel - cameraY.pixel + 0x60);
+	if (samusY.pixel == samusPrevYPixel) {
+		goto exit;
+	} else if (samusY.pixel > samusPrevYPixel) {
+		cameraSpeedDown = cast(ubyte)(samusY.pixel - samusPrevYPixel);
+		cameraScrollDirection |= ScrollDirection.down;
+		if (tmp & 8) {
+			if (((queenRoomFlag == 0x11) && (cameraY.pixel == 160)) || (cameraY.pixel == 192)) {
+				if (samusOnScreenYPos < 120) {
+					goto exit;
+				}
+				doorScrollDirection = 8;
+				loadDoorIndex();
+			} else if (((queenRoomFlag == 0x11) && (cameraY.pixel >= 160)) || (cameraY.pixel >= 192)) {
+				cameraY = (cameraY -1) & 0xFFF;
+				goto exit;
+			} else {
+				if (tmp2 >= 64) {
+					cameraY = (cameraY + cameraSpeedDown) & 0xFFF;
+				}
+				goto exit;
+			}
+		} else if (tmp2 >= 80) {
+			cameraY = (cameraY + cameraSpeedDown) & 0xFFF;
+			goto exit;
+		} else {
+			goto exit;
+		}
+	}
+	tmp2 = cast(ubyte)-tmp2;
+	cameraScrollDirection |= ScrollDirection.up;
+	if (tmp & 4) {
+		if (cameraY.pixel == 72) {
+			if (samusOnScreenYPos < 27) {
+				doorScrollDirection = 4;
+				samusY = cameraY.screen << 8;
+				if (queenRoomFlag != 0x11) {
+					loadDoorIndex();
+				}
+			}
+		}  else if (cameraY.pixel < 72) {
+			cameraY = (cameraY + 1) & 0xFFF;
+		} else if (tmp2 >= 62) {
+			cameraY = cast(ushort)(cameraY - cameraSpeedUp); // no & 0xFFF?
+		}
+	} else if (tmp2 >= 78) {
+		cameraY = cast(ushort)(cameraY - cameraSpeedUp); // no & 0xFFF?
+	}
+	exit:
+	cameraSpeedDown = 0;
+	cameraSpeedUp = 0;
+	samusPrevYPixel = samusY.pixel;
 }
 immutable ubyte[11] unknown0B39 = [0, 1, 1, 0, 0, 0, 1, 2, 2, 1, 1];
 
@@ -586,7 +675,7 @@ void loadDoorIndex() {
 	bombArray[2][0] = 0xFF;
 
 	justStartedTransition = 0xFF;
-	doorIndex = roomTransitionIndices[(cameraYScreen << 4) | cameraXScreen] & 0xF7FF;
+	doorIndex = roomTransitionIndices[(cameraY.screen << 4) | cameraX.screen] & 0xF7FF;
 
 	doorExitStatus = 2;
 	fadeInTimer = 0;
@@ -601,22 +690,20 @@ void loadDoorIndex() {
 
 void loadGameSamusData() {
 	clearProjectileArray();
-	samusXPixel = saveBufSamusXPixel;
-	samusYPixel = saveBufSamusYPixel;
-	samusPrevYPixel = saveBufSamusYPixel;
-	samusXScreen = saveBufSamusXScreen;
-	samusYScreen = saveBufSamusYScreen;
+	samusX = saveBuf.samusX;
+	samusY = saveBuf.samusY;
+	samusPrevYPixel = saveBuf.samusY.pixel;
 	samusInvulnerableTimer = 0;
-	samusItems = saveBufSamusItems;
-	samusActiveWeapon = saveBufSamusBeam;
-	samusBeam = saveBufSamusBeam;
-	samusFacingDirection = saveBufSamusFacingDirection;
-	samusEnergyTanks = saveBufSamusEnergyTanks;
-	samusCurHealth = saveBufSamusHealth;
-	samusDispHealth = saveBufSamusHealth;
-	samusMaxMissiles = saveBufSamusMaxMissiles;
-	samusCurMissiles = saveBufSamusCurMissiles;
-	samusDispMissiles = saveBufSamusCurMissiles;
+	samusItems = saveBuf.samusItems;
+	samusActiveWeapon = saveBuf.samusBeam;
+	samusBeam = saveBuf.samusBeam;
+	samusFacingDirection = saveBuf.samusFacingDirection;
+	samusEnergyTanks = saveBuf.samusEnergyTanks;
+	samusCurHealth = saveBuf.samusHealth;
+	samusDispHealth = saveBuf.samusHealth;
+	samusMaxMissiles = saveBuf.samusMaxMissiles;
+	samusCurMissiles = saveBuf.samusCurMissiles;
+	samusDispMissiles = saveBuf.samusCurMissiles;
 	samusPose = SamusPose.facingScreen;
 	countdownTimer = 0x0140;
 	songRequest = Song.samusFanfare;
@@ -637,8 +724,9 @@ void samusHandlePose() {
 	if (samusPose & 0x80) {
 		collisionSamusBottom();
 		if (!(inputRisingEdge & Pad.a)) {
-			samusTurnAnimTimer--;
-			return;
+			if (--samusTurnAnimTimer != 0) {
+				return;
+			}
 		}
 		samusPose &= 0x7F;
 		goto start;
@@ -665,26 +753,363 @@ void samusHandlePose() {
 			if (samusOnSolidSprite) {
 				return;
 			}
-			samusYPixel = (samusYPixel & 0xF8) | 4;
+			samusY = (samusY & 0xFF8) | 4;
 			spiderDisplacement = 0;
 		}
 		final switch (samusPose) {
 			case SamusPose.standing:
-				assert(0);
+				if (!collisionSamusBottom()) {
+					samusPose = SamusPose.falling;
+					samusFallArcCounter = 1;
+				}
+				samusAnimationTimer = 0;
+				if (inputRisingEdge & Pad.a) {
+					if (inputPressed & (Pad.left | Pad.right)) {
+						if (!(samusItems & ItemFlag.spaceJump)) {
+							goto normalJump;
+						}
+						if (collisionSamusTop()) {
+							return;
+						}
+						samusJumpArcCounter = samusJumpArrayBaseOffset - 0x1F;
+						sfxRequestSquare1 = Square1SFX.hiJumping;
+						if (!(samusItems & ItemFlag.hiJump)) {
+							samusJumpArcCounter = samusJumpArrayBaseOffset - 0x0F;
+							sfxRequestSquare1 = Square1SFX.jumping;
+						}
+						if (waterContactFlag) {
+							samusJumpArcCounter += 16;
+						}
+						samusPose = SamusPose.startingToSpinJump;
+						samusJumpStartCounter = 0;
+						if (samusItems & ItemFlag.screwAttack) {
+							sfxRequestSquare1 = Square1SFX.screwAttacking;
+						}
+					}
+				}
+				if (inputPressed & Pad.right) {
+					if (samusFacingDirection != 1) {
+						samusPose = cast(SamusPose)(SamusPose.running | 0x80);
+						samusFacingDirection = 1;
+						samusTurnAnimTimer = 2;
+						sfxRequestSquare1 = Square1SFX.standingTransition;
+					} else {
+						if (samusWalkRight()) {
+							return;
+						}
+						samusFacingDirection = 1;
+						samusPose = SamusPose.running;
+					}
+				}
+				if (inputPressed & Pad.left) {
+					if (samusFacingDirection != 0) {
+						samusPose = cast(SamusPose)(SamusPose.running | 0x80);
+						samusFacingDirection = 0;
+						samusTurnAnimTimer = 2;
+						sfxRequestSquare1 = Square1SFX.standingTransition;
+					} else {
+						if (samusWalkLeft()) {
+							return;
+						}
+						samusFacingDirection = 0;
+						samusPose = SamusPose.running;
+					}
+				}
+				if (inputRisingEdge & Pad.down) {
+					samusAnimationTimer = 0;
+					samusPose = SamusPose.crouching;
+					sfxRequestSquare1 = Square1SFX.crouchingTransition;
+				}
+				if (inputRisingEdge & Pad.a) {
+					normalJump:
+					if (collisionSamusTop()) {
+						return;
+					}
+					samusJumpArcCounter = samusJumpArrayBaseOffset - 0x1F;
+					sfxRequestSquare1 = Square1SFX.hiJumping;
+					if (!(samusItems & ItemFlag.hiJump)) {
+						samusJumpArcCounter = samusJumpArrayBaseOffset - 0xF;
+						sfxRequestSquare1 = Square1SFX.jumping;
+					}
+					if (waterContactFlag) {
+						samusJumpArcCounter += 16;
+					}
+					samusPose = SamusPose.jumping;
+					samusJumpStartCounter = 0;
+				}
+				return;
 			case SamusPose.jumping:
-				assert(0);
+				ubyte speed;
+				if (samusJumpArcCounter < samusJumpArrayBaseOffset) { //linear jumping phase
+					if (inputPressed & Pad.a) {
+						speed = cast(ubyte)(-2 - !!(samusItems & ItemFlag.hiJump));
+						goto moveVertical;
+					}
+					samusJumpArcCounter = samusJumpArrayBaseOffset + 22;
+				}
+				speed = jumpArcTable[samusJumpArcCounter - samusJumpArrayBaseOffset];
+				static void startFalling() {
+					// naughty ROM write
+					//jumpArcTable[0] = 0;
+					samusFallArcCounter = 22;
+					if (samusPose != SamusPose.morphBallJumping) {
+						samusPose = SamusPose.falling;
+					} else {
+						samusPose = SamusPose.morphBallFalling;
+					}
+				}
+				if (speed == 0x80) {
+					return startFalling();
+				}
+				if (!(speed & 0x80)) {
+					if (acidContactFlag) {
+						return startFalling();
+					}
+				}
+				moveVertical:
+				if (samusMoveVertical(speed)) {
+					if (samusJumpArcCounter < samusJumpArrayBaseOffset + 23) {
+						return startFalling();
+					}
+				}
+				samusJumpArcCounter++;
+				if ((samusPose == SamusPose.morphBallJumping) && (inputRisingEdge & Pad.up)) {
+					samusUnmorphInAir();
+					samusUnmorphJumpTimer = 16;
+				}
+				if (inputPressed & Pad.right) {
+					samusMoveRightInAirTurn();
+				}
+				if (inputPressed & Pad.left) {
+					samusMoveLeftInAirTurn();
+				}
+				return;
 			case SamusPose.spinJumping:
 				assert(0);
 			case SamusPose.running:
-				assert(0);
+				if (!collisionSamusBottom()) {
+					samusPose = SamusPose.falling;
+					samusFallArcCounter = 1;
+					return;
+				}
+				samusAnimationTimer += 3;
+				if ((inputRisingEdge & Pad.a) && (inputPressed & (Pad.left | Pad.right))) { // spin jump
+					if (collisionSamusTop()) {
+						return;
+					}
+					samusJumpArcCounter = cast(ubyte)(samusJumpArrayBaseOffset - 31);
+					sfxRequestSquare1 = cast(Square1SFX)(Square1SFX.jumping + !!(samusItems & ItemFlag.hiJump));
+					if (!(samusItems & ItemFlag.hiJump)) {
+						samusJumpArcCounter = cast(ubyte)(samusJumpArrayBaseOffset - 15);
+					}
+					if (waterContactFlag) {
+						samusJumpArcCounter += 16;
+					}
+					samusPose = SamusPose.startingToSpinJump;
+					samusJumpStartCounter = 0;
+					if (samusItems & ItemFlag.screwAttack) {
+						sfxRequestSquare1 = Square1SFX.screwAttacking;
+					}
+					return;
+				}
+				if (inputPressed & Pad.right) {
+					if (samusFacingDirection != 1) {
+						samusPose = cast(SamusPose)(SamusPose.running | 0x80);
+						samusFacingDirection = 1;
+						samusTurnAnimTimer = 2;
+						sfxRequestSquare1 = Square1SFX.standingTransition;
+					} else if (samusWalkRight()) {
+						samusPose = SamusPose.standing;
+					}
+					return;
+				}
+				if (inputPressed & Pad.left) {
+					if (samusFacingDirection != 0) {
+						samusPose = cast(SamusPose)(SamusPose.running | 0x80);
+						samusFacingDirection = 0;
+						samusTurnAnimTimer = 2;
+						sfxRequestSquare1 = Square1SFX.standingTransition;
+					} else if (samusWalkLeft()) {
+						samusPose = SamusPose.standing;
+					}
+					return;
+				}
+				samusPose = SamusPose.standing;
+				if (inputRisingEdge & Pad.down) {
+					samusAnimationTimer = 0;
+					samusPose = SamusPose.crouching;
+					sfxRequestSquare1 = Square1SFX.crouchingTransition;
+					return;
+				}
+				if (inputRisingEdge & Pad.a) {
+					samusY -= 8;
+					if (collisionSamusTop()) {
+						return;
+					}
+					samusJumpArcCounter = samusJumpArrayBaseOffset - 31;
+					if (!(samusItems & ItemFlag.hiJump)) {
+						samusJumpArcCounter = samusJumpArrayBaseOffset - 15;
+					}
+					samusPose = SamusPose.startingToJump;
+					samusJumpStartCounter = 0;
+					sfxRequestSquare1 = Square1SFX.hiJumping;
+					if (!(samusItems & ItemFlag.hiJump)) {
+						sfxRequestSquare1 = Square1SFX.jumping;
+					}
+					if (waterContactFlag) {
+						samusJumpArcCounter += 16;
+					}
+				}
+				return;
 			case SamusPose.crouching:
-				assert(0);
+				if (!collisionSamusBottom()) {
+					samusPose = SamusPose.falling;
+					samusFallArcCounter = 1;
+					return;
+				}
+				if ((inputPressed & Pad.right) && ((++samusAnimationTimer >= 8) || (inputRisingEdge & Pad.right))) {
+					samusAnimationTimer = 0;
+					if (samusFacingDirection == 1) {
+						if (samusTryStanding()) {
+							samusPose = SamusPose.morphBall;
+							sfxRequestSquare1 = Square1SFX.morphingTransition;
+						}
+					} else {
+						samusFacingDirection = 1;
+					}
+					return;
+				}
+				if ((inputPressed & Pad.left) && ((++samusAnimationTimer >= 8) || (inputRisingEdge & Pad.left))) {
+					samusAnimationTimer = 0;
+					if (samusFacingDirection == 0) {
+						if (samusTryStanding()) {
+							samusPose = SamusPose.morphBall;
+							sfxRequestSquare1 = Square1SFX.morphingTransition;
+						}
+					} else {
+						samusFacingDirection = 0;
+					}
+					return;
+				}
+				if (inputRisingEdge & Pad.a) {
+					sfxRequestSquare1 = cast(Square1SFX)(Square1SFX.jumping + !!(samusItems & ItemFlag.hiJump));
+					if (inputPressed & (Pad.left | Pad.right)) {
+						samusPose = SamusPose.spinJumping;
+						if (samusItems & ItemFlag.screwAttack) {
+							sfxRequestSquare1 = Square1SFX.screwAttacking;
+						}
+					} else {
+						samusPose = SamusPose.jumping;
+					}
+					samusJumpArcCounter = samusJumpArrayBaseOffset - 31;
+					if (!(samusItems & ItemFlag.hiJump)) {
+						samusJumpArcCounter = samusJumpArrayBaseOffset - 15;
+					}
+					if (waterContactFlag) {
+						samusJumpArcCounter += 16;
+					}
+					samusJumpStartCounter = 0;
+					return;
+				}
+				if (inputRisingEdge & Pad.down) {
+					samusMorphOnGround();
+					return;
+				}
+				if ((inputPressed & Pad.down) && (++samusAnimationTimer >= 16)) {
+					samusMorphOnGround();
+					return;
+				}
+				if (inputRisingEdge & Pad.up) {
+					samusTryStanding();
+					return;
+				}
+				if ((inputPressed & Pad.up) && (++samusAnimationTimer >= 16)) {
+					samusTryStanding();
+					return;
+				}
+				return;
 			case SamusPose.morphBall:
-				assert(0);
+				if (!collisionSamusBottom()) {
+					samusPose = SamusPose.morphBallFalling;
+					samusFallArcCounter = 1;
+					return;
+				}
+				if (inputRisingEdge & Pad.down) {
+					// activateSpiderBall
+				}
+				if (inputRisingEdge & Pad.up) {
+					samusGroundUnmorph();
+					return;
+				}
+				if ((inputPressed & Pad.a) && (samusItems & ItemFlag.springBall)) {
+					samusJumpArcCounter = samusJumpArrayBaseOffset - 18;
+					samusPose = SamusPose.morphBallJumping;
+					samusJumpStartCounter = 0;
+					sfxRequestSquare1 = Square1SFX.jumping;
+				}
+				if (samusSpeedDown >= 2) {
+					if (inputPressed & Pad.down) {
+						// activateSpiderBall
+					}
+					samusPose = SamusPose.morphBallJumping;
+					sfxRequestSquare1 = Square1SFX.jumping;
+					if (!sfxRequestSquare1) { // k.
+						samusJumpArcCounter = samusJumpArrayBaseOffset + 8;
+					} else {
+						samusJumpArcCounter = samusJumpArrayBaseOffset + 4;
+					}
+				} else {
+					samusSpeedDown = 0;
+					if (inputPressed & Pad.right) {
+						samusRollRightMorph();
+					} else if (inputPressed & Pad.left) {
+						samusRollLeftMorph();
+					}
+				}
+				return;
 			case SamusPose.morphBallJumping:
 				assert(0);
 			case SamusPose.falling:
-				assert(0);
+				if (inputRisingEdge & Pad.a) {
+					if (acidContactFlag) {
+						samusJumpArcCounter = acidContactFlag; // not yet set for this frame
+					} else {
+						if (samusUnmorphJumpTimer) {
+							goto noJump;
+						}
+						samusJumpArcCounter = samusJumpArrayBaseOffset - 31;
+					}
+					sfxRequestSquare1 = Square1SFX.hiJumping;
+					if (!(samusItems & ItemFlag.hiJump)) {
+						samusJumpArcCounter = samusJumpArrayBaseOffset - 15;
+						sfxRequestSquare1 = Square1SFX.jumping;
+					}
+					samusPose = SamusPose.startingToJump;
+					samusJumpStartCounter = 0;
+					samusUnmorphJumpTimer = 0;
+					return;
+				}
+				noJump:
+				if (inputPressed & Pad.right) {
+					samusMoveRightInAirTurn();
+				} else if (inputPressed & Pad.left) {
+					samusMoveLeftInAirTurn();
+				}
+				if (samusMoveVertical(samusFallArcTable[samusFallArcCounter])) {
+					if (++samusFallArcCounter == 23) {
+						samusFallArcCounter = 22;
+					}
+				} else {
+					if (samusTryStanding()) {
+						samusPose = SamusPose.crouching;
+					}
+					samusFallArcCounter = 0;
+					if (samusOnSolidSprite) {
+						return;
+					}
+					samusY = (samusY & 0xFF8) | 4;
+				}
+				return;
 			case SamusPose.morphBallFalling:
 				assert(0);
 			case SamusPose.startingToJump:
@@ -765,9 +1190,9 @@ void samusHandlePose() {
 				} else if (inputPressed & Pad.left) {
 					left();
 				}
-				if (samusMoveVertical(fallArcTable[samusFallArcCounter])) {
+				if (samusMoveVertical(samusFallArcTable[samusFallArcCounter])) {
 					if (!samusOnSolidSprite) {
-						samusYPixel = (samusYPixel & 0xF8) | 4;
+						samusY = (samusY & 0xFF8) | 4;
 					}
 					samusPose = SamusPose.spiderBallRolling;
 					samusFallArcCounter = 0;
@@ -780,8 +1205,8 @@ void samusHandlePose() {
 					return;
 				}
 				samusFallArcCounter++;
-				if (samusFallArcCounter == 0x17) {
-					samusFallArcCounter = 0x16;
+				if (samusFallArcCounter == 23) {
+					samusFallArcCounter = 22;
 				}
 				return;
 			case SamusPose.spiderBallJumping:
@@ -815,7 +1240,7 @@ void samusHandlePose() {
 				if (jumpArcTable[samusJumpArcCounter - samusJumpArrayBaseOffset] == 0x80) {
 					// no. that's ROM
 					//jumpArcTable[0] = 0;
-					samusFallArcCounter = 0x16;
+					samusFallArcCounter = 22;
 					samusPose = SamusPose.spiderBallFalling;
 					spiderRotationState = 0;
 					return;
@@ -939,19 +1364,19 @@ void samusHandlePose() {
 					if (samusOnScreenYPos == queenHeadY + 19) {
 						c = 1;
 					} else if (samusOnScreenYPos >= queenHeadY + 19) {
-						samusYPixel--;
+						samusY--;
 						cameraSpeedUp = 1;
 					} else {
-						samusYPixel++;
+						samusY++;
 						cameraSpeedDown = 1;
 					}
 					if (samusOnScreenXPos == queenHeadX + 26) {
 						c++;
 					} else if (samusOnScreenXPos >= queenHeadX + 26) {
-						samusXPixel -= 2;
+						samusX -= 2;
 						cameraSpeedLeft = 1;
 					} else {
-						samusXPixel++;
+						samusX++;
 						cameraSpeedRight = 1;
 					}
 					if (c == 2) {
@@ -960,8 +1385,8 @@ void samusHandlePose() {
 				}
 				return;
 			case SamusPose.inMetroidQueenMouth:
-				samusYPixel = 0x6C;
-				samusXPixel = 0xA6;
+				samusY = (samusY & 0xF00) + 0x6C;
+				samusX = (samusX & 0xF00) + 0xA6;
 				applyDamageQueenStomach();
 				if (queenEatingState == 5) {
 					samusAirDirection = 1;
@@ -978,15 +1403,15 @@ void samusHandlePose() {
 				return;
 			case SamusPose.swallowedByMetroidQueen:
 				applyDamageQueenStomach();
-				if (samusXPixel != 0x68) {
-					if (queenHeadX + 6 + scrollX < samusXPixel) {
-						samusYPixel--;
+				if (samusX.pixel != 0x68) {
+					if (queenHeadX + 6 + scrollX < samusX.pixel) {
+						samusY--;
 					}
-					samusXPixel--;
-					if (samusXPixel >= 0x80) {
+					samusX--;
+					if (samusX.pixel >= 0x80) {
 						return;
 					}
-					samusYPixel++;
+					samusY++;
 				} else {
 					samusPose = SamusPose.inMetroidQueenStomach;
 				}
@@ -996,12 +1421,12 @@ void samusHandlePose() {
 				return;
 			case SamusPose.escapingMetroidQueen:
 				applyDamageQueenStomach();
-				if (samusXPixel != 0xB0) {
-					samusXPixel += 2;
-					if (samusXPixel < 0x80) {
-						samusYPixel -= 2;
-					} else if (samusXPixel >= 0x98) {
-						samusYPixel--;
+				if (samusX.pixel != 0xB0) {
+					samusX += 2;
+					if (samusX.pixel < 0x80) {
+						samusY -= 2;
+					} else if (samusX.pixel >= 0x98) {
+						samusY--;
 					}
 				} else {
 					samusJumpArcCounter = samusJumpArrayBaseOffset;
@@ -1053,7 +1478,7 @@ immutable ubyte[] bombArcTable = [
 	0x03, 0x03, 0x80,
 ];
 
-immutable ubyte[] fallArcTable = [
+immutable ubyte[] samusFallArcTable = [
 	0x01, 0x01, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02, 0x01,
 	0x02, 0x02, 0x01, 0x02, 0x02, 0x02, 0x03,
 ];
@@ -1085,49 +1510,49 @@ void collisionCheckSpiderSet() {
 	enum spiderYMid = (spiderYTop + spiderYBottom) / 2;
 	spiderContactState = 0;
 
-	tileX = cast(ubyte)(samusXPixel + spiderXRight);
-	tileY = cast(ubyte)(samusYPixel + spiderYTop);
+	tileX = cast(ubyte)(samusX.pixel + spiderXRight);
+	tileY = cast(ubyte)(samusY.pixel + spiderYTop);
 	collisionCheckSpiderPoint();
 	spiderContactState = rr(spiderContactState);
 
-	tileY = cast(ubyte)(samusYPixel + spiderYBottom);
+	tileY = cast(ubyte)(samusY.pixel + spiderYBottom);
 	collisionCheckSpiderPoint();
 	spiderContactState = rr(spiderContactState);
 
-	tileX = cast(ubyte)(samusXPixel + spiderXLeft);
-	tileY = cast(ubyte)(samusYPixel + spiderYTop);
+	tileX = cast(ubyte)(samusX.pixel + spiderXLeft);
+	tileY = cast(ubyte)(samusY.pixel + spiderYTop);
 	collisionCheckSpiderPoint();
 	spiderContactState = rr(spiderContactState);
 
-	tileY = cast(ubyte)(samusYPixel + spiderYBottom);
+	tileY = cast(ubyte)(samusY.pixel + spiderYBottom);
 	collisionCheckSpiderPoint();
 	spiderContactState = swap(rr(spiderContactState));
 
-	tileX = cast(ubyte)(samusXPixel + spiderXRight);
-	tileY = cast(ubyte)(samusYPixel + spiderYMid);
+	tileX = cast(ubyte)(samusX.pixel + spiderXRight);
+	tileY = cast(ubyte)(samusY.pixel + spiderYMid);
 	if (collisionCheckSpiderPoint()) {
 		spiderContactState |= 0b0011;
 	}
 
-	tileX = cast(ubyte)(samusXPixel + spiderXLeft);
-	tileY = cast(ubyte)(samusYPixel + spiderYMid);
+	tileX = cast(ubyte)(samusX.pixel + spiderXLeft);
+	tileY = cast(ubyte)(samusY.pixel + spiderYMid);
 	if (collisionCheckSpiderPoint()) {
 		spiderContactState |= 0b1100;
 	}
 
-	tileX = cast(ubyte)(samusXPixel + spiderXMid);
-	tileY = cast(ubyte)(samusYPixel + spiderYTop);
+	tileX = cast(ubyte)(samusX.pixel + spiderXMid);
+	tileY = cast(ubyte)(samusY.pixel + spiderYTop);
 	if (collisionCheckSpiderPoint()) {
 		spiderContactState |= 0b0101;
 	}
 
-	tileY = cast(ubyte)(samusYPixel + spiderYBottom);
-	tileX = cast(ubyte)(samusXPixel + spiderXMid);
-	//if (samusGetTileIndex() < samusSolidityIndex) {
-	//	spiderContactState |= 0b1010;
-	//} else if (collisionSamusEnemiesDown()) {
-	//	spiderContactState |= 0b1010;
-	//}
+	tileY = cast(ubyte)(samusY.pixel + spiderYBottom);
+	tileX = cast(ubyte)(samusX.pixel + spiderXMid);
+	if (samusGetTileIndex() < samusSolidityIndex) {
+		spiderContactState |= 0b1010;
+	} else if (collisionSamusEnemiesDown()) {
+		spiderContactState |= 0b1010;
+	}
 	if ((spiderContactState & 5) == 5) {
 		return;
 	}
@@ -1140,7 +1565,19 @@ void samusGroundUnmorph() {
 	assert(0);
 }
 bool samusTryStanding() {
-	assert(0);
+	sfxRequestSquare1 = Square1SFX.standingTransition;
+	tileX = cast(ubyte)(samusX.pixel + 12);
+	tileY = cast(ubyte)(samusY.pixel + 16);
+	if (samusGetTileIndex() < samusSolidityIndex) {
+		return true;
+	}
+	tileX = cast(ubyte)(samusX.pixel + 20);
+	if (samusGetTileIndex() < samusSolidityIndex) {
+		return true;
+	}
+	samusPose = SamusPose.standing;
+	sfxRequestSquare1 = Square1SFX.standingTransition;
+	return false;
 }
 void samusMorphOnGround() {
 	samusPose = SamusPose.morphBall;
@@ -1150,11 +1587,47 @@ void samusMorphOnGround() {
 void samusUnmorphInAir() {
 	assert(0);
 }
-void samusWalkRight() {
-	assert(0);
+bool samusWalkRight() {
+	samusFacingDirection = 1;
+	ubyte walkingSpeed = 1; //water
+	if (!waterContactFlag) {
+		if (samusItems & ItemFlag.variaSuit) {
+			walkingSpeed = 2;
+		} else {
+			walkingSpeed = (frameCounter & 1) + 1; // 1.5
+		}
+	}
+	samusX = (samusX + walkingSpeed) & 0xFFF;
+	tileX = samusX.screen;
+	if (collisionSamusHorizontalRight()) {
+		// restore position
+		samusX = prevSamusX;
+		return true;
+	} else {
+		cameraSpeedRight = walkingSpeed;
+		return false;
+	}
 }
-void samusWalkLeft() {
-	assert(0);
+bool samusWalkLeft() {
+	samusFacingDirection = 0;
+	ubyte walkingSpeed = 1; //water
+	if (!waterContactFlag) {
+		if (samusItems & ItemFlag.variaSuit) {
+			walkingSpeed = 2;
+		} else {
+			walkingSpeed = (frameCounter & 1) + 1; // 1.5
+		}
+	}
+	samusX = (samusX - walkingSpeed) & 0xFFF;
+	tileX = samusX.screen;
+	if (collisionSamusHorizontalLeft()) {
+		// restore position
+		samusX = prevSamusX;
+		return true;
+	} else {
+		cameraSpeedLeft = walkingSpeed;
+		return false;
+	}
 }
 void samusRollRightSpider() {
 	samusRollRight(1);
@@ -1162,8 +1635,15 @@ void samusRollRightSpider() {
 void samusRollRightMorph() {
 	samusRollRight(2);
 }
-void samusRollRight(ubyte a) {
-	assert(0);
+void samusRollRight(ubyte speed) {
+	samusFacingDirection = 1;
+	samusX = (samusX + speed) & 0xFFF;
+	tileX = samusX.screen;
+	if (collisionSamusHorizontalRight()) {
+		samusX = prevSamusX;
+	} else {
+		cameraSpeedRight = speed;
+	}
 }
 void samusRollLeftSpider() {
 	samusRollLeft(1);
@@ -1171,53 +1651,226 @@ void samusRollLeftSpider() {
 void samusRollLeftMorph() {
 	samusRollLeft(2);
 }
-void samusRollLeft(ubyte a) {
-	assert(0);
+void samusRollLeft(ubyte speed) {
+	samusFacingDirection = 0;
+	samusX = (samusX - speed) & 0xFFF;
+	tileX = samusX.screen;
+	if (collisionSamusHorizontalLeft()) {
+		samusX = prevSamusX;
+	} else {
+		cameraSpeedLeft = speed;
+	}
 }
-void samusMoveRightInAir() {
+void samusMoveRightInAirTurn() {
 	samusFacingDirection = 1;
 	samusMoveRightInAirNoTurn();
 }
 void samusMoveRightInAirNoTurn() {
-	assert(0);
+	const speed = 1;
+	samusX = (samusX + speed) & 0xFFF;
+	tileX = samusX.screen;
+	if (collisionSamusHorizontalRight()) {
+		samusX = prevSamusX;
+	} else {
+		cameraSpeedRight = speed;
+	}
 }
-void samusMoveLeftInAir() {
+void samusMoveLeftInAirTurn() {
 	samusFacingDirection = 0;
 	samusMoveLeftInAirNoTurn();
 }
 void samusMoveLeftInAirNoTurn() {
-	assert(0);
+	const speed = 1;
+	samusX = (samusX - speed) & 0xFFF;
+	tileX = samusX.screen;
+	if (collisionSamusHorizontalLeft()) {
+		samusX = prevSamusX;
+	} else {
+		cameraSpeedLeft = speed;
+	}
 }
-bool samusMoveVertical(ubyte a) {
-	assert(0);
+bool samusMoveVertical(ubyte speed) {
+	if (speed >= 0x80) {
+		return samusMoveUp(cast(ubyte)-speed);
+	}
+	samusSpeedDownTemp = speed;
+	samusY = (samusY + speed) & 0xFFF;
+	if (collisionSamusBottom()) {
+		samusY = prevSamusY;
+		return true;
+	} else {
+		if (waterContactFlag) {
+			samusY = (prevSamusY + speed / 2) & 0xFFF;
+		}
+		cameraSpeedDown = speed;
+		samusSpeedDown = samusSpeedDownTemp;
+	}
+	return false;
 }
-void samusMoveUp(ubyte a) {
-	assert(0);
+bool samusMoveUp(ubyte speed) {
+	samusY = (samusY - speed) & 0xFFF;
+	if (collisionSamusTop()) {
+		samusJumpArcCounter = samusJumpArrayBaseOffset + 22;
+		samusY = prevSamusY;
+		return true;
+	} else {
+		if (waterContactFlag) {
+			samusY -= speed / 2; // no masking?
+		}
+		cameraSpeedUp = speed;
+		return false;
+	}
+}
+bool collisionSamusHorizontalLeft() {
+	tileX = cast(ubyte)(samusX.pixel + 11);
+	return collisionSamusHorizontal();
+}
+bool collisionSamusHorizontalRight() {
+	tileX = cast(ubyte)(samusX.pixel + 20);
+	return collisionSamusHorizontal();
 }
 bool collisionSamusHorizontal() {
-	assert(0);
+	if (collisionSamusEnemiesHorizontal()) {
+		return true;
+	}
+	for (int i = 5; i >= 0; i--) {
+		const a = samusHorizontalYOffsetLists[samusPose][i];
+		if (a & 0x80) {
+			if (i < 5) {
+				collisionSamusYOffsets[i] = a;
+			}
+			tileY = cast(ubyte)(samusY.pixel + a);
+			if (samusGetTileIndex() < samusSolidityIndex) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 bool collisionSamusTop() {
-	assert(0);
+	if (collisionSamusEnemiesUp()) {
+		return true;
+	}
+	tileX = cast(ubyte)(samusX.pixel + 12);
+	tileY = cast(ubyte)(samusY.pixel + samusBGHitboxTopTable[samusPose]);
+
+	const a = samusGetTileIndex();
+
+	if (collisionArray[a] & BlockType.water) {
+		waterContactFlag = 0xFF;
+	}
+	if (collisionArray[a] & BlockType.up) {
+		return false;
+	}
+	if (collisionArray[a] & BlockType.acid) {
+		acidContactFlag = 0x40;
+		applyDamageAcid(acidDamageValue);
+	}
+	if (a < samusSolidityIndex) {
+		return true;
+	}
+	tileX = cast(ubyte)(samusX.pixel + 20);
+	const a2 = samusGetTileIndex();
+	bool ignore;
+	if (collisionArray[a2] & BlockType.water) {
+		waterContactFlag = 0xFF;
+	}
+	if (collisionArray[a2] & BlockType.up) {
+		ignore = true;
+	}
+	if (collisionArray[a2] & BlockType.acid) {
+		acidContactFlag = 0x40;
+		applyDamageAcid(acidDamageValue);
+	}
+	if (ignore) {
+		return false;
+	}
+	return a2 < samusSolidityIndex;
 }
 bool collisionSamusBottom() {
-	assert(0);
+	EnemySlot* enemy;
+	if (collisionSamusEnemiesDown(enemy)) {
+		samusOnSolidSprite = 1;
+		collisionEnemy = enemy;
+		collisionWeaponType = 0x20;
+		return true;
+	}
+	tileX = cast(ubyte)(samusX.pixel + 12);
+	tileY = cast(ubyte)(samusY.pixel + 44);
+
+	const a = samusGetTileIndex();
+
+	if (collisionArray[a] & BlockType.water) {
+		waterContactFlag = 49;
+	}
+	if (collisionArray[a] & BlockType.save) {
+		saveContactFlag = 0xFF;
+	}
+	if (collisionArray[a] & BlockType.down) {
+		return false;
+	}
+	if (collisionArray[a] & BlockType.acid) {
+		acidContactFlag = 0x40;
+		applyDamageAcid(acidDamageValue);
+	}
+	if (a >= samusSolidityIndex) {
+		return true;
+	}
+	tileX = cast(ubyte)(samusX.pixel + 20);
+	const a2 = samusGetTileIndex();
+	if (collisionArray[a2] & BlockType.water) {
+		waterContactFlag = 0xFF;
+	}
+	if (collisionArray[a2] & BlockType.save) {
+		saveContactFlag = 0xFF;
+	}
+	bool ignore;
+	if (collisionArray[a2] & BlockType.down) {
+		ignore = true;
+	}
+	if (collisionArray[a2] & BlockType.acid) {
+		acidContactFlag = 0x40;
+		applyDamageAcid(acidDamageValue);
+	}
+	if (a2 < samusSolidityIndex) {
+		samusUnmorphJumpTimer = 0;
+	}
+	if (ignore) {
+		return false;
+	}
+	return a2 >= samusSolidityIndex;
 }
 bool collisionCheckSpiderPoint() {
 	assert(0);
 }
 ubyte samusGetTileIndex() {
-	assert(0);
+	getTilemapAddress();
+	if (gameOverLCDCCopy & 8) {
+		tilemapDest += 0x400; // use other screen tilemap
+	}
+	//while (STAT & 3) {} // wait for hblank
+	const b = vram()[tilemapDest];
+	//while (STAT & 3) {} // wait for hblank again
+	const a = vram()[tilemapDest] & b;
+	if (!samusInvulnerableTimer) {
+		if (collisionArray[a] & BlockType.spike) {
+			sfxRequestSquare1 = Square1SFX.standingTransition;
+			samusHurtFlag = 1;
+			samusDamageBoostDirection = 0;
+			samusDamageValue = spikeDamageValue;
+		}
+	}
+	return a;
 }
 
-immutable metroidLCounterTable = [ //originally BCD indexed
+immutable ubyte[] metroidLCounterTable = [ //originally BCD indexed
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, /*0x00, 0x00, 0x00, 0x00, 0x00, 0x00,*/
 	0x01, 0x02, 0x03, 0x01, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, /*0x00, 0x00, 0x00, 0x00, 0x00, 0x00,*/
 	0x06, 0x07, 0x01, 0x02, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, /*0x00, 0x00, 0x00, 0x00, 0x00, 0x00,*/
 	0x06, 0x07, 0x08, 0x09, 0x10, 0x01, 0x02, 0x03, 0x04, 0x05, /*0x00, 0x00, 0x00, 0x00, 0x00, 0x00,*/
 	0x06, 0x07, 0x08, 0x01, 0x02, 0x03, 0x04, 0x01,
 ];
-immutable saveMagic = [
+immutable ubyte[8] saveMagic = [
 	0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef
 ];
 
@@ -1345,27 +1998,31 @@ immutable ubyte[8][] samusHorizontalYOffsetLists = [
 
 void clearProjectileArray() {
 	for (int i = 0; i < projectileArray.length; i++) {
-		projectileArray[i] = 0xFF;
+		projectileArray[i] = Projectile.init;
 	}
 }
 
 void samusTryShooting() {
-	if ((samusPose != SamusPose.facingScreen) || (queenEatingState != 0x22) || !(inputRisingEdge & Pad.select)) {
-		//samusShoot
+	if ((samusPose == SamusPose.facingScreen) || (queenEatingState == 0x22) || !(inputRisingEdge & Pad.select)) {
+		if (!(inputRisingEdge & Pad.b) && (!(inputPressed & Pad.b) || (++samusBeamCooldown < 16))) {
+			return;
+		}
+		assert(0);
+		//return;
 	}
 	samusTryShootingToggleMissiles();
 }
 void samusTryShootingToggleMissiles() {
-	auto graphicsInfoCannonMissile = GraphicsInfo(graphicsCannonMissile, 0x8080, 0x20);
-	auto graphicsInfoCannonBeam = GraphicsInfo(graphicsCannonBeam, 0x8080, 0x20);
+	auto graphicsInfoCannonMissile = GraphicsInfo(graphicsCannonMissile, VRAMDest.cannon, 0x20);
+	auto graphicsInfoCannonBeam = GraphicsInfo(graphicsCannonBeam, VRAMDest.cannon, 0x20);
 	if (samusActiveWeapon == 8) {
 		samusActiveWeapon = samusBeam;
-		//loadGraphics(graphicsInfoCannonBeam);
+		loadGraphics(graphicsInfoCannonBeam);
 		sfxRequestSquare1 = Square1SFX.select;
 	} else {
 		samusBeam = samusActiveWeapon;
 		samusActiveWeapon = 8;
-		//loadGraphics(graphicsInfoCannonMissile);
+		loadGraphics(graphicsInfoCannonMissile);
 		sfxRequestSquare1 = Square1SFX.select;
 	}
 }
@@ -1380,13 +2037,13 @@ void readInput() {
 	ubyte tmp = ((~readJoy()) & 0xF) << 4;
 	writeJoy(0x10);
 	tmp |= ~readJoy() & 0xF;
-	inputRisingEdge = inputPressed ^ tmp;
+	inputRisingEdge = (inputPressed ^ tmp) & tmp;
 	inputPressed = tmp;
 	writeJoy(0x30);
 }
 
 void getTilemapAddress() {
-	tilemapDest = &(vram()[0x9800 + ((tileY - 16) / 8) * 0x20 + (tileX - 8) / 8]);
+	tilemapDest = 0x9800 + ((tileY - 16) / 8) * 0x20 + (tileX - 8) / 8;
 }
 
 void getTilemapCoordinates() {
@@ -1403,16 +2060,29 @@ void executeDoorScript() {
 	//assert(0);
 }
 
+void loadGraphics(const GraphicsInfo gfx) {
+	vramTransfer.src = &gfx.data[0];
+	vramTransfer.dest = &(vram()[gfx.destination]);
+	vramTransfer.size = gfx.length;
+	beginGraphicsTransfer();
+}
+
+void convertCameraToScroll() {
+	scrollY = cast(ubyte)(cameraY.pixel - 0x48);
+	scrollX = cast(ubyte)(cameraX.pixel - 0x50);
+	//earthquakeAdjustScroll();
+}
+
 void beginGraphicsTransfer() {
 	vramTransferFlag = 0xFF;
 	while (vramTransferFlag) {
 		if (variaAnimationFlag) {
-			//drawSamus();
+			drawSamus();
 			handleEnemiesOrQueen();
-			//drawHudMetroid();
-			//clearUnusedOAMSlots();
+			drawHUDMetroid();
+			clearUnusedOAMSlots();
 		}
-		//waitOneFrame();
+		waitOneFrame();
 	}
 }
 
@@ -1434,7 +2104,7 @@ void doorWarp() {
 }
 
 void vblankUpdateMapDuringTransition() {
-	if (!mapUpdateFlag) {
+	if (!mapUpdateBuffer[0].dest != 0) {
 		vblankDoneFlag = 1;
 		return;
 	}
@@ -1450,9 +2120,9 @@ void vblankVRAMDataTransfer() {
 	auto size = vramTransfer.size;
 	auto dest = vramTransfer.dest;
 	auto src = vramTransfer.src;
-	do {
-		*cast(ubyte*)(dest++) = *cast(ubyte*)(src++);
-	} while (size > 0);
+	assert(dest);
+	assert(src);
+	dest[0 .. size] = src[0 .. size];
 	vramTransfer.size = 0;
 	vramTransfer.src = null;
 	vramTransfer.dest = null;
@@ -1464,7 +2134,7 @@ void vblankVariaAnimation() {
 }
 
 void waitOneFrame() {
-	//handleAudio();
+	handleAudio();
 	waitNextFrameExternal();
 	frameCounter++;
 	vblankDoneFlag = 0;
@@ -1472,14 +2142,38 @@ void waitOneFrame() {
 	oamBufferIndex = 0;
 }
 void tryPausing() {
-	assert(0);
+	if (!(inputRisingEdge & Pad.start) || (queenRoomFlag == 0x11) || (samusPose == SamusPose.facingScreen) || doorScrollDirection || saveContactFlag) {
+		return;
+	}
+	metroidLCounterDisp = metroidLCounterTable[metroidCountReal];
+	if (nextEarthquakeTimer || earthquakeTimer) {
+		metroidLCounterDisp = 0;
+	}
+	if (debugFlag) {
+		oamBufferIndex = 0;
+		clearUnusedOAMSlots();
+	}
+	debugItemIndex = 0;
+	unusedD011 = 0;
+	auto hl = &oamBuffer[0];
+	while (hl < &oamBuffer.ptr[40]) {
+		if ((hl.tile >= 0x9A) && (hl.tile <= 0x9B)) {
+			hl.tile = 0x36;
+			hl++;
+			hl.tile = 0x0F;
+			break;
+		}
+		hl++;
+	}
+	audioPauseControl = 1;
+	gameMode = GameMode.paused;
 }
-void gameModePaused() {
+void handlePaused() {
 	const b = (frameCounter & (1 << 4)) ? 147 : 231;
 	bgPalette = b;
 	obPalette0 = b;
 	if (debugFlag) {
-		//drawHudMetroid();
+		drawHUDMetroid();
 		if (!(inputRisingEdge & Pad.start)) {
 			if (inputRisingEdge & Pad.right) {
 				if (!(inputPressed & Pad.b)) {
@@ -1531,35 +2225,35 @@ void gameModePaused() {
 			spriteID = 0x36;
 			spriteXPixel = 0x34;
 			if (samusItems & ItemFlag.unused) {
-				//drawSamusSprite();
+				drawSamusSprite();
 			}
 			spriteXPixel = 0x3C;
 			if (samusItems & ItemFlag.variaSuit) {
-				//drawSamusSprite();
+				drawSamusSprite();
 			}
 			spriteXPixel = 0x44;
 			if (samusItems & ItemFlag.spiderBall) {
-				//drawSamusSprite();
+				drawSamusSprite();
 			}
 			spriteXPixel = 0x4C;
 			if (samusItems & ItemFlag.springBall) {
-				//drawSamusSprite();
+				drawSamusSprite();
 			}
 			spriteXPixel = 0x54;
 			if (samusItems & ItemFlag.spaceJump) {
-				//drawSamusSprite();
+				drawSamusSprite();
 			}
 			spriteXPixel = 0x5C;
 			if (samusItems & ItemFlag.screwAttack) {
-				//drawSamusSprite();
+				drawSamusSprite();
 			}
 			spriteXPixel = 0x64;
 			if (samusItems & ItemFlag.hiJump) {
-				//drawSamusSprite();
+				drawSamusSprite();
 			}
 			spriteXPixel = 0x6C;
 			if (samusItems & ItemFlag.bomb) {
-				//drawSamusSprite();
+				drawSamusSprite();
 			}
 			spriteYPixel = 0x68;
 			spriteXPixel = 0x50;
@@ -1578,8 +2272,8 @@ void gameModePaused() {
 		}
 		bgPalette = 147;
 		obPalette1 = 147;
-		//clearUnusedOAMSlots();
-		//audioPauseControl = 2;
+		clearUnusedOAMSlots();
+		audioPauseControl = 2;
 		gameMode = GameMode.main;
 	}
 	if (!(inputRisingEdge & Pad.start)) {
@@ -1587,11 +2281,14 @@ void gameModePaused() {
 	}
 	bgPalette = 147;
 	obPalette0 = 147;
-	//audioPauseControl = 2;
+	audioPauseControl = 2;
 	gameMode = GameMode.main;
 }
 
 void hurtSamus() {
+	if (samusHurtFlag != 1) {
+		return;
+	}
 	assert(0);
 }
 
@@ -1638,20 +2335,522 @@ void applyDamage(ubyte amount) {
 
 void handleDying() {
 	if (queenRoomFlag == 0x11) {
-		//drawSamus();
-		//drawHudMetroid();
+		drawSamus();
+		drawHUDMetroid();
 		//queenHandler();
-		//clearUnusedOAMSlots();
+		clearUnusedOAMSlots();
 	}
 }
 
 void killSamus() {
-	//silenceAudio();
+	silenceAudio();
 	sfxRequestNoise = NoiseSFX.u0B;
 	waitOneFrame();
-	//drawSamusIgnoreDamageFrames();
+	drawSamusIgnoreDamageFrames();
 	deathAnimTimer = 0x20;
-	deathAltAnimBase = &(vram()[0x8000]);
+	deathAltAnimBase = &(vram()[VRAMDest.samus]);
 	deathFlag = 1;
 	gameMode = GameMode.dying;
+}
+
+void prepUnusedDeathAnimation() {
+	samusTurnAnimTimer = 160;
+	samusPose = cast(SamusPose)(SamusPose.standing | 0x80);
+	deathAnimTimer = 32;
+	deathAltAnimBase = &(vram()[VRAMDest.samus]);
+}
+
+void vblankDeathSequence() {
+	if (!deathFlag) {
+		unusedDeathAnimation();
+		return;
+	}
+	if (!(frameCounter & 3)) { // every 4 frames
+		auto hl = &(vram()[VRAMDest.samus + deathAnimationTable[deathAnimTimer - 1]]);
+		while (hl < &(vram()[0x8800])) {
+			*hl = 0;
+			hl += 0x20;
+		}
+		if (--deathAnimTimer == 0) {
+			deathFlag = 0xFF;
+			gameMode = GameMode.dead;
+		}
+	}
+	SCY = scrollY;
+	SCX = scrollX;
+	oamDMA();
+	if (queenRoomFlag == 0x11) {
+		//vblankDrawQueen();
+	}
+	vblankDoneFlag = 1;
+}
+
+immutable ubyte[] deathAnimationTable = [
+	0x00, 0x04, 0x08, 0x0C, 0x10, 0x14, 0x18, 0x1C, 0x01, 0x05, 0x09, 0x0D, 0x11, 0x15, 0x19, 0x1D,
+	0x02, 0x06, 0x0A, 0x0E, 0x12, 0x16, 0x1A, 0x1E, 0x03, 0x07, 0x0B, 0x0F, 0x13, 0x17, 0x1B, 0x1F,
+];
+
+void unusedDeathAnimation() {
+	assert(0);
+}
+
+void collisionBombEnemies() {
+	assert(0);
+}
+void collisionBombOneEnemy() {
+	assert(0);
+}
+void collisionProjectileEnemies() {
+	assert(0);
+}
+void collisionProjectileOneEnemy() {
+	assert(0);
+}
+bool collisionSamusEnemiesStandard() {
+	if ((samusPose >= SamusPose.eatenByMetroidQueen) || deathFlag || samusInvulnerableTimer || samusSpriteCollisionProcessedFlag) {
+		return false;
+	}
+	return collisionSamusEnemies(samusOnScreenXPos);
+}
+bool collisionSamusEnemiesHorizontal() {
+	if ((samusPose >= SamusPose.eatenByMetroidQueen) || deathFlag || deathAnimTimer || samusInvulnerableTimer) {
+		return false;
+	}
+	return collisionSamusEnemies(cast(ubyte)(tileX - cameraX.pixel + 0x50));
+}
+bool collisionSamusEnemies(ubyte x) {
+	samusSpriteCollisionProcessedFlag = 0xFF;
+	for (int i = 0; i < enemyDataSlots.length; i++) {
+		if (((enemyDataSlots[i].u0 & 0xF) == 0) && collisionSamusOneEnemy(&enemyDataSlots[i], x, cast(ubyte)(samusY.pixel - cameraY.pixel + 0x62))) {
+			return true;
+		}
+	}
+	return false;
+}
+bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
+	if (enemy.y > 224) {
+		return false;
+	}
+	collisionEnY = enemy.y;
+	if (enemy.x > 224) {
+		return false;
+	}
+	collisionEnX = enemy.x;
+	collisionEnSprite = enemy.spriteType;
+	collisionEnAttr = enemy.attributes;
+	collisionEnIce = enemy.iceCounter;
+	const(Rectangle)* hitbox = enemyHitboxes[collisionEnSprite];
+	if (!(collisionEnAttr & OAMFlags.yFlip)) {
+		collisionEnTop = cast(ubyte)(hitbox.top + collisionEnY - 17);
+		collisionEnBottom = cast(ubyte)(hitbox.bottom + collisionEnY - 4);
+	} else {
+		collisionEnBottom = cast(ubyte)(-(hitbox.top - collisionEnY) - 4);
+		collisionEnTop = cast(ubyte)(-(hitbox.bottom - collisionEnY) - 17);
+	}
+	if (!(collisionEnAttr & OAMFlags.xFlip)) {
+		collisionEnLeft = cast(ubyte)(hitbox.left + collisionEnX - 5);
+		collisionEnRight = cast(ubyte)(hitbox.right + collisionEnX + 5);
+	} else {
+		collisionEnRight = cast(ubyte)(-(hitbox.left - collisionEnX) + 5);
+		collisionEnLeft = cast(ubyte)(-(hitbox.right - collisionEnX) - 5);
+	}
+	collisionEnBottom = cast(ubyte)(collisionEnBottom - collisionSamusSpriteHitboxTopTable[samusPose & 0x7F]);
+	if (samusY - collisionEnTop >  collisionEnBottom - collisionEnTop) {
+		return false;
+	}
+	samusDamageBoostDirection = 1;
+	if (samusX - collisionEnLeft > collisionEnRight - collisionEnLeft) {
+		return false;
+	}
+	if (samusX - collisionEnLeft < (collisionEnRight - collisionEnLeft) / 2) {
+		samusDamageBoostDirection = 0xFF;
+	}
+	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
+		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != 0xFF)) {
+			samusDamageValue = enemyDamageTable[collisionEnSprite];
+			collisionWeaponType = 16;
+			collisionEnemy = enemy;
+			return false;
+		}
+	}
+	if (collisionEnIce || (enemyDamageTable[collisionEnSprite] == 0xFF)) {
+		if (collisionEnSprite == Actor.queenMouthStunned) {
+			if ((samusPose == SamusPose.morphBall) || (samusPose == SamusPose.morphBallJumping) || (samusPose == SamusPose.morphBallFalling)) {
+				queenEatingState = 1;
+				samusPose = SamusPose.eatenByMetroidQueen;
+			}
+		}
+		return true;
+	}
+	if (enemyDamageTable[collisionEnSprite] == 0xFE) {
+		applyDamageLarvaMetroid();
+		collisionEnemy = enemy;
+		collisionWeaponType = 0x20;
+		return false;
+	}
+	if (enemyDamageTable[collisionEnSprite] == 0) {
+		collisionEnemy = enemy;
+		collisionWeaponType = 0x20;
+		return false;
+	}
+	samusDamageValue = enemyDamageTable[collisionEnSprite];
+	samusHurtFlag = 1;
+	collisionEnemy = enemy;
+	collisionWeaponType = 0x20;
+	return true;
+}
+
+bool collisionSamusEnemiesDown() {
+	EnemySlot* _;
+	return collisionSamusEnemiesDown(_);
+}
+bool collisionSamusEnemiesDown(out EnemySlot* enemy) {
+	if ((samusPose >= SamusPose.eatenByMetroidQueen) || deathFlag || samusInvulnerableTimer) {
+		return false;
+	}
+	const tempY = cast(ubyte)(samusOnScreenYPos + 18);
+	samusOnSolidSprite = 0;
+	const tempX = cast(ubyte)(samusX.pixel - cameraX.pixel + 96);
+	for (int i = 0; i < enemyDataSlots.length; i++) {
+		ubyte enemyTop;
+		if (((enemyDataSlots[i].u0 & 0xF) == 0) && (collisionSamusOneEnemyVertical(&enemyDataSlots[i], tempX, tempY, enemyTop))) {
+			if (samusDamageValue - 1 >= 0xFE) { //0 or 0xFF
+				samusY = (samusY - enemyTop) & 0xFFF;
+			}
+			enemy = &enemyDataSlots[i];
+			return true;
+		}
+	}
+	return false;
+}
+bool collisionSamusEnemiesUp() {
+	if ((samusPose >= SamusPose.eatenByMetroidQueen) || deathFlag || samusInvulnerableTimer) {
+		return false;
+	}
+	const tempY = cast(ubyte)(collisionSamusSpriteHitboxTopTable[samusPose & 0x7F] + samusOnScreenYPos);
+	samusOnSolidSprite = 0;
+	const tempX = cast(ubyte)(samusX.pixel - cameraX.pixel + 96);
+	ubyte unused;
+	for (int i = 0; i < enemyDataSlots.length; i++) {
+		if (((enemyDataSlots[i].u0 & 0xF) == 0) && (collisionSamusOneEnemyVertical(&enemyDataSlots[i], tempX, tempY, unused))) {
+			return true;
+		}
+	}
+	return false;
+}
+bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY, out ubyte enemyTop) {
+	if ((enemy.y >= 224) || (enemy.x >= 224)) { // offscreen
+		return false;
+	}
+	collisionEnSprite = enemy.spriteType;
+	collisionEnAttr = enemy.attributes;
+	collisionEnIce = enemy.iceCounter;
+	const(Rectangle)* hitbox = enemyHitboxes[collisionEnSprite];
+	if (!(collisionEnAttr & OAMFlags.yFlip)) {
+		collisionEnTop = cast(ubyte)(hitbox.top + collisionEnY);
+		collisionEnBottom = cast(ubyte)(hitbox.bottom + collisionEnY);
+	} else {
+		collisionEnBottom = cast(ubyte)-(hitbox.top - collisionEnY);
+		collisionEnTop = cast(ubyte)-(hitbox.bottom - collisionEnY);
+	}
+	if (!(collisionEnAttr & OAMFlags.xFlip)) {
+		collisionEnLeft = cast(ubyte)(hitbox.left + collisionEnX - 5);
+		collisionEnRight = cast(ubyte)(hitbox.right + collisionEnX + 5);
+	} else {
+		collisionEnRight = cast(ubyte)(-(hitbox.left - collisionEnX) + 5);
+		collisionEnLeft = cast(ubyte)(-(hitbox.right - collisionEnX) - 5);
+	}
+	enemyTop = cast(ubyte)(samusY - (collisionEnBottom - collisionEnTop));
+	if (samusY - collisionEnTop >  collisionEnBottom - collisionEnTop) {
+		return false;
+	}
+	samusDamageBoostDirection = 1;
+	if (samusX - collisionEnLeft > collisionEnRight - collisionEnLeft) {
+		return false;
+	}
+	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
+		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != 0xFF)) {
+			samusDamageValue = enemyDamageTable[collisionEnSprite];
+			collisionWeaponType = 16;
+			collisionEnemy = enemy;
+			return false;
+		}
+	}
+	if (collisionEnIce || (collisionEnSprite == 0) || (enemyDamageTable[collisionEnSprite] == 0xFF)) {
+		if (collisionEnSprite == Actor.queenMouthStunned) {
+			if ((samusPose == SamusPose.morphBall) || (samusPose == SamusPose.morphBallJumping) || (samusPose == SamusPose.morphBallFalling)) {
+				queenEatingState = 1;
+				samusPose = SamusPose.eatenByMetroidQueen;
+			}
+		}
+		return true;
+	}
+	if (enemyDamageTable[collisionEnSprite] == 0xFE) {
+		applyDamageLarvaMetroid();
+		collisionEnemy = enemy;
+		collisionWeaponType = 0x20;
+		return false;
+	}
+	if (enemyDamageTable[collisionEnSprite] == 0) {
+		collisionEnemy = enemy;
+		collisionWeaponType = 0x20;
+		return false;
+	}
+	samusDamageValue = enemyDamageTable[collisionEnSprite];
+	samusHurtFlag = 1;
+	collisionEnemy = enemy;
+	collisionWeaponType = 0x20;
+	return false;
+}
+immutable ubyte[] collisionSamusSpriteHitboxTopTable = [
+	SamusPose.standing: 0xEC,
+	SamusPose.jumping: 0xF4,
+	SamusPose.spinJumping: 0xFC,
+	SamusPose.running: 0xEC,
+	SamusPose.crouching: 0xF6,
+	SamusPose.morphBall: 0x04,
+	SamusPose.morphBallJumping: 0x04,
+	SamusPose.falling: 0xEC,
+	SamusPose.morphBallFalling: 0x04,
+	SamusPose.startingToJump: 0xEC,
+	SamusPose.startingToSpinJump: 0xEC,
+	SamusPose.spiderBallRolling: 0x04,
+	SamusPose.spiderBallFalling: 0x04,
+	SamusPose.spiderBallJumping: 0x04,
+	SamusPose.spiderBall: 0x04,
+	SamusPose.knockBack: 0xEC,
+	SamusPose.morphBallKnockBack: 0x04,
+	SamusPose.standingBombed: 0xEC,
+	SamusPose.morphBallBombed: 0x04,
+	SamusPose.facingScreen: 0xEC,
+	SamusPose.facingScreen2: 0x04,
+];
+
+void handleDead() {
+	while (sfxPlayingNoise == 0xB) {
+		handleAudio();
+		waitNextFrame();
+	}
+	queenRoomFlag = 0;
+	disableLCD();
+	clearTilemaps();
+	oamBufferIndex = 0;
+	clearAllOAM();
+	vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0x1000] = graphicsTitleScreen[];
+	auto text = &gameOverText[0];
+	auto textDest = &(vram()[0x9800 + 8 * 32 + 6]);
+	while (*text != 0x80) {
+		*(textDest++) = *(text++);
+	}
+	scrollY = 0;
+	scrollX = 0;
+	SCY = 0;
+	SCX = 0;
+	gameOverLCDCCopy = 0xC3;
+	LCDC = 0xC3;
+	countdownTimer = 0xFF;
+	gameMode = GameMode.gameOver;
+}
+
+immutable ubyte[] gameOverText = [0x56, 0x50, 0x5C, 0x54, 0xFF, 0x5E, 0x65, 0x54, 0x61, 0x80];
+
+bool handleGameOver() {
+	handleAudio();
+	waitNextFrame();
+	if ((countdownTimer != 0) && (inputRisingEdge & Pad.start)) {
+		return false;
+	}
+	return true;
+}
+
+void handleItemPickup() {
+	if (!itemCollected) {
+		return;
+	}
+	assert(0);
+}
+
+GraphicsInfo graphicsInfoPlasma() {
+	return GraphicsInfo(graphicsBeamSpazerPlasma, VRAMDest.beam, 0x20);
+}
+alias graphicsInfoSpazer = graphicsInfoPlasma;
+
+GraphicsInfo graphicsInfoIce() {
+	return GraphicsInfo(graphicsBeamIce, VRAMDest.beam, 0x20);
+}
+
+GraphicsInfo graphicsInfoWave() {
+	return GraphicsInfo(graphicsBeamWave, VRAMDest.beam, 0x20);
+}
+
+GraphicsInfo graphicsInfoVariaSuit() {
+	return GraphicsInfo(graphicsSamusVariaSuit, VRAMDest.samus, 0x07B0);
+}
+
+GraphicsInfo graphicsInfoSpinSpaceTop() {
+	return GraphicsInfo(graphicsSpinSpaceTop, VRAMDest.spinTop, 0x0070);
+}
+GraphicsInfo graphicsInfoSpinSpaceBottom() {
+	return GraphicsInfo(graphicsSpinSpaceBottom, VRAMDest.spinBottom, 0x0050);
+}
+
+GraphicsInfo graphicsInfoSpinScrewTop() {
+	return GraphicsInfo(graphicsSpinScrewTop, VRAMDest.spinTop, 0x0070);
+}
+GraphicsInfo graphicsInfoSpinScrewBottom() {
+	return GraphicsInfo(graphicsSpinScrewBottom, VRAMDest.spinBottom, 0x0050);
+}
+
+GraphicsInfo graphicsInfoSpinSpaceScrewTop() {
+	return GraphicsInfo(graphicsSpinSpaceScrewTop, VRAMDest.spinTop, 0x0070);
+}
+GraphicsInfo graphicsInfoSpinSpaceScrewBottom() {
+	return GraphicsInfo(graphicsSpinSpaceScrewBottom, VRAMDest.spinBottom, 0x0050);
+}
+
+GraphicsInfo graphicsInfoSpringBallTop() {
+	return GraphicsInfo(graphicsSpringBallTop, VRAMDest.ballTop, 0x0020);
+}
+GraphicsInfo graphicsInfoSpringBallBottom() {
+	return GraphicsInfo(graphicsSpringBallBottom, VRAMDest.ballBottom, 0x0020);
+}
+
+void variaLoadExtraGraphics() {
+	assert(0);
+}
+void handleUnusedA() {
+	silenceAudio();
+	sfxRequestLowHealthBeep = 0xFF;
+	disableLCD();
+	clearTilemaps();
+	oamBufferIndex = 0;
+	clearAllOAM();
+	version(original) {
+		vram()[0x8000 .. 0x9800] = graphicsTitleScreen[];
+	} else {
+		vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0x1000] = graphicsTitleScreen[];
+	}
+	auto text = &gameSavedText[0];
+	auto textDest = &(vram()[0x9800 + 8 * 32 + 5]);
+	while (*text != 0x80) {
+		*(textDest++) = *(text++);
+	}
+	scrollY = 0;
+	scrollX = 0;
+	LCDC = 0xC3;
+	countdownTimer = 416;
+	gameMode = GameMode.unusedB;
+}
+immutable ubyte[] gameSavedText = [0x56, 0x50, 0x5C, 0x54, 0xFF, 0x62, 0x50, 0x65, 0x54, 0x53, 0x80];
+
+bool handleUnusedB() {
+	handleAudio();
+	waitNextFrame();
+	if ((countdownTimer != 0) && (inputRisingEdge & Pad.start)) {
+		return false;
+	}
+	return true;
+}
+
+void handleUnusedC() {
+	silenceAudio();
+	sfxRequestLowHealthBeep = 0xFF;
+	disableLCD();
+	clearTilemaps();
+	oamBufferIndex = 0;
+	clearAllOAM();
+	vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0x1000] = graphicsTitleScreen[];
+	auto text = &gameClearedText[0];
+	auto textDest = &(vram()[0x9800 + 8 * 32 + 4]);
+	while (*text != 0x80) {
+		*(textDest++) = *(text++);
+	}
+	scrollY = 0;
+	scrollX = 0;
+	LCDC = 0xC3;
+	countdownTimer = 255;
+	gameMode = GameMode.unusedD;
+}
+immutable ubyte[] gameClearedText = [0x56, 0x50, 0x5C, 0x54, 0xFF, 0x52, 0x5B, 0x54, 0x50, 0x61, 0x54, 0x53, 0x80];
+
+void handleUnusedD() {
+	waitNextFrame();
+	if ((countdownTimer != 0) && (inputRisingEdge & Pad.start)) {
+		return;
+	}
+	gameMode = GameMode.boot;
+}
+
+void loadGameSamusItemGraphics() {
+	if (samusItems & ItemFlag.variaSuit) {
+		loadGameCopyItemToVRAM(graphicsInfoVariaSuit);
+	}
+	if (samusItems & ItemFlag.springBall) {
+		loadGameCopyItemToVRAM(graphicsInfoSpringBallTop);
+		loadGameCopyItemToVRAM(graphicsInfoSpringBallBottom);
+	}
+	if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack) == (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
+		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceScrewTop);
+		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceScrewBottom);
+	} else if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack) == ItemFlag.spaceJump) {
+		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceTop);
+		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceBottom);
+	} else if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack) == ItemFlag.screwAttack) {
+		loadGameCopyItemToVRAM(graphicsInfoSpinScrewTop);
+		loadGameCopyItemToVRAM(graphicsInfoSpinScrewBottom);
+	}
+	switch (samusActiveWeapon) {
+		case 1:
+			loadGameCopyItemToVRAM(graphicsInfoIce);
+			break;
+		case 3:
+			loadGameCopyItemToVRAM(graphicsInfoSpazer);
+			break;
+		case 2:
+			loadGameCopyItemToVRAM(graphicsInfoWave);
+			break;
+		case 4:
+			loadGameCopyItemToVRAM(graphicsInfoPlasma);
+			break;
+		default: break;
+	}
+}
+
+void loadGameCopyItemToVRAM(const GraphicsInfo gfx) {
+	copyToVRAM(&gfx.data[0], &(vram()[gfx.destination]), gfx.length);
+}
+
+void unusedDecreasingVRAMTransfer(const GraphicsInfo gfx) {
+	copyToVRAM(&gfx.data[0], &(vram()[gfx.destination]), gfx.length - 1);
+}
+
+void loadCreditsText() {
+	auto text = &creditsText[0];
+	auto dest = &creditsTextBuffer[0];
+	enableSRAM();
+	while (*text != 0xF0) {
+		*(dest++) = *(text++);
+	}
+	disableSRAM();
+}
+
+void handleBoot() {
+	disableLCD();
+	oamClearTable();
+	oamBufferIndex = 0;
+	clearUnusedOAMSlots();
+	silenceAudio();
+	loadTitleScreen();
+}
+
+void handleTitle() {
+	oamClearTable();
+	titleScreenRoutine();
+}
+
+void loadScreenSpritePriorityBit() {
+	samusScreenSpritePriority = (roomTransitionIndices[(samusY.screen << 4) | samusX.screen] >> 11) & 1;
+}
+void unusedDeathAnimationCopy() {
+	assert(0);
 }
