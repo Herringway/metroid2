@@ -885,7 +885,74 @@ void samusHandlePose() {
 				}
 				return;
 			case SamusPose.spinJumping:
-				assert(0);
+				ubyte speed;
+				if (inputRisingEdge & Pad.b) {
+					samusPose = SamusPose.jumping;
+				}
+				if (samusJumpArcCounter < samusJumpArrayBaseOffset) {
+					if (inputPressed & Pad.a) {
+						speed = cast(ubyte)(-2 - !!(samusItems & ItemFlag.hiJump));
+						goto moveVerticalSpin;
+					}
+					samusJumpArcCounter = samusJumpArrayBaseOffset + 22;
+				}
+				if (inputRisingEdge & Pad.a) {
+					if ((spaceJumpTable[samusJumpArcCounter - samusJumpArrayBaseOffset]) && (samusItems & ItemFlag.spaceJump)) {
+						samusJumpArcCounter = samusJumpArrayBaseOffset - 40;
+						sfxRequestSquare1 = Square1SFX.hiJumping;
+						if (!(samusItems & ItemFlag.hiJump)) {
+							samusJumpArcCounter = samusJumpArrayBaseOffset - 24;
+							sfxRequestSquare1 = Square1SFX.jumping;
+						}
+						if (samusItems & ItemFlag.screwAttack) {
+							sfxRequestSquare1 = Square1SFX.screwAttacking;
+						}
+						if (samusAirDirection == 0) {
+							return;
+						}
+						samusFacingDirection = (samusAirDirection + 1) / 2;
+					}
+				}
+				if ((samusAirDirection == 0) && (inputPressed & Pad.up) && (frameCounter & 3)) {
+					return;
+				}
+				speed = jumpArcTable[samusJumpArcCounter - samusJumpArrayBaseOffset];
+				if (speed != 0x80) {
+					goto moveVerticalSpin;
+				}
+				goto breakSpin;
+				moveVerticalSpin:
+				if (!(speed & 0x80) && acidContactFlag) {
+					goto breakSpin;
+				}
+				if (samusMoveVertical(speed)) {
+					if (samusJumpArcCounter < samusJumpArrayBaseOffset + 23) {
+						goto startFalling;
+					}
+				}
+				samusJumpArcCounter++;
+				if (inputPressed & Pad.right) {
+					samusAirDirection = 1;
+				}
+				if (inputPressed & Pad.left) {
+					samusAirDirection = 0xFF;
+				}
+				if (samusAirDirection == 1) {
+					samusMoveRightInAirNoTurn();
+				} else if (samusAirDirection == 0xFF) {
+					samusMoveLeftInAirNoTurn();
+				}
+				return;
+				breakSpin:
+				if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
+					sfxRequestSquare1 = Square1SFX.standingTransition;
+				}
+				startFalling:
+				// naughty ROM write
+				//jumpArcTable[0] = 0;
+				samusFallArcCounter = 22;
+				samusPose = SamusPose.falling;
+				return;
 			case SamusPose.running:
 				if (!collisionSamusBottom()) {
 					samusPose = SamusPose.falling;
@@ -1755,10 +1822,10 @@ bool collisionSamusHorizontal() {
 	if (collisionSamusEnemiesHorizontal()) {
 		return true;
 	}
-	for (int i = 5; i >= 0; i--) {
+	for (int i = 4; i >= 0; i--) {
 		const a = samusHorizontalYOffsetLists[samusPose][i];
 		if (a & 0x80) {
-			if (i < 5) {
+			if (i < 4) {
 				collisionSamusYOffsets[i] = a;
 			}
 			tileY = cast(ubyte)(samusY.pixel + a);
