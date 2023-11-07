@@ -1824,7 +1824,7 @@ bool collisionSamusHorizontal() {
 	}
 	for (int i = 4; i >= 0; i--) {
 		const a = samusHorizontalYOffsetLists[samusPose][i];
-		if (a & 0x80) {
+		if (a != 0x80) {
 			if (i < 4) {
 				collisionSamusYOffsets[i] = a;
 			}
@@ -2132,7 +2132,7 @@ void readInput() {
 }
 
 void getTilemapAddress() {
-	tilemapDest = 0x9800 + (cast(ubyte)(tileY - 16) / 8) * 0x20 + (tileX - 8) / 8;
+	tilemapDest = 0x9800 + (cast(ubyte)(tileY - 16) / 8) * 0x20 + cast(ubyte)(tileX - 8) / 8;
 }
 
 unittest {
