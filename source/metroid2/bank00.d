@@ -839,15 +839,6 @@ void samusHandlePose() {
 				}
 				return;
 			case SamusPose.jumping:
-				ubyte speed;
-				if (samusJumpArcCounter < samusJumpArrayBaseOffset) { //linear jumping phase
-					if (inputPressed & Pad.a) {
-						speed = cast(ubyte)(-2 - !!(samusItems & ItemFlag.hiJump));
-						goto moveVertical;
-					}
-					samusJumpArcCounter = samusJumpArrayBaseOffset + 22;
-				}
-				speed = jumpArcTable[samusJumpArcCounter - samusJumpArrayBaseOffset];
 				static void startFalling() {
 					// naughty ROM write
 					//jumpArcTable[0] = 0;
@@ -858,6 +849,33 @@ void samusHandlePose() {
 						samusPose = SamusPose.morphBallFalling;
 					}
 				}
+				static void moveVertical(ubyte speed) {
+					if (samusMoveVertical(speed)) {
+						if (samusJumpArcCounter >= samusJumpArrayBaseOffset + 23) {
+							return startFalling();
+						}
+					}
+					samusJumpArcCounter++;
+					if ((samusPose == SamusPose.morphBallJumping) && (inputRisingEdge & Pad.up)) {
+						samusUnmorphInAir();
+						samusUnmorphJumpTimer = 16;
+					}
+					if (inputPressed & Pad.right) {
+						samusMoveRightInAirTurn();
+					}
+					if (inputPressed & Pad.left) {
+						samusMoveLeftInAirTurn();
+					}
+				}
+				ubyte speed;
+				if (samusJumpArcCounter < samusJumpArrayBaseOffset) { //linear jumping phase
+					if (inputPressed & Pad.a) {
+						speed = cast(ubyte)(-2 - !!(samusItems & ItemFlag.hiJump));
+						return moveVertical(speed);
+					}
+					samusJumpArcCounter = samusJumpArrayBaseOffset + 22;
+				}
+				speed = jumpArcTable[samusJumpArcCounter - samusJumpArrayBaseOffset];
 				if (speed == 0x80) {
 					return startFalling();
 				}
@@ -866,25 +884,42 @@ void samusHandlePose() {
 						return startFalling();
 					}
 				}
-				moveVertical:
-				if (samusMoveVertical(speed)) {
-					if (samusJumpArcCounter >= samusJumpArrayBaseOffset + 23) {
-						return startFalling();
+				return moveVertical(speed);
+			case SamusPose.spinJumping:
+				static void startFalling() {
+					// naughty ROM write
+					//jumpArcTable[0] = 0;
+					samusFallArcCounter = 22;
+					samusPose = SamusPose.falling;
+				}
+				static void breakSpin() {
+					if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
+						sfxRequestSquare1 = Square1SFX.standingTransition;
+					}
+					startFalling();
+				}
+				static void moveVertical(ubyte speed) {
+					if (!(speed & 0x80) && acidContactFlag) {
+						return breakSpin();
+					}
+					if (samusMoveVertical(speed)) {
+						if (samusJumpArcCounter >= samusJumpArrayBaseOffset + 23) {
+							return startFalling();
+						}
+					}
+					samusJumpArcCounter++;
+					if (inputPressed & Pad.right) {
+						samusAirDirection = 1;
+					}
+					if (inputPressed & Pad.left) {
+						samusAirDirection = 0xFF;
+					}
+					if (samusAirDirection == 1) {
+						samusMoveRightInAirNoTurn();
+					} else if (samusAirDirection == 0xFF) {
+						samusMoveLeftInAirNoTurn();
 					}
 				}
-				samusJumpArcCounter++;
-				if ((samusPose == SamusPose.morphBallJumping) && (inputRisingEdge & Pad.up)) {
-					samusUnmorphInAir();
-					samusUnmorphJumpTimer = 16;
-				}
-				if (inputPressed & Pad.right) {
-					samusMoveRightInAirTurn();
-				}
-				if (inputPressed & Pad.left) {
-					samusMoveLeftInAirTurn();
-				}
-				return;
-			case SamusPose.spinJumping:
 				ubyte speed;
 				if (inputRisingEdge & Pad.b) {
 					samusPose = SamusPose.jumping;
@@ -892,7 +927,7 @@ void samusHandlePose() {
 				if (samusJumpArcCounter < samusJumpArrayBaseOffset) {
 					if (inputPressed & Pad.a) {
 						speed = cast(ubyte)(-2 - !!(samusItems & ItemFlag.hiJump));
-						goto moveVerticalSpin;
+						return moveVertical(speed);
 					}
 					samusJumpArcCounter = samusJumpArrayBaseOffset + 22;
 				}
@@ -918,41 +953,9 @@ void samusHandlePose() {
 				}
 				speed = jumpArcTable[samusJumpArcCounter - samusJumpArrayBaseOffset];
 				if (speed != 0x80) {
-					goto moveVerticalSpin;
+					return moveVertical(speed);
 				}
-				goto breakSpin;
-				moveVerticalSpin:
-				if (!(speed & 0x80) && acidContactFlag) {
-					goto breakSpin;
-				}
-				if (samusMoveVertical(speed)) {
-					if (samusJumpArcCounter >= samusJumpArrayBaseOffset + 23) {
-						goto startFalling;
-					}
-				}
-				samusJumpArcCounter++;
-				if (inputPressed & Pad.right) {
-					samusAirDirection = 1;
-				}
-				if (inputPressed & Pad.left) {
-					samusAirDirection = 0xFF;
-				}
-				if (samusAirDirection == 1) {
-					samusMoveRightInAirNoTurn();
-				} else if (samusAirDirection == 0xFF) {
-					samusMoveLeftInAirNoTurn();
-				}
-				return;
-				breakSpin:
-				if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
-					sfxRequestSquare1 = Square1SFX.standingTransition;
-				}
-				startFalling:
-				// naughty ROM write
-				//jumpArcTable[0] = 0;
-				samusFallArcCounter = 22;
-				samusPose = SamusPose.falling;
-				return;
+				return breakSpin();
 			case SamusPose.running:
 				if (!collisionSamusBottom()) {
 					samusPose = SamusPose.falling;
@@ -1137,12 +1140,33 @@ void samusHandlePose() {
 			case SamusPose.morphBallJumping:
 				assert(0);
 			case SamusPose.falling:
+				static void noJump() {
+					if (inputPressed & Pad.right) {
+						samusMoveRightInAirTurn();
+					} else if (inputPressed & Pad.left) {
+						samusMoveLeftInAirTurn();
+					}
+					if (!samusMoveVertical(samusFallArcTable[samusFallArcCounter])) {
+						if (++samusFallArcCounter == 23) {
+							samusFallArcCounter = 22;
+						}
+					} else {
+						if (samusTryStanding()) {
+							samusPose = SamusPose.crouching;
+						}
+						samusFallArcCounter = 0;
+						if (samusOnSolidSprite) {
+							return;
+						}
+						samusY = (samusY & 0xFF8) | 4;
+					}
+				}
 				if (inputRisingEdge & Pad.a) {
 					if (acidContactFlag) {
 						samusJumpArcCounter = acidContactFlag; // not yet set for this frame
 					} else {
 						if (samusUnmorphJumpTimer) {
-							goto noJump;
+							return noJump();
 						}
 						samusJumpArcCounter = samusJumpArrayBaseOffset - 31;
 					}
@@ -1156,27 +1180,7 @@ void samusHandlePose() {
 					samusUnmorphJumpTimer = 0;
 					return;
 				}
-				noJump:
-				if (inputPressed & Pad.right) {
-					samusMoveRightInAirTurn();
-				} else if (inputPressed & Pad.left) {
-					samusMoveLeftInAirTurn();
-				}
-				if (!samusMoveVertical(samusFallArcTable[samusFallArcCounter])) {
-					if (++samusFallArcCounter == 23) {
-						samusFallArcCounter = 22;
-					}
-				} else {
-					if (samusTryStanding()) {
-						samusPose = SamusPose.crouching;
-					}
-					samusFallArcCounter = 0;
-					if (samusOnSolidSprite) {
-						return;
-					}
-					samusY = (samusY & 0xFF8) | 4;
-				}
-				return;
+				return noJump();
 			case SamusPose.morphBallFalling:
 				assert(0);
 			case SamusPose.startingToJump:
