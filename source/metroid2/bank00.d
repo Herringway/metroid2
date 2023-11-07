@@ -926,7 +926,7 @@ void samusHandlePose() {
 					goto breakSpin;
 				}
 				if (samusMoveVertical(speed)) {
-					if (samusJumpArcCounter < samusJumpArrayBaseOffset + 23) {
+					if (samusJumpArcCounter >= samusJumpArrayBaseOffset + 23) {
 						goto startFalling;
 					}
 				}
