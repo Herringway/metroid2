@@ -11,13 +11,25 @@ import std.file;
 import std.logger;
 import std.stdio;
 
+import siryul;
+
 enum saveFile = "metroid2.sav";
+
+struct Settings {
+	int zoom = 2;
+}
+
+enum settingsFile = "settings.yaml";
 
 Renderer renderer;
 void main() {
+	if (!settingsFile.exists) {
+		Settings.init.toFile!YAML(settingsFile);
+	}
+	const settings = fromFile!(Settings, YAML)(settingsFile);
 	SDL_Event event;
 	renderer.ppu.vram = new ubyte[](0x10000);
-	renderer.init("Metroid II", WindowMode.windowed);
+	renderer.init("Metroid II", WindowMode.windowed, settings.zoom);
 
 	auto game = new Fiber(&start);
 
