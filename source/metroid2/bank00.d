@@ -834,7 +834,7 @@ void samusHandlePose() {
 					if (waterContactFlag) {
 						samusJumpArcCounter += 16;
 					}
-					samusPose = SamusPose.jumping;
+					samusPose = SamusPose.startingToJump;
 					samusJumpStartCounter = 0;
 				}
 				return;
@@ -868,7 +868,7 @@ void samusHandlePose() {
 				}
 				moveVertical:
 				if (samusMoveVertical(speed)) {
-					if (samusJumpArcCounter < samusJumpArrayBaseOffset + 23) {
+					if (samusJumpArcCounter >= samusJumpArrayBaseOffset + 23) {
 						return startFalling();
 					}
 				}
@@ -1095,7 +1095,7 @@ void samusHandlePose() {
 				} else if (inputPressed & Pad.left) {
 					samusMoveLeftInAirTurn();
 				}
-				if (samusMoveVertical(samusFallArcTable[samusFallArcCounter])) {
+				if (!samusMoveVertical(samusFallArcTable[samusFallArcCounter])) {
 					if (++samusFallArcCounter == 23) {
 						samusFallArcCounter = 22;
 					}
@@ -1113,9 +1113,31 @@ void samusHandlePose() {
 			case SamusPose.morphBallFalling:
 				assert(0);
 			case SamusPose.startingToJump:
-				assert(0);
 			case SamusPose.startingToSpinJump:
-				assert(0);
+				if (inputPressed & Pad.a) {
+					if (samusMoveVertical(cast(ubyte)(-2 - ((frameCounter & 2) >> 1)))) {
+						samusTryStanding();
+						return;
+					}
+					if (++samusJumpStartCounter >= 6) {
+						 if (inputPressed & Pad.right) {
+							samusMoveRightInAirTurn();
+							return;
+						 }
+						 if (inputPressed & Pad.left) {
+							samusMoveLeftInAirTurn();
+							return;
+						 }
+						 return;
+					}
+				}
+				if (samusPose == SamusPose.startingToJump) {
+					samusPose = SamusPose.jumping;
+				} else {
+					samusAirDirection = directionTable[(inputPressed & (Pad.left | Pad.right)) >> 4];
+					samusPose = SamusPose.spinJumping;
+				}
+				return;
 			case SamusPose.spiderBallRolling:
 				if (inputRisingEdge & Pad.a) {
 					samusPose = SamusPose.morphBall;
@@ -1813,7 +1835,7 @@ bool collisionSamusBottom() {
 		acidContactFlag = 0x40;
 		applyDamageAcid(acidDamageValue);
 	}
-	if (a >= samusSolidityIndex) {
+	if (a < samusSolidityIndex) {
 		return true;
 	}
 	tileX = cast(ubyte)(samusX.pixel + 20);
@@ -1838,7 +1860,7 @@ bool collisionSamusBottom() {
 	if (ignore) {
 		return false;
 	}
-	return a2 >= samusSolidityIndex;
+	return a2 < samusSolidityIndex;
 }
 bool collisionCheckSpiderPoint() {
 	assert(0);
@@ -2043,7 +2065,14 @@ void readInput() {
 }
 
 void getTilemapAddress() {
-	tilemapDest = 0x9800 + ((tileY - 16) / 8) * 0x20 + (tileX - 8) / 8;
+	tilemapDest = 0x9800 + (cast(ubyte)(tileY - 16) / 8) * 0x20 + (tileX - 8) / 8;
+}
+
+unittest {
+	tileY = 0x00;
+	tileX = 0x9D;
+	getTilemapAddress();
+	assert(tilemapDest == 0x9BD2);
 }
 
 void getTilemapCoordinates() {
