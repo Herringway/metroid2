@@ -131,19 +131,19 @@ immutable ubyte[16][5] songSoundChannelEffectTable = [
 ];
 
 void handleAudio() {
-	// assert(0);
+	 //assert(0); // TODO
 }
 
 void handleAudioHandleSongInterruptionRequest() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleAudioHandleSongInterruptionPlaying() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleSongAndSoundEffects() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void clearSongInterruption() {
@@ -166,47 +166,47 @@ void playSongInterruptionEarthquake(Song2 a) {
 	playSongInterruption();
 }
 void playSongInterruption() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void startEndingSongInterruption(ubyte a) {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void finishEndingSongInterruption() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleAudioInitiateFadingOutMusic() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleAudioHandleFadingOutMusic() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleChannelSoundEffectSquare1() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleChannelSoundEffectSquare2() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleChannelSoundEffectNoise() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleChannelSoundEffectWave() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void handleSong() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void disableSoundChannels() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void clearSongPlaying() {
@@ -214,81 +214,81 @@ void clearSongPlaying() {
 }
 
 void handleSongPlaying() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void loadPointerFromTable() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void decrementChannelSoundEffectTimerSquare1() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void gotoClearChannelSoundEffectSquare1() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void decrementChannelSoundEffectTimerSquare2() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void gotoClearChannelSoundEffectSquare2() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void decrementChannelSoundEffectTimerNoise() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void gotoClearChannelSoundEffectNoise() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void clearChannelSoundEffectSquare1() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void disableChannelSquare1() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void clearChannelSoundEffectSquare2() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void disableChannelSquare2() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void clearChannelSoundEffectWave() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void disableChannelWave() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void clearChannelSoundEffectNoise() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void disableChannelNoise() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void initializeAudio() {
-	// assert(0);
+	 //assert(0); // TODO
 }
 
 void clearNonWaveSoundEffectRequests() {
-	// assert(0);
+	 assert(0); // TODO
 }
 
 void silenceAudio() {
-	// assert(0);
+	 //assert(0); // TODO
 }
 
 void muteSoundChannels() {
-	// assert(0);
+	 assert(0); // TODO
 }

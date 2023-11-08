@@ -13,6 +13,11 @@ enum cwTry2 = 3;
 
 enum metaSpriteEnd = 0xFF;
 
+enum waveBeamSpeed = 2;
+enum defaultBeamSpeed = 4;
+enum spazerSpeed = 4;
+enum plasmaBeamSpeed = 6;
+
 enum ScrollDirection {
 	right = 1 << 4,
 	left = 1 << 5,
@@ -34,6 +39,7 @@ enum VRAMDest {
 	titleTiles = 0x8800,
 	enemies = 0x8B00,
 	item = 0x8B40,
+	itemOrb = 0x8B00,
 	itemFont = 0x8C00,
 	commonItems = 0x8F00,
 
@@ -331,6 +337,7 @@ enum Song {
 	killedMetroid = 0x0F,
 	nothingCopy = 0x10,
 	title = 0x11,
+	noIntroStart = title,
 	samusFanfare = 0x12,
 	reachedTheGunship = 0x13,
 	chozoRuinsCopy = 0x14,
@@ -346,6 +353,7 @@ enum Song {
 	subCaves4NoIntro = 0x1E,
 	metroidHiveWithIntro = 0x1F,
 	missilePickup = 0x20,
+	invalid = 0xFF,
 }
 
 enum Song2 {
@@ -444,20 +452,84 @@ enum EnemyTileSet {
 }
 
 enum ProjectileType {
+	normal = 0,
+	ice = 1,
+	wave = 2,
+	spazer = 3,
+	plasma = 4,
+	unk5 = 5,
+	unk6 = 6,
+	bomb = 7,
 	missile = 8,
 	invalid = 0xFF,
 }
 
+enum BombType {
+	bomb = 1,
+	explosion = 2,
+	invalid = 0xFF,
+}
+
+alias DoorDirection = BeamDirection;
+enum BeamDirection {
+	right = 1 << 0,
+	left = 1 << 1,
+	up = 1 << 2,
+	down = 1 << 3,
+}
+
+enum DoorCommand : ubyte {
+	copyData = 0x00,
+	copyBG = 0x01,
+	copySpr = 0x02,
+	tileTable = 0x10,
+	collision = 0x20,
+	solidity = 0x30,
+	warp = 0x40,
+	escapeQueen = 0x50,
+	damage = 0x60,
+	exitQueen = 0x70,
+	enterQueen = 0x80,
+	ifMetLess = 0x90,
+	fadeout = 0xA0,
+	loadData = 0xB0,
+	loadBG = 0xB1,
+	loadSpr = 0xB2,
+	song = 0xC0,
+	item = 0xD0,
+	end = 0xFF,
+}
+
+enum SpecialDoorCopySrc {
+	queenSpr,
+	commonItems,
+	queenHeadRow1,
+	queenHeadRow2,
+	queenHeadRow3,
+	queenHeadRow4,
+}
+
+enum SpecialDoorCopyDest {
+	enemySpr,
+	commonItems,
+	screen1,
+	screen1r2,
+	screen1r3,
+	screen1r4,
+}
+
 struct EnemySlot {
 	align(1):
-	ubyte u0;
+	ubyte status;
 	ubyte y;
 	ubyte x;
 	ubyte spriteType;
 	ubyte attributes;
 	ubyte[5] u5;
 	ubyte iceCounter;
-	ubyte[6] uB;
+	ubyte[4] uB;
+	ubyte yScreen;
+	ubyte xScreen;
 	ubyte u11;
 	ubyte u12;
 	ubyte u13;
@@ -507,6 +579,19 @@ struct Rectangle {
 	byte right;
 }
 
+struct EnemyData {
+	ubyte baseSpriteAttributes;
+	ubyte spriteAttributes;
+	ubyte stunCounter;
+	ubyte misc;
+	ubyte flags;
+	ubyte unk6;
+	ubyte unk7;
+	ubyte iceCounter;
+	ubyte health;
+	void function() ai;
+}
+
 ubyte rr(ubyte value) @safe pure {
 	const bit = value & 1;
 	value >>= 1;
@@ -535,6 +620,21 @@ ubyte[] translateCreditsText(string input) {
 		}
 	}
 	result ~= 0xF0; //terminator
+	return result;
+}
+
+ubyte[] fixItemName(string input) {
+	ubyte[] result;
+	result.reserve(input.length + 1);
+	foreach (char c; input) {
+		switch (c) {
+			case 'A': .. case 'Z': result ~= cast(ubyte)((c - 'A') + 0xC0); break;
+			case ' ': result ~= 0xFF; break;
+			case '<': result ~= 0xDE; break;
+			case '>': result ~= 0xDF; break;
+			default: assert(0, "Unknown character");
+		}
+	}
 	return result;
 }
 

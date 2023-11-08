@@ -11,6 +11,7 @@ import metroid2.bank06;
 import metroid2.bank08;
 import metroid2.data;
 import metroid2.defs;
+import metroid2.enemies;
 import metroid2.external;
 import metroid2.globals;
 import metroid2.mapbanks;
@@ -43,7 +44,7 @@ void vblank() {
 	if (queenRoomFlag == 0x11) {
 		vblankUpdateStatusBar();
 		oamDMA();
-		//vblankDrawQueen();
+		vblankDrawQueen();
 		vblankDoneFlag = 1;
 	} else {
 		if (mapUpdateBuffer[0].dest) {
@@ -169,10 +170,10 @@ bool handleGameMode() {
 			handleUnusedD();
 			break;
 		case GameMode.prepareCredits:
-			//handlePrepareCredits();
+			// TODO handlePrepareCredits();
 			break;
 		case GameMode.credits:
-			//handleCredits();
+			// TODO handleCredits();
 			break;
 	}
 	return false;
@@ -271,7 +272,7 @@ void handleLoadA() {
 	maxOAMPrevFrame = 0;
 
 	for (int i = 0; i < respawningBlockArray.length; i += 0x10) {
-		respawningBlockArray[i] = 0;
+		respawningBlockArray[i].timer = 0;
 	}
 	ingameSaveAndLoadEnemySaveFlags();
 	gameMode = GameMode.loadB;
@@ -315,13 +316,13 @@ void handleMain() {
 		collisionSamusEnemiesStandard();
 		samusTryShooting();
 		handleProjectiles();
-		//handleBombs();
+		handleBombs();
 		prepMapUpdate();
 		handleCamera();
 		convertCameraToScroll();
 		drawSamus();
-		//drawProjectiles();
-		//handleRespawningBlocks();
+		drawProjectiles();
+		handleRespawningBlocks();
 		adjustHUDValues();
 		if (samusUnmorphJumpTimer) {
 			samusUnmorphJumpTimer--;
@@ -351,7 +352,7 @@ void handleMain() {
 			collisionSamusEnemiesStandard();
 			samusTryShooting();
 			handleProjectiles();
-			//handleBombs();
+			handleBombs();
 		}
 	}
 	prepMapUpdate();
@@ -359,8 +360,8 @@ void handleMain() {
 	convertCameraToScroll();
 	handleItemPickup();
 	drawSamus();
-	//drawProjectiles();
-	//handleRespawningBlocks();
+	drawProjectiles();
+	handleRespawningBlocks();
 	adjustHUDValues();
 	if (samusUnmorphJumpTimer) {
 		samusUnmorphJumpTimer--;
@@ -378,7 +379,7 @@ void handleEnemiesOrQueen() {
 	if (queenRoomFlag != 0x11) {
 		enemyHandler();
 	} else {
-		//queenHandler();
+		queenHandler();
 	}
 }
 
@@ -658,7 +659,46 @@ void handleCamera() {
 immutable ubyte[11] unknown0B39 = [0, 1, 1, 0, 0, 0, 1, 2, 2, 1, 1];
 
 void handleCameraDoor() {
-	assert(0, "NYI");
+	samusSpinAnimationTimer++;
+	if (doorScrollDirection & DoorDirection.right) {
+		cameraX = (cameraX + 4) &0xFFF;
+		samusAnimationTimer += 3;
+		cameraScrollDirection = ScrollDirection.right;
+		samusX++;
+		if (cameraX.pixel != 80) {
+			return;
+		}
+	} else if (doorScrollDirection & DoorDirection.left) {
+		cameraX = (cameraX - 4) &0xFFF;
+		samusAnimationTimer += 3;
+		cameraScrollDirection = ScrollDirection.left;
+		samusX--;
+		if (cameraX.pixel != 176) {
+			return;
+		}
+	} else if (doorScrollDirection & DoorDirection.up) {
+		cameraY = (cameraY - 4) &0xFFF;
+		samusAnimationTimer += 3;
+		cameraScrollDirection = ScrollDirection.up;
+		samusY -= (frameCounter & 1) + 1;
+		if (cameraY.pixel != 184) {
+			return;
+		}
+	} else if (doorScrollDirection & DoorDirection.down) {
+		cameraY = (cameraY + 4) &0xFFF;
+		samusAnimationTimer += 3;
+		cameraScrollDirection = ScrollDirection.down;
+		samusY += (frameCounter & 1) + 1;
+		if (cameraY.pixel != 72) {
+			return;
+		}
+	}
+	doorScrollDirection = 0;
+	cutsceneActive = 0;
+	if (bgPalette == 0x93) {
+		return;
+	}
+	fadeInTimer = 47;
 }
 
 void loadDoorIndex() {
@@ -670,9 +710,9 @@ void loadDoorIndex() {
 	samusHurtFlag = 0;
 	saveContactFlag = 0;
 
-	bombArray[0][0] = 0xFF;
-	bombArray[1][0] = 0xFF;
-	bombArray[2][0] = 0xFF;
+	bombArray[0].type = BombType.invalid;
+	bombArray[1].type = BombType.invalid;
+	bombArray[2].type = BombType.invalid;
 
 	justStartedTransition = 0xFF;
 	doorIndex = roomTransitionIndices[(cameraY.screen << 4) | cameraX.screen] & 0xF7FF;
@@ -1123,7 +1163,7 @@ void samusHandlePose() {
 					}
 					samusPose = SamusPose.morphBallJumping;
 					sfxRequestSquare1 = Square1SFX.jumping;
-					if (!sfxRequestSquare1) { // k.
+					if (sfxRequestSquare1) { // k.
 						samusJumpArcCounter = samusJumpArrayBaseOffset + 8;
 					} else {
 						samusJumpArcCounter = samusJumpArrayBaseOffset + 4;
@@ -1138,7 +1178,13 @@ void samusHandlePose() {
 				}
 				return;
 			case SamusPose.morphBallJumping:
-				assert(0);
+				if ((inputRisingEdge & Pad.down) && (samusItems & ItemFlag.spiderBall)) {
+					samusPose = SamusPose.spiderBallJumping;
+					spiderRotationState = 0;
+					sfxRequestSquare1 = Square1SFX.spiderBall;
+					return;
+				}
+				goto case SamusPose.jumping;
 			case SamusPose.falling:
 				static void noJump() {
 					if (inputPressed & Pad.right) {
@@ -1182,7 +1228,48 @@ void samusHandlePose() {
 				}
 				return noJump();
 			case SamusPose.morphBallFalling:
-				assert(0);
+				if ((inputRisingEdge & Pad.down) && (samusItems & ItemFlag.spiderBall)) {
+					samusPose = SamusPose.spiderBallFalling;
+					spiderRotationState = 0;
+					sfxRequestSquare1 = Square1SFX.spiderBall;
+					return;
+				}
+				if ((inputRisingEdge & Pad.a) && acidContactFlag) {
+					samusJumpArcCounter = acidContactFlag;
+					samusPose = SamusPose.morphBallJumping;
+					samusJumpStartCounter = 0;
+					sfxRequestSquare1 = Square1SFX.jumping;
+					return;
+				}
+				if (inputRisingEdge & Pad.up) {
+					samusUnmorphInAir();
+					samusUnmorphJumpTimer = samusUnmorphJumpTime;
+					return;
+				}
+				if (inputPressed & Pad.right) {
+					samusMoveRightInAirTurn();
+					if (samusItems & ItemFlag.spiderBall) {
+						//return moveVertical(cameraSpeedRight);
+					}
+				} else if (inputPressed & Pad.left) {
+					samusMoveLeftInAirTurn();
+					if (samusItems & ItemFlag.spiderBall) {
+						//return moveVertical(cameraSpeedLeft);
+					}
+				}
+				// moveVertical:
+				if (!samusMoveVertical(samusFallArcTable[samusFallArcCounter])) {
+					if (++samusFallArcCounter >= 23) {
+						samusFallArcCounter = 22;
+					}
+				} else {
+					samusPose = SamusPose.morphBall;
+					samusFallArcCounter = 0;
+					if (!samusOnSolidSprite) {
+						samusY = (samusY & 0xFF8) | 4;
+					}
+				}
+				return;
 			case SamusPose.startingToJump:
 			case SamusPose.startingToSpinJump:
 				if (inputPressed & Pad.a) {
@@ -1222,7 +1309,7 @@ void samusHandlePose() {
 				}
 				collisionCheckSpiderSet();
 				if (!spiderContactState) {
-					//goto spiderballfall;
+					// TODO goto spiderballfall;
 				}
 				const(ubyte)[] hl;
 				if (spiderRotationState & 1) {
@@ -1310,11 +1397,11 @@ void samusHandlePose() {
 				}
 				static void moveVertical(byte amt) {
 					if (samusMoveVertical(amt)) {
-						//goto spiderFallLand
+						// TODO goto spiderFallLand
 					}
 					collisionCheckSpiderSet();
 					if (spiderContactState) {
-						//goto spiderFallAttach
+						// TODO goto spiderFallAttach
 					}
 					samusJumpArcCounter++;
 					if (inputPressed & Pad.right) {
@@ -1655,7 +1742,21 @@ void collisionCheckSpiderSet() {
 }
 
 void samusGroundUnmorph() {
-	assert(0);
+	tileX = cast(ubyte)(samusX.pixel + 11);
+	tileY = cast(ubyte)(samusY.pixel + 24);
+	ubyte tile = samusGetTileIndex();
+	if (tile >= samusSolidityIndex) {
+		tileX = cast(ubyte)(samusX.pixel + 20);
+		tile = samusGetTileIndex();
+		if (tile >= samusSolidityIndex) {
+			samusPose = SamusPose.crouching;
+			samusAnimationTimer = 0;
+			sfxRequestSquare1 = Square1SFX.crouchingTransition;
+			return;
+		}
+	}
+	samusPose = SamusPose.morphBall;
+	samusSpeedDown = 0;
 }
 bool samusTryStanding() {
 	sfxRequestSquare1 = Square1SFX.standingTransition;
@@ -1678,7 +1779,26 @@ void samusMorphOnGround() {
 	sfxRequestSquare1 = Square1SFX.morphingTransition;
 }
 void samusUnmorphInAir() {
-	assert(0);
+	tileY = cast(ubyte)(samusY.pixel + 8);
+	tileX = cast(ubyte)(samusX.pixel + 11);
+	if (samusGetTileIndex() < samusSolidityIndex) {
+		return;
+	}
+	tileX = cast(ubyte)(samusX.pixel + 20);
+	if (samusGetTileIndex() < samusSolidityIndex) {
+		return;
+	}
+	tileY = cast(ubyte)(samusY.pixel + 24);
+	tileX = cast(ubyte)(samusX.pixel + 11);
+	if (samusGetTileIndex() < samusSolidityIndex) {
+		return;
+	}
+	tileX = cast(ubyte)(samusX.pixel + 20);
+	if (samusGetTileIndex() < samusSolidityIndex) {
+		return;
+	}
+	samusPose = SamusPose.falling;
+	sfxRequestSquare1 = Square1SFX.standingTransition;
 }
 bool samusWalkRight() {
 	samusFacingDirection = 1;
@@ -1884,8 +2004,8 @@ bool collisionSamusBottom() {
 	EnemySlot* enemy;
 	if (collisionSamusEnemiesDown(enemy)) {
 		samusOnSolidSprite = 1;
-		collisionEnemy = enemy;
-		collisionWeaponType = 0x20;
+		collision.enemy = enemy;
+		collision.weaponType = 0x20;
 		return true;
 	}
 	tileX = cast(ubyte)(samusX.pixel + 12);
@@ -1934,16 +2054,16 @@ bool collisionSamusBottom() {
 	return a2 < samusSolidityIndex;
 }
 bool collisionCheckSpiderPoint() {
-	assert(0);
+	assert(0); // TODO
 }
 ubyte samusGetTileIndex() {
 	getTilemapAddress();
 	if (gameOverLCDCCopy & 8) {
 		tilemapDest += 0x400; // use other screen tilemap
 	}
-	//while (STAT & 3) {} // wait for hblank
+	waitHBlank();
 	const b = vram()[tilemapDest];
-	//while (STAT & 3) {} // wait for hblank again
+	waitHBlank();
 	const a = vram()[tilemapDest] & b;
 	if (!samusInvulnerableTimer) {
 		if (collisionArray[a] & BlockType.spike) {
@@ -2097,33 +2217,134 @@ void clearProjectileArray() {
 
 void samusTryShooting() {
 	if ((samusPose == SamusPose.facingScreen) || (queenEatingState == 0x22) || !(inputRisingEdge & Pad.select)) {
-		if (!(inputRisingEdge & Pad.b) && (!(inputPressed & Pad.b) || (++samusBeamCooldown < 16))) {
+		if (!(inputRisingEdge & Pad.b) && (!(inputPressed & Pad.b) || (++samusBeamCooldown <= 16))) {
 			return;
 		}
-		assert(0);
-		//return;
+		beamLoop: while (true) {
+			if (samusPose & 0x80) {
+				return;
+			}
+			if (!samusPossibleShotDirections[samusPose]) {
+				return;
+			}
+			if (samusPossibleShotDirections[samusPose] == 0x80) {
+				if (!(samusItems & ItemFlag.bomb) || !(inputRisingEdge & Pad.b)) {
+					return;
+				}
+				ubyte bombIndex;
+				for (bombIndex = 0; bombIndex < bombArray.length; bombIndex++) {
+					if (bombArray[bombIndex].type == BombType.invalid) {
+						break;
+					}
+				}
+				if (bombIndex == bombArray.length) {
+					return;
+				}
+				bombArray[bombIndex].type = BombType.bomb;
+				bombArray[bombIndex].timer = 96; // was this supposed to be 60 frames or $60?
+				bombArray[bombIndex].y = cast(ubyte)(samusY.pixel + 38);
+				bombArray[bombIndex].x = cast(ubyte)(samusX.pixel + 16);
+				sfxRequestSquare1 = Square1SFX.bombLaid;
+				return;
+			}
+			samusBeamCooldown = 0;
+			ubyte firingDirection;
+			const possibleDirections = (inputPressed >> 4) & samusPossibleShotDirections[samusPose];
+			if (!possibleDirections) {
+				firingDirection = 1;
+				if (!samusFacingDirection) {
+					firingDirection = 2;
+				}
+			} else {
+				firingDirection = samusShotDirectionPriorityTable[possibleDirections];
+			}
+			ubyte shotY = cast(ubyte)(samusCannonYOffsetByPose[samusPose] + samusCannonYOffsetByAimDirection[firingDirection] - 4);
+			ubyte shotX = cast(ubyte)(samusCannonXOffsetTable[firingDirection][samusFacingDirection] - 4);
+			if (samusActiveWeapon == ProjectileType.plasma) {
+				if (projectileArray[0].type != ProjectileType.invalid) {
+					return;
+				}
+				for (int slot = 0; slot < projectileArray.length; slot++) {
+					if (firingDirection < BeamDirection.up) {
+						shotX -= 8;
+						if (slot == 0) {
+							shotX += 16;
+						}
+					} else {
+						shotY -= 8;
+						if (slot == 0) {
+							shotY += 16;
+						}
+					}
+					projectileArray[slot].type = samusActiveWeapon;
+					projectileArray[slot].direction = firingDirection;
+					projectileArray[slot].y = cast(ubyte)(shotY + samusY.pixel);
+					projectileArray[slot].x = cast(ubyte)(shotX + samusX.pixel);
+					projectileArray[slot].waveIndex = (frameCounter & 0x10) >> 1;
+					projectileArray[slot].frameCounter = 0;
+				}
+				sfxRequestSquare1 = beamSoundTable[samusActiveWeapon];
+			}
+			const slot = getFirstEmptyProjectileSlot();
+			if (slot >= projectileArray.length) {
+				return;
+			}
+			if (samusActiveWeapon == ProjectileType.missile) {
+				if (!samusCurMissiles) {
+					sfxRequestSquare1 = Square1SFX.noMissileDudShot;
+					return;
+				}
+				samusCurMissiles--;
+			}
+			projectileArray[slot].type = samusActiveWeapon;
+			projectileArray[slot].direction = firingDirection;
+			projectileArray[slot].y = cast(ubyte)(shotY + samusY.pixel);
+			projectileArray[slot].x = cast(ubyte)(shotX + samusX.pixel);
+			projectileArray[slot].waveIndex = (frameCounter & 0x10) >> 1;
+			projectileArray[slot].frameCounter = 0;
+			if ((samusActiveWeapon != ProjectileType.spazer) || (slot >= projectileArray.length - 1)) {
+				break beamLoop;
+			}
+		}
+		sfxRequestSquare1 = beamSoundTable[samusActiveWeapon];
+		return;
 	}
 	samusTryShootingToggleMissiles();
 }
+
 void samusTryShootingToggleMissiles() {
 	auto graphicsInfoCannonMissile = GraphicsInfo(graphicsCannonMissile, VRAMDest.cannon, 0x20);
 	auto graphicsInfoCannonBeam = GraphicsInfo(graphicsCannonBeam, VRAMDest.cannon, 0x20);
-	if (samusActiveWeapon == 8) {
+	if (samusActiveWeapon == ProjectileType.missile) {
 		samusActiveWeapon = samusBeam;
 		loadGraphics(graphicsInfoCannonBeam);
 		sfxRequestSquare1 = Square1SFX.select;
 	} else {
 		samusBeam = samusActiveWeapon;
-		samusActiveWeapon = 8;
+		samusActiveWeapon = ProjectileType.missile;
 		loadGraphics(graphicsInfoCannonMissile);
 		sfxRequestSquare1 = Square1SFX.select;
 	}
 }
 
 
-ubyte getTileIndex() {
-	assert(0);
+//alias getTileIndex = getTileIndexEnemy;
+ubyte getTileIndexEnemy() {
+	tileY = cast(ubyte)(scrollY + enemyTestPointYPos);
+	tileX = cast(ubyte)(scrollX + enemyTestPointXPos);
+	return getTileIndexProjectile();
 }
+ubyte getTileIndexProjectile() {
+	getTilemapAddress();
+	if (gameOverLCDCCopy & 8) {
+		tilemapDest += 0x400;
+	}
+	waitHBlank();
+	const b = vram()[tilemapDest];
+	waitHBlank();
+	return vram()[tilemapDest] & b;
+}
+
 
 void readInput() {
 	writeJoy(0x20);
@@ -2147,17 +2368,220 @@ unittest {
 }
 
 void getTilemapCoordinates() {
-	assert(0);
+	assert(0); // TODO
 }
 
 void unknown230C() {
-	assert(0);
+	assert(0); // TODO
 }
 void oamDMA() {
 	vram()[0xFE00 .. 0xFEA0] = cast(ubyte[])(oamBuffer[]);
 }
 void executeDoorScript() {
-	//assert(0);
+	if (doorIndex) {
+		oamBufferIndex = samusTopOAMOffset;
+		clearUnusedOAMSlots();
+		waitOneFrame();
+		oamDMA();
+		//hl = doorPointerTable[doorIndex]
+		doorScriptBuffer[0 .. doorPointerTable[doorIndex].length] = doorPointerTable[doorIndex][];
+		const(ubyte)* script = &doorScriptBuffer[0];
+		while (true) {
+			if (script[0] == DoorCommand.end) {
+				script++;
+				break;
+			}
+			switch (cast(DoorCommand)(script[0] & 0xF0)) {
+				case DoorCommand.loadData:
+					saveMessageCooldownTimer = 0;
+					saveContactFlag = 0;
+					WY = 0x88;
+					doorLoadGraphics(script);
+					break;
+				case DoorCommand.copyData:
+					saveMessageCooldownTimer = 0;
+					saveContactFlag = 0;
+					WY = 0x88;
+					doorCopyData(script);
+					break;
+				case DoorCommand.tileTable:
+					doorLoadTileTable(script);
+					break;
+				case DoorCommand.collision:
+					doorLoadCollision(script);
+					break;
+				case DoorCommand.solidity:
+					const solidity = solidityIndexTable[script[0] & 0xF];
+					script++;
+					samusSolidityIndex = solidity[0];
+					saveBuf.samusSolidityIndex = solidity[0];
+					enemySolidityIndex = solidity[1];
+					saveBuf.enemySolidityIndex = solidity[1];
+					beamSolidityIndex = solidity[2];
+					saveBuf.beamSolidityIndex = solidity[2];
+					break;
+				case DoorCommand.warp:
+					doorWarp(script);
+					doorExitStatus = 1;
+					queenRoomFlag &= 0xF;
+					break;
+				case DoorCommand.escapeQueen:
+					script++;
+					IE &= ~(1 << 1);
+					samusY = (samusY.screen << 8) | 0xD7;
+					samusX = (samusX.screen << 8) | 0x78;
+					cameraY = (cameraY.screen << 8) | 0xC0;
+					cameraX = (cameraX.screen << 8) | 0x80;
+					vramTransfer.src = &hudBaseTilemap[0];
+					vramTransfer.dest = &(vram()[VRAMDest.statusBar]);
+					vramTransfer.size = 0x14;
+					beginGraphicsTransfer();
+					loadSpawnFlagsRequest = 0;
+					break;
+				case DoorCommand.damage:
+					script++;
+					acidDamageValue = script[0];
+					saveBuf.acidDamageValue = script[0];
+					script++;
+					spikeDamageValue = script[0];
+					saveBuf.spikeDamageValue = script[0];
+					script++;
+					break;
+				case DoorCommand.exitQueen:
+					script++;
+					queenRoomFlag = 0;
+					WY = 0x88;
+					WX = 7;
+					IE &= ~(1 << 1);
+					vramTransfer.src = &hudBaseTilemap[0];
+					vramTransfer.dest = &(vram()[VRAMDest.statusBar]);
+					vramTransfer.size = 0x14;
+					beginGraphicsTransfer();
+					break;
+				case DoorCommand.enterQueen:
+					samusOnScreenYPos = 0;
+					samusOnScreenXPos = 0;
+					oamBufferIndex = 0;
+					soundPlayQueenRoar = 0;
+					songRequest = Song.metroidQueenBattle;
+					clearAllOAM();
+					waitOneFrame();
+					oamDMA();
+					doorQueen(script);
+					doorExitStatus = 1;
+					queenRoomFlag = 0x11;
+					IE |= 1 << 1;
+					break;
+				case DoorCommand.ifMetLess:
+					script++;
+					if (metroidCountReal > (script++)[0]) {
+						script += 2;
+					} else {
+						doorIndex = *cast(const(ushort)*)script;
+						script += 2; // doesn't actually matter since we're loading a new script
+						executeDoorScript();
+					}
+					break;
+				case DoorCommand.fadeout:
+					static immutable ubyte[] fadePaletteTable = [0xFF, 0xFB, 0xE7];
+					script++;
+					waitOneFrame();
+					waitOneFrame();
+					waitOneFrame();
+					waitOneFrame();
+					countdownTimer = 47;
+					while (countdownTimer >= 14) {
+						bgPalette = fadePaletteTable[(countdownTimer & 0xF0) >> 4];
+						obPalette0 = fadePaletteTable[(countdownTimer & 0xF0) >> 4];
+						waitOneFrame();
+					}
+					countdownTimer = 0;
+					break;
+				case DoorCommand.song:
+					if (songInterruptionPlaying != Song2.earthquake) {
+						if ((script[0] & 0xF) != 0xA) {
+							songRequest = cast(Song)script[0];
+							currentRoomSong = cast(Song)script[0];
+							script++;
+							if (currentRoomSong == Song.metroidQueenHallway) {
+								soundPlayQueenRoar = 0xFF;
+								songRequestAfterEarthquake = Song.nothing;
+							} else {
+								songRequestAfterEarthquake = Song.nothing;
+								soundPlayQueenRoar = 0;
+							}
+						} else {
+							songRequest = Song.invalid;
+							currentRoomSong = Song.invalid;
+							songRequestAfterEarthquake = Song.nothing;
+							soundPlayQueenRoar = 0xFF;
+						}
+					} else {
+						if ((script[0] & 0xF) != 0xA) {
+							songRequestAfterEarthquake = cast(Song)script[0];
+							if (songRequestAfterEarthquake == Song.metroidQueenHallway) {
+								soundPlayQueenRoar = 0xFF;
+							} else {
+								soundPlayQueenRoar = 0;
+							}
+						} else {
+							songRequestAfterEarthquake = Song.invalid;
+							soundPlayQueenRoar = 0xFF;
+						}
+					}
+					break;
+				case DoorCommand.item:
+					const itemID = (script[0] - 1) & 0xF;
+					vramTransfer.src = &graphicsItems[itemID][0];
+					vramTransfer.dest = &(vram()[VRAMDest.item]);
+					vramTransfer.size = 0x40;
+					beginGraphicsTransfer();
+					vramTransfer.src = &graphicsItems[11][0];
+					vramTransfer.dest = &(vram()[VRAMDest.itemOrb]);
+					vramTransfer.size = 0x40;
+					beginGraphicsTransfer();
+					vramTransfer.src = &graphicsItemFont[0];
+					vramTransfer.dest = &(vram()[VRAMDest.itemFont]);
+					vramTransfer.size = 0x230;
+					beginGraphicsTransfer();
+
+					vramTransfer.src = &itemTextPointerTable[script[0] & 0xF][0];
+					script++;
+					vramTransfer.dest = &(vram()[VRAMDest.itemText]);
+					vramTransfer.size = 0x10;
+					beginGraphicsTransfer();
+					break;
+				default: assert(0);
+			}
+			waitOneFrame();
+		}
+	}
+	saveLoadSpawnFlagsRequest = doorExitStatus;
+	doorIndex = 0;
+	doorExitStatus = 0;
+	wramUnknownD0A8 = 0;
+}
+
+void doorLoadGraphics(ref const(ubyte)* script) {
+	if (((script++)[0] & 0xF) != 1) {
+		const gfxID = script++[0];
+		vramTransfer.src = enGfx(gfxID);
+		saveBuf.enGfxID = gfxID;
+		vramTransfer.dest = &(vram()[VRAMDest.enemies]);
+		vramTransfer.size = 0x400;
+		beginGraphicsTransfer();
+	} else {
+		const gfxID = script++[0];
+		vramTransfer.src = bgGfx(gfxID);
+		saveBuf.bgGfxID = gfxID;
+		vramTransfer.dest = &(vram()[VRAMDest.bgTiles]);
+		vramTransfer.size = 0x800;
+		beginGraphicsTransfer();
+	}
+}
+
+void doorCopyData(ref const(ubyte)* script) {
+	assert(0); // TODO
 }
 
 void loadGraphics(const GraphicsInfo gfx) {
@@ -2170,7 +2594,7 @@ void loadGraphics(const GraphicsInfo gfx) {
 void convertCameraToScroll() {
 	scrollY = cast(ubyte)(cameraY.pixel - 0x48);
 	scrollX = cast(ubyte)(cameraX.pixel - 0x50);
-	//earthquakeAdjustScroll();
+	earthquakeAdjustScroll();
 }
 
 void beginGraphicsTransfer() {
@@ -2187,20 +2611,164 @@ void beginGraphicsTransfer() {
 }
 
 void animateGettingVaria() {
-	assert(0);
+	assert(0); // TODO
 }
 
-void doorLoadTileTable() {
-	assert(0);
+void doorLoadTileTable(ref const(ubyte)* script) {
+	const tiles = (script++)[0] & 0xF;
+	saveBuf.tiletableID = tiles;
+	tileTableArray[] = metatileTable[tiles][];
+	doorWarpRerender();
 }
-void doorLoadCollision() {
-	assert(0);
+void doorLoadCollision(ref const(ubyte)* script) {
+	const col = (script++)[0] & 0xF;
+	saveBuf.collisionID = col;
+	collisionArray[] = collisionTable[col][];
 }
-void doorQueen() {
-	assert(0);
+void doorQueen(ref const(ubyte)* script) {
+	assert(0); // TODO
 }
-void doorWarp() {
-	assert(0);
+void doorWarp(ref const(ubyte)* script) {
+	currentLevelBank = (script++)[0] & 0xF;
+	saveBuf.currentLevelBank = currentLevelBank;
+	cameraY = cameraY & 0xFF | ((script[0] & 0xF0) << 4);
+	samusY = samusY & 0xFF | ((script[0] & 0xF0) << 4);
+	cameraX = cameraX & 0xFF | ((script[0] & 0xF) << 8);
+	samusX = samusX & 0xFF | ((script[0] & 0xF) << 8);
+	script++;
+	waitOneFrame();
+	doorWarpRerender();
+}
+void doorWarpRerender() {
+	if (doorScrollDirection == DoorDirection.right) {
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpX = (cameraX + 0x50) & 0xFFF;
+		mapSourceXPixel = tmpX.pixel;
+		mapSourceXScreen = tmpX.screen;
+		const tmpY = (cameraY - 0x74) & 0xFFF;
+		mapSourceYPixel = tmpY.pixel;
+		mapSourceYScreen = tmpY.screen;
+		prepMapUpdateColumn();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpX2 = (cameraX + 0x60) & 0xFFF;
+		mapSourceXPixel = tmpX2.pixel;
+		mapSourceXScreen = tmpX2.screen;
+		prepMapUpdateColumn();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpX3 = (cameraX + 0x70) & 0xFFF;
+		mapSourceXPixel = tmpX3.pixel;
+		mapSourceXScreen = tmpX3.screen;
+		prepMapUpdateColumn();
+	}
+	if (doorScrollDirection == DoorDirection.left) {
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpX = (cameraX - 0x60) & 0xFFF;
+		mapSourceXPixel = tmpX.pixel;
+		mapSourceXScreen = tmpX.screen;
+		const tmpY = (cameraY - 0x74) & 0xFFF;
+		mapSourceYPixel = tmpY.pixel;
+		mapSourceYScreen = tmpY.screen;
+		prepMapUpdateColumn();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpX2 = (cameraX - 0x70) & 0xFFF;
+		mapSourceXPixel = tmpX2.pixel;
+		mapSourceXScreen = tmpX2.screen;
+		prepMapUpdateColumn();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpX3 = (cameraX - 0x80) & 0xFFF;
+		mapSourceXPixel = tmpX3.pixel;
+		mapSourceXScreen = tmpX3.screen;
+		prepMapUpdateColumn();
+	}
+	if (doorScrollDirection == DoorDirection.down) {
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpX = (cameraX - 0x80) & 0xFFF;
+		mapSourceXPixel = tmpX.pixel;
+		mapSourceXScreen = tmpX.screen;
+		const tmpY = (cameraY + 0x78) & 0xFFF;
+		mapSourceYPixel = tmpY.pixel;
+		mapSourceYScreen = tmpY.screen;
+		prepMapUpdateRow();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpY2 = (cameraY + 0x68) & 0xFFF;
+		mapSourceYPixel = tmpY2.pixel;
+		mapSourceYScreen = tmpY2.screen;
+		prepMapUpdateRow();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpY3 = (cameraY + 0x58) & 0xFFF;
+		mapSourceYPixel = tmpY3.pixel;
+		mapSourceYScreen = tmpY3.screen;
+		prepMapUpdateRow();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpY4 = (cameraY + 0x48) & 0xFFF;
+		mapSourceYPixel = tmpY4.pixel;
+		mapSourceYScreen = tmpY4.screen;
+		prepMapUpdateRow();
+	}
+	if (doorScrollDirection == DoorDirection.up) {
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpX = (cameraX - 0x80) & 0xFFF;
+		mapSourceXPixel = tmpX.pixel;
+		mapSourceXScreen = tmpX.screen;
+		const tmpY = (cameraY - 0x78) & 0xFFF;
+		mapSourceYPixel = tmpY.pixel;
+		mapSourceYScreen = tmpY.screen;
+		prepMapUpdateRow();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpY2 = (cameraY - 0x68) & 0xFFF;
+		mapSourceYPixel = tmpY2.pixel;
+		mapSourceYScreen = tmpY2.screen;
+		prepMapUpdateRow();
+		waitOneFrame();
+
+		switchMapBank(currentLevelBank);
+		mapUpdate.buffer = &mapUpdateBuffer[0];
+		mapUpdateUnusedVar = 0xFF;
+		const tmpY3 = (cameraY - 0x58) & 0xFFF;
+		mapSourceYPixel = tmpY3.pixel;
+		mapSourceYScreen = tmpY3.screen;
+		prepMapUpdateRow();
+	}
 }
 
 void vblankUpdateMapDuringTransition() {
@@ -2230,7 +2798,7 @@ void vblankVRAMDataTransfer() {
 	vblankDoneFlag = 1;
 }
 void vblankVariaAnimation() {
-	assert(0);
+	assert(0); // TODO
 }
 
 void waitOneFrame() {
@@ -2320,7 +2888,7 @@ void handlePaused() {
 			}
 			spriteYPixel = 0x58;
 			spriteXPixel = cast(ubyte)((debugItemIndex << 3) + 0x69);
-			//debugDrawNumberOneDigit(debugItemIndex);
+			// TODO debugDrawNumberOneDigit(debugItemIndex);
 			spriteYPixel = 0x54;
 			spriteID = 0x36;
 			spriteXPixel = 0x34;
@@ -2357,7 +2925,7 @@ void handlePaused() {
 			}
 			spriteYPixel = 0x68;
 			spriteXPixel = 0x50;
-			//debugDrawNumberTwoDigit(samusActiveWeapon);
+			// TODO debugDrawNumberTwoDigit(samusActiveWeapon);
 			maxOAMPrevFrame = oamBufferIndex;
 			if (inputRisingEdge & Pad.select) {
 				return;
@@ -2389,7 +2957,7 @@ void hurtSamus() {
 	if (samusHurtFlag != 1) {
 		return;
 	}
-	assert(0);
+	assert(0); // TODO
 }
 
 void applyDamageQueenStomach() {
@@ -2437,7 +3005,7 @@ void handleDying() {
 	if (queenRoomFlag == 0x11) {
 		drawSamus();
 		drawHUDMetroid();
-		//queenHandler();
+		queenHandler();
 		clearUnusedOAMSlots();
 	}
 }
@@ -2480,7 +3048,7 @@ void vblankDeathSequence() {
 	SCX = scrollX;
 	oamDMA();
 	if (queenRoomFlag == 0x11) {
-		//vblankDrawQueen();
+		vblankDrawQueen();
 	}
 	vblankDoneFlag = 1;
 }
@@ -2491,20 +3059,28 @@ immutable ubyte[] deathAnimationTable = [
 ];
 
 void unusedDeathAnimation() {
-	assert(0);
+	assert(0); // TODO
 }
 
 void collisionBombEnemies() {
-	assert(0);
+	assert(0); // TODO
 }
 void collisionBombOneEnemy() {
-	assert(0);
+	assert(0); // TODO
 }
-void collisionProjectileEnemies() {
-	assert(0);
+bool collisionProjectileEnemies() {
+	const y = cast(ubyte)(tileY - scrollY);
+	const x = cast(ubyte)(tileX - scrollX);
+	for (int i = 0; i < enemyDataSlots.length; i++) {
+		if (((enemyDataSlots[i].status & 0xF) == 0) && collisionProjectileOneEnemy(&enemyDataSlots[i], x, y)) {
+			return true;
+		}
+	}
+	return false;
 }
-void collisionProjectileOneEnemy() {
-	assert(0);
+bool collisionProjectileOneEnemy(EnemySlot* enemy, ubyte x, ubyte y) {
+	return false;
+	// TODO assert(0);
 }
 bool collisionSamusEnemiesStandard() {
 	if ((samusPose >= SamusPose.eatenByMetroidQueen) || deathFlag || samusInvulnerableTimer || samusSpriteCollisionProcessedFlag) {
@@ -2521,7 +3097,7 @@ bool collisionSamusEnemiesHorizontal() {
 bool collisionSamusEnemies(ubyte x) {
 	samusSpriteCollisionProcessedFlag = 0xFF;
 	for (int i = 0; i < enemyDataSlots.length; i++) {
-		if (((enemyDataSlots[i].u0 & 0xF) == 0) && collisionSamusOneEnemy(&enemyDataSlots[i], x, cast(ubyte)(samusY.pixel - cameraY.pixel + 0x62))) {
+		if (((enemyDataSlots[i].status & 0xF) == 0) && collisionSamusOneEnemy(&enemyDataSlots[i], x, cast(ubyte)(samusY.pixel - cameraY.pixel + 0x62))) {
 			return true;
 		}
 	}
@@ -2568,8 +3144,8 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
 		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != 0xFF)) {
 			samusDamageValue = enemyDamageTable[collisionEnSprite];
-			collisionWeaponType = 16;
-			collisionEnemy = enemy;
+			collision.weaponType = 16;
+			collision.enemy = enemy;
 			return false;
 		}
 	}
@@ -2584,19 +3160,19 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 	}
 	if (enemyDamageTable[collisionEnSprite] == 0xFE) {
 		applyDamageLarvaMetroid();
-		collisionEnemy = enemy;
-		collisionWeaponType = 0x20;
+		collision.enemy = enemy;
+		collision.weaponType = 0x20;
 		return false;
 	}
 	if (enemyDamageTable[collisionEnSprite] == 0) {
-		collisionEnemy = enemy;
-		collisionWeaponType = 0x20;
+		collision.enemy = enemy;
+		collision.weaponType = 0x20;
 		return false;
 	}
 	samusDamageValue = enemyDamageTable[collisionEnSprite];
 	samusHurtFlag = 1;
-	collisionEnemy = enemy;
-	collisionWeaponType = 0x20;
+	collision.enemy = enemy;
+	collision.weaponType = 0x20;
 	return true;
 }
 
@@ -2613,7 +3189,7 @@ bool collisionSamusEnemiesDown(out EnemySlot* enemy) {
 	const tempX = cast(ubyte)(samusX.pixel - cameraX.pixel + 96);
 	for (int i = 0; i < enemyDataSlots.length; i++) {
 		ubyte enemyTop;
-		if (((enemyDataSlots[i].u0 & 0xF) == 0) && (collisionSamusOneEnemyVertical(&enemyDataSlots[i], tempX, tempY, enemyTop))) {
+		if (((enemyDataSlots[i].status & 0xF) == 0) && (collisionSamusOneEnemyVertical(&enemyDataSlots[i], tempX, tempY, enemyTop))) {
 			if (samusDamageValue - 1 >= 0xFE) { //0 or 0xFF
 				samusY = (samusY - enemyTop) & 0xFFF;
 			}
@@ -2632,7 +3208,7 @@ bool collisionSamusEnemiesUp() {
 	const tempX = cast(ubyte)(samusX.pixel - cameraX.pixel + 96);
 	ubyte unused;
 	for (int i = 0; i < enemyDataSlots.length; i++) {
-		if (((enemyDataSlots[i].u0 & 0xF) == 0) && (collisionSamusOneEnemyVertical(&enemyDataSlots[i], tempX, tempY, unused))) {
+		if (((enemyDataSlots[i].status & 0xF) == 0) && (collisionSamusOneEnemyVertical(&enemyDataSlots[i], tempX, tempY, unused))) {
 			return true;
 		}
 	}
@@ -2671,8 +3247,8 @@ bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY
 	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
 		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != 0xFF)) {
 			samusDamageValue = enemyDamageTable[collisionEnSprite];
-			collisionWeaponType = 16;
-			collisionEnemy = enemy;
+			collision.weaponType = 16;
+			collision.enemy = enemy;
 			return false;
 		}
 	}
@@ -2687,19 +3263,19 @@ bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY
 	}
 	if (enemyDamageTable[collisionEnSprite] == 0xFE) {
 		applyDamageLarvaMetroid();
-		collisionEnemy = enemy;
-		collisionWeaponType = 0x20;
+		collision.enemy = enemy;
+		collision.weaponType = 0x20;
 		return false;
 	}
 	if (enemyDamageTable[collisionEnSprite] == 0) {
-		collisionEnemy = enemy;
-		collisionWeaponType = 0x20;
+		collision.enemy = enemy;
+		collision.weaponType = 0x20;
 		return false;
 	}
 	samusDamageValue = enemyDamageTable[collisionEnSprite];
 	samusHurtFlag = 1;
-	collisionEnemy = enemy;
-	collisionWeaponType = 0x20;
+	collision.enemy = enemy;
+	collision.weaponType = 0x20;
 	return false;
 }
 immutable ubyte[] collisionSamusSpriteHitboxTopTable = [
@@ -2767,7 +3343,7 @@ void handleItemPickup() {
 	if (!itemCollected) {
 		return;
 	}
-	assert(0);
+	assert(0); // TODO
 }
 
 GraphicsInfo graphicsInfoPlasma() {
@@ -2816,7 +3392,7 @@ GraphicsInfo graphicsInfoSpringBallBottom() {
 }
 
 void variaLoadExtraGraphics() {
-	assert(0);
+	assert(0); // TODO
 }
 void handleUnusedA() {
 	silenceAudio();
@@ -2900,16 +3476,16 @@ void loadGameSamusItemGraphics() {
 		loadGameCopyItemToVRAM(graphicsInfoSpinScrewBottom);
 	}
 	switch (samusActiveWeapon) {
-		case 1:
+		case ProjectileType.ice:
 			loadGameCopyItemToVRAM(graphicsInfoIce);
 			break;
-		case 3:
+		case ProjectileType.spazer:
 			loadGameCopyItemToVRAM(graphicsInfoSpazer);
 			break;
-		case 2:
+		case ProjectileType.wave:
 			loadGameCopyItemToVRAM(graphicsInfoWave);
 			break;
-		case 4:
+		case ProjectileType.plasma:
 			loadGameCopyItemToVRAM(graphicsInfoPlasma);
 			break;
 		default: break;
@@ -2952,5 +3528,5 @@ void loadScreenSpritePriorityBit() {
 	samusScreenSpritePriority = (roomTransitionIndices[(samusY.screen << 4) | samusX.screen] >> 11) & 1;
 }
 void unusedDeathAnimationCopy() {
-	assert(0);
+	assert(0); // TODO
 }

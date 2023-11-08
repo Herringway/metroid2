@@ -16,6 +16,7 @@ __gshared ubyte gameOverLCDCCopy;
 __gshared ubyte unknownC227;
 
 __gshared ubyte[0x60] oamScratchpad;
+__gshared OAMEntry[16] enSpriteBlobThrower;
 __gshared Rectangle hitboxC360;
 
 __gshared ubyte blobThrowerActionTimer;
@@ -88,7 +89,11 @@ __gshared ubyte loadEnemiesUnusedVar;
 __gshared ubyte loadEnemiesOscillator;
 __gshared ubyte bgCollisionResult;
 __gshared ubyte enemySolidityIndex;
-__gshared ubyte[6] scrollHistoryA;
+struct ScrollHistoryXYPair {
+	ubyte y;
+	ubyte x;
+}
+__gshared ScrollHistoryXYPair[3] scrollHistoryA;
 __gshared ubyte samusDirectionFromEnemy;
 
 __gshared ubyte bottomEdgeScreen;
@@ -129,7 +134,11 @@ __gshared ubyte drawEnemyXPos;
 __gshared ubyte drawEnemySprite;
 __gshared ubyte drawEnemyAttr;
 
-__gshared ubyte[4] scrollHistoryB;
+struct ScrollHistoryB {
+	ubyte[2] y;
+	ubyte[2] x;
+}
+__gshared ScrollHistoryB scrollHistoryB;
 
 __gshared ubyte loadSpawnFlagsRequest;
 
@@ -149,13 +158,13 @@ __gshared ubyte saveLoadSpawnFlagsRequest;
 
 __gshared ubyte scrollEnemiesNumEnemiesLeft;
 
-__gshared ubyte enemyTextPointYPos;
-__gshared ubyte enemyTextPointXPos;
+__gshared ubyte enemyTestPointYPos;
+__gshared ubyte enemyTestPointXPos;
 
 __gshared ubyte omegaTempSpriteType;
-__gshared ubyte* enemyWRAM;
+__gshared EnemySlot* enemyWRAM;
 
-__gshared void* enemyFirstEnemy;
+__gshared EnemySlot[] enemyFirstEnemy;
 __gshared void* drawEnemy;
 
 __gshared ubyte loadEnemyUnusedVarA;
@@ -392,9 +401,7 @@ __gshared ubyte currentLevelBank;
 __gshared ubyte deathAnimTimer;
 __gshared void* deathAltAnimBase;
 __gshared ubyte samusSpriteCollisionProcessedFlag;
-__gshared ubyte collisionWeaponType;
-__gshared void* collisionEnemy;
-__gshared ubyte collisionWeaponDir;
+__gshared EnSprCollision collision;
 
 __gshared ubyte acidContactFlag;
 
@@ -493,7 +500,7 @@ __gshared ubyte gameTimeSeconds;
 __gshared ubyte activeSaveSlot;
 __gshared ubyte titleShowClearOption;
 
-__gshared ubyte songRequestAfterEarthquake;
+__gshared Song songRequestAfterEarthquake;
 __gshared ubyte soundPlayQueenRoar;
 
 __gshared ubyte metroidLCounterDisp;
@@ -506,7 +513,13 @@ __gshared ubyte[0x40] doorScriptBuffer;
 
 __gshared SaveFileData saveBuf;
 
-__gshared ubyte[0x100] respawningBlockArray;
+struct RespawningBlock {
+	ubyte timer;
+	ubyte y;
+	ubyte x;
+	ubyte[14] u;
+}
+__gshared RespawningBlock[0x10] respawningBlockArray;
 __gshared ubyte[0x200] tileTableArray;
 __gshared ubyte[0x100] collisionArray;
 struct Projectile {
@@ -514,10 +527,19 @@ struct Projectile {
 	ubyte direction;
 	ubyte y;
 	ubyte x;
-	ubyte[0xC] u;
+	ubyte waveIndex;
+	ubyte frameCounter;
+	ubyte[0xA] u;
 }
 __gshared Projectile[3] projectileArray;
-__gshared ubyte[0x10][3] bombArray;
+struct Bomb {
+	ubyte type = 0xFF;
+	ubyte timer;
+	ubyte y;
+	ubyte x;
+	ubyte[12] u;
+}
+__gshared Bomb[3] bombArray;
 
 __gshared ubyte[0xA0] unusedDD60;
 __gshared MapUpdateBufferEntry[42] mapUpdateBuffer;
@@ -533,7 +555,7 @@ __gshared GameMode gameMode;
 __gshared MapUpdate mapUpdate;
 __gshared VRAMTransfer vramTransfer;
 
-__gshared void* beamP;
+__gshared Projectile* beamP;
 __gshared ubyte beamType;
 __gshared ubyte beamWaveIndex;
 __gshared ubyte beamFrameCounter;
@@ -590,6 +612,9 @@ struct EnemyWorking {
 	ubyte maxHealth = 0xFF;
 }
 EnemyWorking enemyWorking;
+
+__gshared ubyte enemyFrameCounter;
+__gshared EnemySlot* enemyWRAMAddr;
 
 // Temporary state, but stored in SRAM
 __gshared ubyte[0x800] creditsTextBuffer;

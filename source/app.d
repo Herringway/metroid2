@@ -14,9 +14,11 @@ import std.stdio;
 import siryul;
 
 enum saveFile = "metroid2.sav";
+enum saveFileYAML = "metroid2.yaml";
 
 struct Settings {
 	int zoom = 2;
+	bool yamlSave;
 }
 
 enum settingsFile = "settings.yaml";
@@ -39,8 +41,13 @@ void main() {
 	vram = () { return renderer.ppu.vram; };
 	bgTilemap = &getBGTilemap;
 	windowTilemap = &getWindowTilemap;
-	enableSRAM = &loadSRAM;
-	disableSRAM = &saveSRAM;
+	if (settings.yamlSave) {
+		enableSRAM = &loadSRAMSerialized;
+		disableSRAM = &saveSRAMSerialized;
+	} else {
+		enableSRAM = &loadSRAM;
+		disableSRAM = &saveSRAM;
+	}
 
 	const data = cast(ubyte[])read("metroid2.gb");
 	loadData(data);
@@ -132,9 +139,24 @@ void loadSRAM() {
 	SRAM[1] tmp;
 	file.rawRead(tmp[]);
 	sram = tmp[0];
+	loaded = true;
 }
 void saveSRAM() {
 	import metroid2.sram : SRAM, sram;
 	SRAM[1] tmp = [sram];
 	File(saveFile, "w").rawWrite(tmp[]);
+}
+
+void loadSRAMSerialized() {
+	import metroid2.sram : SRAM, sram;
+	static bool loaded;
+	if (loaded || !saveFileYAML.exists) {
+		return;
+	}
+	sram = fromFile!(SRAM, YAML)(saveFileYAML);
+	loaded = true;
+}
+void saveSRAMSerialized() {
+	import metroid2.sram : sram;
+	sram.toFile!YAML(saveFileYAML);
 }

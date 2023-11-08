@@ -8,6 +8,8 @@ import metroid2.registers;
 import metroid2.sram;
 import libgb;
 
+import std.logger;
+
 immutable OAMEntry[][] samusSpriteTable = [
 	[
 		OAMEntry(-20,-12, 0x00, 0x00),
@@ -774,7 +776,7 @@ void adjustHUDValues() {
 	}
 }
 void debugDrawNumber() {
-	assert(0);
+	assert(0); // TODO
 }
 void drawHUDMetroid() {
 	spriteYPixel = 0x98;
@@ -901,12 +903,14 @@ void drawSamusIgnoreDamageFrames() {
 	}
 	loadScreenSpritePriorityBit();
 	spriteXPixel = cast(ubyte)(samusX.pixel - cameraX.pixel + 0x60);
+	samusOnScreenXPos = spriteXPixel;
 	spriteYPixel = cast(ubyte)(samusY.pixel - cameraY.pixel + 0x62);
+	samusOnScreenYPos = spriteYPixel;
 	spriteAttr = 0;
 	if (acidContactFlag || samusInvulnerableTimer) {
 		spriteAttr = 1;
 	}
-	//drawSamusEarthquakeAdjustment();
+	drawSamusEarthquakeAdjustment();
 	drawSamusSprite();
 	spriteAttr = 0;
 	samusScreenSpritePriority = 0;
@@ -1036,7 +1040,7 @@ auto initialSave = SaveFileData(
 	0x64,
 	0x64,
 	0x00,
-	0x00,
+	ProjectileType.normal,
 	0x00,
 	99,
 	30,
@@ -1051,20 +1055,214 @@ auto initialSave = SaveFileData(
 	39,
 );
 
-Projectile* getFirstEmptyProjectileSlot() {
-	assert(0);
+immutable Square1SFX[] beamSoundTable = [
+	ProjectileType.normal: Square1SFX.shootingBeam,
+	ProjectileType.ice: Square1SFX.shootingIceBeam,
+	ProjectileType.wave: Square1SFX.shootingWaveBeam,
+	ProjectileType.spazer: Square1SFX.shootingSpazerBeam,
+	ProjectileType.plasma: Square1SFX.shootingPlasmaBeam,
+	ProjectileType.unk5: Square1SFX.shootingBeam,
+	ProjectileType.unk6: Square1SFX.shootingBeam,
+	ProjectileType.bomb: Square1SFX.shootingBeam,
+	ProjectileType.missile: Square1SFX.shootingMissile,
+];
+
+size_t getFirstEmptyProjectileSlot() {
+	int result;
+	if (samusActiveWeapon == ProjectileType.missile) {
+		// missiles only use the last slot, so start looking there
+		result = projectileArray.length - 1;
+	}
+	for (; result < projectileArray.length; result++) {
+		if (projectileArray[result].type == 0xFF) {
+			break;
+		}
+	}
+	return result;
 }
 
 void handleProjectiles() {
-	//assert(0);
+	static void checkEnemies() {
+		if (collisionProjectileEnemies()) {
+			beamP.type = 0xFF;
+		}
+	}
+	outerLoop: for (projectileIndex = 0; projectileIndex < projectileArray.length; projectileIndex++) {
+		beamP = &projectileArray[projectileIndex];
+		beamType = beamP.type;
+		weaponType = beamP.type;
+		if (beamP.type == 0xFF) {
+			continue;
+		}
+		ubyte direction = beamP.direction;
+		ubyte y = beamP.y;
+		ubyte x = beamP.x;
+		beamWaveIndex = beamP.waveIndex;
+		beamFrameCounter = cast(ubyte)(beamP.frameCounter + 1);
+		switch (beamType) {
+			case ProjectileType.wave:
+				ubyte waveSpeed;
+				while (true) {
+					waveSpeed = waveSpeedTable[beamWaveIndex];
+					if (waveSpeed != 0x80) {
+						break;
+					}
+					beamWaveIndex = 0;
+				}
+				if (!(direction & (BeamDirection.up | BeamDirection.down))) {
+					y += waveSpeed;
+					beamWaveIndex++;
+					if (!(direction & BeamDirection.left)) {
+						x += waveBeamSpeed + cameraSpeedRight;
+					} else {
+						x -= waveBeamSpeed + cameraSpeedLeft;
+					}
+				} else {
+					x+= waveSpeed;
+					beamWaveIndex++;
+					if (!(direction & BeamDirection.up)) {
+						y += waveBeamSpeed + cameraSpeedDown;
+					} else {
+						y -= waveBeamSpeed + cameraSpeedUp;
+					}
+				}
+				beamP.y = y;
+				tileY = cast(ubyte)(y + 4);
+				beamP.x = x;
+				tileX = cast(ubyte)(x + 4);
+				beamP.waveIndex = beamWaveIndex;
+				if (!(frameCounter & 1)) {
+					 checkEnemies();
+					 continue outerLoop;
+				}
+				const index = getTileIndexProjectile();
+				if (index >= beamSolidityIndex) {
+					 checkEnemies();
+					 continue outerLoop;
+				}
+				if (index < 4) {
+					destroyRespawningBlock();
+				} else if (collisionArray[index] & BlockType.shot) {
+					destroyBlock(/*0xFF*/);
+				}
+				continue outerLoop;
+			case ProjectileType.spazer:
+				if (direction & BeamDirection.right) {
+					spazerSplitVertically(projectileIndex, x, y);
+					x += spazerSpeed + cameraSpeedRight;
+				} else if (direction & BeamDirection.left) {
+					spazerSplitVertically(projectileIndex, x, y);
+					x -= spazerSpeed + cameraSpeedLeft;
+				} else if (direction & BeamDirection.up) {
+					spazerSplitHorizontally(projectileIndex, x, y);
+					y -= spazerSpeed + cameraSpeedUp;
+				} else if (direction & BeamDirection.down) {
+					spazerSplitHorizontally(projectileIndex, x, y);
+					y += spazerSpeed + cameraSpeedDown;
+				}
+				break;
+			case ProjectileType.missile:
+				if (missileSpeedTable[beamFrameCounter] == 0xFF) {
+					beamFrameCounter--;
+				}
+				const speed = missileSpeedTable[beamFrameCounter];
+				if (direction & BeamDirection.right) {
+					x += speed + cameraSpeedRight;
+				} else if (direction & BeamDirection.left) {
+					x -= speed + cameraSpeedLeft;
+				} else if (direction & BeamDirection.up) {
+					y -= speed + cameraSpeedUp;
+				} else if (direction & BeamDirection.down) {
+					y += speed + cameraSpeedDown;
+				}
+				break;
+			default:
+				if (direction & BeamDirection.right) {
+					x += defaultBeamSpeed + cameraSpeedRight;
+					if (beamType == ProjectileType.plasma) {
+						x += plasmaBeamSpeed - defaultBeamSpeed;
+					}
+				} else if (direction & BeamDirection.left) {
+					x -= defaultBeamSpeed + cameraSpeedLeft;
+					if (beamType == ProjectileType.plasma) {
+						x -= plasmaBeamSpeed - defaultBeamSpeed;
+					}
+				} else if (direction & BeamDirection.up) {
+					y -= defaultBeamSpeed + cameraSpeedUp;
+					if (beamType == ProjectileType.plasma) {
+						y -= plasmaBeamSpeed - defaultBeamSpeed;
+					}
+				} else if (direction & BeamDirection.down) {
+					y += defaultBeamSpeed + cameraSpeedDown;
+					if (beamType == ProjectileType.plasma) {
+						y += plasmaBeamSpeed - defaultBeamSpeed;
+					}
+				}
+				break;
+		}
+		beamP.y = y;
+		tileY = cast(ubyte)(y + 4);
+		beamP.x = x;
+		tileX = cast(ubyte)(x + 4);
+		beamP.waveIndex = beamWaveIndex;
+		beamP.frameCounter = beamFrameCounter;
+		if (frameCounter & 1) {
+			const index = getTileIndexProjectile();
+			if (index < beamSolidityIndex) {
+				if (index < 4) {
+					destroyRespawningBlock();
+				} else if (collisionArray[index] & BlockType.shot) {
+					destroyBlock(/*0xFF*/);
+				}
+				if (beamType == ProjectileType.bomb) {
+					bombBeamLayBomb();
+				}
+				if ((beamType == ProjectileType.spazer) || (beamType == ProjectileType.plasma)) {
+					continue;
+				}
+				beamP.type = ProjectileType.invalid; //delete projectile
+			}
+		}
+		checkEnemies();
+	}
+}
+
+immutable ubyte[] waveSpeedTable = [0x00, 0x07, 0x05, 0x02, 0x00, 0xfe, 0xfb, 0xf9, 0x00, 0xf9, 0xfb, 0xfe, 0x00, 0x02, 0x05, 0x07, 0x80];
+immutable ubyte[] waveSpeedTableAlt = [0x0A, 0xF6, 0xF6, 0x0A, 0x0A, 0xF6, 0xF6, 0x0A, 0x0A, 0xF6, 0xF6, 0x0A, 0x80];
+immutable ubyte[] missileSpeedTable = [0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x02, 0x02, 0x02, 0x03, 0x02, 0x02, 0x03, 0x02, 0x03, 0x03, 0x03, 0x03, 0x04, 0xFF];
+
+void spazerSplitVertically(ubyte slot, ref ubyte x, ref ubyte y) {
+	if (beamFrameCounter >= 5) {
+		return;
+	}
+	if (slot == 1) {
+		return;
+	}
+	if (slot == 0) {
+		y -= 2;
+	} else if (slot == 2) {
+		y += 2;
+	}
+}
+void spazerSplitHorizontally(ubyte slot, ref ubyte x, ref ubyte y) {
+	if (beamFrameCounter >= 5) {
+		return;
+	}
+	if (slot == 1) {
+		return;
+	}
+	if (slot == 0) {
+		x -= 2;
+	} else if (slot == 2) {
+		x += 2;
+	}
 }
 
 void drawProjectiles() {
-	projectileIndex = 0;
-	while (projectileIndex < 3) {
+	for (projectileIndex = 0; projectileIndex < projectileArray.length; projectileIndex++) {
 		if (projectileArray[projectileIndex].type != ProjectileType.invalid) {
-			spriteYPixel = projectileArray[projectileIndex].y;
-			spriteXPixel = projectileArray[projectileIndex].x;
+			spriteYPixel = cast(ubyte)(projectileArray[projectileIndex].y - scrollY);
+			spriteXPixel = cast(ubyte)(projectileArray[projectileIndex].x - scrollX);
 			spriteAttr = 0;
 			if (projectileArray[projectileIndex].type == ProjectileType.missile) {
 				spriteID = missileSpriteTileTable[projectileArray[projectileIndex].direction];
@@ -1076,10 +1274,10 @@ void drawProjectiles() {
 				}
 			}
 			if ((spriteXPixel >= 8) && (spriteXPixel < 164) && (spriteYPixel >= 12) && (spriteYPixel < 148)) {
-				oamBuffer[oamBufferIndex].y = spriteYPixel;
-				oamBuffer[oamBufferIndex].x = spriteXPixel;
-				oamBuffer[oamBufferIndex].tile = spriteID;
-				oamBuffer[oamBufferIndex].flags = spriteAttr;
+				oamBuffer[oamBufferIndex / 4].y = spriteYPixel;
+				oamBuffer[oamBufferIndex / 4].x = spriteXPixel;
+				oamBuffer[oamBufferIndex / 4].tile = spriteID;
+				oamBuffer[oamBufferIndex / 4].flags = spriteAttr;
 				oamBufferIndex += 4;
 				spriteAttr = 0;
 			} else {
@@ -1090,6 +1288,336 @@ void drawProjectiles() {
 }
 immutable ubyte[] missileSpriteTileTable = [0x00, 0x98, 0x98, 0x00, 0x99, 0x00, 0x00, 0x00, 0x99];
 immutable ubyte[] missileSpriteAttributeTable = [0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40];
+void bombBeamLayBomb() {
+	assert(0); // TODO
+}
+
+void drawBombs() {
+	for (projectileIndex = 0; projectileIndex < bombArray.length; projectileIndex++) {
+		if (bombArray[projectileIndex].type == BombType.invalid) {
+			continue;
+		}
+		bombMapYPixel = bombArray[projectileIndex].y;
+		spriteYPixel = cast(ubyte)(bombMapYPixel - scrollY);
+		bombMapXPixel = bombArray[projectileIndex].x;
+		spriteXPixel = cast(ubyte)(bombMapXPixel - scrollX);
+		if ((spriteXPixel < 176) && (spriteYPixel < 176)) {
+			if (bombArray[projectileIndex].type == BombType.bomb) {
+				spriteID = cast(ubyte)(53 + ((bombArray[projectileIndex].timer & 8) >> 3));
+				drawSamusSprite();
+			} else {
+				if (bombArray[projectileIndex].timer == 8) {
+					if (samusPose < SamusPose.eatenByMetroidQueen) {
+						bombsSamusAndBGCollision();
+					}
+					spriteID = cast(ubyte)(49 + bombArray[projectileIndex].timer / 2);
+					drawSamusSprite();
+					collisionBombEnemies();
+					sfxRequestNoise = NoiseSFX.u0C;
+				} else {
+					spriteID = cast(ubyte)(49 + bombArray[projectileIndex].timer / 2);
+					drawSamusSprite();
+				}
+			}
+		} else {
+			bombArray[projectileIndex].type = BombType.invalid;
+		}
+	}
+}
+
+void handleBombs() {
+	for (projectileIndex = 0; projectileIndex < bombArray.length; projectileIndex++) {
+		if (bombArray[projectileIndex].type == BombType.invalid) {
+			continue;
+		}
+		if (--bombArray[projectileIndex].timer == 0) {
+			if (bombArray[projectileIndex].type == BombType.explosion) {
+				bombArray[projectileIndex].type = BombType.invalid;
+			} else {
+				bombArray[projectileIndex].type = BombType.explosion;
+				bombArray[projectileIndex].timer = 8;
+			}
+		}
+	}
+	drawBombs();
+}
+
+void bombsSamusAndBGCollision() {
+	assert(0); // TODO
+}
+
+immutable ubyte[] samusBombPoseTable = [
+	SamusPose.standing: SamusPose.standingBombed,
+	SamusPose.jumping: SamusPose.standingBombed,
+	SamusPose.spinJumping: SamusPose.standingBombed,
+	SamusPose.running: SamusPose.standingBombed,
+	SamusPose.crouching: SamusPose.standingBombed,
+	SamusPose.morphBall: SamusPose.morphBallBombed,
+	SamusPose.morphBallJumping: SamusPose.morphBallBombed,
+	SamusPose.falling: SamusPose.standingBombed,
+	SamusPose.morphBallFalling: SamusPose.morphBallBombed,
+	SamusPose.startingToJump: SamusPose.standingBombed,
+	SamusPose.startingToSpinJump: SamusPose.standingBombed,
+	SamusPose.spiderBallRolling: SamusPose.morphBallBombed,
+	SamusPose.spiderBallFalling: SamusPose.morphBallBombed,
+	SamusPose.spiderBallJumping: SamusPose.morphBallBombed,
+	SamusPose.spiderBall: SamusPose.morphBallBombed,
+	SamusPose.knockBack: SamusPose.standingBombed,
+	SamusPose.morphBallKnockBack: SamusPose.morphBallBombed,
+	SamusPose.standingBombed: SamusPose.standingBombed,
+	SamusPose.morphBallBombed: SamusPose.morphBallBombed,
+	SamusPose.facingScreen: SamusPose.standingBombed,
+	SamusPose.facingScreen2: SamusPose.standing,
+	SamusPose.facingScreen3: SamusPose.standing,
+	SamusPose.facingScreen4: SamusPose.standing,
+	SamusPose.facingScreen5: SamusPose.standing,
+	SamusPose.eatenByMetroidQueen: SamusPose.morphBallBombed,
+	SamusPose.inMetroidQueenMouth: SamusPose.morphBallBombed,
+	SamusPose.swallowedByMetroidQueen: SamusPose.swallowedByMetroidQueen,
+	SamusPose.inMetroidQueenStomach: SamusPose.inMetroidQueenStomach,
+	SamusPose.escapingMetroidQueen: SamusPose.escapingMetroidQueen,
+	SamusPose.escapedMetroidQueen: SamusPose.escapedMetroidQueen,
+];
+
+immutable ubyte[2][] samusCannonXOffsetTable = [
+	[ 0x00, 0x00 ],
+	[ 0x18, 0x1C ],
+	[ 0x04, 0x08 ],
+	[ 0x10, 0x10 ],
+	[ 0x0E, 0x12 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+	[ 0x0D, 0x13 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+	[ 0x10, 0x10 ],
+];
+immutable ubyte[] samusCannonYOffsetByPose = [
+	SamusPose.standing: 0x17,
+	SamusPose.jumping: 0x1F,
+	SamusPose.spinJumping: 0x00,
+	SamusPose.running: 0x14,
+	SamusPose.crouching: 0x21,
+	SamusPose.morphBall: 0x00,
+	SamusPose.morphBallJumping: 0x00,
+	SamusPose.falling: 0x1D,
+	SamusPose.morphBallFalling: 0x00,
+	SamusPose.startingToJump: 0x15,
+	SamusPose.startingToSpinJump: 0x15,
+	SamusPose.spiderBallRolling: 0x00,
+	SamusPose.spiderBallFalling: 0x00,
+	SamusPose.spiderBallJumping: 0x00,
+	SamusPose.spiderBall: 0x00,
+	SamusPose.knockBack: 0x1F,
+	SamusPose.morphBallKnockBack: 0x00,
+	SamusPose.standingBombed: 0x1F,
+	SamusPose.morphBallBombed: 0x00,
+];
+
+immutable ubyte[] samusCannonYOffsetByAimDirection = [
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0xF0,
+    0x00,
+    0x00,
+    0x00,
+    0x08,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x1F,
+    0x00,
+    0x00,
+];
+
+immutable ubyte[] samusShotDirectionPriorityTable = [
+    0x00, // ----
+    0x01, // ---r
+    0x02, // --l-
+    0x01, // --lr
+    0x04, // -u--
+    0x04, // -u-r
+    0x04, // -ul-
+    0x04, // -ulr
+    0x08, // d---
+    0x08, // d--r
+    0x08, // d-l-
+    0x08, // d-lr
+    0x08, // du--
+    0x08, // du-r
+    0x08, // dul-
+    0x08, // dulr
+];
+
+immutable ubyte[] samusPossibleShotDirections = [
+	SamusPose.standing: 0x07,
+	SamusPose.jumping: 0x0F,
+	SamusPose.spinJumping: 0x00,
+	SamusPose.running: 0x07,
+	SamusPose.crouching: 0x03,
+	SamusPose.morphBall: 0x80,
+	SamusPose.morphBallJumping: 0x80,
+	SamusPose.falling: 0x0F,
+	SamusPose.morphBallFalling: 0x80,
+	SamusPose.startingToJump: 0x0F,
+	SamusPose.startingToSpinJump: 0x0F,
+	SamusPose.spiderBallRolling: 0x80,
+	SamusPose.spiderBallFalling: 0x80,
+	SamusPose.spiderBallJumping: 0x80,
+	SamusPose.spiderBall: 0x80,
+	SamusPose.knockBack: 0x0F,
+	SamusPose.morphBallKnockBack: 0x80,
+	SamusPose.standingBombed: 0x0F,
+	SamusPose.morphBallBombed: 0x80,
+	SamusPose.facingScreen: 0x00,
+	SamusPose.facingScreen2: 0x00,
+	SamusPose.facingScreen3: 0x00,
+	SamusPose.facingScreen4: 0x00,
+	SamusPose.facingScreen5: 0x00,
+	SamusPose.eatenByMetroidQueen: 0x00,
+	SamusPose.inMetroidQueenMouth: 0x80,
+	SamusPose.swallowedByMetroidQueen: 0x00,
+	SamusPose.inMetroidQueenStomach: 0x80,
+	SamusPose.escapingMetroidQueen: 0x00,
+	SamusPose.escapedMetroidQueen: 0x80,
+];
+
+void destroyRespawningBlock() {
+	int slot;
+	for (slot = 0; slot < respawningBlockArray.length; slot++) {
+		if (respawningBlockArray[slot].timer == 0) {
+			break;
+		}
+	}
+	respawningBlockArray[slot].timer = 1;
+	respawningBlockArray[slot].y = tileY;
+	respawningBlockArray[slot].x = tileX;
+	sfxRequestNoise = NoiseSFX.u04;
+}
+void handleRespawningBlocks() {
+	for (uint i = 0; i < respawningBlockArray.length; i++) {
+		if (respawningBlockArray[i].timer == 0) {
+			continue;
+		}
+		respawningBlockArray[i].timer++;
+		tileY = respawningBlockArray[i].y;
+		if (((tileY - scrollY) & 0xF0) == 0xC0) {
+			respawningBlockArray[i].timer = 0;
+		}
+		tileX = respawningBlockArray[i].x;
+		if (((tileX - scrollX) & 0xF0) == 0xD0) {
+			respawningBlockArray[i].timer = 0;
+		}
+		switch (respawningBlockArray[i].timer) {
+			case 2: return destroyBlockFrameA();
+			case 7: return destroyBlockFrameB();
+			case 13: return destroyBlockEmpty();
+			case 246: return destroyBlockFrameB();
+			case 250: return destroyBlockFrameA();
+			case 254: return destroyBlockReform(respawningBlockArray[i].timer);
+			default: break;
+		}
+	}
+}
+alias destroyBlock = destroyBlockEmpty;
+void destroyBlockEmpty() {
+	getTilemapAddress();
+	tilemapDest &= 0xFFDE; // make sure it's top-left corner
+	waitHBlank();
+	waitHBlank();
+	vram()[tilemapDest + 0x00] = 0xFF;
+	vram()[tilemapDest + 0x01] = 0xFF;
+	vram()[tilemapDest + 0x20] = 0xFF;
+	vram()[tilemapDest + 0x21] = 0xFF;
+	sfxRequestNoise = NoiseSFX.u04;
+}
+void destroyBlockReform(ref ubyte timer) {
+	timer = 0;
+	getTilemapAddress();
+	tilemapDest &= 0xFFDE; // make sure it's top-left corner
+	waitHBlank();
+	waitHBlank();
+	vram()[tilemapDest + 0x00] = 0x00;
+	vram()[tilemapDest + 0x01] = 0x01;
+	vram()[tilemapDest + 0x20] = 0x02;
+	vram()[tilemapDest + 0x21] = 0x03;
+	if (samusInvulnerableTimer) {
+		return;
+	}
+	destroyBlockHurtSamus();
+}
+void destroyBlockFrameA() {
+	getTilemapAddress();
+	tilemapDest &= 0xFFDE; // make sure it's top-left corner
+	waitHBlank();
+	waitHBlank();
+	vram()[tilemapDest + 0x00] = 0x04;
+	vram()[tilemapDest + 0x01] = 0x05;
+	vram()[tilemapDest + 0x20] = 0x06;
+	vram()[tilemapDest + 0x21] = 0x07;
+}
+void destroyBlockFrameB() {
+	getTilemapAddress();
+	tilemapDest &= 0xFFDE; // make sure it's top-left corner
+	waitHBlank();
+	waitHBlank();
+	vram()[tilemapDest + 0x00] = 0x08;
+	vram()[tilemapDest + 0x01] = 0x09;
+	vram()[tilemapDest + 0x20] = 0x0A;
+	vram()[tilemapDest + 0x21] = 0x0B;
+}
+void destroyBlockHurtSamus() {
+	// b = samusHeightTable[samusPose]
+	if (samusY.pixel + 24 - ((tileY - 16) & 0xF0) >= samusHeightTable[samusPose]) {
+		return;
+	}
+	const x = samusX.pixel + 12 - ((tileX - 8) & 0xF0);
+	if (x >= 24) {
+		return;
+	}
+	if (x < 12) {
+		samusDamageBoostDirection = 0xFF; // left
+	} else {
+		samusDamageBoostDirection = 1; // right
+	}
+	samusHurtFlag = 1;
+	samusDamageValue = 2;
+	destroyRespawningBlock();
+}
+
+immutable ubyte[] samusHeightTable = [
+	SamusPose.standing: 0x20,
+	SamusPose.jumping: 0x20,
+	SamusPose.spinJumping: 0x20,
+	SamusPose.running: 0x20,
+	SamusPose.crouching: 0x20,
+	SamusPose.morphBall: 0x10,
+	SamusPose.morphBallJumping: 0x10,
+	SamusPose.falling: 0x20,
+	SamusPose.morphBallFalling: 0x10,
+	SamusPose.startingToJump: 0x20,
+	SamusPose.startingToSpinJump: 0x20,
+	SamusPose.spiderBallRolling: 0x10,
+	SamusPose.spiderBallFalling: 0x10,
+	SamusPose.spiderBallJumping: 0x10,
+	SamusPose.spiderBall: 0x10,
+	SamusPose.knockBack: 0x20,
+	SamusPose.morphBallKnockBack: 0x10,
+	SamusPose.standingBombed: 0x20,
+	SamusPose.morphBallBombed: 0x10,
+];
 
 void miscInGameTasks() {
 	if (saveMessageCooldownTimer) {
@@ -1144,13 +1672,41 @@ void miscInGameTasks() {
 		}
 	}
 	if (fadeInTimer) {
-		//fadeIn();
+		fadeIn();
 	}
 	if (soundPlayQueenRoar && ((frameCounter & 0x7F) == 0)) {
 		sfxRequestNoise = NoiseSFX.u17;
 	}
 }
 
+immutable ubyte[16][] itemTextPointerTable = [
+	fixItemName(" SAVE<>         "),
+	fixItemName("     PLASMA BEAM"),
+	fixItemName("      ICE BEAM  "),
+	fixItemName("     WAVE BEAM  "),
+	fixItemName("      SPAZER    "),
+	fixItemName("        BOMB    "),
+	fixItemName("    SCREW ATTACK"),
+	fixItemName("      VARIA     "),
+	fixItemName(" HIGH JUMP BOOTS"),
+	fixItemName("     SPACE JUMP "),
+	fixItemName("    SPIDER BALL "),
+	fixItemName("   SPRING BALL  "),
+	fixItemName("    ENERGY TANK "),
+	fixItemName("    MISSILE TANK"),
+	fixItemName("       ENERGY   "),
+	fixItemName("      MISSILES  "),
+];
+
+void drawEnemies() {
+	assert(0); // TODO
+}
+void drawEnemySprite() {
+	assert(0); // TODO
+}
+void drawEnemySpriteGetInfo(EnemySlot* enemy) {
+	assert(0); // TODO
+}
 void drawNonGameSprite() {
 	auto de = &creditsSpritePointerTable[spriteID][0];
 	auto hl = &oamBuffer[oamBufferIndex / 4];
@@ -1590,6 +2146,49 @@ immutable OAMEntry[][] creditsSpritePointerTable = [
 		OAMEntry(metaSpriteEnd),
 	]
 ];
+
+void earthquakeAdjustScroll() {
+	if (!earthquakeTimer) {
+		return;
+	}
+	scrollY += (earthquakeTimer & 2) - 1;
+	if (frameCounter & 1) {
+		return;
+	}
+	if (--earthquakeTimer) {
+		return;
+	}
+	songInterruptionRequest = Song2.nothing;
+	if (queenRoomFlag < 0x10) {
+		if (songRequestAfterEarthquake) {
+			songRequest = songRequestAfterEarthquake;
+			currentRoomSong = songRequestAfterEarthquake;
+			songRequestAfterEarthquake = Song.nothing;
+		} else {
+			songInterruptionRequest = Song2.endRequest;
+		}
+	} else {
+		songRequest = Song.babyMetroid; // THE BABY
+	}
+}
+
+void drawSamusEarthquakeAdjustment() {
+	if (earthquakeTimer == 0) {
+		return;
+	}
+	spriteYPixel += ((earthquakeTimer & 4) >> 1) - 1;
+}
+
+void fadeIn() {
+	bgPalette = fadeTable[(fadeInTimer & 0xF0) >> 4];
+	obPalette0 = fadeTable[(fadeInTimer & 0xF0) >> 4];
+	if (--fadeInTimer >= 0xE) {
+		return;
+	}
+	fadeInTimer = 0;
+}
+
+immutable ubyte[] fadeTable = [0x93, 0xE7, 0xFB];
 
 void saveEnemyFlagsToSRAM() {
 	for (int i = 0; i < enemySpawnFlagsSaved.length; i++) {

@@ -11,6 +11,9 @@ import metroid2.globals;
 import metroid2.registers;
 import metroid2.sram;
 
+public import metroid2.doors;
+
+
 void creditsDrawTimerDigits() {
 	assert(0);
 }
@@ -83,7 +86,7 @@ void titleScreenRoutine() {
 		spriteID = 1;
 		drawNonGameSprite();
 	}
-	//titleClearUnusedOAMSlots();
+	// TODO titleClearUnusedOAMSlots();
 	if (inputRisingEdge == Pad.select) {
 		sfxRequestSquare1 = Square1SFX.select;
 		titleShowClearOption ^= 0xFF;
@@ -115,7 +118,7 @@ void titleScreenRoutine() {
 	debugFlag = 0;
 	bgPalette = 0x93;
 	if (titleClearSelected) {
-		//clearSaveBranch
+		// TODO clearSaveBranch
 	}
 	sfxRequestSquare1 = Square1SFX.select;
 	songRequest = Song.samusFanfare;

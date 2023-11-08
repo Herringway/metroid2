@@ -20,3 +20,5 @@ dub.selections.json
 *.bin
 *.sav
 settings.yaml
+metroid2.yaml
+.vs

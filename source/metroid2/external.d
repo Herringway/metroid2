@@ -14,3 +14,7 @@ __gshared TilemapFunc windowTilemap = &defaultTilemapFunc;
 
 __gshared void function() disableSRAM = () {};
 __gshared void function() enableSRAM = () {};
+
+void waitHBlank() {
+	//while (STAT & 3) {} // wait for hblank
+}

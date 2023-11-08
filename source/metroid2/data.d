@@ -40,6 +40,9 @@ void loadData(const ubyte[] sourceData) {
 	loadDatum(graphicsLavaCavesA, sourceData, 0x01E800, 0x530);
 	loadDatum(graphicsLavaCavesB, sourceData, 0x01ED30, 0x530);
 	loadDatum(graphicsLavaCavesC, sourceData, 0x01F260, 0x530);
+	foreach (idx, ref itemGfx; graphicsItems) {
+		loadDatum(itemGfx, sourceData, 0x01F790 + idx * 0x40, 0x40);
+	}
 	loadDatum(graphicsCommonItems, sourceData, 0x01FA90, 0x100);
 
 	loadDatum(bgQueenHead, sourceData, 0x020000, 0x80);
@@ -93,6 +96,7 @@ const(ubyte)[] graphicsSurfaceBG;
 const(ubyte)[] graphicsLavaCavesA;
 const(ubyte)[] graphicsLavaCavesB;
 const(ubyte)[] graphicsLavaCavesC;
+const(ubyte)[][12] graphicsItems;
 const(ubyte)[] graphicsCommonItems;
 const(ubyte)[] bgQueenHead;
 const(ubyte)[] graphicsMetAlpha;
