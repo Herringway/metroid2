@@ -568,9 +568,9 @@ void handleCamera() {
 	if (cameraSpeedRight) {
 		cameraX = (cameraX + cameraSpeedRight) & 0xFFF;
 		cameraScrollDirection |= ScrollDirection.right;
-		if (samusX.pixel - cameraX.pixel + 96 >= 64) {
+		if (samusX - cameraX + 96 >= 64) {
 			cameraX = (cameraX + 1) & 0xFFF;
-		} else if (samusX.pixel - cameraX.pixel + 96 < 63) {
+		} else if (samusX - cameraX + 96 < 63) {
 			cameraX = (cameraX - 1) & 0xFFF;
 		}
 	}
@@ -592,9 +592,9 @@ void handleCamera() {
 	if (cameraSpeedLeft) {
 		cameraX = (cameraX - cameraSpeedLeft) & 0xFFF;
 		cameraScrollDirection |= ScrollDirection.left;
-		if (samusX.pixel - cameraX.pixel + 96 < 112) {
+		if (samusX - cameraX + 96 < 112) {
 			cameraX = (cameraX - 1) & 0xFFF;
-		} else if (samusX.pixel - cameraX.pixel + 96 >= 113) {
+		} else if (samusX - cameraX + 96 >= 113) {
 			cameraX = (cameraX + 1) & 0xFFF;
 		}
 	}
