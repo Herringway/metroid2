@@ -1,19 +1,39 @@
 module metroid2.external;
 
-__gshared void function() waitNextFrameExternal = () {};
-__gshared void function(ubyte) writeJoy = (ubyte) {};
-__gshared ubyte function() readJoy = () { return ubyte(0xF); };
-alias TilemapFunc = ref ubyte[0x400] function();
-private ref ubyte[0x400] defaultTilemapFunc() {
-	static ubyte[0x400] buf;
-	return buf;
-}
-__gshared ubyte[] function() vram = () { return cast(ubyte[])[]; };
-__gshared TilemapFunc bgTilemap = &defaultTilemapFunc;
-__gshared TilemapFunc windowTilemap = &defaultTilemapFunc;
+import metroid2.sram;
 
-__gshared void function() disableSRAM = () {};
-__gshared void function() enableSRAM = () {};
+import libgb;
+
+struct GameSettings {}
+
+GameBoySimple!(GameSettings, sram) gb;
+
+void waitNextFrameExternal() {
+	gb.wait();
+}
+void writeJoy(ubyte v) {
+	gb.writeJoy(v);
+}
+ubyte readJoy() {
+	return gb.readJoy();
+}
+
+ubyte[] vram() {
+	return gb.vram;
+}
+ref ubyte[0x400] bgTilemap() {
+	return gb.getBGTilemap();
+}
+ref ubyte[0x400] windowTilemap() {
+	return gb.getWindowTilemap();
+}
+
+void disableSRAM() {
+	gb.disableSRAM();
+}
+void enableSRAM() {
+	gb.enableSRAM();
+}
 
 void waitHBlank() {
 	//while (STAT & 3) {} // wait for hblank
