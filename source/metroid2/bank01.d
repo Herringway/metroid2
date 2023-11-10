@@ -842,64 +842,64 @@ void drawSamus() {
 void drawSamusIgnoreDamageFrames() {
 	if (samusPose & 0x80) {
 		drawSamusFaceScreen();
-		return;
-	}
-	const b = samusFacingDirection ? 1 : 2;
-	const tmp1 = cutsceneActive ? b : (((inputPressed & (Pad.down | Pad.up | Pad.left | Pad.right)) >> 4) | b);
-	switch (samusPose) {
-		case SamusPose.standing:
-			drawSamusStanding(tmp1);
-			break;
-		case SamusPose.jumping:
-		case SamusPose.falling:
-			drawSamusJump(tmp1);
-			break;
-		case SamusPose.spinJumping:
-			drawSamusSpinJump();
-			break;
-		case SamusPose.running:
-			drawSamusRun();
-			break;
-		case SamusPose.crouching:
-			drawSamusCrouch();
-			break;
-		case SamusPose.morphBall:
-		case SamusPose.morphBallJumping:
-		case SamusPose.morphBallFalling:
-		case SamusPose.morphBallKnockBack:
-		case SamusPose.morphBallBombed:
-		case SamusPose.eatenByMetroidQueen:
-		case SamusPose.inMetroidQueenMouth:
-		case SamusPose.swallowedByMetroidQueen:
-		case SamusPose.inMetroidQueenStomach:
-		case SamusPose.escapingMetroidQueen:
-		case SamusPose.escapedMetroidQueen:
-			drawSamusMorph();
-			break;
-		case SamusPose.startingToJump:
-		case SamusPose.startingToSpinJump:
-			drawSamusJumpStart();
-			break;
-		case SamusPose.spiderBallRolling:
-		case SamusPose.spiderBallFalling:
-		case SamusPose.spiderBallJumping:
-		case SamusPose.spiderBall:
-			drawSamusSpider();
-			break;
-		case SamusPose.knockBack:
-		case SamusPose.standingBombed:
-			drawSamusKnockback();
-			break;
-		case SamusPose.facingScreen:
-		case SamusPose.facingScreen2:
-		case SamusPose.facingScreen3:
-		case SamusPose.facingScreen4:
-		case SamusPose.facingScreen5:
-			if (!drawSamusFaceScreen()) {
-				return;
-			}
-			break;
-		default: assert(0);
+	} else {
+		const b = samusFacingDirection ? 1 : 2;
+		const tmp1 = cutsceneActive ? b : (((inputPressed & (Pad.down | Pad.up | Pad.left | Pad.right)) >> 4) | b);
+		switch (samusPose) {
+			case SamusPose.standing:
+				drawSamusStanding(tmp1);
+				break;
+			case SamusPose.jumping:
+			case SamusPose.falling:
+				drawSamusJump(tmp1);
+				break;
+			case SamusPose.spinJumping:
+				drawSamusSpinJump();
+				break;
+			case SamusPose.running:
+				drawSamusRun();
+				break;
+			case SamusPose.crouching:
+				drawSamusCrouch();
+				break;
+			case SamusPose.morphBall:
+			case SamusPose.morphBallJumping:
+			case SamusPose.morphBallFalling:
+			case SamusPose.morphBallKnockBack:
+			case SamusPose.morphBallBombed:
+			case SamusPose.eatenByMetroidQueen:
+			case SamusPose.inMetroidQueenMouth:
+			case SamusPose.swallowedByMetroidQueen:
+			case SamusPose.inMetroidQueenStomach:
+			case SamusPose.escapingMetroidQueen:
+			case SamusPose.escapedMetroidQueen:
+				drawSamusMorph();
+				break;
+			case SamusPose.startingToJump:
+			case SamusPose.startingToSpinJump:
+				drawSamusJumpStart();
+				break;
+			case SamusPose.spiderBallRolling:
+			case SamusPose.spiderBallFalling:
+			case SamusPose.spiderBallJumping:
+			case SamusPose.spiderBall:
+				drawSamusSpider();
+				break;
+			case SamusPose.knockBack:
+			case SamusPose.standingBombed:
+				drawSamusKnockback();
+				break;
+			case SamusPose.facingScreen:
+			case SamusPose.facingScreen2:
+			case SamusPose.facingScreen3:
+			case SamusPose.facingScreen4:
+			case SamusPose.facingScreen5:
+				if (!drawSamusFaceScreen()) {
+					return;
+				}
+				break;
+			default: assert(0);
+		}
 	}
 	loadScreenSpritePriorityBit();
 	spriteXPixel = cast(ubyte)(samusX.pixel - cameraX.pixel + 0x60);
