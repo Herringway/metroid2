@@ -2,6 +2,7 @@ module metroid2.bank01;
 
 import metroid2.bank00;
 import metroid2.defs;
+import metroid2.enemies;
 import metroid2.external;
 import metroid2.globals;
 import metroid2.registers;
@@ -902,7 +903,7 @@ void drawSamusIgnoreDamageFrames() {
 		}
 	}
 	loadScreenSpritePriorityBit();
-	spriteXPixel = cast(ubyte)(samusX.pixel - cameraX.pixel + 0x60);
+	spriteXPixel = cast(ubyte)(samusX - cameraX + 0x60);
 	samusOnScreenXPos = spriteXPixel;
 	spriteYPixel = cast(ubyte)(samusY.pixel - cameraY.pixel + 0x62);
 	samusOnScreenYPos = spriteYPixel;
@@ -1040,7 +1041,7 @@ auto initialSave = SaveFileData(
 	0x64,
 	0x64,
 	0x00,
-	ProjectileType.normal,
+	CollisionType.powerBeam,
 	0x00,
 	99,
 	30,
@@ -1056,25 +1057,25 @@ auto initialSave = SaveFileData(
 );
 
 immutable Square1SFX[] beamSoundTable = [
-	ProjectileType.normal: Square1SFX.shootingBeam,
-	ProjectileType.ice: Square1SFX.shootingIceBeam,
-	ProjectileType.wave: Square1SFX.shootingWaveBeam,
-	ProjectileType.spazer: Square1SFX.shootingSpazerBeam,
-	ProjectileType.plasma: Square1SFX.shootingPlasmaBeam,
-	ProjectileType.unk5: Square1SFX.shootingBeam,
-	ProjectileType.unk6: Square1SFX.shootingBeam,
-	ProjectileType.bomb: Square1SFX.shootingBeam,
-	ProjectileType.missile: Square1SFX.shootingMissile,
+	CollisionType.powerBeam: Square1SFX.shootingBeam,
+	CollisionType.iceBeam: Square1SFX.shootingIceBeam,
+	CollisionType.waveBeam: Square1SFX.shootingWaveBeam,
+	CollisionType.spazer: Square1SFX.shootingSpazerBeam,
+	CollisionType.plasmaBeam: Square1SFX.shootingPlasmaBeam,
+	CollisionType.unk5: Square1SFX.shootingBeam,
+	CollisionType.unk6: Square1SFX.shootingBeam,
+	CollisionType.bombs: Square1SFX.shootingBeam,
+	CollisionType.missiles: Square1SFX.shootingMissile,
 ];
 
 size_t getFirstEmptyProjectileSlot() {
 	int result;
-	if (samusActiveWeapon == ProjectileType.missile) {
+	if (samusActiveWeapon == CollisionType.missiles) {
 		// missiles only use the last slot, so start looking there
 		result = projectileArray.length - 1;
 	}
 	for (; result < projectileArray.length; result++) {
-		if (projectileArray[result].type == 0xFF) {
+		if (projectileArray[result].type == CollisionType.nothing) {
 			break;
 		}
 	}
@@ -1084,23 +1085,24 @@ size_t getFirstEmptyProjectileSlot() {
 void handleProjectiles() {
 	static void checkEnemies() {
 		if (collisionProjectileEnemies()) {
-			beamP.type = 0xFF;
+			beamP.type = CollisionType.nothing;
 		}
 	}
 	outerLoop: for (projectileIndex = 0; projectileIndex < projectileArray.length; projectileIndex++) {
 		beamP = &projectileArray[projectileIndex];
 		beamType = beamP.type;
 		weaponType = beamP.type;
-		if (beamP.type == 0xFF) {
+		if (beamP.type == CollisionType.nothing) {
 			continue;
 		}
 		ubyte direction = beamP.direction;
+		weaponDirection = direction;
 		ubyte y = beamP.y;
 		ubyte x = beamP.x;
 		beamWaveIndex = beamP.waveIndex;
 		beamFrameCounter = cast(ubyte)(beamP.frameCounter + 1);
 		switch (beamType) {
-			case ProjectileType.wave:
+			case CollisionType.waveBeam:
 				ubyte waveSpeed;
 				while (true) {
 					waveSpeed = waveSpeedTable[beamWaveIndex];
@@ -1146,7 +1148,7 @@ void handleProjectiles() {
 					destroyBlock(/*0xFF*/);
 				}
 				continue outerLoop;
-			case ProjectileType.spazer:
+			case CollisionType.spazer:
 				if (direction & BeamDirection.right) {
 					spazerSplitVertically(projectileIndex, x, y);
 					x += spazerSpeed + cameraSpeedRight;
@@ -1161,7 +1163,7 @@ void handleProjectiles() {
 					y += spazerSpeed + cameraSpeedDown;
 				}
 				break;
-			case ProjectileType.missile:
+			case CollisionType.missiles:
 				if (missileSpeedTable[beamFrameCounter] == 0xFF) {
 					beamFrameCounter--;
 				}
@@ -1179,22 +1181,22 @@ void handleProjectiles() {
 			default:
 				if (direction & BeamDirection.right) {
 					x += defaultBeamSpeed + cameraSpeedRight;
-					if (beamType == ProjectileType.plasma) {
+					if (beamType == CollisionType.plasmaBeam) {
 						x += plasmaBeamSpeed - defaultBeamSpeed;
 					}
 				} else if (direction & BeamDirection.left) {
 					x -= defaultBeamSpeed + cameraSpeedLeft;
-					if (beamType == ProjectileType.plasma) {
+					if (beamType == CollisionType.plasmaBeam) {
 						x -= plasmaBeamSpeed - defaultBeamSpeed;
 					}
 				} else if (direction & BeamDirection.up) {
 					y -= defaultBeamSpeed + cameraSpeedUp;
-					if (beamType == ProjectileType.plasma) {
+					if (beamType == CollisionType.plasmaBeam) {
 						y -= plasmaBeamSpeed - defaultBeamSpeed;
 					}
 				} else if (direction & BeamDirection.down) {
 					y += defaultBeamSpeed + cameraSpeedDown;
-					if (beamType == ProjectileType.plasma) {
+					if (beamType == CollisionType.plasmaBeam) {
 						y += plasmaBeamSpeed - defaultBeamSpeed;
 					}
 				}
@@ -1214,13 +1216,13 @@ void handleProjectiles() {
 				} else if (collisionArray[index] & BlockType.shot) {
 					destroyBlock(/*0xFF*/);
 				}
-				if (beamType == ProjectileType.bomb) {
+				if (beamType == CollisionType.bombs) {
 					bombBeamLayBomb();
 				}
-				if ((beamType == ProjectileType.spazer) || (beamType == ProjectileType.plasma)) {
+				if ((beamType == CollisionType.spazer) || (beamType == CollisionType.plasmaBeam)) {
 					continue;
 				}
-				beamP.type = ProjectileType.invalid; //delete projectile
+				beamP.type = CollisionType.nothing; //delete projectile
 			}
 		}
 		checkEnemies();
@@ -1260,11 +1262,11 @@ void spazerSplitHorizontally(ubyte slot, ref ubyte x, ref ubyte y) {
 
 void drawProjectiles() {
 	for (projectileIndex = 0; projectileIndex < projectileArray.length; projectileIndex++) {
-		if (projectileArray[projectileIndex].type != ProjectileType.invalid) {
+		if (projectileArray[projectileIndex].type != CollisionType.nothing) {
 			spriteYPixel = cast(ubyte)(projectileArray[projectileIndex].y - scrollY);
 			spriteXPixel = cast(ubyte)(projectileArray[projectileIndex].x - scrollX);
 			spriteAttr = 0;
-			if (projectileArray[projectileIndex].type == ProjectileType.missile) {
+			if (projectileArray[projectileIndex].type == CollisionType.missiles) {
 				spriteID = missileSpriteTileTable[projectileArray[projectileIndex].direction];
 				spriteAttr = missileSpriteAttributeTable[projectileArray[projectileIndex].direction];
 			} else {
@@ -1281,7 +1283,7 @@ void drawProjectiles() {
 				oamBufferIndex += 4;
 				spriteAttr = 0;
 			} else {
-				projectileArray[projectileIndex].type = ProjectileType.invalid;
+				projectileArray[projectileIndex].type = CollisionType.nothing;
 			}
 		}
 	}
@@ -1579,7 +1581,6 @@ void destroyBlockFrameB() {
 	vram()[tilemapDest + 0x21] = 0x0B;
 }
 void destroyBlockHurtSamus() {
-	// b = samusHeightTable[samusPose]
 	if (samusY.pixel + 24 - ((tileY - 16) & 0xF0) >= samusHeightTable[samusPose]) {
 		return;
 	}
@@ -1699,13 +1700,47 @@ immutable ubyte[16][] itemTextPointerTable = [
 ];
 
 void drawEnemies() {
-	assert(0); // TODO
+	if (numEnemies.active == 0) {
+		return;
+	}
+	for (int i = 0; i < enemyDataSlots.length; i++) {
+		drawEnemy = &enemyDataSlots[i];
+		if (enemyDataSlots[i].status == 0) {
+			drawEnemySprite(&enemyDataSlots[i]);
+		}
+	}
 }
-void drawEnemySprite() {
-	assert(0); // TODO
+void drawEnemySprite(EnemySlot* enemy) {
+	drawEnemySpriteGetInfo(enemy);
+	auto sprite = (enemySpriteTable[drawEnemySpr] == null) ? &enSpriteBlobThrower[0] : &enemySpriteTable[drawEnemySpr][0];
+	auto dest = &oamBuffer[oamBufferIndex / 4];
+	while (true) {
+		if (sprite.y == metaSpriteEnd) {
+			break;
+		}
+		byte y = sprite.y;
+		if (drawEnemyAttr & OAMFlags.yFlip) {
+			y = cast(byte)(-sprite.y - 8);
+		}
+		dest.y = cast(ubyte)(y + drawEnemyYPos);
+
+		byte x = sprite.x;
+		if (drawEnemyAttr & OAMFlags.xFlip) {
+			x = cast(byte)(-sprite.x - 8);
+		}
+		dest.x = cast(ubyte)(x + drawEnemyXPos);
+		dest.tile = sprite.tile;
+		dest.flags = drawEnemyAttr ^ sprite.flags;
+		oamBufferIndex += 4;
+		sprite++;
+		dest++;
+	}
 }
 void drawEnemySpriteGetInfo(EnemySlot* enemy) {
-	assert(0); // TODO
+	drawEnemyYPos = enemy.y;
+	drawEnemyXPos = enemy.x;
+	drawEnemySpr = enemy.spriteType;
+	drawEnemyAttr = (enemy.baseSpriteAttributes ^ enemy.spriteAttributes ^ enemy.stunCounter) & 0xF0;
 }
 void drawNonGameSprite() {
 	auto de = &creditsSpritePointerTable[spriteID][0];
@@ -1718,12 +1753,12 @@ void drawNonGameSprite() {
 		}
 		byte y = de.y;
 		if (spriteAttr & OAMFlags.yFlip) {
-			y = cast(byte)(-y - 7);
+			y = cast(byte)(-y - 8);
 		}
 		hl.y = cast(ubyte)(y + spriteYPixel);
 		byte x = de.x;
 		if (spriteAttr & OAMFlags.xFlip) {
-			x = cast(byte)(-x - 7);
+			x = cast(byte)(-x - 8);
 		}
 		hl.x = cast(ubyte)(x + spriteXPixel);
 		hl.tile = de.tile;

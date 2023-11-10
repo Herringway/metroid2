@@ -58,48 +58,80 @@ enum VRAMDest {
 }
 
 enum Actor {
-	skreek1 = 0x04, // Skreek
+	tsumuriRight = 0x00, // Tsumari
+	tsumuriLeft = 0x01, // Tsumari
+	tsumuri2 = 0x02, // Tsumari
+	tsumuri3 = 0x03, // Tsumari
+	skreek = 0x04, // Skreek
+	skreek2 = 0x05, // Skreek
 	skreek3 = 0x06, // Skreek
 	skreek4 = 0x07, // Skreek
 	skreekSpit = 0x08, // Skreek projectile
-	drivel1 = 0x09, // Drivel
+	drivel = 0x09, // Drivel
+	drivel2 = 0x0A, // Drivel
 	drivel3 = 0x0B, // Drivel
+	drivelSpit = 0x0C, // Drivel
+	drivelSpit2 = 0x0D, // Drivel projectile
 	drivelSpit3 = 0x0E, // Drivel projectile
 	drivelSpit4 = 0x0F, // Drivel projectile
+	drivelSpit5 = 0x10, // Drivel projectile
 	drivelSpit6 = 0x11, // Drivel projectile
-	gawron1 = 0x17, // Gawron
+	smallBug = 0x12, // Small bugs
+	smallBug2 = 0x13, // Small bugs
+	hornoad = 0x14, // Hornoad
+	hornoad2 = 0x15, // Hornoad
+	senjoo = 0x16, // Senjoo
+	gawron = 0x17, // Gawron
 	gawron2 = 0x18, // Gawron
-	chuteleech1 = 0x1B, // Chute leech
-	chuteleech2 = 0x1C, // Chute leech
-	chuteleech3 = 0x1D, // Chute leech
+	pipeBug = 0x19, // Pipe bug
+	pipeBug2 = 0x1A, // Pipe bug
+	chuteLeech = 0x1B, // Chute leech
+	chuteLeech2 = 0x1C, // Chute leech
+	chuteLeech3 = 0x1D, // Chute leech
 	autrackFlipped = 0x1E, // (uses same spritemap as 41h autrack)
 	wallfireFlipped = 0x1F, // (uses same spritemap as 4Ah wallfire)
+	needlerRight = 0x20, // Needler (facing right)
+	needlerLeft = 0x21, // Needler (facing left)
+	needler3 = 0x22, // Needler
+	needler4 = 0x23, // Needler
+	actor24 = 0x24, // Unknown (0x24)
+	actor25 = 0x25, // Unknown (0x25)
+	actor26 = 0x26, // Unknown (0x26)
+	actor27 = 0x27, // Unknown (0x27)
+	skorpUp = 0x28, // Skorp (facing up)
+	skorpDown = 0x29, // Skorp (facing down)
+	skorpRight = 0x2A, // Skorp (facing right)
+	skorpLeft = 0x2B, // Skorp (facing left)
 	glowflyIdle1 = 0x2C, // Glow fly
 	glowflyIdle2 = 0x2D, // Glow fly
 	glowflyWindup = 0x2E, // Glow fly
 	glowflyMoving = 0x2F, // Glow fly
-	rockicicleIdle1 = 0x34, // Rock icicle
-	rockicicleIdle2 = 0x35, // Rock icicle
-	rockicicleMoving1 = 0x36, // Rock icicle
-	rockicicleMoving2 = 0x37, // Rock icicle
+	moheekRight = 0x30, // Moheek (facing right)
+	moheekLeft = 0x31, // Moheek (facing left)
+	rockIcicleIdle1 = 0x34, // Rock icicle
+	rockIcicleIdle2 = 0x35, // Rock icicle
+	rockIcicleMoving1 = 0x36, // Rock icicle
+	rockIcicleMoving2 = 0x37, // Rock icicle
 	yumee1 = 0x38, // Yumee
 	yumee2 = 0x39, // Yumee
 	yumee3 = 0x3A, // Yumee
 	yumeeSpawner = 0x3C, // Yumee spawner?
+	yumeeSpawner2 = 0x3D, // Yumee spawner?
 	octroll1 = 0x3E, // Octroll
-	octroll3 = 0x40, // Octroll
-	autrack1 = 0x41, // Autrack
+	octroll = 0x40, // Octroll
+	autrack = 0x41, // Autrack
 	autrack3 = 0x43, // Autrack
 	autrack4 = 0x44, // Autrack
 	autrackLaser = 0x45, // Autrack projectile
+	autoad = 0x46, // Autoad
 	autoad2 = 0x47, // Autoad
-	wallfire1 = 0x4A, // Wallfire
+	wallfire = 0x4A, // Wallfire
 	wallfire2 = 0x4B, // Wallfire
 	wallfireDead = 0x4C, // Wallfire
 	wallfireShot1 = 0x4D, // Wallfire projectile
 	wallfireShot3 = 0x4F, // Wallfire projectile
 	wallfireShot4 = 0x50, // Wallfire projectile
-	gunzoo1 = 0x51, // Gunzoo
+	gunzoo = 0x51, // Gunzoo
 	gunzoo3 = 0x53, // Gunzoo
 	gunzooDiagshot1 = 0x54, // Gunzoo diagonal projectile
 	gunzooDiagshot2 = 0x55, // Gunzoo diagonal projectile
@@ -107,39 +139,71 @@ enum Actor {
 	gunzooHShot1 = 0x57, // Gunzoo horizontal projectile
 	gunzooHShot3 = 0x59, // Gunzoo horizontal projectile
 	gunzooHShot5 = 0x5B, // Gunzoo horizontal projectile
-	autom1 = 0x5C, // Autom
+	autom = 0x5C, // Autom
 	autom2 = 0x5D, // Autom
 	automShot1 = 0x5E, // Autom projectile
 	automShot3 = 0x60, // Autom projectile
-	shirk1 = 0x63, // Shirk
+	shirk = 0x63, // Shirk
 	shirk2 = 0x64, // Shirk
-	moto2 = 0x68, // Moto
+	septogg = 0x65, // Septogg
+	moto = 0x68, // Moto
+	halzyn = 0x6A, // Halzyn
+	ramulken = 0x6B, // Ramulken
+	metroidStinger = 0x6D, // Metroid music sting trigger
 	proboscumFlipped = 0x6E, // (uses same spritemap as 72h proboscum)
 	proboscum1 = 0x72, // Proboscum
 	proboscum2 = 0x73, // Proboscum
 	proboscum3 = 0x74, // Proboscum
+	missileBlock = 0x75, // Missile block
 	arachnusRoll1 = 0x76, // Arachnus
 	arachnusUpright1 = 0x78, // Arachnus
 	arachnusUpright2 = 0x79, // Arachnus
 	arachnusUpright3 = 0x7A, // Arachnus
 	arachnusFireball1 = 0x7B, // Arachnus projectile
 	arachnusFireball2 = 0x7C, // Arachnus projectile
+	plasmaBeamOrb = 0x80, // Plasma beam
+	plasmaBeam = 0x81, // Plasma beam (orbless)
 	itemBaseID = 0x81, // Plasma beam
-	queenBentNeck = 0x82, // Ice beam orb (and bent neck of Queen’s vomiting pose!?)
-	springBallItem = 0x95, // Spring ball
+	iceBeamOrb = 0x82, //  bent neck of Queen’s vomiting pose!?
+	queenBentNeck = 0x82, //  bent neck of Queen’s vomiting pose!?
+	iceBeam = 0x83, // Ice beam orb
+	waveBeamOrb = 0x84, //  Wave beam
+	waveBeam = 0x85, // Wave beam (orbless)
+	spazerOrb = 0x86, //  Spazer
+	spazer = 0x87, // Spazer (orbless)
+	bombsOrb = 0x88, //  Bombs
+	bombs = 0x89, // Bombs (orbless)
+	screwAttackOrb = 0x8A, //  Screw Attack
+	screwAttack = 0x8B, // Screw Attack (orbless)
+	variaSuitOrb = 0x8C, // Hi jump boots orb
+	variaSuit = 0x8D, // Hi jump boots (orbless)
+	hiJumpBootsOrb = 0x8E, // Hi jump boots orb
+	hiJumpBoots = 0x8F, // Hi jump boots (orbless)
+	spaceJumpOrb = 0x90, // Space jump
+	spaceJump = 0x91, // Space jump (orbless)
+	spiderBallOrb = 0x92, // Spider ball
+	spiderBall = 0x93, // Spider ball (orbless)
+	springBallOrb = 0x94, // Spring ball
+	springBall = 0x95, // Spring ball (orbless)
+	energyTankOrb = 0x96, // Energy tank
+	energyTank = 0x97, // Energy tank (orbless)
+	missileTankOrb = 0x98, // Missile tank
+	missileTank = 0x99, // Missile tank (orbless)
+	blobThrower = 0x9A, // Blob thrower
 	energyRefill = 0x9B, // Energy refill
+	arachnusOrb = 0x9C, // Arachnus (Orb)
 	missileRefill = 0x9D, // Missile refill
 	blob1 = 0x9E, // Blob thrower projectile
 	blob2 = 0x9F, // Blob thrower projectile
 	metroid1 = 0xA0, // Metroid
 	alphaFace = 0xA1, // Metroid hatching
 	alpha1 = 0xA3, // Alpha metroid
-	alpha2 = 0xA4, // Alpha metroid
+	alphaMetroid = 0xA4, // Alpha metroid
 	egg1 = 0xA5, // Baby metroid egg
 	egg2 = 0xA6, // Baby metroid egg
 	egg3 = 0xA7, // Baby metroid egg
 	baby1 = 0xA8, // Baby metroid
-	gamma1 = 0xAD, // Gamma metroid
+	zetaMetroid = 0xAD, // Gamma metroid
 	gammaBolt1 = 0xAE, // Gamma metroid projectile
 	gammaBolt2 = 0xAF, // Gamma metroid projectile
 	gamma2 = 0xB0, // Gamma metroid
@@ -158,14 +222,15 @@ enum Actor {
 	omegaShot1 = 0xC6, // Omega metroid projectile
 	omegaShot3 = 0xC8, // Omega metroid projectile
 	omegaShot7 = 0xCC, // Omega metroid projectile
-	metroid2 = 0xCE, // Metroid
+	metroid = 0xCE, // Metroid
 	metroid3 = 0xCF, // Metroid (hurt)
-	flitt1 = 0xD0, // Flitt
-	flitt2 = 0xD1, // Flitt
-	gravitt1 = 0xD3, // Gravitt
+	flittVanishing = 0xD0, // Flitt
+	flittMoving = 0xD1, // Flitt
+	gravitt = 0xD3, // Gravitt
 	gravitt5 = 0xD7, // Gravitt
-	gullugg1 = 0xD8, // Gullugg
+	gullugg = 0xD8, // Gullugg
 	gullugg3 = 0xDA, // Gullugg
+	babyMetroidEggPreview = 0xDB, // Baby metroid egg (preview)
 	smallHealth = 0xE0, // Small health drop
 	screwExplosionStart = 0xE2, // Metroid death / missile door / screw attack explosion
 	screwExplosionEnd = 0xE7, // Metroid death / missile door / screw attack explosion
@@ -183,6 +248,7 @@ enum Actor {
 	queenMouthStunned = 0xF7, // Metroid Queen mouth stunned (no graphics)
 	missileDoor = 0xF8, // Missile door
 	flittInvisible = 0xFD, // Nothing - flitt (no graphics)
+	invalid = 0xFF, // No enemy
 }
 
 enum BlockType {
@@ -274,6 +340,7 @@ enum Square1SFX {
 	variaSuitTransformation = 0x1D,
 	unpaused = 0x1E,
 	u2D = 0x2D,
+	clear = 0xFF,
 }
 
 enum Square2SFX {
@@ -285,6 +352,7 @@ enum Square2SFX {
 	babyMetroidCry = 5,
 	metroidQueenHurtCry = 6,
 	u7 = 7,
+	invalid = 0xFF,
 }
 
 enum NoiseSFX {
@@ -451,19 +519,6 @@ enum EnemyTileSet {
 	surfaceSPR = 11,
 }
 
-enum ProjectileType {
-	normal = 0,
-	ice = 1,
-	wave = 2,
-	spazer = 3,
-	plasma = 4,
-	unk5 = 5,
-	unk6 = 6,
-	bomb = 7,
-	missile = 8,
-	invalid = 0xFF,
-}
-
 enum BombType {
 	bomb = 1,
 	explosion = 2,
@@ -518,19 +573,60 @@ enum SpecialDoorCopyDest {
 	screen1r4,
 }
 
+enum CollisionType {
+	powerBeam = 0,
+	iceBeam = 1,
+	waveBeam = 2,
+	spazer = 3,
+	plasmaBeam = 4,
+	unk5 = 5,
+	unk6 = 6,
+	bombs = 7,
+	missiles = 8,
+	bombExplosion = 9,
+	screwAttack = 16,
+	contact = 32,
+	nothing = 255,
+}
+
+enum ItemID {
+	plasmaBeam = 0,
+	iceBeam = 1,
+	waveBeam = 2,
+	spazer = 3,
+	bombs = 4,
+	screwAttack = 5,
+	variaSuit = 6,
+	hiJumpBoots = 7,
+	spaceJump = 8,
+	spiderBall = 9,
+	springBall = 10,
+	energyTank = 11,
+	missileTank = 12,
+	energyRefill = 13,
+	missileRefill = 14,
+}
+
 struct EnemySlot {
 	align(1):
 	ubyte status;
 	ubyte y;
 	ubyte x;
-	ubyte spriteType;
-	ubyte attributes;
-	ubyte[5] u5;
+	Actor spriteType;
+	ubyte baseSpriteAttributes;
+	ubyte spriteAttributes;
+	ubyte stunCounter;
+	ubyte misc;
+	ubyte directionFlags;
+	ubyte counter;
+	ubyte state;
 	ubyte iceCounter;
-	ubyte[4] uB;
+	ubyte health;
+	ubyte dropType;
+	ubyte explosionFlag;
 	ubyte yScreen;
 	ubyte xScreen;
-	ubyte u11;
+	ubyte maxHealth;
 	ubyte u12;
 	ubyte u13;
 	ubyte u14;
@@ -541,9 +637,9 @@ struct EnemySlot {
 	ubyte u19;
 	ubyte u1A;
 	ubyte u1B;
-	ubyte u1C;
-	ubyte u1D;
-	const(void)* u1E;
+	ubyte spawnFlag;
+	ubyte spawnNumber;
+	void function() ai;
 }
 
 struct MapUpdate {
@@ -579,14 +675,21 @@ struct Rectangle {
 	byte right;
 }
 
+struct EnemySpawn {
+	ubyte spawnNumber;
+	Actor id;
+	ubyte x;
+	ubyte y;
+}
+
 struct EnemyData {
 	ubyte baseSpriteAttributes;
 	ubyte spriteAttributes;
 	ubyte stunCounter;
 	ubyte misc;
-	ubyte flags;
-	ubyte unk6;
-	ubyte unk7;
+	ubyte directionFlags;
+	ubyte counter;
+	ubyte state;
 	ubyte iceCounter;
 	ubyte health;
 	void function() ai;

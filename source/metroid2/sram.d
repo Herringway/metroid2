@@ -16,7 +16,7 @@ struct SaveFileData {
 	ubyte enemySolidityIndex;
 	ubyte beamSolidityIndex;
 	ubyte samusItems;
-	ubyte samusBeam;
+	CollisionType samusBeam;
 	ubyte samusEnergyTanks;
 	ushort samusHealth;
 	ushort samusMaxMissiles;

@@ -4,7 +4,9 @@ import metroid2.bank02;
 import metroid2.defs;
 import metroid2.globals;
 
-immutable ubyte[][][] enemyDataPointers = [
+import libgb;
+
+immutable EnemySpawn[][][] enemyDataPointers = [
 	[
 		enemyBank9_00, enemyBank9_01, enemyBank9_02, enemyBank9_03, enemyBank9_04, enemyBank9_05, enemyBank9_06, enemyBank9_07, enemyBank9_08, enemyBank9_09, enemyBank9_0A, enemyBank9_0B, enemyBank9_0C, enemyBank9_0D, enemyBank9_0E, enemyBank9_0F,
 		enemyBank9_10, enemyBank9_11, enemyBank9_12, enemyBank9_13, enemyBank9_14, enemyBank9_15, enemyBank9_16, enemyBank9_17, enemyBank9_18, enemyBank9_19, enemyBank9_1A, enemyBank9_1B, enemyBank9_1C, enemyBank9_1D, enemyBank9_1E, enemyBank9_1F,
@@ -128,2055 +130,6304 @@ immutable ubyte[][][] enemyDataPointers = [
 ];
 
 
-immutable ubyte[] enemyBank9_00 = [ 0xFF ];
-immutable ubyte[] enemyBank9_01 = [ 0x65,0x99,0x88,0x18, 0xFF ];
-immutable ubyte[] enemyBank9_02 = [ 0x67,0x97,0x48,0x18, 0xFF ];
-immutable ubyte[] enemyBank9_03 = [ 0xFF ];
-immutable ubyte[] enemyBank9_04 = [ 0xFF ];
-immutable ubyte[] enemyBank9_05 = [ 0xFF ];
-immutable ubyte[] enemyBank9_06 = [ 0xFF ];
-immutable ubyte[] enemyBank9_07 = [ 0xFF ];
-immutable ubyte[] enemyBank9_08 = [ 0xFF ];
-immutable ubyte[] enemyBank9_09 = [ 0xFF ];
-immutable ubyte[] enemyBank9_0A = [ 0xFF ];
-immutable ubyte[] enemyBank9_0B = [ 0xFF ];
-immutable ubyte[] enemyBank9_0C = [ 0xFF ];
-immutable ubyte[] enemyBank9_0D = [ 0xFF ];
-immutable ubyte[] enemyBank9_0E = [ 0xFF ];
-immutable ubyte[] enemyBank9_0F = [ 0xFF ];
-immutable ubyte[] enemyBank9_10 = [ 0xFF ];
-immutable ubyte[] enemyBank9_11 = [ 0xFF ];
-immutable ubyte[] enemyBank9_12 = [ 0xFF ];
-immutable ubyte[] enemyBank9_13 = [ 0xFF ];
-immutable ubyte[] enemyBank9_14 = [ 0xFF ];
-immutable ubyte[] enemyBank9_15 = [ 0xFF ];
-immutable ubyte[] enemyBank9_16 = [ 0xFF ];
-immutable ubyte[] enemyBank9_17 = [ 0xFF ];
-immutable ubyte[] enemyBank9_18 = [ 0xFF ];
-immutable ubyte[] enemyBank9_19 = [ 0x1F,0x9A,0x00,0x88, 0xFF ];
-immutable ubyte[] enemyBank9_1A = [ 0x1D,0x1B,0x60,0x9C, 0x1E,0x1B,0xA0,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_1B = [ 0x1C,0x9A,0xA0,0x88, 0xFF ];
-immutable ubyte[] enemyBank9_1C = [ 0x16,0x16,0x70,0x60, 0x17,0x16,0x98,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_1D = [ 0xFF ];
-immutable ubyte[] enemyBank9_1E = [ 0xFF ];
-immutable ubyte[] enemyBank9_1F = [ 0xFF ];
-immutable ubyte[] enemyBank9_20 = [ 0x1D,0x68,0xC0,0x98, 0xFF ];
-immutable ubyte[] enemyBank9_21 = [ 0x1E,0x6B,0xF8,0xA0, 0xFF ];
-immutable ubyte[] enemyBank9_22 = [ 0x60,0x97,0x78,0xB8, 0xFF ];
-immutable ubyte[] enemyBank9_23 = [ 0x1F,0x68,0x30,0x96, 0xFF ];
-immutable ubyte[] enemyBank9_24 = [ 0xFF ];
-immutable ubyte[] enemyBank9_25 = [ 0xFF ];
-immutable ubyte[] enemyBank9_26 = [ 0x66,0x99,0xC8,0x18, 0xFF ];
-immutable ubyte[] enemyBank9_27 = [ 0x23,0x12,0xA0,0xC0, 0x24,0x12,0xC0,0x70, 0x25,0x12,0xE0,0x20, 0xFF ];
-immutable ubyte[] enemyBank9_28 = [ 0xFF ];
-immutable ubyte[] enemyBank9_29 = [ 0xFF ];
-immutable ubyte[] enemyBank9_2A = [ 0xFF ];
-immutable ubyte[] enemyBank9_2B = [ 0xFF ];
-immutable ubyte[] enemyBank9_2C = [ 0x18,0x16,0x98,0x40, 0x19,0x16,0x98,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_2D = [ 0xFF ];
-immutable ubyte[] enemyBank9_2E = [ 0xFF ];
-immutable ubyte[] enemyBank9_2F = [ 0xFF ];
-immutable ubyte[] enemyBank9_30 = [ 0x25,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_31 = [ 0xFF ];
-immutable ubyte[] enemyBank9_32 = [ 0xFF ];
-immutable ubyte[] enemyBank9_33 = [ 0x20,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_34 = [ 0xFF ];
-immutable ubyte[] enemyBank9_35 = [ 0xFF ];
-immutable ubyte[] enemyBank9_36 = [ 0x26,0x16,0x50,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_37 = [ 0x21,0x12,0x60,0x60, 0x22,0x12,0x80,0x10, 0xFF ];
-immutable ubyte[] enemyBank9_38 = [ 0xFF ];
-immutable ubyte[] enemyBank9_39 = [ 0xFF ];
-immutable ubyte[] enemyBank9_3A = [ 0xFF ];
-immutable ubyte[] enemyBank9_3B = [ 0xFF ];
-immutable ubyte[] enemyBank9_3C = [ 0x1A,0x16,0x98,0x40, 0x1B,0x16,0x98,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_3D = [ 0xFF ];
-immutable ubyte[] enemyBank9_3E = [ 0xFF ];
-immutable ubyte[] enemyBank9_3F = [ 0xFF ];
-immutable ubyte[] enemyBank9_40 = [ 0x26,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_41 = [ 0xFF ];
-immutable ubyte[] enemyBank9_42 = [ 0xFF ];
-immutable ubyte[] enemyBank9_43 = [ 0x21,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_44 = [ 0xFF ];
-immutable ubyte[] enemyBank9_45 = [ 0xFF ];
-immutable ubyte[] enemyBank9_46 = [ 0x28,0x16,0x50,0x80, 0x27,0x16,0x60,0x00, 0xFF ];
-immutable ubyte[] enemyBank9_47 = [ 0xFF ];
-immutable ubyte[] enemyBank9_48 = [ 0xFF ];
-immutable ubyte[] enemyBank9_49 = [ 0xFF ];
-immutable ubyte[] enemyBank9_4A = [ 0xFF ];
-immutable ubyte[] enemyBank9_4B = [ 0xFF ];
-immutable ubyte[] enemyBank9_4C = [ 0x14,0x1B,0xA8,0x9C, 0x15,0x16,0xF8,0x50, 0xFF ];
-immutable ubyte[] enemyBank9_4D = [ 0xFF ];
-immutable ubyte[] enemyBank9_4E = [ 0x12,0x1B,0x30,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_4F = [ 0xFF ];
-immutable ubyte[] enemyBank9_50 = [ 0x27,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_51 = [ 0xFF ];
-immutable ubyte[] enemyBank9_52 = [ 0xFF ];
-immutable ubyte[] enemyBank9_53 = [ 0x22,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_54 = [ 0xFF ];
-immutable ubyte[] enemyBank9_55 = [ 0xFF ];
-immutable ubyte[] enemyBank9_56 = [ 0x29,0x16,0x60,0x00, 0xFF ];
-immutable ubyte[] enemyBank9_57 = [ 0xFF ];
-immutable ubyte[] enemyBank9_58 = [ 0xFF ];
-immutable ubyte[] enemyBank9_59 = [ 0xFF ];
-immutable ubyte[] enemyBank9_5A = [ 0xFF ];
-immutable ubyte[] enemyBank9_5B = [ 0xFF ];
-immutable ubyte[] enemyBank9_5C = [ 0x0F,0x9B,0x90,0x74, 0x26,0x12,0xB8,0x88, 0xFF ];
-immutable ubyte[] enemyBank9_5D = [ 0xFF ];
-immutable ubyte[] enemyBank9_5E = [ 0x11,0x16,0xB0,0x50, 0xFF ];
-immutable ubyte[] enemyBank9_5F = [ 0x10,0x16,0x50,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_60 = [ 0x28,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_61 = [ 0xFF ];
-immutable ubyte[] enemyBank9_62 = [ 0xFF ];
-immutable ubyte[] enemyBank9_63 = [ 0x23,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_64 = [ 0x2E,0x1B,0xD8,0xCC, 0xFF ];
-immutable ubyte[] enemyBank9_65 = [ 0x2C,0x1B,0x30,0xCC, 0x2D,0x1B,0xB0,0xCC, 0xFF ];
-immutable ubyte[] enemyBank9_66 = [ 0x2A,0x21,0x10,0xA8, 0x2B,0x20,0x30,0x68, 0xFF ];
-immutable ubyte[] enemyBank9_67 = [ 0x24,0x6A,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_68 = [ 0xFF ];
-immutable ubyte[] enemyBank9_69 = [ 0x25,0x6A,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_6A = [ 0x28,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_6B = [ 0x18,0x12,0x40,0x40, 0x19,0x12,0x80,0x58, 0x1A,0x12,0xC0,0x94, 0xFF ];
-immutable ubyte[] enemyBank9_6C = [ 0x1B,0x12,0x40,0x94, 0x1C,0x12,0x80,0x58, 0x1D,0x12,0xC0,0x44, 0xFF ];
-immutable ubyte[] enemyBank9_6D = [ 0x27,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_6E = [ 0xFF ];
-immutable ubyte[] enemyBank9_6F = [ 0xFF ];
-immutable ubyte[] enemyBank9_70 = [ 0x29,0x6A,0x80,0x40, 0xFF ];
-immutable ubyte[] enemyBank9_71 = [ 0xFF ];
-immutable ubyte[] enemyBank9_72 = [ 0xFF ];
-immutable ubyte[] enemyBank9_73 = [ 0x0F,0x9D,0x18,0x88, 0xFF ];
-immutable ubyte[] enemyBank9_74 = [ 0xFF ];
-immutable ubyte[] enemyBank9_75 = [ 0xFF ];
-immutable ubyte[] enemyBank9_76 = [ 0xFF ];
-immutable ubyte[] enemyBank9_77 = [ 0x33,0xD3,0xF0,0xA4, 0xFF ];
-immutable ubyte[] enemyBank9_78 = [ 0x34,0xD3,0xC0,0xA4, 0xFF ];
-immutable ubyte[] enemyBank9_79 = [ 0xFF ];
-immutable ubyte[] enemyBank9_7A = [ 0xFF ];
-immutable ubyte[] enemyBank9_7B = [ 0xFF ];
-immutable ubyte[] enemyBank9_7C = [ 0xFF ];
-immutable ubyte[] enemyBank9_7D = [ 0x1E,0x6E,0xB8,0x40, 0x1F,0x6E,0xC0,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_7E = [ 0xFF ];
-immutable ubyte[] enemyBank9_7F = [ 0xFF ];
-immutable ubyte[] enemyBank9_80 = [ 0x2A,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_81 = [ 0xFF ];
-immutable ubyte[] enemyBank9_82 = [ 0xFF ];
-immutable ubyte[] enemyBank9_83 = [ 0x16,0x6A,0xB8,0xB0, 0xFF ];
-immutable ubyte[] enemyBank9_84 = [ 0x1C,0x12,0x80,0x80, 0x61,0x99,0xE8,0xE8, 0xFF ];
-immutable ubyte[] enemyBank9_85 = [ 0xFF ];
-immutable ubyte[] enemyBank9_86 = [ 0xFF ];
-immutable ubyte[] enemyBank9_87 = [ 0xFF ];
-immutable ubyte[] enemyBank9_88 = [ 0xFF ];
-immutable ubyte[] enemyBank9_89 = [ 0x29,0x12,0xB8,0x40, 0x2A,0x12,0xB8,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_8A = [ 0xFF ];
-immutable ubyte[] enemyBank9_8B = [ 0xFF ];
-immutable ubyte[] enemyBank9_8C = [ 0xFF ];
-immutable ubyte[] enemyBank9_8D = [ 0x62,0x99,0x48,0xA8, 0x20,0x6E,0xB8,0x3C, 0x21,0x6E,0xB8,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_8E = [ 0xFF ];
-immutable ubyte[] enemyBank9_8F = [ 0xFF ];
-immutable ubyte[] enemyBank9_90 = [ 0x2B,0x6A,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_91 = [ 0xFF ];
-immutable ubyte[] enemyBank9_92 = [ 0xFF ];
-immutable ubyte[] enemyBank9_93 = [ 0x15,0x6A,0xB8,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_94 = [ 0x1B,0x12,0xA8,0x70, 0xFF ];
-immutable ubyte[] enemyBank9_95 = [ 0xFF ];
-immutable ubyte[] enemyBank9_96 = [ 0x31,0xD3,0xF0,0xA4, 0xFF ];
-immutable ubyte[] enemyBank9_97 = [ 0x32,0xD3,0x40,0xA4, 0xFF ];
-immutable ubyte[] enemyBank9_98 = [ 0xFF ];
-immutable ubyte[] enemyBank9_99 = [ 0x35,0xD3,0xC0,0xA4, 0xFF ];
-immutable ubyte[] enemyBank9_9A = [ 0x36,0xD3,0x88,0xA4, 0xFF ];
-immutable ubyte[] enemyBank9_9B = [ 0xFF ];
-immutable ubyte[] enemyBank9_9C = [ 0xFF ];
-immutable ubyte[] enemyBank9_9D = [ 0x22,0x6E,0xB8,0x48, 0x23,0x6E,0xC0,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_9E = [ 0xFF ];
-immutable ubyte[] enemyBank9_9F = [ 0xFF ];
-immutable ubyte[] enemyBank9_A0 = [ 0x2C,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_A1 = [ 0xFF ];
-immutable ubyte[] enemyBank9_A2 = [ 0xFF ];
-immutable ubyte[] enemyBank9_A3 = [ 0x14,0x6A,0xB8,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_A4 = [ 0x1A,0x12,0xB0,0x50, 0xFF ];
-immutable ubyte[] enemyBank9_A5 = [ 0xFF ];
-immutable ubyte[] enemyBank9_A6 = [ 0x0F,0x9D,0x28,0x98, 0xFF ];
-immutable ubyte[] enemyBank9_A7 = [ 0xFF ];
-immutable ubyte[] enemyBank9_A8 = [ 0xFF ];
-immutable ubyte[] enemyBank9_A9 = [ 0xFF ];
-immutable ubyte[] enemyBank9_AA = [ 0xFF ];
-immutable ubyte[] enemyBank9_AB = [ 0xFF ];
-immutable ubyte[] enemyBank9_AC = [ 0xFF ];
-immutable ubyte[] enemyBank9_AD = [ 0xFF ];
-immutable ubyte[] enemyBank9_AE = [ 0xFF ];
-immutable ubyte[] enemyBank9_AF = [ 0xFF ];
-immutable ubyte[] enemyBank9_B0 = [ 0x2D,0x6A,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBank9_B1 = [ 0xFF ];
-immutable ubyte[] enemyBank9_B2 = [ 0xFF ];
-immutable ubyte[] enemyBank9_B3 = [ 0x13,0x6A,0xB8,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_B4 = [ 0x19,0x12,0xA8,0x70, 0xFF ];
-immutable ubyte[] enemyBank9_B5 = [ 0xFF ];
-immutable ubyte[] enemyBank9_B6 = [ 0xFF ];
-immutable ubyte[] enemyBank9_B7 = [ 0xFF ];
-immutable ubyte[] enemyBank9_B8 = [ 0x27,0xD8,0x48,0x80, 0x0E,0x9D,0x48,0x97, 0xFF ];
-immutable ubyte[] enemyBank9_B9 = [ 0x28,0xD8,0x48,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_BA = [ 0x29,0xD8,0x48,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_BB = [ 0x2A,0xD8,0x48,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_BC = [ 0x2B,0xD8,0x48,0x80, 0x0F,0x9B,0x48,0x94, 0xFF ];
-immutable ubyte[] enemyBank9_BD = [ 0xFF ];
-immutable ubyte[] enemyBank9_BE = [ 0xFF ];
-immutable ubyte[] enemyBank9_BF = [ 0xFF ];
-immutable ubyte[] enemyBank9_C0 = [ 0x2E,0x6A,0x80,0x40, 0xFF ];
-immutable ubyte[] enemyBank9_C1 = [ 0xFF ];
-immutable ubyte[] enemyBank9_C2 = [ 0xFF ];
-immutable ubyte[] enemyBank9_C3 = [ 0x12,0x6A,0xB8,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_C4 = [ 0x18,0x12,0xA8,0x70, 0xFF ];
-immutable ubyte[] enemyBank9_C5 = [ 0xFF ];
-immutable ubyte[] enemyBank9_C6 = [ 0xFF ];
-immutable ubyte[] enemyBank9_C7 = [ 0xFF ];
-immutable ubyte[] enemyBank9_C8 = [ 0x19,0x1B,0xE0,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_C9 = [ 0x1A,0x1B,0x40,0x9C, 0x1B,0x1B,0xC0,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_CA = [ 0x1C,0x1B,0x40,0x9C, 0x1D,0x1B,0xC0,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_CB = [ 0x1E,0x1B,0x40,0x9C, 0x1F,0x1B,0xC0,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_CC = [ 0x20,0x1B,0x80,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_CD = [ 0x21,0x1B,0x20,0x9C, 0x22,0xD8,0x60,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_CE = [ 0x23,0xD8,0x00,0x80, 0x24,0xD8,0x60,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_CF = [ 0xFF ];
-immutable ubyte[] enemyBank9_D0 = [ 0x2F,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_D1 = [ 0xFF ];
-immutable ubyte[] enemyBank9_D2 = [ 0xFF ];
-immutable ubyte[] enemyBank9_D3 = [ 0x1F,0x6A,0xB8,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_D4 = [ 0x17,0x12,0x88,0x80, 0xFF ];
-immutable ubyte[] enemyBank9_D5 = [ 0xFF ];
-immutable ubyte[] enemyBank9_D6 = [ 0x13,0xD8,0x98,0x80, 0x14,0x1B,0xF0,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_D7 = [ 0x15,0x1B,0x40,0x9C, 0x16,0x1B,0xC0,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_D8 = [ 0x17,0x1B,0x00,0x9C, 0x18,0x1B,0x50,0x9C, 0xFF ];
-immutable ubyte[] enemyBank9_D9 = [ 0xFF ];
-immutable ubyte[] enemyBank9_DA = [ 0xFF ];
-immutable ubyte[] enemyBank9_DB = [ 0xFF ];
-immutable ubyte[] enemyBank9_DC = [ 0xFF ];
-immutable ubyte[] enemyBank9_DD = [ 0xFF ];
-immutable ubyte[] enemyBank9_DE = [ 0xFF ];
-immutable ubyte[] enemyBank9_DF = [ 0xFF ];
-immutable ubyte[] enemyBank9_E0 = [ 0x30,0x6A,0x80,0x40, 0xFF ];
-immutable ubyte[] enemyBank9_E1 = [ 0xFF ];
-immutable ubyte[] enemyBank9_E2 = [ 0xFF ];
-immutable ubyte[] enemyBank9_E3 = [ 0x10,0x6A,0xF0,0x60, 0xFF ];
-immutable ubyte[] enemyBank9_E4 = [ 0xFF ];
-immutable ubyte[] enemyBank9_E5 = [ 0x10,0x1B,0xB8,0xBC, 0xFF ];
-immutable ubyte[] enemyBank9_E6 = [ 0x11,0x1B,0x00,0xBC, 0x12,0xD8,0x40,0x60, 0xFF ];
-immutable ubyte[] enemyBank9_E7 = [ 0xFF ];
-immutable ubyte[] enemyBank9_E8 = [ 0xFF ];
-immutable ubyte[] enemyBank9_E9 = [ 0xFF ];
-immutable ubyte[] enemyBank9_EA = [ 0xFF ];
-immutable ubyte[] enemyBank9_EB = [ 0xFF ];
-immutable ubyte[] enemyBank9_EC = [ 0xFF ];
-immutable ubyte[] enemyBank9_ED = [ 0x26,0x1B,0xB8,0xBC, 0xFF ];
-immutable ubyte[] enemyBank9_EE = [ 0x25,0x1B,0x58,0xAC, 0xFF ];
-immutable ubyte[] enemyBank9_EF = [ 0xFF ];
-immutable ubyte[] enemyBank9_F0 = [ 0xFF ];
-immutable ubyte[] enemyBank9_F1 = [ 0xFF ];
-immutable ubyte[] enemyBank9_F2 = [ 0xFF ];
-immutable ubyte[] enemyBank9_F3 = [ 0x63,0x99,0x20,0xB0, 0xFF ];
-immutable ubyte[] enemyBank9_F4 = [ 0xFF ];
-immutable ubyte[] enemyBank9_F5 = [ 0xFF ];
-immutable ubyte[] enemyBank9_F6 = [ 0xFF ];
-immutable ubyte[] enemyBank9_F7 = [ 0xFF ];
-immutable ubyte[] enemyBank9_F8 = [ 0xFF ];
-immutable ubyte[] enemyBank9_F9 = [ 0xFF ];
-immutable ubyte[] enemyBank9_FA = [ 0xFF ];
-immutable ubyte[] enemyBank9_FB = [ 0xFF ];
-immutable ubyte[] enemyBank9_FC = [ 0xFF ];
-immutable ubyte[] enemyBank9_FD = [ 0xFF ];
-immutable ubyte[] enemyBank9_FE = [ 0xFF ];
-immutable ubyte[] enemyBank9_FF = [ 0xFF ];
-immutable ubyte[] enemyBankA_00 = [ 0x14,0x12,0xD8,0x80, 0xFF ];
-immutable ubyte[] enemyBankA_01 = [ 0xFF ];
-immutable ubyte[] enemyBankA_02 = [ 0xFF ];
-immutable ubyte[] enemyBankA_03 = [ 0xFF ];
-immutable ubyte[] enemyBankA_04 = [ 0xFF ];
-immutable ubyte[] enemyBankA_05 = [ 0xFF ];
-immutable ubyte[] enemyBankA_06 = [ 0xFF ];
-immutable ubyte[] enemyBankA_07 = [ 0xFF ];
-immutable ubyte[] enemyBankA_08 = [ 0x1B,0x34,0x80,0x30, 0xFF ];
-immutable ubyte[] enemyBankA_09 = [ 0x1C,0x31,0x90,0xB8, 0xFF ];
-immutable ubyte[] enemyBankA_0A = [ 0x1D,0x30,0x90,0xB8, 0xFF ];
-immutable ubyte[] enemyBankA_0B = [ 0x1F,0x34,0x78,0x30, 0x1E,0x31,0x80,0x80, 0x20,0x34,0xA8,0x30, 0xFF ];
-immutable ubyte[] enemyBankA_0C = [ 0xFF ];
-immutable ubyte[] enemyBankA_0D = [ 0xFF ];
-immutable ubyte[] enemyBankA_0E = [ 0xFF ];
-immutable ubyte[] enemyBankA_0F = [ 0xFF ];
-immutable ubyte[] enemyBankA_10 = [ 0xFF ];
-immutable ubyte[] enemyBankA_11 = [ 0x16,0x31,0x80,0x68, 0x17,0x30,0x90,0xC0, 0xFF ];
-immutable ubyte[] enemyBankA_12 = [ 0xFF ];
-immutable ubyte[] enemyBankA_13 = [ 0xFF ];
-immutable ubyte[] enemyBankA_14 = [ 0xFF ];
-immutable ubyte[] enemyBankA_15 = [ 0xFF ];
-immutable ubyte[] enemyBankA_16 = [ 0x0F,0x9B,0x18,0x88, 0xFF ];
-immutable ubyte[] enemyBankA_17 = [ 0x40,0xA4,0x98,0xA0, 0xFF ];
-immutable ubyte[] enemyBankA_18 = [ 0xFF ];
-immutable ubyte[] enemyBankA_19 = [ 0xFF ];
-immutable ubyte[] enemyBankA_1A = [ 0x21,0x31,0x80,0x80, 0x22,0x12,0xC0,0x64, 0xFF ];
-immutable ubyte[] enemyBankA_1B = [ 0x23,0x30,0x60,0x88, 0xFF ];
-immutable ubyte[] enemyBankA_1C = [ 0xFF ];
-immutable ubyte[] enemyBankA_1D = [ 0xFF ];
-immutable ubyte[] enemyBankA_1E = [ 0xFF ];
-immutable ubyte[] enemyBankA_1F = [ 0xFF ];
-immutable ubyte[] enemyBankA_20 = [ 0xFF ];
-immutable ubyte[] enemyBankA_21 = [ 0x18,0x34,0x48,0x10, 0xFF ];
-immutable ubyte[] enemyBankA_22 = [ 0x10,0x34,0x90,0x80, 0xFF ];
-immutable ubyte[] enemyBankA_23 = [ 0xFF ];
-immutable ubyte[] enemyBankA_24 = [ 0xFF ];
-immutable ubyte[] enemyBankA_25 = [ 0xFF ];
-immutable ubyte[] enemyBankA_26 = [ 0xFF ];
-immutable ubyte[] enemyBankA_27 = [ 0xFF ];
-immutable ubyte[] enemyBankA_28 = [ 0xFF ];
-immutable ubyte[] enemyBankA_29 = [ 0xFF ];
-immutable ubyte[] enemyBankA_2A = [ 0x24,0x31,0x88,0x28, 0xFF ];
-immutable ubyte[] enemyBankA_2B = [ 0xFF ];
-immutable ubyte[] enemyBankA_2C = [ 0xFF ];
-immutable ubyte[] enemyBankA_2D = [ 0xFF ];
-immutable ubyte[] enemyBankA_2E = [ 0xFF ];
-immutable ubyte[] enemyBankA_2F = [ 0xFF ];
-immutable ubyte[] enemyBankA_30 = [ 0xFF ];
-immutable ubyte[] enemyBankA_31 = [ 0x35,0x04,0x00,0x68, 0xFF ];
-immutable ubyte[] enemyBankA_32 = [ 0x13,0x30,0x40,0x40, 0x14,0x31,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankA_33 = [ 0xFF ];
-immutable ubyte[] enemyBankA_34 = [ 0xFF ];
-immutable ubyte[] enemyBankA_35 = [ 0xFF ];
-immutable ubyte[] enemyBankA_36 = [ 0x41,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankA_37 = [ 0x0F,0x9D,0xE8,0x78, 0xFF ];
-immutable ubyte[] enemyBankA_38 = [ 0xFF ];
-immutable ubyte[] enemyBankA_39 = [ 0xFF ];
-immutable ubyte[] enemyBankA_3A = [ 0x25,0x30,0x88,0xC7, 0xFF ];
-immutable ubyte[] enemyBankA_3B = [ 0xFF ];
-immutable ubyte[] enemyBankA_3C = [ 0xFF ];
-immutable ubyte[] enemyBankA_3D = [ 0xFF ];
-immutable ubyte[] enemyBankA_3E = [ 0xFF ];
-immutable ubyte[] enemyBankA_3F = [ 0xFF ];
-immutable ubyte[] enemyBankA_40 = [ 0x10,0x6A,0xB0,0xC0, 0xFF ];
-immutable ubyte[] enemyBankA_41 = [ 0xFF ];
-immutable ubyte[] enemyBankA_42 = [ 0x16,0x34,0x80,0x70, 0x17,0x12,0xA0,0x80, 0xFF ];
-immutable ubyte[] enemyBankA_43 = [ 0x15,0x31,0x80,0x58, 0xFF ];
-immutable ubyte[] enemyBankA_44 = [ 0x0B,0x12,0xF0,0xA0, 0xFF ];
-immutable ubyte[] enemyBankA_45 = [ 0x0C,0x14,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankA_46 = [ 0x0D,0x12,0x80,0xA8, 0xFF ];
-immutable ubyte[] enemyBankA_47 = [ 0xFF ];
-immutable ubyte[] enemyBankA_48 = [ 0xFF ];
-immutable ubyte[] enemyBankA_49 = [ 0xFF ];
-immutable ubyte[] enemyBankA_4A = [ 0xFF ];
-immutable ubyte[] enemyBankA_4B = [ 0xFF ];
-immutable ubyte[] enemyBankA_4C = [ 0xFF ];
-immutable ubyte[] enemyBankA_4D = [ 0xFF ];
-immutable ubyte[] enemyBankA_4E = [ 0xFF ];
-immutable ubyte[] enemyBankA_4F = [ 0xFF ];
-immutable ubyte[] enemyBankA_50 = [ 0x12,0x12,0x78,0x64, 0x13,0x12,0x98,0x94, 0xFF ];
-immutable ubyte[] enemyBankA_51 = [ 0xFF ];
-immutable ubyte[] enemyBankA_52 = [ 0xFF ];
-immutable ubyte[] enemyBankA_53 = [ 0xFF ];
-immutable ubyte[] enemyBankA_54 = [ 0x10,0x34,0x68,0x20, 0x11,0x34,0x88,0x20, 0x12,0x34,0xF8,0x80, 0xFF ];
-immutable ubyte[] enemyBankA_55 = [ 0xFF ];
-immutable ubyte[] enemyBankA_56 = [ 0xFF ];
-immutable ubyte[] enemyBankA_57 = [ 0xFF ];
-immutable ubyte[] enemyBankA_58 = [ 0xFF ];
-immutable ubyte[] enemyBankA_59 = [ 0xFF ];
-immutable ubyte[] enemyBankA_5A = [ 0xFF ];
-immutable ubyte[] enemyBankA_5B = [ 0xFF ];
-immutable ubyte[] enemyBankA_5C = [ 0xFF ];
-immutable ubyte[] enemyBankA_5D = [ 0xFF ];
-immutable ubyte[] enemyBankA_5E = [ 0xFF ];
-immutable ubyte[] enemyBankA_5F = [ 0xFF ];
-immutable ubyte[] enemyBankA_60 = [ 0x15,0x12,0x98,0x74, 0xFF ];
-immutable ubyte[] enemyBankA_61 = [ 0xFF ];
-immutable ubyte[] enemyBankA_62 = [ 0xFF ];
-immutable ubyte[] enemyBankA_63 = [ 0xFF ];
-immutable ubyte[] enemyBankA_64 = [ 0xFF ];
-immutable ubyte[] enemyBankA_65 = [ 0x13,0x34,0x30,0xA0, 0x14,0x34,0x58,0x90, 0x15,0x12,0xB8,0x54, 0xFF ];
-immutable ubyte[] enemyBankA_66 = [ 0x18,0x2C,0x64,0xFF, 0xFF ];
-immutable ubyte[] enemyBankA_67 = [ 0xFF ];
-immutable ubyte[] enemyBankA_68 = [ 0xFF ];
-immutable ubyte[] enemyBankA_69 = [ 0xFF ];
-immutable ubyte[] enemyBankA_6A = [ 0xFF ];
-immutable ubyte[] enemyBankA_6B = [ 0xFF ];
-immutable ubyte[] enemyBankA_6C = [ 0xFF ];
-immutable ubyte[] enemyBankA_6D = [ 0xFF ];
-immutable ubyte[] enemyBankA_6E = [ 0xFF ];
-immutable ubyte[] enemyBankA_6F = [ 0xFF ];
-immutable ubyte[] enemyBankA_70 = [ 0xFF ];
-immutable ubyte[] enemyBankA_71 = [ 0xFF ];
-immutable ubyte[] enemyBankA_72 = [ 0xFF ];
-immutable ubyte[] enemyBankA_73 = [ 0xFF ];
-immutable ubyte[] enemyBankA_74 = [ 0x16,0x12,0x80,0x5C, 0x17,0x34,0x90,0x80, 0x18,0x34,0xC8,0xA0, 0xFF ];
-immutable ubyte[] enemyBankA_75 = [ 0xFF ];
-immutable ubyte[] enemyBankA_76 = [ 0xFF ];
-immutable ubyte[] enemyBankA_77 = [ 0x60,0x75,0x88,0x98, 0x61,0x75,0x88,0xA8, 0xFF ];
-immutable ubyte[] enemyBankA_78 = [ 0xFF ];
-immutable ubyte[] enemyBankA_79 = [ 0xFF ];
-immutable ubyte[] enemyBankA_7A = [ 0xFF ];
-immutable ubyte[] enemyBankA_7B = [ 0xFF ];
-immutable ubyte[] enemyBankA_7C = [ 0xFF ];
-immutable ubyte[] enemyBankA_7D = [ 0xFF ];
-immutable ubyte[] enemyBankA_7E = [ 0xFF ];
-immutable ubyte[] enemyBankA_7F = [ 0xFF ];
-immutable ubyte[] enemyBankA_80 = [ 0x12,0x30,0xF0,0xC8, 0x13,0x34,0xF8,0xE0, 0xFF ];
-immutable ubyte[] enemyBankA_81 = [ 0x10,0x34,0x78,0x30, 0x11,0x34,0x88,0xA0, 0xFF ];
-immutable ubyte[] enemyBankA_82 = [ 0xFF ];
-immutable ubyte[] enemyBankA_83 = [ 0xFF ];
-immutable ubyte[] enemyBankA_84 = [ 0x19,0x34,0x88,0x20, 0x1A,0x34,0x90,0x80, 0x1B,0x34,0xA8,0x90, 0xFF ];
-immutable ubyte[] enemyBankA_85 = [ 0x1C,0x12,0x30,0xDC, 0x1D,0x34,0x48,0x80, 0x1E,0x34,0x90,0x70, 0xFF ];
-immutable ubyte[] enemyBankA_86 = [ 0xFF ];
-immutable ubyte[] enemyBankA_87 = [ 0xFF ];
-immutable ubyte[] enemyBankA_88 = [ 0xFF ];
-immutable ubyte[] enemyBankA_89 = [ 0xFF ];
-immutable ubyte[] enemyBankA_8A = [ 0xFF ];
-immutable ubyte[] enemyBankA_8B = [ 0xFF ];
-immutable ubyte[] enemyBankA_8C = [ 0xFF ];
-immutable ubyte[] enemyBankA_8D = [ 0xFF ];
-immutable ubyte[] enemyBankA_8E = [ 0xFF ];
-immutable ubyte[] enemyBankA_8F = [ 0xFF ];
-immutable ubyte[] enemyBankA_90 = [ 0x14,0x2A,0x18,0x60, 0x15,0x34,0x88,0x20, 0xFF ];
-immutable ubyte[] enemyBankA_91 = [ 0xFF ];
-immutable ubyte[] enemyBankA_92 = [ 0xFF ];
-immutable ubyte[] enemyBankA_93 = [ 0xFF ];
-immutable ubyte[] enemyBankA_94 = [ 0xFF ];
-immutable ubyte[] enemyBankA_95 = [ 0xFF ];
-immutable ubyte[] enemyBankA_96 = [ 0xFF ];
-immutable ubyte[] enemyBankA_97 = [ 0x1C,0x12,0x88,0xC8, 0x1D,0x12,0xA8,0xA8, 0x1E,0x12,0xB0,0x40, 0xFF ];
-immutable ubyte[] enemyBankA_98 = [ 0xFF ];
-immutable ubyte[] enemyBankA_99 = [ 0xFF ];
-immutable ubyte[] enemyBankA_9A = [ 0xFF ];
-immutable ubyte[] enemyBankA_9B = [ 0xFF ];
-immutable ubyte[] enemyBankA_9C = [ 0xFF ];
-immutable ubyte[] enemyBankA_9D = [ 0xFF ];
-immutable ubyte[] enemyBankA_9E = [ 0xFF ];
-immutable ubyte[] enemyBankA_9F = [ 0xFF ];
-immutable ubyte[] enemyBankA_A0 = [ 0x1A,0x34,0xC0,0x90, 0xFF ];
-immutable ubyte[] enemyBankA_A1 = [ 0x19,0x2B,0xF8,0x80, 0xFF ];
-immutable ubyte[] enemyBankA_A2 = [ 0xFF ];
-immutable ubyte[] enemyBankA_A3 = [ 0xFF ];
-immutable ubyte[] enemyBankA_A4 = [ 0xFF ];
-immutable ubyte[] enemyBankA_A5 = [ 0xFF ];
-immutable ubyte[] enemyBankA_A6 = [ 0xFF ];
-immutable ubyte[] enemyBankA_A7 = [ 0x1F,0x12,0x40,0xBC, 0xFF ];
-immutable ubyte[] enemyBankA_A8 = [ 0xFF ];
-immutable ubyte[] enemyBankA_A9 = [ 0xFF ];
-immutable ubyte[] enemyBankA_AA = [ 0xFF ];
-immutable ubyte[] enemyBankA_AB = [ 0xFF ];
-immutable ubyte[] enemyBankA_AC = [ 0xFF ];
-immutable ubyte[] enemyBankA_AD = [ 0xFF ];
-immutable ubyte[] enemyBankA_AE = [ 0xFF ];
-immutable ubyte[] enemyBankA_AF = [ 0xFF ];
-immutable ubyte[] enemyBankA_B0 = [ 0x1B,0x2C,0x30,0x78, 0xFF ];
-immutable ubyte[] enemyBankA_B1 = [ 0xFF ];
-immutable ubyte[] enemyBankA_B2 = [ 0xFF ];
-immutable ubyte[] enemyBankA_B3 = [ 0xFF ];
-immutable ubyte[] enemyBankA_B4 = [ 0xFF ];
-immutable ubyte[] enemyBankA_B5 = [ 0xFF ];
-immutable ubyte[] enemyBankA_B6 = [ 0xFF ];
-immutable ubyte[] enemyBankA_B7 = [ 0xFF ];
-immutable ubyte[] enemyBankA_B8 = [ 0xFF ];
-immutable ubyte[] enemyBankA_B9 = [ 0xFF ];
-immutable ubyte[] enemyBankA_BA = [ 0xFF ];
-immutable ubyte[] enemyBankA_BB = [ 0xFF ];
-immutable ubyte[] enemyBankA_BC = [ 0xFF ];
-immutable ubyte[] enemyBankA_BD = [ 0xFF ];
-immutable ubyte[] enemyBankA_BE = [ 0xFF ];
-immutable ubyte[] enemyBankA_BF = [ 0xFF ];
-immutable ubyte[] enemyBankA_C0 = [ 0x1F,0x29,0xA8,0xF8, 0xFF ];
-immutable ubyte[] enemyBankA_C1 = [ 0x1C,0x31,0x50,0x48, 0x1D,0x31,0x70,0x58, 0x1E,0x34,0x78,0x20, 0xFF ];
-immutable ubyte[] enemyBankA_C2 = [ 0xFF ];
-immutable ubyte[] enemyBankA_C3 = [ 0xFF ];
-immutable ubyte[] enemyBankA_C4 = [ 0xFF ];
-immutable ubyte[] enemyBankA_C5 = [ 0xFF ];
-immutable ubyte[] enemyBankA_C6 = [ 0x20,0x29,0x78,0x18, 0x21,0x28,0xB0,0xF8, 0xFF ];
-immutable ubyte[] enemyBankA_C7 = [ 0x1E,0x29,0x50,0x28, 0x1F,0x28,0x90,0x98, 0xFF ];
-immutable ubyte[] enemyBankA_C8 = [ 0xFF ];
-immutable ubyte[] enemyBankA_C9 = [ 0xFF ];
-immutable ubyte[] enemyBankA_CA = [ 0xFF ];
-immutable ubyte[] enemyBankA_CB = [ 0xFF ];
-immutable ubyte[] enemyBankA_CC = [ 0xFF ];
-immutable ubyte[] enemyBankA_CD = [ 0xFF ];
-immutable ubyte[] enemyBankA_CE = [ 0xFF ];
-immutable ubyte[] enemyBankA_CF = [ 0xFF ];
-immutable ubyte[] enemyBankA_D0 = [ 0x20,0x34,0x88,0x20, 0xFF ];
-immutable ubyte[] enemyBankA_D1 = [ 0xFF ];
-immutable ubyte[] enemyBankA_D2 = [ 0xFF ];
-immutable ubyte[] enemyBankA_D3 = [ 0xFF ];
-immutable ubyte[] enemyBankA_D4 = [ 0xFF ];
-immutable ubyte[] enemyBankA_D5 = [ 0xFF ];
-immutable ubyte[] enemyBankA_D6 = [ 0x22,0x2A,0x18,0x70, 0x23,0x2A,0x58,0xD0, 0xFF ];
-immutable ubyte[] enemyBankA_D7 = [ 0x24,0x28,0x70,0xF8, 0x25,0x28,0xC0,0xB8, 0xFF ];
-immutable ubyte[] enemyBankA_D8 = [ 0xFF ];
-immutable ubyte[] enemyBankA_D9 = [ 0xFF ];
-immutable ubyte[] enemyBankA_DA = [ 0xFF ];
-immutable ubyte[] enemyBankA_DB = [ 0xFF ];
-immutable ubyte[] enemyBankA_DC = [ 0xFF ];
-immutable ubyte[] enemyBankA_DD = [ 0xFF ];
-immutable ubyte[] enemyBankA_DE = [ 0xFF ];
-immutable ubyte[] enemyBankA_DF = [ 0xFF ];
-immutable ubyte[] enemyBankA_E0 = [ 0xFF ];
-immutable ubyte[] enemyBankA_E1 = [ 0x21,0x28,0xB0,0xD8, 0x22,0x28,0xD0,0xC8, 0xFF ];
-immutable ubyte[] enemyBankA_E2 = [ 0xFF ];
-immutable ubyte[] enemyBankA_E3 = [ 0xFF ];
-immutable ubyte[] enemyBankA_E4 = [ 0xFF ];
-immutable ubyte[] enemyBankA_E5 = [ 0xFF ];
-immutable ubyte[] enemyBankA_E6 = [ 0xFF ];
-immutable ubyte[] enemyBankA_E7 = [ 0xFF ];
-immutable ubyte[] enemyBankA_E8 = [ 0xFF ];
-immutable ubyte[] enemyBankA_E9 = [ 0xFF ];
-immutable ubyte[] enemyBankA_EA = [ 0xFF ];
-immutable ubyte[] enemyBankA_EB = [ 0xFF ];
-immutable ubyte[] enemyBankA_EC = [ 0xFF ];
-immutable ubyte[] enemyBankA_ED = [ 0xFF ];
-immutable ubyte[] enemyBankA_EE = [ 0xFF ];
-immutable ubyte[] enemyBankA_EF = [ 0xFF ];
-immutable ubyte[] enemyBankA_F0 = [ 0xFF ];
-immutable ubyte[] enemyBankA_F1 = [ 0xFF ];
-immutable ubyte[] enemyBankA_F2 = [ 0xFF ];
-immutable ubyte[] enemyBankA_F3 = [ 0xFF ];
-immutable ubyte[] enemyBankA_F4 = [ 0xFF ];
-immutable ubyte[] enemyBankA_F5 = [ 0x44,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankA_F6 = [ 0x26,0x2C,0x40,0x80, 0x27,0x2C,0x40,0xC0, 0xFF ];
-immutable ubyte[] enemyBankA_F7 = [ 0xFF ];
-immutable ubyte[] enemyBankA_F8 = [ 0x45,0xAD,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankA_F9 = [ 0xFF ];
-immutable ubyte[] enemyBankA_FA = [ 0xFF ];
-immutable ubyte[] enemyBankA_FB = [ 0xFF ];
-immutable ubyte[] enemyBankA_FC = [ 0xFF ];
-immutable ubyte[] enemyBankA_FD = [ 0xFF ];
-immutable ubyte[] enemyBankA_FE = [ 0xFF ];
-immutable ubyte[] enemyBankA_FF = [ 0xFF ];
-immutable ubyte[] enemyBankB_00 = [ 0xFF ];
-immutable ubyte[] enemyBankB_01 = [ 0x42,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_02 = [ 0xFF ];
-immutable ubyte[] enemyBankB_03 = [ 0xFF ];
-immutable ubyte[] enemyBankB_04 = [ 0x4E,0xAD,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_05 = [ 0xFF ];
-immutable ubyte[] enemyBankB_06 = [ 0xFF ];
-immutable ubyte[] enemyBankB_07 = [ 0xFF ];
-immutable ubyte[] enemyBankB_08 = [ 0xFF ];
-immutable ubyte[] enemyBankB_09 = [ 0xFF ];
-immutable ubyte[] enemyBankB_0A = [ 0xFF ];
-immutable ubyte[] enemyBankB_0B = [ 0xFF ];
-immutable ubyte[] enemyBankB_0C = [ 0xFF ];
-immutable ubyte[] enemyBankB_0D = [ 0x11,0x12,0xD0,0x88, 0xFF ];
-immutable ubyte[] enemyBankB_0E = [ 0x12,0x12,0x40,0x90, 0x13,0x12,0x98,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_0F = [ 0xFF ];
-immutable ubyte[] enemyBankB_10 = [ 0xFF ];
-immutable ubyte[] enemyBankB_11 = [ 0xFF ];
-immutable ubyte[] enemyBankB_12 = [ 0xFF ];
-immutable ubyte[] enemyBankB_13 = [ 0x15,0x1B,0x90,0xEC, 0x16,0x12,0xD0,0x90, 0x17,0x1B,0xE8,0xEC, 0xFF ];
-immutable ubyte[] enemyBankB_14 = [ 0x1A,0x1B,0xE0,0xEC, 0xFF ];
-immutable ubyte[] enemyBankB_15 = [ 0x1C,0x1B,0x60,0xEC, 0xFF ];
-immutable ubyte[] enemyBankB_16 = [ 0x20,0x19,0xD0,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_17 = [ 0x21,0x1A,0x30,0xF0, 0x22,0x19,0xB0,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_18 = [ 0x23,0x1A,0x70,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_19 = [ 0xFF ];
-immutable ubyte[] enemyBankB_1A = [ 0xFF ];
-immutable ubyte[] enemyBankB_1B = [ 0x27,0x12,0x90,0xDC, 0x28,0x12,0xB0,0x8C, 0xFF ];
-immutable ubyte[] enemyBankB_1C = [ 0x0F,0x9B,0x28,0x48, 0x29,0xD8,0x38,0x8C, 0x2A,0xD8,0x78,0xAC, 0x2B,0xD8,0xB8,0x90, 0xFF ];
-immutable ubyte[] enemyBankB_1D = [ 0x2C,0xD8,0x38,0xBC, 0x2D,0xD8,0x78,0x98, 0x2E,0x12,0xF0,0x98, 0xFF ];
-immutable ubyte[] enemyBankB_1E = [ 0x2F,0xD8,0x13,0x70, 0x31,0xD8,0x70,0x90, 0x32,0xD8,0xA0,0x50, 0xFF ];
-immutable ubyte[] enemyBankB_1F = [ 0xFF ];
-immutable ubyte[] enemyBankB_20 = [ 0xFF ];
-immutable ubyte[] enemyBankB_21 = [ 0xFF ];
-immutable ubyte[] enemyBankB_22 = [ 0x40,0xA4,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_23 = [ 0xFF ];
-immutable ubyte[] enemyBankB_24 = [ 0x30,0x65,0x48,0x98, 0x31,0x65,0x78,0xA0, 0x32,0x65,0xA8,0x90, 0xFF ];
-immutable ubyte[] enemyBankB_25 = [ 0x33,0x65,0x38,0xA0, 0x34,0x65,0x68,0x90, 0x35,0x65,0x98,0xA0, 0xFF ];
-immutable ubyte[] enemyBankB_26 = [ 0xFF ];
-immutable ubyte[] enemyBankB_27 = [ 0xFF ];
-immutable ubyte[] enemyBankB_28 = [ 0x2E,0x3C,0xD0,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_29 = [ 0x2F,0x3D,0x30,0xF0, 0x30,0x3C,0xB0,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_2A = [ 0x31,0x3D,0x30,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_2B = [ 0xFF ];
-immutable ubyte[] enemyBankB_2C = [ 0xFF ];
-immutable ubyte[] enemyBankB_2D = [ 0xFF ];
-immutable ubyte[] enemyBankB_2E = [ 0x41,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_2F = [ 0xFF ];
-immutable ubyte[] enemyBankB_30 = [ 0xFF ];
-immutable ubyte[] enemyBankB_31 = [ 0xFF ];
-immutable ubyte[] enemyBankB_32 = [ 0xFF ];
-immutable ubyte[] enemyBankB_33 = [ 0xFF ];
-immutable ubyte[] enemyBankB_34 = [ 0xFF ];
-immutable ubyte[] enemyBankB_35 = [ 0xFF ];
-immutable ubyte[] enemyBankB_36 = [ 0xFF ];
-immutable ubyte[] enemyBankB_37 = [ 0xFF ];
-immutable ubyte[] enemyBankB_38 = [ 0xFF ];
-immutable ubyte[] enemyBankB_39 = [ 0x43,0xA4,0x80,0x90, 0xFF ];
-immutable ubyte[] enemyBankB_3A = [ 0xFF ];
-immutable ubyte[] enemyBankB_3B = [ 0x44,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_3C = [ 0xFF ];
-immutable ubyte[] enemyBankB_3D = [ 0xFF ];
-immutable ubyte[] enemyBankB_3E = [ 0xFF ];
-immutable ubyte[] enemyBankB_3F = [ 0xFF ];
-immutable ubyte[] enemyBankB_40 = [ 0x1E,0x40,0xA0,0xC0, 0x1F,0x40,0xE0,0xB0, 0xFF ];
-immutable ubyte[] enemyBankB_41 = [ 0x20,0x40,0x40,0x80, 0x21,0x40,0xC8,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_42 = [ 0x22,0x40,0x70,0xD0, 0x23,0x40,0xF0,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_43 = [ 0x24,0x40,0x60,0xC0, 0x25,0x40,0x80,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_44 = [ 0xFF ];
-immutable ubyte[] enemyBankB_45 = [ 0x45,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_46 = [ 0xFF ];
-immutable ubyte[] enemyBankB_47 = [ 0xFF ];
-immutable ubyte[] enemyBankB_48 = [ 0xFF ];
-immutable ubyte[] enemyBankB_49 = [ 0xFF ];
-immutable ubyte[] enemyBankB_4A = [ 0xFF ];
-immutable ubyte[] enemyBankB_4B = [ 0xFF ];
-immutable ubyte[] enemyBankB_4C = [ 0xFF ];
-immutable ubyte[] enemyBankB_4D = [ 0xFF ];
-immutable ubyte[] enemyBankB_4E = [ 0xFF ];
-immutable ubyte[] enemyBankB_4F = [ 0xFF ];
-immutable ubyte[] enemyBankB_50 = [ 0xFF ];
-immutable ubyte[] enemyBankB_51 = [ 0x16,0x09,0xA0,0x98, 0x17,0x04,0xD0,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_52 = [ 0x0C,0x04,0x08,0xE8, 0x14,0x09,0x90,0x98, 0xFF ];
-immutable ubyte[] enemyBankB_53 = [ 0x15,0x04,0x08,0xE8, 0x12,0x09,0x80,0x98, 0x13,0x04,0xFF,0xE8, 0xFF ];
-immutable ubyte[] enemyBankB_54 = [ 0x10,0x04,0x68,0xE8, 0x11,0x09,0x70,0x98, 0xFF ];
-immutable ubyte[] enemyBankB_55 = [ 0xFF ];
-immutable ubyte[] enemyBankB_56 = [ 0xFF ];
-immutable ubyte[] enemyBankB_57 = [ 0x47,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_58 = [ 0xFF ];
-immutable ubyte[] enemyBankB_59 = [ 0xFF ];
-immutable ubyte[] enemyBankB_5A = [ 0xFF ];
-immutable ubyte[] enemyBankB_5B = [ 0xFF ];
-immutable ubyte[] enemyBankB_5C = [ 0xFF ];
-immutable ubyte[] enemyBankB_5D = [ 0xFF ];
-immutable ubyte[] enemyBankB_5E = [ 0xFF ];
-immutable ubyte[] enemyBankB_5F = [ 0xFF ];
-immutable ubyte[] enemyBankB_60 = [ 0xFF ];
-immutable ubyte[] enemyBankB_61 = [ 0xFF ];
-immutable ubyte[] enemyBankB_62 = [ 0x18,0x68,0x40,0xC8, 0x19,0x68,0xC0,0xB8, 0xFF ];
-immutable ubyte[] enemyBankB_63 = [ 0x1A,0x68,0x40,0xA8, 0x1B,0x68,0x80,0xB8, 0xFF ];
-immutable ubyte[] enemyBankB_64 = [ 0xFF ];
-immutable ubyte[] enemyBankB_65 = [ 0xFF ];
-immutable ubyte[] enemyBankB_66 = [ 0x49,0xA0,0x80,0xB6, 0xFF ];
-immutable ubyte[] enemyBankB_67 = [ 0xFF ];
-immutable ubyte[] enemyBankB_68 = [ 0xFF ];
-immutable ubyte[] enemyBankB_69 = [ 0xFF ];
-immutable ubyte[] enemyBankB_6A = [ 0xFF ];
-immutable ubyte[] enemyBankB_6B = [ 0x2D,0x6A,0x80,0x40, 0x2E,0x6A,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankB_6C = [ 0x2F,0x6A,0x80,0x40, 0x30,0x6A,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankB_6D = [ 0x31,0x6A,0x80,0x40, 0x32,0x6A,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankB_6E = [ 0x33,0x6A,0x80,0x40, 0x34,0x6A,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankB_6F = [ 0xFF ];
-immutable ubyte[] enemyBankB_70 = [ 0xFF ];
-immutable ubyte[] enemyBankB_71 = [ 0xFF ];
-immutable ubyte[] enemyBankB_72 = [ 0xFF ];
-immutable ubyte[] enemyBankB_73 = [ 0xFF ];
-immutable ubyte[] enemyBankB_74 = [ 0xFF ];
-immutable ubyte[] enemyBankB_75 = [ 0xFF ];
-immutable ubyte[] enemyBankB_76 = [ 0x4A,0xB3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_77 = [ 0xFF ];
-immutable ubyte[] enemyBankB_78 = [ 0xFF ];
-immutable ubyte[] enemyBankB_79 = [ 0xFF ];
-immutable ubyte[] enemyBankB_7A = [ 0xFF ];
-immutable ubyte[] enemyBankB_7B = [ 0xFF ];
-immutable ubyte[] enemyBankB_7C = [ 0xFF ];
-immutable ubyte[] enemyBankB_7D = [ 0xFF ];
-immutable ubyte[] enemyBankB_7E = [ 0xFF ];
-immutable ubyte[] enemyBankB_7F = [ 0xFF ];
-immutable ubyte[] enemyBankB_80 = [ 0xFF ];
-immutable ubyte[] enemyBankB_81 = [ 0xFF ];
-immutable ubyte[] enemyBankB_82 = [ 0xFF ];
-immutable ubyte[] enemyBankB_83 = [ 0xFF ];
-immutable ubyte[] enemyBankB_84 = [ 0xFF ];
-immutable ubyte[] enemyBankB_85 = [ 0xFF ];
-immutable ubyte[] enemyBankB_86 = [ 0xFF ];
-immutable ubyte[] enemyBankB_87 = [ 0xFF ];
-immutable ubyte[] enemyBankB_88 = [ 0xFF ];
-immutable ubyte[] enemyBankB_89 = [ 0x32,0x3C,0xA0,0xE0, 0x33,0x3D,0xFF,0xE0, 0xFF ];
-immutable ubyte[] enemyBankB_8A = [ 0x34,0x3C,0x68,0xE0, 0xFF ];
-immutable ubyte[] enemyBankB_8B = [ 0xFF ];
-immutable ubyte[] enemyBankB_8C = [ 0xFF ];
-immutable ubyte[] enemyBankB_8D = [ 0x4C,0xB3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_8E = [ 0xFF ];
-immutable ubyte[] enemyBankB_8F = [ 0xFF ];
-immutable ubyte[] enemyBankB_90 = [ 0xFF ];
-immutable ubyte[] enemyBankB_91 = [ 0xFF ];
-immutable ubyte[] enemyBankB_92 = [ 0xFF ];
-immutable ubyte[] enemyBankB_93 = [ 0xFF ];
-immutable ubyte[] enemyBankB_94 = [ 0xFF ];
-immutable ubyte[] enemyBankB_95 = [ 0xFF ];
-immutable ubyte[] enemyBankB_96 = [ 0xFF ];
-immutable ubyte[] enemyBankB_97 = [ 0x30,0x30,0x68,0xA8, 0x31,0x31,0xC0,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_98 = [ 0x2E,0x31,0x40,0x80, 0x2F,0x30,0xB0,0x58, 0xFF ];
-immutable ubyte[] enemyBankB_99 = [ 0x2C,0x31,0x40,0x80, 0x2D,0x30,0xB0,0x58, 0xFF ];
-immutable ubyte[] enemyBankB_9A = [ 0x2A,0x31,0x40,0x98, 0x2B,0x30,0x88,0x98, 0xFF ];
-immutable ubyte[] enemyBankB_9B = [ 0x12,0x28,0xA0,0xD8, 0x13,0x28,0xD8,0xC8, 0xFF ];
-immutable ubyte[] enemyBankB_9C = [ 0x10,0x28,0x20,0xA8, 0x11,0x28,0x68,0xD8, 0xFF ];
-immutable ubyte[] enemyBankB_9D = [ 0xFF ];
-immutable ubyte[] enemyBankB_9E = [ 0x18,0x68,0x40,0xC8, 0x19,0x68,0xC0,0xB8, 0xFF ];
-immutable ubyte[] enemyBankB_9F = [ 0x1A,0x68,0x40,0xA8, 0xFF ];
-immutable ubyte[] enemyBankB_A0 = [ 0xFF ];
-immutable ubyte[] enemyBankB_A1 = [ 0xFF ];
-immutable ubyte[] enemyBankB_A2 = [ 0xFF ];
-immutable ubyte[] enemyBankB_A3 = [ 0xFF ];
-immutable ubyte[] enemyBankB_A4 = [ 0xFF ];
-immutable ubyte[] enemyBankB_A5 = [ 0xFF ];
-immutable ubyte[] enemyBankB_A6 = [ 0xFF ];
-immutable ubyte[] enemyBankB_A7 = [ 0x46,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_A8 = [ 0xFF ];
-immutable ubyte[] enemyBankB_A9 = [ 0x35,0x12,0xA0,0xB4, 0x36,0x12,0xA8,0xD4, 0x37,0x12,0xAC,0xFC, 0xFF ];
-immutable ubyte[] enemyBankB_AA = [ 0xFF ];
-immutable ubyte[] enemyBankB_AB = [ 0x4F,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_AC = [ 0xFF ];
-immutable ubyte[] enemyBankB_AD = [ 0xFF ];
-immutable ubyte[] enemyBankB_AE = [ 0xFF ];
-immutable ubyte[] enemyBankB_AF = [ 0xFF ];
-immutable ubyte[] enemyBankB_B0 = [ 0xFF ];
-immutable ubyte[] enemyBankB_B1 = [ 0xFF ];
-immutable ubyte[] enemyBankB_B2 = [ 0xFF ];
-immutable ubyte[] enemyBankB_B3 = [ 0xFF ];
-immutable ubyte[] enemyBankB_B4 = [ 0xFF ];
-immutable ubyte[] enemyBankB_B5 = [ 0xFF ];
-immutable ubyte[] enemyBankB_B6 = [ 0xFF ];
-immutable ubyte[] enemyBankB_B7 = [ 0xFF ];
-immutable ubyte[] enemyBankB_B8 = [ 0x18,0x12,0xA0,0xAC, 0x19,0x12,0xA8,0xD4, 0x1A,0x12,0xC0,0xFC, 0xFF ];
-immutable ubyte[] enemyBankB_B9 = [ 0xFF ];
-immutable ubyte[] enemyBankB_BA = [ 0x10,0x1B,0x90,0xBE, 0x11,0x1B,0xD0,0xDE, 0xFF ];
-immutable ubyte[] enemyBankB_BB = [ 0x12,0x1B,0x10,0xAE, 0x13,0x1B,0x70,0xBE, 0x14,0x1B,0xC0,0xDE, 0xFF ];
-immutable ubyte[] enemyBankB_BC = [ 0x15,0x1B,0x40,0xDE, 0x16,0x1B,0x80,0xBE, 0x17,0x1B,0xB0,0xDE, 0xFF ];
-immutable ubyte[] enemyBankB_BD = [ 0xFF ];
-immutable ubyte[] enemyBankB_BE = [ 0x50,0xA4,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_BF = [ 0xFF ];
-immutable ubyte[] enemyBankB_C0 = [ 0x1C,0x12,0x80,0x80, 0x1D,0x3D,0xA0,0xF0, 0xFF ];
-immutable ubyte[] enemyBankB_C1 = [ 0x1A,0x3C,0x08,0xF0, 0x1B,0x2C,0xF0,0xC8, 0xFF ];
-immutable ubyte[] enemyBankB_C2 = [ 0x18,0x28,0x80,0xE8, 0x19,0x28,0xB0,0xE8, 0xFF ];
-immutable ubyte[] enemyBankB_C3 = [ 0x16,0x31,0x58,0xA8, 0x17,0x30,0x78,0xB8, 0xFF ];
-immutable ubyte[] enemyBankB_C4 = [ 0x51,0xA4,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_C5 = [ 0xFF ];
-immutable ubyte[] enemyBankB_C6 = [ 0xFF ];
-immutable ubyte[] enemyBankB_C7 = [ 0xFF ];
-immutable ubyte[] enemyBankB_C8 = [ 0x1B,0xD8,0x80,0x90, 0x1C,0x12,0xA0,0x2C, 0x1D,0x12,0xB0,0x70, 0xFF ];
-immutable ubyte[] enemyBankB_C9 = [ 0xFF ];
-immutable ubyte[] enemyBankB_CA = [ 0x52,0xA4,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_CB = [ 0x2B,0x12,0xC0,0xF8, 0x2C,0x12,0xC8,0xAC, 0xFF ];
-immutable ubyte[] enemyBankB_CC = [ 0xFF ];
-immutable ubyte[] enemyBankB_CD = [ 0xFF ];
-immutable ubyte[] enemyBankB_CE = [ 0xFF ];
-immutable ubyte[] enemyBankB_CF = [ 0xFF ];
-immutable ubyte[] enemyBankB_D0 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D1 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D2 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D3 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D4 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D5 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D6 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D7 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D8 = [ 0xFF ];
-immutable ubyte[] enemyBankB_D9 = [ 0x53,0xA4,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_DA = [ 0xFF ];
-immutable ubyte[] enemyBankB_DB = [ 0x2D,0x12,0x78,0x3C, 0x2E,0x12,0xB0,0x78, 0xFF ];
-immutable ubyte[] enemyBankB_DC = [ 0xFF ];
-immutable ubyte[] enemyBankB_DD = [ 0xFF ];
-immutable ubyte[] enemyBankB_DE = [ 0xFF ];
-immutable ubyte[] enemyBankB_DF = [ 0x54,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_E0 = [ 0xFF ];
-immutable ubyte[] enemyBankB_E1 = [ 0xFF ];
-immutable ubyte[] enemyBankB_E2 = [ 0xFF ];
-immutable ubyte[] enemyBankB_E3 = [ 0x0F,0x9B,0x48,0xA8, 0xFF ];
-immutable ubyte[] enemyBankB_E4 = [ 0x55,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_E5 = [ 0xFF ];
-immutable ubyte[] enemyBankB_E6 = [ 0xFF ];
-immutable ubyte[] enemyBankB_E7 = [ 0xFF ];
-immutable ubyte[] enemyBankB_E8 = [ 0xFF ];
-immutable ubyte[] enemyBankB_E9 = [ 0xFF ];
-immutable ubyte[] enemyBankB_EA = [ 0xFF ];
-immutable ubyte[] enemyBankB_EB = [ 0xFF ];
-immutable ubyte[] enemyBankB_EC = [ 0x56,0xA4,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankB_ED = [ 0xFF ];
-immutable ubyte[] enemyBankB_EE = [ 0xFF ];
-immutable ubyte[] enemyBankB_EF = [ 0xFF ];
-immutable ubyte[] enemyBankB_F0 = [ 0xFF ];
-immutable ubyte[] enemyBankB_F1 = [ 0x30,0xD1,0x50,0xA0, 0x31,0xD1,0xB0,0x70, 0xFF ];
-immutable ubyte[] enemyBankB_F2 = [ 0x2D,0xD1,0x00,0x78, 0x2E,0xD1,0x50,0x80, 0x2F,0xD1,0xA0,0xA0, 0xFF ];
-immutable ubyte[] enemyBankB_F3 = [ 0x2A,0xD1,0x00,0xD0, 0x2B,0xD1,0x50,0x90, 0x2C,0xD1,0xA0,0xB0, 0xFF ];
-immutable ubyte[] enemyBankB_F4 = [ 0x27,0xD1,0x00,0xD0, 0x28,0xD1,0x30,0x90, 0x29,0xD1,0x70,0xC0, 0xFF ];
-immutable ubyte[] enemyBankB_F5 = [ 0x20,0xD0,0x60,0xA0, 0x21,0xD0,0x90,0xA0, 0x22,0xD0,0xC0,0x90, 0x23,0xD0,0xE0,0x68, 0xFF ];
-immutable ubyte[] enemyBankB_F6 = [ 0x24,0xD0,0x10,0x88, 0x25,0xD0,0x50,0x98, 0x26,0xD0,0x90,0xA0, 0x27,0xD0,0xD0,0xB0, 0xFF ];
-immutable ubyte[] enemyBankB_F7 = [ 0x28,0xD0,0x00,0xA0, 0x29,0xD0,0x30,0x90, 0x2A,0xD0,0x80,0xA8, 0x2B,0xD0,0xC0,0x98, 0xFF ];
-immutable ubyte[] enemyBankB_F8 = [ 0x2C,0xD0,0x00,0x90, 0x2D,0xD0,0x40,0x90, 0x2E,0xD0,0x80,0xA0, 0x2F,0xD0,0xB0,0xA8, 0xFF ];
-immutable ubyte[] enemyBankB_F9 = [ 0x10,0x40,0xC0,0xD8, 0xFF ];
-immutable ubyte[] enemyBankB_FA = [ 0x11,0x40,0x08,0xD8, 0x12,0x40,0xA0,0xD8, 0x13,0x40,0xFF,0xD8, 0xFF ];
-immutable ubyte[] enemyBankB_FB = [ 0x14,0x40,0x90,0xD8, 0x15,0x40,0xF8,0xD8, 0xFF ];
-immutable ubyte[] enemyBankB_FC = [ 0x16,0x40,0x70,0xD8, 0x17,0x40,0xFF,0xD8, 0xFF ];
-immutable ubyte[] enemyBankB_FD = [ 0x18,0x40,0x90,0xD8, 0x19,0x40,0xF8,0xD8, 0xFF ];
-immutable ubyte[] enemyBankB_FE = [ 0x1A,0x40,0x90,0xD8, 0x1B,0x40,0xF0,0xD8, 0xFF ];
-immutable ubyte[] enemyBankB_FF = [ 0x1C,0x40,0x40,0xD8, 0x1D,0x40,0x80,0xD8, 0xFF ];
-immutable ubyte[] enemyBankC_00 = [ 0xFF ];
-immutable ubyte[] enemyBankC_01 = [ 0xFF ];
-immutable ubyte[] enemyBankC_02 = [ 0x20,0x20,0x80,0x58, 0x21,0x21,0xA0,0xD8, 0xFF ];
-immutable ubyte[] enemyBankC_03 = [ 0xFF ];
-immutable ubyte[] enemyBankC_04 = [ 0xFF ];
-immutable ubyte[] enemyBankC_05 = [ 0x24,0x12,0x88,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_06 = [ 0x36,0x12,0x78,0xD4, 0x37,0x12,0xC8,0xCC, 0xFF ];
-immutable ubyte[] enemyBankC_07 = [ 0xFF ];
-immutable ubyte[] enemyBankC_08 = [ 0xFF ];
-immutable ubyte[] enemyBankC_09 = [ 0xFF ];
-immutable ubyte[] enemyBankC_0A = [ 0x10,0x12,0xB0,0x84, 0x11,0x12,0xB8,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_0B = [ 0xFF ];
-immutable ubyte[] enemyBankC_0C = [ 0xFF ];
-immutable ubyte[] enemyBankC_0D = [ 0x16,0x12,0x88,0xBC, 0x17,0x12,0xA8,0xC4, 0xFF ];
-immutable ubyte[] enemyBankC_0E = [ 0x16,0x12,0x88,0xBC, 0x17,0x12,0xA8,0xC4, 0xFF ];
-immutable ubyte[] enemyBankC_0F = [ 0xFF ];
-immutable ubyte[] enemyBankC_10 = [ 0x14,0x12,0x40,0x40, 0x15,0x12,0xC0,0xC0, 0xFF ];
-immutable ubyte[] enemyBankC_11 = [ 0xFF ];
-immutable ubyte[] enemyBankC_12 = [ 0x22,0x20,0x60,0x60, 0x23,0x21,0xA0,0xD8, 0xFF ];
-immutable ubyte[] enemyBankC_13 = [ 0x60,0x93,0x48,0xC8, 0xFF ];
-immutable ubyte[] enemyBankC_14 = [ 0xFF ];
-immutable ubyte[] enemyBankC_15 = [ 0x25,0x12,0x88,0x4C, 0x26,0x12,0xA0,0x54, 0x27,0x12,0xA8,0xA8, 0xFF ];
-immutable ubyte[] enemyBankC_16 = [ 0x38,0x12,0xA0,0x40, 0x39,0x12,0xB0,0xC0, 0xFF ];
-immutable ubyte[] enemyBankC_17 = [ 0xFF ];
-immutable ubyte[] enemyBankC_18 = [ 0xFF ];
-immutable ubyte[] enemyBankC_19 = [ 0xFF ];
-immutable ubyte[] enemyBankC_1A = [ 0x12,0x12,0x88,0x3C, 0x13,0x12,0xB8,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_1B = [ 0xFF ];
-immutable ubyte[] enemyBankC_1C = [ 0x18,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankC_1D = [ 0x14,0x12,0x88,0x4C, 0x15,0x12,0xA8,0x54, 0xFF ];
-immutable ubyte[] enemyBankC_1E = [ 0x14,0x12,0x88,0x4C, 0x15,0x12,0xA8,0x54, 0xFF ];
-immutable ubyte[] enemyBankC_1F = [ 0xFF ];
-immutable ubyte[] enemyBankC_20 = [ 0xFF ];
-immutable ubyte[] enemyBankC_21 = [ 0x1A,0x00,0x80,0x80, 0x1B,0x12,0xB0,0xAC, 0xFF ];
-immutable ubyte[] enemyBankC_22 = [ 0x24,0x20,0x40,0x28, 0x25,0x21,0x50,0x88, 0x26,0x12,0xB8,0xA8, 0xFF ];
-immutable ubyte[] enemyBankC_23 = [ 0xFF ];
-immutable ubyte[] enemyBankC_24 = [ 0xFF ];
-immutable ubyte[] enemyBankC_25 = [ 0x28,0x12,0x88,0x40, 0x29,0x12,0xB8,0xC0, 0xFF ];
-immutable ubyte[] enemyBankC_26 = [ 0x3A,0x12,0x80,0x40, 0x3B,0x12,0x90,0xC0, 0xFF ];
-immutable ubyte[] enemyBankC_27 = [ 0xFF ];
-immutable ubyte[] enemyBankC_28 = [ 0xFF ];
-immutable ubyte[] enemyBankC_29 = [ 0xFF ];
-immutable ubyte[] enemyBankC_2A = [ 0x14,0x12,0x80,0x3C, 0x15,0x12,0x80,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_2B = [ 0xFF ];
-immutable ubyte[] enemyBankC_2C = [ 0xFF ];
-immutable ubyte[] enemyBankC_2D = [ 0xFF ];
-immutable ubyte[] enemyBankC_2E = [ 0xFF ];
-immutable ubyte[] enemyBankC_2F = [ 0xFF ];
-immutable ubyte[] enemyBankC_30 = [ 0xFF ];
-immutable ubyte[] enemyBankC_31 = [ 0x1C,0x01,0x70,0x40, 0x1D,0x00,0x80,0x80, 0x1E,0x01,0x90,0xC0, 0xFF ];
-immutable ubyte[] enemyBankC_32 = [ 0xFF ];
-immutable ubyte[] enemyBankC_33 = [ 0xFF ];
-immutable ubyte[] enemyBankC_34 = [ 0xFF ];
-immutable ubyte[] enemyBankC_35 = [ 0x2A,0x12,0x88,0x40, 0x2B,0x12,0xB8,0xB4, 0xFF ];
-immutable ubyte[] enemyBankC_36 = [ 0x3C,0x12,0xA0,0x4C, 0x3D,0x12,0xA8,0x84, 0xFF ];
-immutable ubyte[] enemyBankC_37 = [ 0x14,0x12,0xA0,0x7C, 0x15,0x12,0xB0,0xA4, 0xFF ];
-immutable ubyte[] enemyBankC_38 = [ 0x41,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankC_39 = [ 0xFF ];
-immutable ubyte[] enemyBankC_3A = [ 0x16,0x12,0xA0,0x3C, 0x17,0x12,0xA0,0x8C, 0xFF ];
-immutable ubyte[] enemyBankC_3B = [ 0xFF ];
-immutable ubyte[] enemyBankC_3C = [ 0x19,0x6A,0x80,0x60, 0xFF ];
-immutable ubyte[] enemyBankC_3D = [ 0xFF ];
-immutable ubyte[] enemyBankC_3E = [ 0xFF ];
-immutable ubyte[] enemyBankC_3F = [ 0xFF ];
-immutable ubyte[] enemyBankC_40 = [ 0xFF ];
-immutable ubyte[] enemyBankC_41 = [ 0xFF ];
-immutable ubyte[] enemyBankC_42 = [ 0xFF ];
-immutable ubyte[] enemyBankC_43 = [ 0x35,0x2C,0x40,0xC8, 0xFF ];
-immutable ubyte[] enemyBankC_44 = [ 0xFF ];
-immutable ubyte[] enemyBankC_45 = [ 0x2C,0x12,0x90,0x3C, 0x2D,0x12,0xB0,0x8C, 0xFF ];
-immutable ubyte[] enemyBankC_46 = [ 0x13,0x12,0x88,0xA4, 0xFF ];
-immutable ubyte[] enemyBankC_47 = [ 0x16,0x12,0xA0,0x3C, 0x17,0x12,0xB0,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_48 = [ 0xFF ];
-immutable ubyte[] enemyBankC_49 = [ 0xFF ];
-immutable ubyte[] enemyBankC_4A = [ 0xFF ];
-immutable ubyte[] enemyBankC_4B = [ 0xFF ];
-immutable ubyte[] enemyBankC_4C = [ 0xFF ];
-immutable ubyte[] enemyBankC_4D = [ 0x35,0x68,0x58,0xB8, 0xFF ];
-immutable ubyte[] enemyBankC_4E = [ 0xFF ];
-immutable ubyte[] enemyBankC_4F = [ 0xFF ];
-immutable ubyte[] enemyBankC_50 = [ 0xFF ];
-immutable ubyte[] enemyBankC_51 = [ 0xFF ];
-immutable ubyte[] enemyBankC_52 = [ 0xFF ];
-immutable ubyte[] enemyBankC_53 = [ 0x36,0x2C,0x40,0x48, 0x37,0x2C,0x40,0xC0, 0xFF ];
-immutable ubyte[] enemyBankC_54 = [ 0x26,0x12,0xB0,0x80, 0xFF ];
-immutable ubyte[] enemyBankC_55 = [ 0xFF ];
-immutable ubyte[] enemyBankC_56 = [ 0x11,0x68,0x80,0x18, 0xFF ];
-immutable ubyte[] enemyBankC_57 = [ 0x18,0x12,0xA0,0x3C, 0x19,0x12,0xB0,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_58 = [ 0xFF ];
-immutable ubyte[] enemyBankC_59 = [ 0xFF ];
-immutable ubyte[] enemyBankC_5A = [ 0xFF ];
-immutable ubyte[] enemyBankC_5B = [ 0xFF ];
-immutable ubyte[] enemyBankC_5C = [ 0x1A,0x6A,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankC_5D = [ 0x36,0x68,0xA0,0xD8, 0xFF ];
-immutable ubyte[] enemyBankC_5E = [ 0xFF ];
-immutable ubyte[] enemyBankC_5F = [ 0xFF ];
-immutable ubyte[] enemyBankC_60 = [ 0xFF ];
-immutable ubyte[] enemyBankC_61 = [ 0x27,0x12,0xB0,0x94, 0xFF ];
-immutable ubyte[] enemyBankC_62 = [ 0xFF ];
-immutable ubyte[] enemyBankC_63 = [ 0x38,0x2C,0x40,0xC8, 0x39,0x31,0x80,0x58, 0x3A,0x31,0x80,0xD8, 0xFF ];
-immutable ubyte[] enemyBankC_64 = [ 0x23,0x12,0xB8,0xAC, 0xFF ];
-immutable ubyte[] enemyBankC_65 = [ 0x1B,0x12,0xB0,0x98, 0xFF ];
-immutable ubyte[] enemyBankC_66 = [ 0xFF ];
-immutable ubyte[] enemyBankC_67 = [ 0x1A,0x12,0xA0,0x34, 0x1B,0x12,0xA8,0x84, 0xFF ];
-immutable ubyte[] enemyBankC_68 = [ 0xFF ];
-immutable ubyte[] enemyBankC_69 = [ 0xFF ];
-immutable ubyte[] enemyBankC_6A = [ 0xFF ];
-immutable ubyte[] enemyBankC_6B = [ 0xFF ];
-immutable ubyte[] enemyBankC_6C = [ 0xFF ];
-immutable ubyte[] enemyBankC_6D = [ 0x37,0x68,0xB8,0x88, 0x38,0x6B,0xC0,0x80, 0xFF ];
-immutable ubyte[] enemyBankC_6E = [ 0xFF ];
-immutable ubyte[] enemyBankC_6F = [ 0xFF ];
-immutable ubyte[] enemyBankC_70 = [ 0xFF ];
-immutable ubyte[] enemyBankC_71 = [ 0x28,0x12,0xB8,0x94, 0x29,0x01,0xC1,0x30, 0xFF ];
-immutable ubyte[] enemyBankC_72 = [ 0xFF ];
-immutable ubyte[] enemyBankC_73 = [ 0x3B,0x2C,0x40,0x90, 0xFF ];
-immutable ubyte[] enemyBankC_74 = [ 0xFF ];
-immutable ubyte[] enemyBankC_75 = [ 0x1A,0x12,0x90,0xC0, 0xFF ];
-immutable ubyte[] enemyBankC_76 = [ 0xFF ];
-immutable ubyte[] enemyBankC_77 = [ 0xFF ];
-immutable ubyte[] enemyBankC_78 = [ 0xFF ];
-immutable ubyte[] enemyBankC_79 = [ 0xFF ];
-immutable ubyte[] enemyBankC_7A = [ 0xFF ];
-immutable ubyte[] enemyBankC_7B = [ 0xFF ];
-immutable ubyte[] enemyBankC_7C = [ 0xFF ];
-immutable ubyte[] enemyBankC_7D = [ 0xFF ];
-immutable ubyte[] enemyBankC_7E = [ 0xFF ];
-immutable ubyte[] enemyBankC_7F = [ 0xFF ];
-immutable ubyte[] enemyBankC_80 = [ 0xFF ];
-immutable ubyte[] enemyBankC_81 = [ 0x2A,0x01,0xB8,0x50, 0x2B,0x12,0xC0,0xA0, 0xFF ];
-immutable ubyte[] enemyBankC_82 = [ 0xFF ];
-immutable ubyte[] enemyBankC_83 = [ 0x3C,0x28,0x80,0xC8, 0xFF ];
-immutable ubyte[] enemyBankC_84 = [ 0xFF ];
-immutable ubyte[] enemyBankC_85 = [ 0x18,0x12,0xA0,0x54, 0x19,0x12,0xA0,0x94, 0xFF ];
-immutable ubyte[] enemyBankC_86 = [ 0xFF ];
-immutable ubyte[] enemyBankC_87 = [ 0x1D,0x6A,0x80,0xB0, 0xFF ];
-immutable ubyte[] enemyBankC_88 = [ 0x40,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankC_89 = [ 0xFF ];
-immutable ubyte[] enemyBankC_8A = [ 0xFF ];
-immutable ubyte[] enemyBankC_8B = [ 0x1D,0x6A,0x80,0xB0, 0xFF ];
-immutable ubyte[] enemyBankC_8C = [ 0xFF ];
-immutable ubyte[] enemyBankC_8D = [ 0xFF ];
-immutable ubyte[] enemyBankC_8E = [ 0xFF ];
-immutable ubyte[] enemyBankC_8F = [ 0xFF ];
-immutable ubyte[] enemyBankC_90 = [ 0xFF ];
-immutable ubyte[] enemyBankC_91 = [ 0xFF ];
-immutable ubyte[] enemyBankC_92 = [ 0xFF ];
-immutable ubyte[] enemyBankC_93 = [ 0xFF ];
-immutable ubyte[] enemyBankC_94 = [ 0xFF ];
-immutable ubyte[] enemyBankC_95 = [ 0xFF ];
-immutable ubyte[] enemyBankC_96 = [ 0xFF ];
-immutable ubyte[] enemyBankC_97 = [ 0x1C,0x6A,0x80,0x40, 0xFF ];
-immutable ubyte[] enemyBankC_98 = [ 0x0F,0x9B,0xE8,0x78, 0xFF ];
-immutable ubyte[] enemyBankC_99 = [ 0x22,0x6A,0x80,0xC8, 0xFF ];
-immutable ubyte[] enemyBankC_9A = [ 0x32,0x2C,0x20,0x68, 0x33,0x2C,0x60,0xF0, 0xFF ];
-immutable ubyte[] enemyBankC_9B = [ 0x1C,0x6A,0x80,0x40, 0xFF ];
-immutable ubyte[] enemyBankC_9C = [ 0xFF ];
-immutable ubyte[] enemyBankC_9D = [ 0xFF ];
-immutable ubyte[] enemyBankC_9E = [ 0xFF ];
-immutable ubyte[] enemyBankC_9F = [ 0xFF ];
-immutable ubyte[] enemyBankC_A0 = [ 0xFF ];
-immutable ubyte[] enemyBankC_A1 = [ 0x10,0x31,0x70,0x57, 0x11,0x30,0xB9,0x90, 0xFF ];
-immutable ubyte[] enemyBankC_A2 = [ 0x21,0x01,0x60,0xB8, 0x22,0x00,0x80,0x58, 0xFF ];
-immutable ubyte[] enemyBankC_A3 = [ 0x1C,0x12,0xA0,0x84, 0x1D,0x12,0x90,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_A4 = [ 0xFF ];
-immutable ubyte[] enemyBankC_A5 = [ 0xFF ];
-immutable ubyte[] enemyBankC_A6 = [ 0xFF ];
-immutable ubyte[] enemyBankC_A7 = [ 0xFF ];
-immutable ubyte[] enemyBankC_A8 = [ 0xFF ];
-immutable ubyte[] enemyBankC_A9 = [ 0x20,0x6A,0xA8,0x30, 0xFF ];
-immutable ubyte[] enemyBankC_AA = [ 0x34,0x2C,0x20,0x68, 0xFF ];
-immutable ubyte[] enemyBankC_AB = [ 0xFF ];
-immutable ubyte[] enemyBankC_AC = [ 0xFF ];
-immutable ubyte[] enemyBankC_AD = [ 0xFF ];
-immutable ubyte[] enemyBankC_AE = [ 0xFF ];
-immutable ubyte[] enemyBankC_AF = [ 0xFF ];
-immutable ubyte[] enemyBankC_B0 = [ 0xFF ];
-immutable ubyte[] enemyBankC_B1 = [ 0x19,0x30,0x90,0x87, 0x1A,0x12,0xB0,0xAC, 0xFF ];
-immutable ubyte[] enemyBankC_B2 = [ 0x23,0x00,0x60,0xD7, 0x24,0x01,0x80,0x77, 0xFF ];
-immutable ubyte[] enemyBankC_B3 = [ 0x1E,0x12,0x90,0x3C, 0x1F,0x12,0x90,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_B4 = [ 0xFF ];
-immutable ubyte[] enemyBankC_B5 = [ 0xFF ];
-immutable ubyte[] enemyBankC_B6 = [ 0xFF ];
-immutable ubyte[] enemyBankC_B7 = [ 0xFF ];
-immutable ubyte[] enemyBankC_B8 = [ 0xFF ];
-immutable ubyte[] enemyBankC_B9 = [ 0xFF ];
-immutable ubyte[] enemyBankC_BA = [ 0x35,0x2C,0xA0,0x78, 0xFF ];
-immutable ubyte[] enemyBankC_BB = [ 0x34,0x2C,0x90,0x28, 0x35,0x2C,0xB0,0x70, 0x36,0x2C,0x90,0x98, 0xFF ];
-immutable ubyte[] enemyBankC_BC = [ 0xFF ];
-immutable ubyte[] enemyBankC_BD = [ 0xFF ];
-immutable ubyte[] enemyBankC_BE = [ 0xFF ];
-immutable ubyte[] enemyBankC_BF = [ 0xFF ];
-immutable ubyte[] enemyBankC_C0 = [ 0xFF ];
-immutable ubyte[] enemyBankC_C1 = [ 0xFF ];
-immutable ubyte[] enemyBankC_C2 = [ 0x25,0x01,0x90,0x37, 0x26,0x00,0xA7,0x78, 0xFF ];
-immutable ubyte[] enemyBankC_C3 = [ 0x30,0x12,0x90,0x3C, 0x31,0x12,0x90,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_C4 = [ 0xFF ];
-immutable ubyte[] enemyBankC_C5 = [ 0xFF ];
-immutable ubyte[] enemyBankC_C6 = [ 0x14,0x2A,0x48,0xF0, 0x15,0x2B,0x68,0x70, 0xFF ];
-immutable ubyte[] enemyBankC_C7 = [ 0xFF ];
-immutable ubyte[] enemyBankC_C8 = [ 0xFF ];
-immutable ubyte[] enemyBankC_C9 = [ 0x1C,0x6A,0x50,0xB0, 0xFF ];
-immutable ubyte[] enemyBankC_CA = [ 0x36,0x2C,0x20,0x68, 0xFF ];
-immutable ubyte[] enemyBankC_CB = [ 0x37,0x2C,0x20,0x50, 0x38,0x2C,0x20,0x70, 0x39,0x2C,0x40,0xB0, 0xFF ];
-immutable ubyte[] enemyBankC_CC = [ 0xFF ];
-immutable ubyte[] enemyBankC_CD = [ 0xFF ];
-immutable ubyte[] enemyBankC_CE = [ 0xFF ];
-immutable ubyte[] enemyBankC_CF = [ 0xFF ];
-immutable ubyte[] enemyBankC_D0 = [ 0xFF ];
-immutable ubyte[] enemyBankC_D1 = [ 0x1E,0x20,0x70,0x58, 0x1F,0x21,0x80,0xD8, 0xFF ];
-immutable ubyte[] enemyBankC_D2 = [ 0x27,0x01,0x88,0x77, 0x28,0x00,0xB0,0x98, 0xFF ];
-immutable ubyte[] enemyBankC_D3 = [ 0x32,0x12,0x90,0x3C, 0x33,0x12,0x90,0xBC, 0xFF ];
-immutable ubyte[] enemyBankC_D4 = [ 0xFF ];
-immutable ubyte[] enemyBankC_D5 = [ 0xFF ];
-immutable ubyte[] enemyBankC_D6 = [ 0xFF ];
-immutable ubyte[] enemyBankC_D7 = [ 0xFF ];
-immutable ubyte[] enemyBankC_D8 = [ 0xFF ];
-immutable ubyte[] enemyBankC_D9 = [ 0x1A,0x6A,0xB0,0x50, 0xFF ];
-immutable ubyte[] enemyBankC_DA = [ 0xFF ];
-immutable ubyte[] enemyBankC_DB = [ 0x3A,0x2C,0xB0,0x70, 0x3B,0x2C,0x90,0x98, 0xFF ];
-immutable ubyte[] enemyBankC_DC = [ 0xFF ];
-immutable ubyte[] enemyBankC_DD = [ 0xFF ];
-immutable ubyte[] enemyBankC_DE = [ 0xFF ];
-immutable ubyte[] enemyBankC_DF = [ 0xFF ];
-immutable ubyte[] enemyBankC_E0 = [ 0xFF ];
-immutable ubyte[] enemyBankC_E1 = [ 0x1D,0x12,0xB0,0x4C, 0xFF ];
-immutable ubyte[] enemyBankC_E2 = [ 0x29,0x01,0x88,0x77, 0x2A,0x00,0x98,0x37, 0xFF ];
-immutable ubyte[] enemyBankC_E3 = [ 0x34,0x12,0x90,0x3C, 0x35,0x12,0x90,0x84, 0xFF ];
-immutable ubyte[] enemyBankC_E4 = [ 0xFF ];
-immutable ubyte[] enemyBankC_E5 = [ 0xFF ];
-immutable ubyte[] enemyBankC_E6 = [ 0xFF ];
-immutable ubyte[] enemyBankC_E7 = [ 0xFF ];
-immutable ubyte[] enemyBankC_E8 = [ 0xFF ];
-immutable ubyte[] enemyBankC_E9 = [ 0xFF ];
-immutable ubyte[] enemyBankC_EA = [ 0xFF ];
-immutable ubyte[] enemyBankC_EB = [ 0xFF ];
-immutable ubyte[] enemyBankC_EC = [ 0xFF ];
-immutable ubyte[] enemyBankC_ED = [ 0x28,0x2A,0x98,0x70, 0xFF ];
-immutable ubyte[] enemyBankC_EE = [ 0xFF ];
-immutable ubyte[] enemyBankC_EF = [ 0xFF ];
-immutable ubyte[] enemyBankC_F0 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F1 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F2 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F3 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F4 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F5 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F6 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F7 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F8 = [ 0xFF ];
-immutable ubyte[] enemyBankC_F9 = [ 0xFF ];
-immutable ubyte[] enemyBankC_FA = [ 0xFF ];
-immutable ubyte[] enemyBankC_FB = [ 0xFF ];
-immutable ubyte[] enemyBankC_FC = [ 0xFF ];
-immutable ubyte[] enemyBankC_FD = [ 0x0C,0x2A,0x88,0x50, 0xFF ];
-immutable ubyte[] enemyBankC_FE = [ 0xFF ];
-immutable ubyte[] enemyBankC_FF = [ 0xFF ];
-immutable ubyte[] enemyBankD_00 = [ 0x47,0xCE,0xA0,0xE0, 0xFF ];
-immutable ubyte[] enemyBankD_01 = [ 0xFF ];
-immutable ubyte[] enemyBankD_02 = [ 0xFF ];
-immutable ubyte[] enemyBankD_03 = [ 0xFF ];
-immutable ubyte[] enemyBankD_04 = [ 0x0F,0x9B,0x18,0xE8, 0x46,0xA4,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankD_05 = [ 0xFF ];
-immutable ubyte[] enemyBankD_06 = [ 0xFF ];
-immutable ubyte[] enemyBankD_07 = [ 0xFF ];
-immutable ubyte[] enemyBankD_08 = [ 0xFF ];
-immutable ubyte[] enemyBankD_09 = [ 0xFF ];
-immutable ubyte[] enemyBankD_0A = [ 0xFF ];
-immutable ubyte[] enemyBankD_0B = [ 0xFF ];
-immutable ubyte[] enemyBankD_0C = [ 0xFF ];
-immutable ubyte[] enemyBankD_0D = [ 0xFF ];
-immutable ubyte[] enemyBankD_0E = [ 0xFF ];
-immutable ubyte[] enemyBankD_0F = [ 0xFF ];
-immutable ubyte[] enemyBankD_10 = [ 0x40,0xCE,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankD_11 = [ 0xFF ];
-immutable ubyte[] enemyBankD_12 = [ 0xFF ];
-immutable ubyte[] enemyBankD_13 = [ 0xFF ];
-immutable ubyte[] enemyBankD_14 = [ 0xFF ];
-immutable ubyte[] enemyBankD_15 = [ 0xFF ];
-immutable ubyte[] enemyBankD_16 = [ 0xFF ];
-immutable ubyte[] enemyBankD_17 = [ 0xFF ];
-immutable ubyte[] enemyBankD_18 = [ 0x60,0x99,0xB8,0xE8, 0x1D,0x4A,0xE4,0xD8, 0xFF ];
-immutable ubyte[] enemyBankD_19 = [ 0x1C,0x4A,0xB4,0xC0, 0xFF ];
-immutable ubyte[] enemyBankD_1A = [ 0x61,0x99,0x48,0xE8, 0xFF ];
-immutable ubyte[] enemyBankD_1B = [ 0x11,0x1F,0xBC,0xE8, 0xFF ];
-immutable ubyte[] enemyBankD_1C = [ 0xFF ];
-immutable ubyte[] enemyBankD_1D = [ 0xFF ];
-immutable ubyte[] enemyBankD_1E = [ 0xFF ];
-immutable ubyte[] enemyBankD_1F = [ 0xFF ];
-immutable ubyte[] enemyBankD_20 = [ 0xFF ];
-immutable ubyte[] enemyBankD_21 = [ 0xFF ];
-immutable ubyte[] enemyBankD_22 = [ 0xFF ];
-immutable ubyte[] enemyBankD_23 = [ 0x41,0xCE,0x80,0x70, 0xFF ];
-immutable ubyte[] enemyBankD_24 = [ 0xFF ];
-immutable ubyte[] enemyBankD_25 = [ 0xFF ];
-immutable ubyte[] enemyBankD_26 = [ 0xFF ];
-immutable ubyte[] enemyBankD_27 = [ 0xFF ];
-immutable ubyte[] enemyBankD_28 = [ 0xFF ];
-immutable ubyte[] enemyBankD_29 = [ 0xFF ];
-immutable ubyte[] enemyBankD_2A = [ 0xFF ];
-immutable ubyte[] enemyBankD_2B = [ 0x12,0x1F,0xBC,0x50, 0xFF ];
-immutable ubyte[] enemyBankD_2C = [ 0xFF ];
-immutable ubyte[] enemyBankD_2D = [ 0xFF ];
-immutable ubyte[] enemyBankD_2E = [ 0xFF ];
-immutable ubyte[] enemyBankD_2F = [ 0xFF ];
-immutable ubyte[] enemyBankD_30 = [ 0xFF ];
-immutable ubyte[] enemyBankD_31 = [ 0xFF ];
-immutable ubyte[] enemyBankD_32 = [ 0xFF ];
-immutable ubyte[] enemyBankD_33 = [ 0x42,0xCE,0x70,0xE0, 0xFF ];
-immutable ubyte[] enemyBankD_34 = [ 0xFF ];
-immutable ubyte[] enemyBankD_35 = [ 0xFF ];
-immutable ubyte[] enemyBankD_36 = [ 0xFF ];
-immutable ubyte[] enemyBankD_37 = [ 0xFF ];
-immutable ubyte[] enemyBankD_38 = [ 0x10,0x1F,0xFC,0xCC, 0xFF ];
-immutable ubyte[] enemyBankD_39 = [ 0xFF ];
-immutable ubyte[] enemyBankD_3A = [ 0x62,0x97,0x58,0x78, 0xFF ];
-immutable ubyte[] enemyBankD_3B = [ 0x13,0x4A,0x44,0x50, 0xFF ];
-immutable ubyte[] enemyBankD_3C = [ 0xFF ];
-immutable ubyte[] enemyBankD_3D = [ 0xFF ];
-immutable ubyte[] enemyBankD_3E = [ 0xFF ];
-immutable ubyte[] enemyBankD_3F = [ 0xFF ];
-immutable ubyte[] enemyBankD_40 = [ 0xFF ];
-immutable ubyte[] enemyBankD_41 = [ 0xFF ];
-immutable ubyte[] enemyBankD_42 = [ 0x43,0xCE,0x70,0xE0, 0xFF ];
-immutable ubyte[] enemyBankD_43 = [ 0xFF ];
-immutable ubyte[] enemyBankD_44 = [ 0x63,0x88,0x5C,0x60, 0x7A,0x99,0xA8,0xC8, 0x64,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankD_45 = [ 0xFF ];
-immutable ubyte[] enemyBankD_46 = [ 0xFF ];
-immutable ubyte[] enemyBankD_47 = [ 0xFF ];
-immutable ubyte[] enemyBankD_48 = [ 0xFF ];
-immutable ubyte[] enemyBankD_49 = [ 0xFF ];
-immutable ubyte[] enemyBankD_4A = [ 0xFF ];
-immutable ubyte[] enemyBankD_4B = [ 0x14,0x1F,0xBC,0x50, 0xFF ];
-immutable ubyte[] enemyBankD_4C = [ 0x18,0x4A,0x44,0xB0, 0x65,0x99,0xB8,0xE8, 0x19,0x4A,0xE4,0xBD, 0xFF ];
-immutable ubyte[] enemyBankD_4D = [ 0x1A,0x1F,0x3C,0xE0, 0x66,0x99,0x68,0x58, 0x67,0x99,0x78,0xE8, 0xFF ];
-immutable ubyte[] enemyBankD_4E = [ 0xFF ];
-immutable ubyte[] enemyBankD_4F = [ 0xFF ];
-immutable ubyte[] enemyBankD_50 = [ 0xFF ];
-immutable ubyte[] enemyBankD_51 = [ 0xFF ];
-immutable ubyte[] enemyBankD_52 = [ 0xFF ];
-immutable ubyte[] enemyBankD_53 = [ 0x10,0x1E,0x60,0xE8, 0xFF ];
-immutable ubyte[] enemyBankD_54 = [ 0xFF ];
-immutable ubyte[] enemyBankD_55 = [ 0xFF ];
-immutable ubyte[] enemyBankD_56 = [ 0xFF ];
-immutable ubyte[] enemyBankD_57 = [ 0xFF ];
-immutable ubyte[] enemyBankD_58 = [ 0x0F,0x82,0x5C,0x60, 0x68,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankD_59 = [ 0x17,0x4A,0x24,0xD0, 0xFF ];
-immutable ubyte[] enemyBankD_5A = [ 0x16,0x1F,0xDC,0xD4, 0xFF ];
-immutable ubyte[] enemyBankD_5B = [ 0x15,0x4A,0x44,0x50, 0xFF ];
-immutable ubyte[] enemyBankD_5C = [ 0xFF ];
-immutable ubyte[] enemyBankD_5D = [ 0xFF ];
-immutable ubyte[] enemyBankD_5E = [ 0xFF ];
-immutable ubyte[] enemyBankD_5F = [ 0xFF ];
-immutable ubyte[] enemyBankD_60 = [ 0x69,0x8C,0x48,0xE8, 0xFF ];
-immutable ubyte[] enemyBankD_61 = [ 0x6A,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankD_62 = [ 0xFF ];
-immutable ubyte[] enemyBankD_63 = [ 0xFF ];
-immutable ubyte[] enemyBankD_64 = [ 0xFF ];
-immutable ubyte[] enemyBankD_65 = [ 0xFF ];
-immutable ubyte[] enemyBankD_66 = [ 0xFF ];
-immutable ubyte[] enemyBankD_67 = [ 0xFF ];
-immutable ubyte[] enemyBankD_68 = [ 0xFF ];
-immutable ubyte[] enemyBankD_69 = [ 0xFF ];
-immutable ubyte[] enemyBankD_6A = [ 0xFF ];
-immutable ubyte[] enemyBankD_6B = [ 0xFF ];
-immutable ubyte[] enemyBankD_6C = [ 0xFF ];
-immutable ubyte[] enemyBankD_6D = [ 0xFF ];
-immutable ubyte[] enemyBankD_6E = [ 0xFF ];
-immutable ubyte[] enemyBankD_6F = [ 0xFF ];
-immutable ubyte[] enemyBankD_70 = [ 0xFF ];
-immutable ubyte[] enemyBankD_71 = [ 0xFF ];
-immutable ubyte[] enemyBankD_72 = [ 0xFF ];
-immutable ubyte[] enemyBankD_73 = [ 0xFF ];
-immutable ubyte[] enemyBankD_74 = [ 0xFF ];
-immutable ubyte[] enemyBankD_75 = [ 0xFF ];
-immutable ubyte[] enemyBankD_76 = [ 0x44,0xA0,0xC0,0x76, 0xFF ];
-immutable ubyte[] enemyBankD_77 = [ 0x6C,0x99,0xA8,0xB8, 0xFF ];
-immutable ubyte[] enemyBankD_78 = [ 0xFF ];
-immutable ubyte[] enemyBankD_79 = [ 0x6C,0x99,0xA8,0xB8, 0xFF ];
-immutable ubyte[] enemyBankD_7A = [ 0xFF ];
-immutable ubyte[] enemyBankD_7B = [ 0xFF ];
-immutable ubyte[] enemyBankD_7C = [ 0xFF ];
-immutable ubyte[] enemyBankD_7D = [ 0xFF ];
-immutable ubyte[] enemyBankD_7E = [ 0xFF ];
-immutable ubyte[] enemyBankD_7F = [ 0xFF ];
-immutable ubyte[] enemyBankD_80 = [ 0x78,0x99,0x98,0x48, 0xFF ];
-immutable ubyte[] enemyBankD_81 = [ 0xFF ];
-immutable ubyte[] enemyBankD_82 = [ 0xFF ];
-immutable ubyte[] enemyBankD_83 = [ 0xFF ];
-immutable ubyte[] enemyBankD_84 = [ 0xFF ];
-immutable ubyte[] enemyBankD_85 = [ 0xFF ];
-immutable ubyte[] enemyBankD_86 = [ 0xFF ];
-immutable ubyte[] enemyBankD_87 = [ 0xFF ];
-immutable ubyte[] enemyBankD_88 = [ 0xFF ];
-immutable ubyte[] enemyBankD_89 = [ 0xFF ];
-immutable ubyte[] enemyBankD_8A = [ 0xFF ];
-immutable ubyte[] enemyBankD_8B = [ 0xFF ];
-immutable ubyte[] enemyBankD_8C = [ 0xFF ];
-immutable ubyte[] enemyBankD_8D = [ 0xFF ];
-immutable ubyte[] enemyBankD_8E = [ 0xFF ];
-immutable ubyte[] enemyBankD_8F = [ 0xFF ];
-immutable ubyte[] enemyBankD_90 = [ 0xFF ];
-immutable ubyte[] enemyBankD_91 = [ 0x6D,0x99,0x38,0x28, 0xFF ];
-immutable ubyte[] enemyBankD_92 = [ 0xFF ];
-immutable ubyte[] enemyBankD_93 = [ 0x45,0xA4,0x78,0xCC, 0xFF ];
-immutable ubyte[] enemyBankD_94 = [ 0xFF ];
-immutable ubyte[] enemyBankD_95 = [ 0xFF ];
-immutable ubyte[] enemyBankD_96 = [ 0xFF ];
-immutable ubyte[] enemyBankD_97 = [ 0xFF ];
-immutable ubyte[] enemyBankD_98 = [ 0xFF ];
-immutable ubyte[] enemyBankD_99 = [ 0xFF ];
-immutable ubyte[] enemyBankD_9A = [ 0xFF ];
-immutable ubyte[] enemyBankD_9B = [ 0xFF ];
-immutable ubyte[] enemyBankD_9C = [ 0xFF ];
-immutable ubyte[] enemyBankD_9D = [ 0xFF ];
-immutable ubyte[] enemyBankD_9E = [ 0xFF ];
-immutable ubyte[] enemyBankD_9F = [ 0xFF ];
-immutable ubyte[] enemyBankD_A0 = [ 0xFF ];
-immutable ubyte[] enemyBankD_A1 = [ 0xFF ];
-immutable ubyte[] enemyBankD_A2 = [ 0xFF ];
-immutable ubyte[] enemyBankD_A3 = [ 0xFF ];
-immutable ubyte[] enemyBankD_A4 = [ 0x0F,0x84,0x5C,0x60, 0x6F,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankD_A5 = [ 0x13,0x46,0x98,0xB0, 0xFF ];
-immutable ubyte[] enemyBankD_A6 = [ 0xFF ];
-immutable ubyte[] enemyBankD_A7 = [ 0xFF ];
-immutable ubyte[] enemyBankD_A8 = [ 0xFF ];
-immutable ubyte[] enemyBankD_A9 = [ 0xFF ];
-immutable ubyte[] enemyBankD_AA = [ 0xFF ];
-immutable ubyte[] enemyBankD_AB = [ 0xFF ];
-immutable ubyte[] enemyBankD_AC = [ 0xFF ];
-immutable ubyte[] enemyBankD_AD = [ 0xFF ];
-immutable ubyte[] enemyBankD_AE = [ 0xFF ];
-immutable ubyte[] enemyBankD_AF = [ 0xFF ];
-immutable ubyte[] enemyBankD_B0 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B1 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B2 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B3 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B4 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B5 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B6 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B7 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B8 = [ 0xFF ];
-immutable ubyte[] enemyBankD_B9 = [ 0xFF ];
-immutable ubyte[] enemyBankD_BA = [ 0x1D,0x1F,0xBC,0xE0, 0xFF ];
-immutable ubyte[] enemyBankD_BB = [ 0xFF ];
-immutable ubyte[] enemyBankD_BC = [ 0xFF ];
-immutable ubyte[] enemyBankD_BD = [ 0xFF ];
-immutable ubyte[] enemyBankD_BE = [ 0xFF ];
-immutable ubyte[] enemyBankD_BF = [ 0xFF ];
-immutable ubyte[] enemyBankD_C0 = [ 0x70,0x9C,0x4C,0xB0, 0x71,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankD_C1 = [ 0xFF ];
-immutable ubyte[] enemyBankD_C2 = [ 0xFF ];
-immutable ubyte[] enemyBankD_C3 = [ 0xFF ];
-immutable ubyte[] enemyBankD_C4 = [ 0xFF ];
-immutable ubyte[] enemyBankD_C5 = [ 0x19,0x4A,0x34,0xE0, 0xFF ];
-immutable ubyte[] enemyBankD_C6 = [ 0x18,0x4A,0x44,0xB0, 0xFF ];
-immutable ubyte[] enemyBankD_C7 = [ 0x15,0x1F,0x3C,0xC0, 0x72,0x99,0x68,0x58, 0x73,0x99,0x78,0xE8, 0x16,0x4A,0xB4,0xC0, 0xFF ];
-immutable ubyte[] enemyBankD_C8 = [ 0x17,0x1F,0x1C,0xE0, 0xFF ];
-immutable ubyte[] enemyBankD_C9 = [ 0xFF ];
-immutable ubyte[] enemyBankD_CA = [ 0x1E,0x1F,0xBC,0x40, 0x1F,0x1F,0xBC,0xA0, 0xFF ];
-immutable ubyte[] enemyBankD_CB = [ 0xFF ];
-immutable ubyte[] enemyBankD_CC = [ 0xFF ];
-immutable ubyte[] enemyBankD_CD = [ 0xFF ];
-immutable ubyte[] enemyBankD_CE = [ 0xFF ];
-immutable ubyte[] enemyBankD_CF = [ 0xFF ];
-immutable ubyte[] enemyBankD_D0 = [ 0xFF ];
-immutable ubyte[] enemyBankD_D1 = [ 0xFF ];
-immutable ubyte[] enemyBankD_D2 = [ 0xFF ];
-immutable ubyte[] enemyBankD_D3 = [ 0xFF ];
-immutable ubyte[] enemyBankD_D4 = [ 0xFF ];
-immutable ubyte[] enemyBankD_D5 = [ 0x1A,0x4A,0x34,0x10, 0xFF ];
-immutable ubyte[] enemyBankD_D6 = [ 0x1B,0x1F,0x8C,0xC0, 0x7B,0x99,0xB8,0xE8, 0x1C,0x1F,0xFC,0xA0, 0xFF ];
-immutable ubyte[] enemyBankD_D7 = [ 0x74,0x99,0x18,0xE8, 0x77,0x97,0x18,0x58, 0xFF ];
-immutable ubyte[] enemyBankD_D8 = [ 0xFF ];
-immutable ubyte[] enemyBankD_D9 = [ 0x75,0x8E,0x5C,0x60, 0x76,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankD_DA = [ 0x20,0x1F,0xBC,0x00, 0x21,0x1F,0xBC,0x60, 0x22,0x1F,0xBC,0xC0, 0xFF ];
-immutable ubyte[] enemyBankD_DB = [ 0xFF ];
-immutable ubyte[] enemyBankD_DC = [ 0xFF ];
-immutable ubyte[] enemyBankD_DD = [ 0xFF ];
-immutable ubyte[] enemyBankD_DE = [ 0xFF ];
-immutable ubyte[] enemyBankD_DF = [ 0xFF ];
-immutable ubyte[] enemyBankD_E0 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E1 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E2 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E3 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E4 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E5 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E6 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E7 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E8 = [ 0xFF ];
-immutable ubyte[] enemyBankD_E9 = [ 0xFF ];
-immutable ubyte[] enemyBankD_EA = [ 0xFF ];
-immutable ubyte[] enemyBankD_EB = [ 0xFF ];
-immutable ubyte[] enemyBankD_EC = [ 0xFF ];
-immutable ubyte[] enemyBankD_ED = [ 0xFF ];
-immutable ubyte[] enemyBankD_EE = [ 0xFF ];
-immutable ubyte[] enemyBankD_EF = [ 0xFF ];
-immutable ubyte[] enemyBankD_F0 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F1 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F2 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F3 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F4 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F5 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F6 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F7 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F8 = [ 0xFF ];
-immutable ubyte[] enemyBankD_F9 = [ 0xFF ];
-immutable ubyte[] enemyBankD_FA = [ 0xFF ];
-immutable ubyte[] enemyBankD_FB = [ 0xFF ];
-immutable ubyte[] enemyBankD_FC = [ 0xFF ];
-immutable ubyte[] enemyBankD_FD = [ 0xFF ];
-immutable ubyte[] enemyBankD_FE = [ 0xFF ];
-immutable ubyte[] enemyBankD_FF = [ 0xFF ];
-immutable ubyte[] enemyBankE_00 = [ 0xFF ];
-immutable ubyte[] enemyBankE_01 = [ 0xFF ];
-immutable ubyte[] enemyBankE_02 = [ 0xFF ];
-immutable ubyte[] enemyBankE_03 = [ 0x41,0xCE,0xA0,0x90, 0xFF ];
-immutable ubyte[] enemyBankE_04 = [ 0xFF ];
-immutable ubyte[] enemyBankE_05 = [ 0x42,0xCE,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankE_06 = [ 0xFF ];
-immutable ubyte[] enemyBankE_07 = [ 0x49,0xA4,0xB0,0x80, 0xFF ];
-immutable ubyte[] enemyBankE_08 = [ 0x0F,0x9B,0x18,0xD8, 0x4A,0xA3,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankE_09 = [ 0xFF ];
-immutable ubyte[] enemyBankE_0A = [ 0xFF ];
-immutable ubyte[] enemyBankE_0B = [ 0xFF ];
-immutable ubyte[] enemyBankE_0C = [ 0xFF ];
-immutable ubyte[] enemyBankE_0D = [ 0xFF ];
-immutable ubyte[] enemyBankE_0E = [ 0xFF ];
-immutable ubyte[] enemyBankE_0F = [ 0xFF ];
-immutable ubyte[] enemyBankE_10 = [ 0xFF ];
-immutable ubyte[] enemyBankE_11 = [ 0xFF ];
-immutable ubyte[] enemyBankE_12 = [ 0xFF ];
-immutable ubyte[] enemyBankE_13 = [ 0xFF ];
-immutable ubyte[] enemyBankE_14 = [ 0xFF ];
-immutable ubyte[] enemyBankE_15 = [ 0xFF ];
-immutable ubyte[] enemyBankE_16 = [ 0xFF ];
-immutable ubyte[] enemyBankE_17 = [ 0xFF ];
-immutable ubyte[] enemyBankE_18 = [ 0xFF ];
-immutable ubyte[] enemyBankE_19 = [ 0xFF ];
-immutable ubyte[] enemyBankE_1A = [ 0xFF ];
-immutable ubyte[] enemyBankE_1B = [ 0x60,0x99,0x88,0xC8, 0xFF ];
-immutable ubyte[] enemyBankE_1C = [ 0xFF ];
-immutable ubyte[] enemyBankE_1D = [ 0xFF ];
-immutable ubyte[] enemyBankE_1E = [ 0xFF ];
-immutable ubyte[] enemyBankE_1F = [ 0xFF ];
-immutable ubyte[] enemyBankE_20 = [ 0xFF ];
-immutable ubyte[] enemyBankE_21 = [ 0x0F,0xDB,0xAC,0xA7, 0xFF ];
-immutable ubyte[] enemyBankE_22 = [ 0x43,0x6D,0x40,0xD8, 0xFF ];
-immutable ubyte[] enemyBankE_23 = [ 0xFF ];
-immutable ubyte[] enemyBankE_24 = [ 0xFF ];
-immutable ubyte[] enemyBankE_25 = [ 0xFF ];
-immutable ubyte[] enemyBankE_26 = [ 0xFF ];
-immutable ubyte[] enemyBankE_27 = [ 0xFF ];
-immutable ubyte[] enemyBankE_28 = [ 0xFF ];
-immutable ubyte[] enemyBankE_29 = [ 0xFF ];
-immutable ubyte[] enemyBankE_2A = [ 0xFF ];
-immutable ubyte[] enemyBankE_2B = [ 0x61,0x8A,0x5C,0x60, 0xFF ];
-immutable ubyte[] enemyBankE_2C = [ 0xFF ];
-immutable ubyte[] enemyBankE_2D = [ 0xFF ];
-immutable ubyte[] enemyBankE_2E = [ 0xFF ];
-immutable ubyte[] enemyBankE_2F = [ 0xFF ];
-immutable ubyte[] enemyBankE_30 = [ 0xFF ];
-immutable ubyte[] enemyBankE_31 = [ 0xFF ];
-immutable ubyte[] enemyBankE_32 = [ 0xFF ];
-immutable ubyte[] enemyBankE_33 = [ 0x44,0xCE,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankE_34 = [ 0xFF ];
-immutable ubyte[] enemyBankE_35 = [ 0xFF ];
-immutable ubyte[] enemyBankE_36 = [ 0xFF ];
-immutable ubyte[] enemyBankE_37 = [ 0xFF ];
-immutable ubyte[] enemyBankE_38 = [ 0xFF ];
-immutable ubyte[] enemyBankE_39 = [ 0xFF ];
-immutable ubyte[] enemyBankE_3A = [ 0x45,0xAD,0x40,0x88, 0xFF ];
-immutable ubyte[] enemyBankE_3B = [ 0xFF ];
-immutable ubyte[] enemyBankE_3C = [ 0xFF ];
-immutable ubyte[] enemyBankE_3D = [ 0xFF ];
-immutable ubyte[] enemyBankE_3E = [ 0xFF ];
-immutable ubyte[] enemyBankE_3F = [ 0xFF ];
-immutable ubyte[] enemyBankE_40 = [ 0xFF ];
-immutable ubyte[] enemyBankE_41 = [ 0xFF ];
-immutable ubyte[] enemyBankE_42 = [ 0xFF ];
-immutable ubyte[] enemyBankE_43 = [ 0xFF ];
-immutable ubyte[] enemyBankE_44 = [ 0xFF ];
-immutable ubyte[] enemyBankE_45 = [ 0xFF ];
-immutable ubyte[] enemyBankE_46 = [ 0xFF ];
-immutable ubyte[] enemyBankE_47 = [ 0xFF ];
-immutable ubyte[] enemyBankE_48 = [ 0xFF ];
-immutable ubyte[] enemyBankE_49 = [ 0xFF ];
-immutable ubyte[] enemyBankE_4A = [ 0xFF ];
-immutable ubyte[] enemyBankE_4B = [ 0xFF ];
-immutable ubyte[] enemyBankE_4C = [ 0xFF ];
-immutable ubyte[] enemyBankE_4D = [ 0xFF ];
-immutable ubyte[] enemyBankE_4E = [ 0xFF ];
-immutable ubyte[] enemyBankE_4F = [ 0xFF ];
-immutable ubyte[] enemyBankE_50 = [ 0xFF ];
-immutable ubyte[] enemyBankE_51 = [ 0xFF ];
-immutable ubyte[] enemyBankE_52 = [ 0xFF ];
-immutable ubyte[] enemyBankE_53 = [ 0xFF ];
-immutable ubyte[] enemyBankE_54 = [ 0xFF ];
-immutable ubyte[] enemyBankE_55 = [ 0x6D,0x99,0x78,0xB8, 0xFF ];
-immutable ubyte[] enemyBankE_56 = [ 0xFF ];
-immutable ubyte[] enemyBankE_57 = [ 0xFF ];
-immutable ubyte[] enemyBankE_58 = [ 0xFF ];
-immutable ubyte[] enemyBankE_59 = [ 0xFF ];
-immutable ubyte[] enemyBankE_5A = [ 0x0F,0x80,0x5C,0x60, 0x62,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankE_5B = [ 0xFF ];
-immutable ubyte[] enemyBankE_5C = [ 0xFF ];
-immutable ubyte[] enemyBankE_5D = [ 0xFF ];
-immutable ubyte[] enemyBankE_5E = [ 0xFF ];
-immutable ubyte[] enemyBankE_5F = [ 0xFF ];
-immutable ubyte[] enemyBankE_60 = [ 0xFF ];
-immutable ubyte[] enemyBankE_61 = [ 0x63,0x90,0x5C,0x60, 0xFF ];
-immutable ubyte[] enemyBankE_62 = [ 0xFF ];
-immutable ubyte[] enemyBankE_63 = [ 0xFF ];
-immutable ubyte[] enemyBankE_64 = [ 0x14,0x1E,0x46,0x88, 0x15,0x41,0xB9,0xD8, 0xFF ];
-immutable ubyte[] enemyBankE_65 = [ 0x64,0x97,0x38,0x68, 0xFF ];
-immutable ubyte[] enemyBankE_66 = [ 0xFF ];
-immutable ubyte[] enemyBankE_67 = [ 0xFF ];
-immutable ubyte[] enemyBankE_68 = [ 0xFF ];
-immutable ubyte[] enemyBankE_69 = [ 0xFF ];
-immutable ubyte[] enemyBankE_6A = [ 0x0F,0x86,0x5C,0x60, 0x65,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankE_6B = [ 0x10,0x51,0x70,0x60, 0xFF ];
-immutable ubyte[] enemyBankE_6C = [ 0xFF ];
-immutable ubyte[] enemyBankE_6D = [ 0xFF ];
-immutable ubyte[] enemyBankE_6E = [ 0xFF ];
-immutable ubyte[] enemyBankE_6F = [ 0xFF ];
-immutable ubyte[] enemyBankE_70 = [ 0xFF ];
-immutable ubyte[] enemyBankE_71 = [ 0xFF ];
-immutable ubyte[] enemyBankE_72 = [ 0xFF ];
-immutable ubyte[] enemyBankE_73 = [ 0xFF ];
-immutable ubyte[] enemyBankE_74 = [ 0x16,0x1E,0x46,0x38, 0x17,0x41,0xB9,0xE8, 0xFF ];
-immutable ubyte[] enemyBankE_75 = [ 0x6E,0x99,0x20,0x28, 0xFF ];
-immutable ubyte[] enemyBankE_76 = [ 0xFF ];
-immutable ubyte[] enemyBankE_77 = [ 0xFF ];
-immutable ubyte[] enemyBankE_78 = [ 0xFF ];
-immutable ubyte[] enemyBankE_79 = [ 0xFF ];
-immutable ubyte[] enemyBankE_7A = [ 0x0F,0x84,0x5C,0x60, 0x66,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankE_7B = [ 0x11,0x51,0x70,0xA0, 0xFF ];
-immutable ubyte[] enemyBankE_7C = [ 0xFF ];
-immutable ubyte[] enemyBankE_7D = [ 0xFF ];
-immutable ubyte[] enemyBankE_7E = [ 0xFF ];
-immutable ubyte[] enemyBankE_7F = [ 0xFF ];
-immutable ubyte[] enemyBankE_80 = [ 0xFF ];
-immutable ubyte[] enemyBankE_81 = [ 0x0F,0x86,0x5C,0x60, 0x67,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankE_82 = [ 0x12,0x46,0xB0,0x80, 0x13,0x41,0xC8,0xD8, 0xFF ];
-immutable ubyte[] enemyBankE_83 = [ 0x10,0x46,0x40,0x80, 0x11,0x46,0x68,0xC0, 0xFF ];
-immutable ubyte[] enemyBankE_84 = [ 0x18,0x41,0xB9,0xC8, 0xFF ];
-immutable ubyte[] enemyBankE_85 = [ 0x46,0xA3,0x68,0x68, 0xFF ];
-immutable ubyte[] enemyBankE_86 = [ 0xFF ];
-immutable ubyte[] enemyBankE_87 = [ 0xFF ];
-immutable ubyte[] enemyBankE_88 = [ 0xFF ];
-immutable ubyte[] enemyBankE_89 = [ 0xFF ];
-immutable ubyte[] enemyBankE_8A = [ 0x0F,0x82,0x5C,0x60, 0x68,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankE_8B = [ 0xFF ];
-immutable ubyte[] enemyBankE_8C = [ 0xFF ];
-immutable ubyte[] enemyBankE_8D = [ 0xFF ];
-immutable ubyte[] enemyBankE_8E = [ 0xFF ];
-immutable ubyte[] enemyBankE_8F = [ 0xFF ];
-immutable ubyte[] enemyBankE_90 = [ 0xFF ];
-immutable ubyte[] enemyBankE_91 = [ 0xFF ];
-immutable ubyte[] enemyBankE_92 = [ 0xFF ];
-immutable ubyte[] enemyBankE_93 = [ 0xFF ];
-immutable ubyte[] enemyBankE_94 = [ 0xFF ];
-immutable ubyte[] enemyBankE_95 = [ 0xFF ];
-immutable ubyte[] enemyBankE_96 = [ 0xFF ];
-immutable ubyte[] enemyBankE_97 = [ 0xFF ];
-immutable ubyte[] enemyBankE_98 = [ 0xFF ];
-immutable ubyte[] enemyBankE_99 = [ 0xFF ];
-immutable ubyte[] enemyBankE_9A = [ 0xFF ];
-immutable ubyte[] enemyBankE_9B = [ 0xFF ];
-immutable ubyte[] enemyBankE_9C = [ 0xFF ];
-immutable ubyte[] enemyBankE_9D = [ 0xFF ];
-immutable ubyte[] enemyBankE_9E = [ 0xFF ];
-immutable ubyte[] enemyBankE_9F = [ 0xFF ];
-immutable ubyte[] enemyBankE_A0 = [ 0x0F,0x80,0x5C,0x60, 0x69,0xF8,0xFF,0x88, 0xFF ];
-immutable ubyte[] enemyBankE_A1 = [ 0x1E,0x46,0xC0,0xA0, 0xFF ];
-immutable ubyte[] enemyBankE_A2 = [ 0x1C,0x46,0x2C,0xD0, 0xFF ];
-immutable ubyte[] enemyBankE_A3 = [ 0xFF ];
-immutable ubyte[] enemyBankE_A4 = [ 0x47,0xA3,0x28,0x68, 0xFF ];
-immutable ubyte[] enemyBankE_A5 = [ 0x1B,0x46,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankE_A6 = [ 0x1A,0x46,0x70,0xC0, 0x70,0x99,0x80,0xA8, 0xFF ];
-immutable ubyte[] enemyBankE_A7 = [ 0x19,0x46,0x30,0xA0, 0xFF ];
-immutable ubyte[] enemyBankE_A8 = [ 0xFF ];
-immutable ubyte[] enemyBankE_A9 = [ 0xFF ];
-immutable ubyte[] enemyBankE_AA = [ 0xFF ];
-immutable ubyte[] enemyBankE_AB = [ 0xFF ];
-immutable ubyte[] enemyBankE_AC = [ 0xFF ];
-immutable ubyte[] enemyBankE_AD = [ 0xFF ];
-immutable ubyte[] enemyBankE_AE = [ 0xFF ];
-immutable ubyte[] enemyBankE_AF = [ 0xFF ];
-immutable ubyte[] enemyBankE_B0 = [ 0x6A,0x97,0xA8,0x58, 0xFF ];
-immutable ubyte[] enemyBankE_B1 = [ 0xFF ];
-immutable ubyte[] enemyBankE_B2 = [ 0x48,0xA4,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankE_B3 = [ 0xFF ];
-immutable ubyte[] enemyBankE_B4 = [ 0xFF ];
-immutable ubyte[] enemyBankE_B5 = [ 0x20,0x5C,0xE0,0xBC, 0xFF ];
-immutable ubyte[] enemyBankE_B6 = [ 0x21,0x63,0xC0,0xA0, 0xFF ];
-immutable ubyte[] enemyBankE_B7 = [ 0x1F,0x5C,0x00,0xBC, 0xFF ];
-immutable ubyte[] enemyBankE_B8 = [ 0xFF ];
-immutable ubyte[] enemyBankE_B9 = [ 0xFF ];
-immutable ubyte[] enemyBankE_BA = [ 0xFF ];
-immutable ubyte[] enemyBankE_BB = [ 0xFF ];
-immutable ubyte[] enemyBankE_BC = [ 0xFF ];
-immutable ubyte[] enemyBankE_BD = [ 0xFF ];
-immutable ubyte[] enemyBankE_BE = [ 0xFF ];
-immutable ubyte[] enemyBankE_BF = [ 0xFF ];
-immutable ubyte[] enemyBankE_C0 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C1 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C2 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C3 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C4 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C5 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C6 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C7 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C8 = [ 0xFF ];
-immutable ubyte[] enemyBankE_C9 = [ 0xFF ];
-immutable ubyte[] enemyBankE_CA = [ 0xFF ];
-immutable ubyte[] enemyBankE_CB = [ 0xFF ];
-immutable ubyte[] enemyBankE_CC = [ 0xFF ];
-immutable ubyte[] enemyBankE_CD = [ 0xFF ];
-immutable ubyte[] enemyBankE_CE = [ 0xFF ];
-immutable ubyte[] enemyBankE_CF = [ 0xFF ];
-immutable ubyte[] enemyBankE_D0 = [ 0xFF ];
-immutable ubyte[] enemyBankE_D1 = [ 0x0F,0x82,0x2C,0x60, 0xFF ];
-immutable ubyte[] enemyBankE_D2 = [ 0xFF ];
-immutable ubyte[] enemyBankE_D3 = [ 0x0E,0x9B,0x48,0x88, 0x0F,0x9D,0xB8,0x88, 0xFF ];
-immutable ubyte[] enemyBankE_D4 = [ 0xFF ];
-immutable ubyte[] enemyBankE_D5 = [ 0xFF ];
-immutable ubyte[] enemyBankE_D6 = [ 0xFF ];
-immutable ubyte[] enemyBankE_D7 = [ 0xFF ];
-immutable ubyte[] enemyBankE_D8 = [ 0xFF ];
-immutable ubyte[] enemyBankE_D9 = [ 0xFF ];
-immutable ubyte[] enemyBankE_DA = [ 0xFF ];
-immutable ubyte[] enemyBankE_DB = [ 0xFF ];
-immutable ubyte[] enemyBankE_DC = [ 0xFF ];
-immutable ubyte[] enemyBankE_DD = [ 0xFF ];
-immutable ubyte[] enemyBankE_DE = [ 0xFF ];
-immutable ubyte[] enemyBankE_DF = [ 0xFF ];
-immutable ubyte[] enemyBankE_E0 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E1 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E2 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E3 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E4 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E5 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E6 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E7 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E8 = [ 0xFF ];
-immutable ubyte[] enemyBankE_E9 = [ 0xFF ];
-immutable ubyte[] enemyBankE_EA = [ 0xFF ];
-immutable ubyte[] enemyBankE_EB = [ 0xFF ];
-immutable ubyte[] enemyBankE_EC = [ 0xFF ];
-immutable ubyte[] enemyBankE_ED = [ 0xFF ];
-immutable ubyte[] enemyBankE_EE = [ 0xFF ];
-immutable ubyte[] enemyBankE_EF = [ 0xFF ];
-immutable ubyte[] enemyBankE_F0 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F1 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F2 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F3 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F4 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F5 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F6 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F7 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F8 = [ 0xFF ];
-immutable ubyte[] enemyBankE_F9 = [ 0xFF ];
-immutable ubyte[] enemyBankE_FA = [ 0xFF ];
-immutable ubyte[] enemyBankE_FB = [ 0xFF ];
-immutable ubyte[] enemyBankE_FC = [ 0xFF ];
-immutable ubyte[] enemyBankE_FD = [ 0xFF ];
-immutable ubyte[] enemyBankE_FE = [ 0xFF ];
-immutable ubyte[] enemyBankE_FF = [ 0xFF ];
-immutable ubyte[] enemyBankF_00 = [ 0xFF ];
-immutable ubyte[] enemyBankF_01 = [ 0xFF ];
-immutable ubyte[] enemyBankF_02 = [ 0xFF ];
-immutable ubyte[] enemyBankF_03 = [ 0xFF ];
-immutable ubyte[] enemyBankF_04 = [ 0xFF ];
-immutable ubyte[] enemyBankF_05 = [ 0xFF ];
-immutable ubyte[] enemyBankF_06 = [ 0xFF ];
-immutable ubyte[] enemyBankF_07 = [ 0xFF ];
-immutable ubyte[] enemyBankF_08 = [ 0xFF ];
-immutable ubyte[] enemyBankF_09 = [ 0xFF ];
-immutable ubyte[] enemyBankF_0A = [ 0xFF ];
-immutable ubyte[] enemyBankF_0B = [ 0xFF ];
-immutable ubyte[] enemyBankF_0C = [ 0xFF ];
-immutable ubyte[] enemyBankF_0D = [ 0xFF ];
-immutable ubyte[] enemyBankF_0E = [ 0xFF ];
-immutable ubyte[] enemyBankF_0F = [ 0xFF ];
-immutable ubyte[] enemyBankF_10 = [ 0x41,0xA0,0x90,0xE6, 0x0E,0x9B,0xC8,0x48, 0x0F,0x9D,0xE8,0x48, 0xFF ];
-immutable ubyte[] enemyBankF_11 = [ 0xFF ];
-immutable ubyte[] enemyBankF_12 = [ 0x31,0x14,0x90,0xC8, 0xFF ];
-immutable ubyte[] enemyBankF_13 = [ 0x2F,0x12,0x60,0xA8, 0x30,0x14,0x80,0xB0, 0xFF ];
-immutable ubyte[] enemyBankF_14 = [ 0x2D,0x12,0x50,0xA0, 0x2E,0x12,0x80,0xA8, 0xFF ];
-immutable ubyte[] enemyBankF_15 = [ 0x2C,0x14,0x60,0xD0, 0xFF ];
-immutable ubyte[] enemyBankF_16 = [ 0xFF ];
-immutable ubyte[] enemyBankF_17 = [ 0xFF ];
-immutable ubyte[] enemyBankF_18 = [ 0xFF ];
-immutable ubyte[] enemyBankF_19 = [ 0xFF ];
-immutable ubyte[] enemyBankF_1A = [ 0xFF ];
-immutable ubyte[] enemyBankF_1B = [ 0xFF ];
-immutable ubyte[] enemyBankF_1C = [ 0xFF ];
-immutable ubyte[] enemyBankF_1D = [ 0xFF ];
-immutable ubyte[] enemyBankF_1E = [ 0xFF ];
-immutable ubyte[] enemyBankF_1F = [ 0xFF ];
-immutable ubyte[] enemyBankF_20 = [ 0xFF ];
-immutable ubyte[] enemyBankF_21 = [ 0xFF ];
-immutable ubyte[] enemyBankF_22 = [ 0xFF ];
-immutable ubyte[] enemyBankF_23 = [ 0xFF ];
-immutable ubyte[] enemyBankF_24 = [ 0xFF ];
-immutable ubyte[] enemyBankF_25 = [ 0xFF ];
-immutable ubyte[] enemyBankF_26 = [ 0xFF ];
-immutable ubyte[] enemyBankF_27 = [ 0xFF ];
-immutable ubyte[] enemyBankF_28 = [ 0xFF ];
-immutable ubyte[] enemyBankF_29 = [ 0xFF ];
-immutable ubyte[] enemyBankF_2A = [ 0xFF ];
-immutable ubyte[] enemyBankF_2B = [ 0xFF ];
-immutable ubyte[] enemyBankF_2C = [ 0xFF ];
-immutable ubyte[] enemyBankF_2D = [ 0xFF ];
-immutable ubyte[] enemyBankF_2E = [ 0xFF ];
-immutable ubyte[] enemyBankF_2F = [ 0xFF ];
-immutable ubyte[] enemyBankF_30 = [ 0xFF ];
-immutable ubyte[] enemyBankF_31 = [ 0xFF ];
-immutable ubyte[] enemyBankF_32 = [ 0xFF ];
-immutable ubyte[] enemyBankF_33 = [ 0xFF ];
-immutable ubyte[] enemyBankF_34 = [ 0xFF ];
-immutable ubyte[] enemyBankF_35 = [ 0xFF ];
-immutable ubyte[] enemyBankF_36 = [ 0xFF ];
-immutable ubyte[] enemyBankF_37 = [ 0xFF ];
-immutable ubyte[] enemyBankF_38 = [ 0xFF ];
-immutable ubyte[] enemyBankF_39 = [ 0xFF ];
-immutable ubyte[] enemyBankF_3A = [ 0xFF ];
-immutable ubyte[] enemyBankF_3B = [ 0xFF ];
-immutable ubyte[] enemyBankF_3C = [ 0xFF ];
-immutable ubyte[] enemyBankF_3D = [ 0xFF ];
-immutable ubyte[] enemyBankF_3E = [ 0xFF ];
-immutable ubyte[] enemyBankF_3F = [ 0xFF ];
-immutable ubyte[] enemyBankF_40 = [ 0xFF ];
-immutable ubyte[] enemyBankF_41 = [ 0xFF ];
-immutable ubyte[] enemyBankF_42 = [ 0xFF ];
-immutable ubyte[] enemyBankF_43 = [ 0xFF ];
-immutable ubyte[] enemyBankF_44 = [ 0xFF ];
-immutable ubyte[] enemyBankF_45 = [ 0xFF ];
-immutable ubyte[] enemyBankF_46 = [ 0xFF ];
-immutable ubyte[] enemyBankF_47 = [ 0xFF ];
-immutable ubyte[] enemyBankF_48 = [ 0xFF ];
-immutable ubyte[] enemyBankF_49 = [ 0xFF ];
-immutable ubyte[] enemyBankF_4A = [ 0xFF ];
-immutable ubyte[] enemyBankF_4B = [ 0xFF ];
-immutable ubyte[] enemyBankF_4C = [ 0xFF ];
-immutable ubyte[] enemyBankF_4D = [ 0xFF ];
-immutable ubyte[] enemyBankF_4E = [ 0xFF ];
-immutable ubyte[] enemyBankF_4F = [ 0xFF ];
-immutable ubyte[] enemyBankF_50 = [ 0xFF ];
-immutable ubyte[] enemyBankF_51 = [ 0xFF ];
-immutable ubyte[] enemyBankF_52 = [ 0xFF ];
-immutable ubyte[] enemyBankF_53 = [ 0xFF ];
-immutable ubyte[] enemyBankF_54 = [ 0xFF ];
-immutable ubyte[] enemyBankF_55 = [ 0xFF ];
-immutable ubyte[] enemyBankF_56 = [ 0xFF ];
-immutable ubyte[] enemyBankF_57 = [ 0xFF ];
-immutable ubyte[] enemyBankF_58 = [ 0xFF ];
-immutable ubyte[] enemyBankF_59 = [ 0xFF ];
-immutable ubyte[] enemyBankF_5A = [ 0xFF ];
-immutable ubyte[] enemyBankF_5B = [ 0xFF ];
-immutable ubyte[] enemyBankF_5C = [ 0xFF ];
-immutable ubyte[] enemyBankF_5D = [ 0xFF ];
-immutable ubyte[] enemyBankF_5E = [ 0x0F,0x9D,0x08,0xC0, 0xFF ];
-immutable ubyte[] enemyBankF_5F = [ 0xFF ];
-immutable ubyte[] enemyBankF_60 = [ 0xFF ];
-immutable ubyte[] enemyBankF_61 = [ 0xFF ];
-immutable ubyte[] enemyBankF_62 = [ 0xFF ];
-immutable ubyte[] enemyBankF_63 = [ 0xFF ];
-immutable ubyte[] enemyBankF_64 = [ 0xFF ];
-immutable ubyte[] enemyBankF_65 = [ 0xFF ];
-immutable ubyte[] enemyBankF_66 = [ 0xFF ];
-immutable ubyte[] enemyBankF_67 = [ 0xFF ];
-immutable ubyte[] enemyBankF_68 = [ 0xFF ];
-immutable ubyte[] enemyBankF_69 = [ 0xFF ];
-immutable ubyte[] enemyBankF_6A = [ 0x17,0x00,0x80,0xA8, 0xFF ];
-immutable ubyte[] enemyBankF_6B = [ 0x18,0x01,0x80,0xA8, 0xFF ];
-immutable ubyte[] enemyBankF_6C = [ 0x19,0x14,0x20,0x80, 0xFF ];
-immutable ubyte[] enemyBankF_6D = [ 0xFF ];
-immutable ubyte[] enemyBankF_6E = [ 0xFF ];
-immutable ubyte[] enemyBankF_6F = [ 0xFF ];
-immutable ubyte[] enemyBankF_70 = [ 0xFF ];
-immutable ubyte[] enemyBankF_71 = [ 0xFF ];
-immutable ubyte[] enemyBankF_72 = [ 0xFF ];
-immutable ubyte[] enemyBankF_73 = [ 0xFF ];
-immutable ubyte[] enemyBankF_74 = [ 0xFF ];
-immutable ubyte[] enemyBankF_75 = [ 0x0E,0x9B,0xD0,0xB8, 0xFF ];
-immutable ubyte[] enemyBankF_76 = [ 0x0F,0x9D,0x38,0xB8, 0xFF ];
-immutable ubyte[] enemyBankF_77 = [ 0xFF ];
-immutable ubyte[] enemyBankF_78 = [ 0xFF ];
-immutable ubyte[] enemyBankF_79 = [ 0xFF ];
-immutable ubyte[] enemyBankF_7A = [ 0xFF ];
-immutable ubyte[] enemyBankF_7B = [ 0xFF ];
-immutable ubyte[] enemyBankF_7C = [ 0xFF ];
-immutable ubyte[] enemyBankF_7D = [ 0xFF ];
-immutable ubyte[] enemyBankF_7E = [ 0xFF ];
-immutable ubyte[] enemyBankF_7F = [ 0xFF ];
-immutable ubyte[] enemyBankF_80 = [ 0xFF ];
-immutable ubyte[] enemyBankF_81 = [ 0xFF ];
-immutable ubyte[] enemyBankF_82 = [ 0xFF ];
-immutable ubyte[] enemyBankF_83 = [ 0xFF ];
-immutable ubyte[] enemyBankF_84 = [ 0xFF ];
-immutable ubyte[] enemyBankF_85 = [ 0xFF ];
-immutable ubyte[] enemyBankF_86 = [ 0xFF ];
-immutable ubyte[] enemyBankF_87 = [ 0xFF ];
-immutable ubyte[] enemyBankF_88 = [ 0xFF ];
-immutable ubyte[] enemyBankF_89 = [ 0xFF ];
-immutable ubyte[] enemyBankF_8A = [ 0xFF ];
-immutable ubyte[] enemyBankF_8B = [ 0xFF ];
-immutable ubyte[] enemyBankF_8C = [ 0xFF ];
-immutable ubyte[] enemyBankF_8D = [ 0xFF ];
-immutable ubyte[] enemyBankF_8E = [ 0xFF ];
-immutable ubyte[] enemyBankF_8F = [ 0xFF ];
-immutable ubyte[] enemyBankF_90 = [ 0xFF ];
-immutable ubyte[] enemyBankF_91 = [ 0xFF ];
-immutable ubyte[] enemyBankF_92 = [ 0xFF ];
-immutable ubyte[] enemyBankF_93 = [ 0xFF ];
-immutable ubyte[] enemyBankF_94 = [ 0xFF ];
-immutable ubyte[] enemyBankF_95 = [ 0xFF ];
-immutable ubyte[] enemyBankF_96 = [ 0xFF ];
-immutable ubyte[] enemyBankF_97 = [ 0xFF ];
-immutable ubyte[] enemyBankF_98 = [ 0xFF ];
-immutable ubyte[] enemyBankF_99 = [ 0xFF ];
-immutable ubyte[] enemyBankF_9A = [ 0xFF ];
-immutable ubyte[] enemyBankF_9B = [ 0xFF ];
-immutable ubyte[] enemyBankF_9C = [ 0xFF ];
-immutable ubyte[] enemyBankF_9D = [ 0xFF ];
-immutable ubyte[] enemyBankF_9E = [ 0xFF ];
-immutable ubyte[] enemyBankF_9F = [ 0xFF ];
-immutable ubyte[] enemyBankF_A0 = [ 0xFF ];
-immutable ubyte[] enemyBankF_A1 = [ 0xFF ];
-immutable ubyte[] enemyBankF_A2 = [ 0xFF ];
-immutable ubyte[] enemyBankF_A3 = [ 0xFF ];
-immutable ubyte[] enemyBankF_A4 = [ 0xFF ];
-immutable ubyte[] enemyBankF_A5 = [ 0xFF ];
-immutable ubyte[] enemyBankF_A6 = [ 0xFF ];
-immutable ubyte[] enemyBankF_A7 = [ 0x42,0xA6,0xAC,0xA7, 0xFF ];
-immutable ubyte[] enemyBankF_A8 = [ 0xFF ];
-immutable ubyte[] enemyBankF_A9 = [ 0xFF ];
-immutable ubyte[] enemyBankF_AA = [ 0xFF ];
-immutable ubyte[] enemyBankF_AB = [ 0xFF ];
-immutable ubyte[] enemyBankF_AC = [ 0xFF ];
-immutable ubyte[] enemyBankF_AD = [ 0xFF ];
-immutable ubyte[] enemyBankF_AE = [ 0xFF ];
-immutable ubyte[] enemyBankF_AF = [ 0xFF ];
-immutable ubyte[] enemyBankF_B0 = [ 0x43,0xB3,0x40,0x80, 0xFF ];
-immutable ubyte[] enemyBankF_B1 = [ 0xFF ];
-immutable ubyte[] enemyBankF_B2 = [ 0xFF ];
-immutable ubyte[] enemyBankF_B3 = [ 0xFF ];
-immutable ubyte[] enemyBankF_B4 = [ 0xFF ];
-immutable ubyte[] enemyBankF_B5 = [ 0xFF ];
-immutable ubyte[] enemyBankF_B6 = [ 0xFF ];
-immutable ubyte[] enemyBankF_B7 = [ 0xFF ];
-immutable ubyte[] enemyBankF_B8 = [ 0xFF ];
-immutable ubyte[] enemyBankF_B9 = [ 0xFF ];
-immutable ubyte[] enemyBankF_BA = [ 0xFF ];
-immutable ubyte[] enemyBankF_BB = [ 0x10,0x65,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankF_BC = [ 0x11,0x65,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankF_BD = [ 0x12,0x65,0x80,0xC0, 0xFF ];
-immutable ubyte[] enemyBankF_BE = [ 0xFF ];
-immutable ubyte[] enemyBankF_BF = [ 0xFF ];
-immutable ubyte[] enemyBankF_C0 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C1 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C2 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C3 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C4 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C5 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C6 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C7 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C8 = [ 0xFF ];
-immutable ubyte[] enemyBankF_C9 = [ 0xFF ];
-immutable ubyte[] enemyBankF_CA = [ 0x13,0x65,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankF_CB = [ 0xFF ];
-immutable ubyte[] enemyBankF_CC = [ 0xFF ];
-immutable ubyte[] enemyBankF_CD = [ 0xFF ];
-immutable ubyte[] enemyBankF_CE = [ 0x14,0x65,0x80,0x80, 0xFF ];
-immutable ubyte[] enemyBankF_CF = [ 0xFF ];
-immutable ubyte[] enemyBankF_D0 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D1 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D2 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D3 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D4 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D5 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D6 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D7 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D8 = [ 0xFF ];
-immutable ubyte[] enemyBankF_D9 = [ 0xFF ];
-immutable ubyte[] enemyBankF_DA = [ 0xFF ];
-immutable ubyte[] enemyBankF_DB = [ 0xFF ];
-immutable ubyte[] enemyBankF_DC = [ 0xFF ];
-immutable ubyte[] enemyBankF_DD = [ 0xFF ];
-immutable ubyte[] enemyBankF_DE = [ 0xFF ];
-immutable ubyte[] enemyBankF_DF = [ 0xFF ];
-immutable ubyte[] enemyBankF_E0 = [ 0x40,0xB3,0x40,0x80, 0xFF ];
-immutable ubyte[] enemyBankF_E1 = [ 0xFF ];
-immutable ubyte[] enemyBankF_E2 = [ 0xFF ];
-immutable ubyte[] enemyBankF_E3 = [ 0xFF ];
-immutable ubyte[] enemyBankF_E4 = [ 0xFF ];
-immutable ubyte[] enemyBankF_E5 = [ 0xFF ];
-immutable ubyte[] enemyBankF_E6 = [ 0xFF ];
-immutable ubyte[] enemyBankF_E7 = [ 0xFF ];
-immutable ubyte[] enemyBankF_E8 = [ 0xFF ];
-immutable ubyte[] enemyBankF_E9 = [ 0xFF ];
-immutable ubyte[] enemyBankF_EA = [ 0xFF ];
-immutable ubyte[] enemyBankF_EB = [ 0xFF ];
-immutable ubyte[] enemyBankF_EC = [ 0x15,0x65,0x80,0x50, 0xFF ];
-immutable ubyte[] enemyBankF_ED = [ 0xFF ];
-immutable ubyte[] enemyBankF_EE = [ 0xFF ];
-immutable ubyte[] enemyBankF_EF = [ 0xFF ];
-immutable ubyte[] enemyBankF_F0 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F1 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F2 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F3 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F4 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F5 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F6 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F7 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F8 = [ 0xFF ];
-immutable ubyte[] enemyBankF_F9 = [ 0xFF ];
-immutable ubyte[] enemyBankF_FA = [ 0xFF ];
-immutable ubyte[] enemyBankF_FB = [ 0xFF ];
-immutable ubyte[] enemyBankF_FC = [ 0xFF ];
-immutable ubyte[] enemyBankF_FD = [ 0xFF ];
-immutable ubyte[] enemyBankF_FE = [ 0xFF ];
-immutable ubyte[] enemyBankF_FF = [ 0xFF ];
+immutable EnemySpawn[] enemyBank9_00 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_01 = [
+	EnemySpawn(0x65, Actor.missileTank, 0x88, 0x18),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_02 = [
+	EnemySpawn(0x67, Actor.energyTank, 0x48, 0x18),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_03 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_04 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_05 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_06 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_07 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_08 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_09 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_0A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_0B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_0C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_0D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_0E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_0F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_10 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_11 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_12 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_13 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_14 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_15 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_16 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_17 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_18 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_19 = [
+	EnemySpawn(0x1F, Actor.blobThrower, 0x00, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_1A = [
+	EnemySpawn(0x1D, Actor.chuteLeech, 0x60, 0x9C),
+	EnemySpawn(0x1E, Actor.chuteLeech, 0xA0, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_1B = [
+	EnemySpawn(0x1C, Actor.blobThrower, 0xA0, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_1C = [
+	EnemySpawn(0x16, Actor.senjoo, 0x70, 0x60),
+	EnemySpawn(0x17, Actor.senjoo, 0x98, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_1D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_1E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_1F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_20 = [
+	EnemySpawn(0x1D, Actor.moto, 0xC0, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_21 = [
+	EnemySpawn(0x1E, Actor.ramulken, 0xF8, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_22 = [
+	EnemySpawn(0x60, Actor.energyTank, 0x78, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_23 = [
+	EnemySpawn(0x1F, Actor.moto, 0x30, 0x96),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_24 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_25 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_26 = [
+	EnemySpawn(0x66, Actor.missileTank, 0xC8, 0x18),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_27 = [
+	EnemySpawn(0x23, Actor.smallBug, 0xA0, 0xC0),
+	EnemySpawn(0x24, Actor.smallBug, 0xC0, 0x70),
+	EnemySpawn(0x25, Actor.smallBug, 0xE0, 0x20),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_28 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_29 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_2A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_2B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_2C = [
+	EnemySpawn(0x18, Actor.senjoo, 0x98, 0x40),
+	EnemySpawn(0x19, Actor.senjoo, 0x98, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_2D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_2E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_2F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_30 = [
+	EnemySpawn(0x25, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_31 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_32 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_33 = [
+	EnemySpawn(0x20, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_34 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_35 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_36 = [
+	EnemySpawn(0x26, Actor.senjoo, 0x50, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_37 = [
+	EnemySpawn(0x21, Actor.smallBug, 0x60, 0x60),
+	EnemySpawn(0x22, Actor.smallBug, 0x80, 0x10),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_38 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_39 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_3A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_3B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_3C = [
+	EnemySpawn(0x1A, Actor.senjoo, 0x98, 0x40),
+	EnemySpawn(0x1B, Actor.senjoo, 0x98, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_3D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_3E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_3F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_40 = [
+	EnemySpawn(0x26, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_41 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_42 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_43 = [
+	EnemySpawn(0x21, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_44 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_45 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_46 = [
+	EnemySpawn(0x28, Actor.senjoo, 0x50, 0x80),
+	EnemySpawn(0x27, Actor.senjoo, 0x60, 0x00),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_47 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_48 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_49 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_4A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_4B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_4C = [
+	EnemySpawn(0x14, Actor.chuteLeech, 0xA8, 0x9C),
+	EnemySpawn(0x15, Actor.senjoo, 0xF8, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_4D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_4E = [
+	EnemySpawn(0x12, Actor.chuteLeech, 0x30, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_4F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_50 = [
+	EnemySpawn(0x27, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_51 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_52 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_53 = [
+	EnemySpawn(0x22, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_54 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_55 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_56 = [
+	EnemySpawn(0x29, Actor.senjoo, 0x60, 0x00),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_57 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_58 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_59 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_5A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_5B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_5C = [
+	EnemySpawn(0x0F, Actor.energyRefill, 0x90, 0x74),
+	EnemySpawn(0x26, Actor.smallBug, 0xB8, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_5D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_5E = [
+	EnemySpawn(0x11, Actor.senjoo, 0xB0, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_5F = [
+	EnemySpawn(0x10, Actor.senjoo, 0x50, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_60 = [
+	EnemySpawn(0x28, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_61 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_62 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_63 = [
+	EnemySpawn(0x23, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_64 = [
+	EnemySpawn(0x2E, Actor.chuteLeech, 0xD8, 0xCC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_65 = [
+	EnemySpawn(0x2C, Actor.chuteLeech, 0x30, 0xCC),
+	EnemySpawn(0x2D, Actor.chuteLeech, 0xB0, 0xCC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_66 = [
+	EnemySpawn(0x2A, Actor.needlerLeft, 0x10, 0xA8),
+	EnemySpawn(0x2B, Actor.needlerRight, 0x30, 0x68),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_67 = [
+	EnemySpawn(0x24, Actor.halzyn, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_68 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_69 = [
+	EnemySpawn(0x25, Actor.halzyn, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_6A = [
+	EnemySpawn(0x28, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_6B = [
+	EnemySpawn(0x18, Actor.smallBug, 0x40, 0x40),
+	EnemySpawn(0x19, Actor.smallBug, 0x80, 0x58),
+	EnemySpawn(0x1A, Actor.smallBug, 0xC0, 0x94),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_6C = [
+	EnemySpawn(0x1B, Actor.smallBug, 0x40, 0x94),
+	EnemySpawn(0x1C, Actor.smallBug, 0x80, 0x58),
+	EnemySpawn(0x1D, Actor.smallBug, 0xC0, 0x44),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_6D = [
+	EnemySpawn(0x27, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_6E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_6F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_70 = [
+	EnemySpawn(0x29, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_71 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_72 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_73 = [
+	EnemySpawn(0x0F, Actor.missileRefill, 0x18, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_74 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_75 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_76 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_77 = [
+	EnemySpawn(0x33, Actor.gravitt, 0xF0, 0xA4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_78 = [
+	EnemySpawn(0x34, Actor.gravitt, 0xC0, 0xA4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_79 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_7A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_7B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_7C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_7D = [
+	EnemySpawn(0x1E, Actor.proboscumFlipped, 0xB8, 0x40),
+	EnemySpawn(0x1F, Actor.proboscumFlipped, 0xC0, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_7E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_7F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_80 = [
+	EnemySpawn(0x2A, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_81 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_82 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_83 = [
+	EnemySpawn(0x16, Actor.halzyn, 0xB8, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_84 = [
+	EnemySpawn(0x1C, Actor.smallBug, 0x80, 0x80),
+	EnemySpawn(0x61, Actor.missileTank, 0xE8, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_85 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_86 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_87 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_88 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_89 = [
+	EnemySpawn(0x29, Actor.smallBug, 0xB8, 0x40),
+	EnemySpawn(0x2A, Actor.smallBug, 0xB8, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_8A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_8B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_8C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_8D = [
+	EnemySpawn(0x62, Actor.missileTank, 0x48, 0xA8),
+	EnemySpawn(0x20, Actor.proboscumFlipped, 0xB8, 0x3C),
+	EnemySpawn(0x21, Actor.proboscumFlipped, 0xB8, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_8E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_8F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_90 = [
+	EnemySpawn(0x2B, Actor.halzyn, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_91 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_92 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_93 = [
+	EnemySpawn(0x15, Actor.halzyn, 0xB8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_94 = [
+	EnemySpawn(0x1B, Actor.smallBug, 0xA8, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_95 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_96 = [
+	EnemySpawn(0x31, Actor.gravitt, 0xF0, 0xA4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_97 = [
+	EnemySpawn(0x32, Actor.gravitt, 0x40, 0xA4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_98 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_99 = [
+	EnemySpawn(0x35, Actor.gravitt, 0xC0, 0xA4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_9A = [
+	EnemySpawn(0x36, Actor.gravitt, 0x88, 0xA4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_9B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_9C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_9D = [
+	EnemySpawn(0x22, Actor.proboscumFlipped, 0xB8, 0x48),
+	EnemySpawn(0x23, Actor.proboscumFlipped, 0xC0, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_9E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_9F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A0 = [
+	EnemySpawn(0x2C, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A3 = [
+	EnemySpawn(0x14, Actor.halzyn, 0xB8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A4 = [
+	EnemySpawn(0x1A, Actor.smallBug, 0xB0, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A6 = [
+	EnemySpawn(0x0F, Actor.missileRefill, 0x28, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_A9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_AA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_AB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_AC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_AD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_AE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_AF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B0 = [
+	EnemySpawn(0x2D, Actor.halzyn, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B3 = [
+	EnemySpawn(0x13, Actor.halzyn, 0xB8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B4 = [
+	EnemySpawn(0x19, Actor.smallBug, 0xA8, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B8 = [
+	EnemySpawn(0x27, Actor.gullugg, 0x48, 0x80),
+	EnemySpawn(0x0E, Actor.missileRefill, 0x48, 0x97),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_B9 = [
+	EnemySpawn(0x28, Actor.gullugg, 0x48, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_BA = [
+	EnemySpawn(0x29, Actor.gullugg, 0x48, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_BB = [
+	EnemySpawn(0x2A, Actor.gullugg, 0x48, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_BC = [
+	EnemySpawn(0x2B, Actor.gullugg, 0x48, 0x80),
+	EnemySpawn(0x0F, Actor.energyRefill, 0x48, 0x94),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_BD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_BE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_BF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C0 = [
+	EnemySpawn(0x2E, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C3 = [
+	EnemySpawn(0x12, Actor.halzyn, 0xB8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C4 = [
+	EnemySpawn(0x18, Actor.smallBug, 0xA8, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C8 = [
+	EnemySpawn(0x19, Actor.chuteLeech, 0xE0, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_C9 = [
+	EnemySpawn(0x1A, Actor.chuteLeech, 0x40, 0x9C),
+	EnemySpawn(0x1B, Actor.chuteLeech, 0xC0, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_CA = [
+	EnemySpawn(0x1C, Actor.chuteLeech, 0x40, 0x9C),
+	EnemySpawn(0x1D, Actor.chuteLeech, 0xC0, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_CB = [
+	EnemySpawn(0x1E, Actor.chuteLeech, 0x40, 0x9C),
+	EnemySpawn(0x1F, Actor.chuteLeech, 0xC0, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_CC = [
+	EnemySpawn(0x20, Actor.chuteLeech, 0x80, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_CD = [
+	EnemySpawn(0x21, Actor.chuteLeech, 0x20, 0x9C),
+	EnemySpawn(0x22, Actor.gullugg, 0x60, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_CE = [
+	EnemySpawn(0x23, Actor.gullugg, 0x00, 0x80),
+	EnemySpawn(0x24, Actor.gullugg, 0x60, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_CF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D0 = [
+	EnemySpawn(0x2F, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D3 = [
+	EnemySpawn(0x1F, Actor.halzyn, 0xB8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D4 = [
+	EnemySpawn(0x17, Actor.smallBug, 0x88, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D6 = [
+	EnemySpawn(0x13, Actor.gullugg, 0x98, 0x80),
+	EnemySpawn(0x14, Actor.chuteLeech, 0xF0, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D7 = [
+	EnemySpawn(0x15, Actor.chuteLeech, 0x40, 0x9C),
+	EnemySpawn(0x16, Actor.chuteLeech, 0xC0, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D8 = [
+	EnemySpawn(0x17, Actor.chuteLeech, 0x00, 0x9C),
+	EnemySpawn(0x18, Actor.chuteLeech, 0x50, 0x9C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_D9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_DA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_DB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_DC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_DD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_DE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_DF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E0 = [
+	EnemySpawn(0x30, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E3 = [
+	EnemySpawn(0x10, Actor.halzyn, 0xF0, 0x60),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E5 = [
+	EnemySpawn(0x10, Actor.chuteLeech, 0xB8, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E6 = [
+	EnemySpawn(0x11, Actor.chuteLeech, 0x00, 0xBC),
+	EnemySpawn(0x12, Actor.gullugg, 0x40, 0x60),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_E9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_EA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_EB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_EC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_ED = [
+	EnemySpawn(0x26, Actor.chuteLeech, 0xB8, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_EE = [
+	EnemySpawn(0x25, Actor.chuteLeech, 0x58, 0xAC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_EF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F3 = [
+	EnemySpawn(0x63, Actor.missileTank, 0x20, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_F9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_FA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_FB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_FC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_FD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_FE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBank9_FF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_00 = [
+	EnemySpawn(0x14, Actor.smallBug, 0xD8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_01 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_02 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_03 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_04 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_05 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_06 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_07 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_08 = [
+	EnemySpawn(0x1B, Actor.rockIcicleIdle1, 0x80, 0x30),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_09 = [
+	EnemySpawn(0x1C, Actor.moheekLeft, 0x90, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_0A = [
+	EnemySpawn(0x1D, Actor.moheekRight, 0x90, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_0B = [
+	EnemySpawn(0x1F, Actor.rockIcicleIdle1, 0x78, 0x30),
+	EnemySpawn(0x1E, Actor.moheekLeft, 0x80, 0x80),
+	EnemySpawn(0x20, Actor.rockIcicleIdle1, 0xA8, 0x30),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_0C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_0D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_0E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_0F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_10 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_11 = [
+	EnemySpawn(0x16, Actor.moheekLeft, 0x80, 0x68),
+	EnemySpawn(0x17, Actor.moheekRight, 0x90, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_12 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_13 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_14 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_15 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_16 = [
+	EnemySpawn(0x0F, Actor.energyRefill, 0x18, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_17 = [
+	EnemySpawn(0x40, Actor.alphaMetroid, 0x98, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_18 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_19 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_1A = [
+	EnemySpawn(0x21, Actor.moheekLeft, 0x80, 0x80),
+	EnemySpawn(0x22, Actor.smallBug, 0xC0, 0x64),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_1B = [
+	EnemySpawn(0x23, Actor.moheekRight, 0x60, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_1C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_1D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_1E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_1F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_20 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_21 = [
+	EnemySpawn(0x18, Actor.rockIcicleIdle1, 0x48, 0x10),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_22 = [
+	EnemySpawn(0x10, Actor.rockIcicleIdle1, 0x90, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_23 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_24 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_25 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_26 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_27 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_28 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_29 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_2A = [
+	EnemySpawn(0x24, Actor.moheekLeft, 0x88, 0x28),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_2B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_2C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_2D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_2E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_2F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_30 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_31 = [
+	EnemySpawn(0x35, Actor.skreek, 0x00, 0x68),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_32 = [
+	EnemySpawn(0x13, Actor.moheekRight, 0x40, 0x40),
+	EnemySpawn(0x14, Actor.moheekLeft, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_33 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_34 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_35 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_36 = [
+	EnemySpawn(0x41, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_37 = [
+	EnemySpawn(0x0F, Actor.missileRefill, 0xE8, 0x78),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_38 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_39 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_3A = [
+	EnemySpawn(0x25, Actor.moheekRight, 0x88, 0xC7),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_3B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_3C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_3D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_3E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_3F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_40 = [
+	EnemySpawn(0x10, Actor.halzyn, 0xB0, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_41 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_42 = [
+	EnemySpawn(0x16, Actor.rockIcicleIdle1, 0x80, 0x70),
+	EnemySpawn(0x17, Actor.smallBug, 0xA0, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_43 = [
+	EnemySpawn(0x15, Actor.moheekLeft, 0x80, 0x58),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_44 = [
+	EnemySpawn(0x0B, Actor.smallBug, 0xF0, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_45 = [
+	EnemySpawn(0x0C, Actor.hornoad, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_46 = [
+	EnemySpawn(0x0D, Actor.smallBug, 0x80, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_47 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_48 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_49 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_4A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_4B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_4C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_4D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_4E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_4F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_50 = [
+	EnemySpawn(0x12, Actor.smallBug, 0x78, 0x64),
+	EnemySpawn(0x13, Actor.smallBug, 0x98, 0x94),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_51 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_52 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_53 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_54 = [
+	EnemySpawn(0x10, Actor.rockIcicleIdle1, 0x68, 0x20),
+	EnemySpawn(0x11, Actor.rockIcicleIdle1, 0x88, 0x20),
+	EnemySpawn(0x12, Actor.rockIcicleIdle1, 0xF8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_55 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_56 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_57 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_58 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_59 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_5A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_5B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_5C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_5D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_5E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_5F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_60 = [
+	EnemySpawn(0x15, Actor.smallBug, 0x98, 0x74),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_61 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_62 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_63 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_64 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_65 = [
+	EnemySpawn(0x13, Actor.rockIcicleIdle1, 0x30, 0xA0),
+	EnemySpawn(0x14, Actor.rockIcicleIdle1, 0x58, 0x90),
+	EnemySpawn(0x15, Actor.smallBug, 0xB8, 0x54),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_66 = [
+	EnemySpawn(0x18, Actor.glowflyIdle1, 0x64, 0xFF),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_67 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_68 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_69 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_6A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_6B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_6C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_6D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_6E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_6F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_70 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_71 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_72 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_73 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_74 = [
+	EnemySpawn(0x16, Actor.smallBug, 0x80, 0x5C),
+	EnemySpawn(0x17, Actor.rockIcicleIdle1, 0x90, 0x80),
+	EnemySpawn(0x18, Actor.rockIcicleIdle1, 0xC8, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_75 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_76 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_77 = [
+	EnemySpawn(0x60, Actor.missileBlock, 0x88, 0x98),
+	EnemySpawn(0x61, Actor.missileBlock, 0x88, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_78 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_79 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_7A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_7B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_7C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_7D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_7E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_7F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_80 = [
+	EnemySpawn(0x12, Actor.moheekRight, 0xF0, 0xC8),
+	EnemySpawn(0x13, Actor.rockIcicleIdle1, 0xF8, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_81 = [
+	EnemySpawn(0x10, Actor.rockIcicleIdle1, 0x78, 0x30),
+	EnemySpawn(0x11, Actor.rockIcicleIdle1, 0x88, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_82 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_83 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_84 = [
+	EnemySpawn(0x19, Actor.rockIcicleIdle1, 0x88, 0x20),
+	EnemySpawn(0x1A, Actor.rockIcicleIdle1, 0x90, 0x80),
+	EnemySpawn(0x1B, Actor.rockIcicleIdle1, 0xA8, 0x90),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_85 = [
+	EnemySpawn(0x1C, Actor.smallBug, 0x30, 0xDC),
+	EnemySpawn(0x1D, Actor.rockIcicleIdle1, 0x48, 0x80),
+	EnemySpawn(0x1E, Actor.rockIcicleIdle1, 0x90, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_86 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_87 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_88 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_89 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_8A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_8B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_8C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_8D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_8E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_8F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_90 = [
+	EnemySpawn(0x14, Actor.skorpRight, 0x18, 0x60),
+	EnemySpawn(0x15, Actor.rockIcicleIdle1, 0x88, 0x20),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_91 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_92 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_93 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_94 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_95 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_96 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_97 = [
+	EnemySpawn(0x1C, Actor.smallBug, 0x88, 0xC8),
+	EnemySpawn(0x1D, Actor.smallBug, 0xA8, 0xA8),
+	EnemySpawn(0x1E, Actor.smallBug, 0xB0, 0x40),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_98 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_99 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_9A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_9B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_9C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_9D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_9E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_9F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A0 = [
+	EnemySpawn(0x1A, Actor.rockIcicleIdle1, 0xC0, 0x90),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A1 = [
+	EnemySpawn(0x19, Actor.skorpLeft, 0xF8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A7 = [
+	EnemySpawn(0x1F, Actor.smallBug, 0x40, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_A9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_AA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_AB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_AC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_AD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_AE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_AF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B0 = [
+	EnemySpawn(0x1B, Actor.glowflyIdle1, 0x30, 0x78),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_B9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_BA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_BB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_BC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_BD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_BE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_BF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C0 = [
+	EnemySpawn(0x1F, Actor.skorpDown, 0xA8, 0xF8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C1 = [
+	EnemySpawn(0x1C, Actor.moheekLeft, 0x50, 0x48),
+	EnemySpawn(0x1D, Actor.moheekLeft, 0x70, 0x58),
+	EnemySpawn(0x1E, Actor.rockIcicleIdle1, 0x78, 0x20),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C6 = [
+	EnemySpawn(0x20, Actor.skorpDown, 0x78, 0x18),
+	EnemySpawn(0x21, Actor.skorpUp, 0xB0, 0xF8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C7 = [
+	EnemySpawn(0x1E, Actor.skorpDown, 0x50, 0x28),
+	EnemySpawn(0x1F, Actor.skorpUp, 0x90, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_C9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_CA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_CB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_CC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_CD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_CE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_CF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D0 = [
+	EnemySpawn(0x20, Actor.rockIcicleIdle1, 0x88, 0x20),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D6 = [
+	EnemySpawn(0x22, Actor.skorpRight, 0x18, 0x70),
+	EnemySpawn(0x23, Actor.skorpRight, 0x58, 0xD0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D7 = [
+	EnemySpawn(0x24, Actor.skorpUp, 0x70, 0xF8),
+	EnemySpawn(0x25, Actor.skorpUp, 0xC0, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_D9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_DA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_DB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_DC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_DD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_DE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_DF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E1 = [
+	EnemySpawn(0x21, Actor.skorpUp, 0xB0, 0xD8),
+	EnemySpawn(0x22, Actor.skorpUp, 0xD0, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_E9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_EA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_EB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_EC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_ED = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_EE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_EF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F5 = [
+	EnemySpawn(0x44, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F6 = [
+	EnemySpawn(0x26, Actor.glowflyIdle1, 0x40, 0x80),
+	EnemySpawn(0x27, Actor.glowflyIdle1, 0x40, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F8 = [
+	EnemySpawn(0x45, Actor.zetaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_F9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_FA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_FB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_FC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_FD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_FE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankA_FF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_00 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_01 = [
+	EnemySpawn(0x42, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_02 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_03 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_04 = [
+	EnemySpawn(0x4E, Actor.zetaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_05 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_06 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_07 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_08 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_09 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_0A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_0B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_0C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_0D = [
+	EnemySpawn(0x11, Actor.smallBug, 0xD0, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_0E = [
+	EnemySpawn(0x12, Actor.smallBug, 0x40, 0x90),
+	EnemySpawn(0x13, Actor.smallBug, 0x98, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_0F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_10 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_11 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_12 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_13 = [
+	EnemySpawn(0x15, Actor.chuteLeech, 0x90, 0xEC),
+	EnemySpawn(0x16, Actor.smallBug, 0xD0, 0x90),
+	EnemySpawn(0x17, Actor.chuteLeech, 0xE8, 0xEC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_14 = [
+	EnemySpawn(0x1A, Actor.chuteLeech, 0xE0, 0xEC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_15 = [
+	EnemySpawn(0x1C, Actor.chuteLeech, 0x60, 0xEC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_16 = [
+	EnemySpawn(0x20, Actor.pipeBug, 0xD0, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_17 = [
+	EnemySpawn(0x21, Actor.pipeBug2, 0x30, 0xF0),
+	EnemySpawn(0x22, Actor.pipeBug, 0xB0, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_18 = [
+	EnemySpawn(0x23, Actor.pipeBug2, 0x70, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_19 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_1A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_1B = [
+	EnemySpawn(0x27, Actor.smallBug, 0x90, 0xDC),
+	EnemySpawn(0x28, Actor.smallBug, 0xB0, 0x8C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_1C = [
+	EnemySpawn(0x0F, Actor.energyRefill, 0x28, 0x48),
+	EnemySpawn(0x29, Actor.gullugg, 0x38, 0x8C),
+	EnemySpawn(0x2A, Actor.gullugg, 0x78, 0xAC),
+	EnemySpawn(0x2B, Actor.gullugg, 0xB8, 0x90),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_1D = [
+	EnemySpawn(0x2C, Actor.gullugg, 0x38, 0xBC),
+	EnemySpawn(0x2D, Actor.gullugg, 0x78, 0x98),
+	EnemySpawn(0x2E, Actor.smallBug, 0xF0, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_1E = [
+	EnemySpawn(0x2F, Actor.gullugg, 0x13, 0x70),
+	EnemySpawn(0x31, Actor.gullugg, 0x70, 0x90),
+	EnemySpawn(0x32, Actor.gullugg, 0xA0, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_1F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_20 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_21 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_22 = [
+	EnemySpawn(0x40, Actor.alphaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_23 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_24 = [
+	EnemySpawn(0x30, Actor.septogg, 0x48, 0x98),
+	EnemySpawn(0x31, Actor.septogg, 0x78, 0xA0),
+	EnemySpawn(0x32, Actor.septogg, 0xA8, 0x90),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_25 = [
+	EnemySpawn(0x33, Actor.septogg, 0x38, 0xA0),
+	EnemySpawn(0x34, Actor.septogg, 0x68, 0x90),
+	EnemySpawn(0x35, Actor.septogg, 0x98, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_26 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_27 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_28 = [
+	EnemySpawn(0x2E, Actor.yumeeSpawner, 0xD0, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_29 = [
+	EnemySpawn(0x2F, Actor.yumeeSpawner2, 0x30, 0xF0),
+	EnemySpawn(0x30, Actor.yumeeSpawner, 0xB0, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_2A = [
+	EnemySpawn(0x31, Actor.yumeeSpawner2, 0x30, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_2B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_2C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_2D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_2E = [
+	EnemySpawn(0x41, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_2F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_30 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_31 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_32 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_33 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_34 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_35 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_36 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_37 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_38 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_39 = [
+	EnemySpawn(0x43, Actor.alphaMetroid, 0x80, 0x90),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_3A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_3B = [
+	EnemySpawn(0x44, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_3C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_3D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_3E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_3F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_40 = [
+	EnemySpawn(0x1E, Actor.octroll, 0xA0, 0xC0),
+	EnemySpawn(0x1F, Actor.octroll, 0xE0, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_41 = [
+	EnemySpawn(0x20, Actor.octroll, 0x40, 0x80),
+	EnemySpawn(0x21, Actor.octroll, 0xC8, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_42 = [
+	EnemySpawn(0x22, Actor.octroll, 0x70, 0xD0),
+	EnemySpawn(0x23, Actor.octroll, 0xF0, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_43 = [
+	EnemySpawn(0x24, Actor.octroll, 0x60, 0xC0),
+	EnemySpawn(0x25, Actor.octroll, 0x80, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_44 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_45 = [
+	EnemySpawn(0x45, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_46 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_47 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_48 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_49 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_4A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_4B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_4C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_4D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_4E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_4F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_50 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_51 = [
+	EnemySpawn(0x16, Actor.drivel, 0xA0, 0x98),
+	EnemySpawn(0x17, Actor.skreek, 0xD0, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_52 = [
+	EnemySpawn(0x0C, Actor.skreek, 0x08, 0xE8),
+	EnemySpawn(0x14, Actor.drivel, 0x90, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_53 = [
+	EnemySpawn(0x15, Actor.skreek, 0x08, 0xE8),
+	EnemySpawn(0x12, Actor.drivel, 0x80, 0x98),
+	EnemySpawn(0x13, Actor.skreek, 0xFF, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_54 = [
+	EnemySpawn(0x10, Actor.skreek, 0x68, 0xE8),
+	EnemySpawn(0x11, Actor.drivel, 0x70, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_55 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_56 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_57 = [
+	EnemySpawn(0x47, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_58 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_59 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_5A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_5B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_5C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_5D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_5E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_5F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_60 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_61 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_62 = [
+	EnemySpawn(0x18, Actor.moto, 0x40, 0xC8),
+	EnemySpawn(0x19, Actor.moto, 0xC0, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_63 = [
+	EnemySpawn(0x1A, Actor.moto, 0x40, 0xA8),
+	EnemySpawn(0x1B, Actor.moto, 0x80, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_64 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_65 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_66 = [
+	EnemySpawn(0x49, Actor.metroid1, 0x80, 0xB6),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_67 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_68 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_69 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_6A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_6B = [
+	EnemySpawn(0x2D, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0x2E, Actor.halzyn, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_6C = [
+	EnemySpawn(0x2F, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0x30, Actor.halzyn, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_6D = [
+	EnemySpawn(0x31, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0x32, Actor.halzyn, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_6E = [
+	EnemySpawn(0x33, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0x34, Actor.halzyn, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_6F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_70 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_71 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_72 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_73 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_74 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_75 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_76 = [
+	EnemySpawn(0x4A, Actor.zeta1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_77 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_78 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_79 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_7A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_7B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_7C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_7D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_7E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_7F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_80 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_81 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_82 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_83 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_84 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_85 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_86 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_87 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_88 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_89 = [
+	EnemySpawn(0x32, Actor.yumeeSpawner, 0xA0, 0xE0),
+	EnemySpawn(0x33, Actor.yumeeSpawner2, 0xFF, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_8A = [
+	EnemySpawn(0x34, Actor.yumeeSpawner, 0x68, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_8B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_8C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_8D = [
+	EnemySpawn(0x4C, Actor.zeta1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_8E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_8F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_90 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_91 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_92 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_93 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_94 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_95 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_96 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_97 = [
+	EnemySpawn(0x30, Actor.moheekRight, 0x68, 0xA8),
+	EnemySpawn(0x31, Actor.moheekLeft, 0xC0, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_98 = [
+	EnemySpawn(0x2E, Actor.moheekLeft, 0x40, 0x80),
+	EnemySpawn(0x2F, Actor.moheekRight, 0xB0, 0x58),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_99 = [
+	EnemySpawn(0x2C, Actor.moheekLeft, 0x40, 0x80),
+	EnemySpawn(0x2D, Actor.moheekRight, 0xB0, 0x58),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_9A = [
+	EnemySpawn(0x2A, Actor.moheekLeft, 0x40, 0x98),
+	EnemySpawn(0x2B, Actor.moheekRight, 0x88, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_9B = [
+	EnemySpawn(0x12, Actor.skorpUp, 0xA0, 0xD8),
+	EnemySpawn(0x13, Actor.skorpUp, 0xD8, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_9C = [
+	EnemySpawn(0x10, Actor.skorpUp, 0x20, 0xA8),
+	EnemySpawn(0x11, Actor.skorpUp, 0x68, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_9D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_9E = [
+	EnemySpawn(0x18, Actor.moto, 0x40, 0xC8),
+	EnemySpawn(0x19, Actor.moto, 0xC0, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_9F = [
+	EnemySpawn(0x1A, Actor.moto, 0x40, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A7 = [
+	EnemySpawn(0x46, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_A9 = [
+	EnemySpawn(0x35, Actor.smallBug, 0xA0, 0xB4),
+	EnemySpawn(0x36, Actor.smallBug, 0xA8, 0xD4),
+	EnemySpawn(0x37, Actor.smallBug, 0xAC, 0xFC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_AA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_AB = [
+	EnemySpawn(0x4F, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_AC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_AD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_AE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_AF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B8 = [
+	EnemySpawn(0x18, Actor.smallBug, 0xA0, 0xAC),
+	EnemySpawn(0x19, Actor.smallBug, 0xA8, 0xD4),
+	EnemySpawn(0x1A, Actor.smallBug, 0xC0, 0xFC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_B9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_BA = [
+	EnemySpawn(0x10, Actor.chuteLeech, 0x90, 0xBE),
+	EnemySpawn(0x11, Actor.chuteLeech, 0xD0, 0xDE),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_BB = [
+	EnemySpawn(0x12, Actor.chuteLeech, 0x10, 0xAE),
+	EnemySpawn(0x13, Actor.chuteLeech, 0x70, 0xBE),
+	EnemySpawn(0x14, Actor.chuteLeech, 0xC0, 0xDE),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_BC = [
+	EnemySpawn(0x15, Actor.chuteLeech, 0x40, 0xDE),
+	EnemySpawn(0x16, Actor.chuteLeech, 0x80, 0xBE),
+	EnemySpawn(0x17, Actor.chuteLeech, 0xB0, 0xDE),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_BD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_BE = [
+	EnemySpawn(0x50, Actor.alphaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_BF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C0 = [
+	EnemySpawn(0x1C, Actor.smallBug, 0x80, 0x80),
+	EnemySpawn(0x1D, Actor.yumeeSpawner2, 0xA0, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C1 = [
+	EnemySpawn(0x1A, Actor.yumeeSpawner, 0x08, 0xF0),
+	EnemySpawn(0x1B, Actor.glowflyIdle1, 0xF0, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C2 = [
+	EnemySpawn(0x18, Actor.skorpUp, 0x80, 0xE8),
+	EnemySpawn(0x19, Actor.skorpUp, 0xB0, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C3 = [
+	EnemySpawn(0x16, Actor.moheekLeft, 0x58, 0xA8),
+	EnemySpawn(0x17, Actor.moheekRight, 0x78, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C4 = [
+	EnemySpawn(0x51, Actor.alphaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C8 = [
+	EnemySpawn(0x1B, Actor.gullugg, 0x80, 0x90),
+	EnemySpawn(0x1C, Actor.smallBug, 0xA0, 0x2C),
+	EnemySpawn(0x1D, Actor.smallBug, 0xB0, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_C9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_CA = [
+	EnemySpawn(0x52, Actor.alphaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_CB = [
+	EnemySpawn(0x2B, Actor.smallBug, 0xC0, 0xF8),
+	EnemySpawn(0x2C, Actor.smallBug, 0xC8, 0xAC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_CC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_CD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_CE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_CF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_D9 = [
+	EnemySpawn(0x53, Actor.alphaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_DA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_DB = [
+	EnemySpawn(0x2D, Actor.smallBug, 0x78, 0x3C),
+	EnemySpawn(0x2E, Actor.smallBug, 0xB0, 0x78),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_DC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_DD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_DE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_DF = [
+	EnemySpawn(0x54, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E3 = [
+	EnemySpawn(0x0F, Actor.energyRefill, 0x48, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E4 = [
+	EnemySpawn(0x55, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_E9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_EA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_EB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_EC = [
+	EnemySpawn(0x56, Actor.alphaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_ED = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_EE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_EF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F1 = [
+	EnemySpawn(0x30, Actor.flittMoving, 0x50, 0xA0),
+	EnemySpawn(0x31, Actor.flittMoving, 0xB0, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F2 = [
+	EnemySpawn(0x2D, Actor.flittMoving, 0x00, 0x78),
+	EnemySpawn(0x2E, Actor.flittMoving, 0x50, 0x80),
+	EnemySpawn(0x2F, Actor.flittMoving, 0xA0, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F3 = [
+	EnemySpawn(0x2A, Actor.flittMoving, 0x00, 0xD0),
+	EnemySpawn(0x2B, Actor.flittMoving, 0x50, 0x90),
+	EnemySpawn(0x2C, Actor.flittMoving, 0xA0, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F4 = [
+	EnemySpawn(0x27, Actor.flittMoving, 0x00, 0xD0),
+	EnemySpawn(0x28, Actor.flittMoving, 0x30, 0x90),
+	EnemySpawn(0x29, Actor.flittMoving, 0x70, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F5 = [
+	EnemySpawn(0x20, Actor.flittVanishing, 0x60, 0xA0),
+	EnemySpawn(0x21, Actor.flittVanishing, 0x90, 0xA0),
+	EnemySpawn(0x22, Actor.flittVanishing, 0xC0, 0x90),
+	EnemySpawn(0x23, Actor.flittVanishing, 0xE0, 0x68),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F6 = [
+	EnemySpawn(0x24, Actor.flittVanishing, 0x10, 0x88),
+	EnemySpawn(0x25, Actor.flittVanishing, 0x50, 0x98),
+	EnemySpawn(0x26, Actor.flittVanishing, 0x90, 0xA0),
+	EnemySpawn(0x27, Actor.flittVanishing, 0xD0, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F7 = [
+	EnemySpawn(0x28, Actor.flittVanishing, 0x00, 0xA0),
+	EnemySpawn(0x29, Actor.flittVanishing, 0x30, 0x90),
+	EnemySpawn(0x2A, Actor.flittVanishing, 0x80, 0xA8),
+	EnemySpawn(0x2B, Actor.flittVanishing, 0xC0, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F8 = [
+	EnemySpawn(0x2C, Actor.flittVanishing, 0x00, 0x90),
+	EnemySpawn(0x2D, Actor.flittVanishing, 0x40, 0x90),
+	EnemySpawn(0x2E, Actor.flittVanishing, 0x80, 0xA0),
+	EnemySpawn(0x2F, Actor.flittVanishing, 0xB0, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_F9 = [
+	EnemySpawn(0x10, Actor.octroll, 0xC0, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_FA = [
+	EnemySpawn(0x11, Actor.octroll, 0x08, 0xD8),
+	EnemySpawn(0x12, Actor.octroll, 0xA0, 0xD8),
+	EnemySpawn(0x13, Actor.octroll, 0xFF, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_FB = [
+	EnemySpawn(0x14, Actor.octroll, 0x90, 0xD8),
+	EnemySpawn(0x15, Actor.octroll, 0xF8, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_FC = [
+	EnemySpawn(0x16, Actor.octroll, 0x70, 0xD8),
+	EnemySpawn(0x17, Actor.octroll, 0xFF, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_FD = [
+	EnemySpawn(0x18, Actor.octroll, 0x90, 0xD8),
+	EnemySpawn(0x19, Actor.octroll, 0xF8, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_FE = [
+	EnemySpawn(0x1A, Actor.octroll, 0x90, 0xD8),
+	EnemySpawn(0x1B, Actor.octroll, 0xF0, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankB_FF = [
+	EnemySpawn(0x1C, Actor.octroll, 0x40, 0xD8),
+	EnemySpawn(0x1D, Actor.octroll, 0x80, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_00 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_01 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_02 = [
+	EnemySpawn(0x20, Actor.needlerRight, 0x80, 0x58),
+	EnemySpawn(0x21, Actor.needlerLeft, 0xA0, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_03 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_04 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_05 = [
+	EnemySpawn(0x24, Actor.smallBug, 0x88, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_06 = [
+	EnemySpawn(0x36, Actor.smallBug, 0x78, 0xD4),
+	EnemySpawn(0x37, Actor.smallBug, 0xC8, 0xCC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_07 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_08 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_09 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_0A = [
+	EnemySpawn(0x10, Actor.smallBug, 0xB0, 0x84),
+	EnemySpawn(0x11, Actor.smallBug, 0xB8, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_0B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_0C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_0D = [
+	EnemySpawn(0x16, Actor.smallBug, 0x88, 0xBC),
+	EnemySpawn(0x17, Actor.smallBug, 0xA8, 0xC4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_0E = [
+	EnemySpawn(0x16, Actor.smallBug, 0x88, 0xBC),
+	EnemySpawn(0x17, Actor.smallBug, 0xA8, 0xC4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_0F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_10 = [
+	EnemySpawn(0x14, Actor.smallBug, 0x40, 0x40),
+	EnemySpawn(0x15, Actor.smallBug, 0xC0, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_11 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_12 = [
+	EnemySpawn(0x22, Actor.needlerRight, 0x60, 0x60),
+	EnemySpawn(0x23, Actor.needlerLeft, 0xA0, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_13 = [
+	EnemySpawn(0x60, Actor.spiderBall, 0x48, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_14 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_15 = [
+	EnemySpawn(0x25, Actor.smallBug, 0x88, 0x4C),
+	EnemySpawn(0x26, Actor.smallBug, 0xA0, 0x54),
+	EnemySpawn(0x27, Actor.smallBug, 0xA8, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_16 = [
+	EnemySpawn(0x38, Actor.smallBug, 0xA0, 0x40),
+	EnemySpawn(0x39, Actor.smallBug, 0xB0, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_17 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_18 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_19 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_1A = [
+	EnemySpawn(0x12, Actor.smallBug, 0x88, 0x3C),
+	EnemySpawn(0x13, Actor.smallBug, 0xB8, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_1B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_1C = [
+	EnemySpawn(0x18, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_1D = [
+	EnemySpawn(0x14, Actor.smallBug, 0x88, 0x4C),
+	EnemySpawn(0x15, Actor.smallBug, 0xA8, 0x54),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_1E = [
+	EnemySpawn(0x14, Actor.smallBug, 0x88, 0x4C),
+	EnemySpawn(0x15, Actor.smallBug, 0xA8, 0x54),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_1F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_20 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_21 = [
+	EnemySpawn(0x1A, Actor.tsumuriRight, 0x80, 0x80),
+	EnemySpawn(0x1B, Actor.smallBug, 0xB0, 0xAC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_22 = [
+	EnemySpawn(0x24, Actor.needlerRight, 0x40, 0x28),
+	EnemySpawn(0x25, Actor.needlerLeft, 0x50, 0x88),
+	EnemySpawn(0x26, Actor.smallBug, 0xB8, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_23 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_24 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_25 = [
+	EnemySpawn(0x28, Actor.smallBug, 0x88, 0x40),
+	EnemySpawn(0x29, Actor.smallBug, 0xB8, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_26 = [
+	EnemySpawn(0x3A, Actor.smallBug, 0x80, 0x40),
+	EnemySpawn(0x3B, Actor.smallBug, 0x90, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_27 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_28 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_29 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_2A = [
+	EnemySpawn(0x14, Actor.smallBug, 0x80, 0x3C),
+	EnemySpawn(0x15, Actor.smallBug, 0x80, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_2B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_2C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_2D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_2E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_2F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_30 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_31 = [
+	EnemySpawn(0x1C, Actor.tsumuriLeft, 0x70, 0x40),
+	EnemySpawn(0x1D, Actor.tsumuriRight, 0x80, 0x80),
+	EnemySpawn(0x1E, Actor.tsumuriLeft, 0x90, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_32 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_33 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_34 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_35 = [
+	EnemySpawn(0x2A, Actor.smallBug, 0x88, 0x40),
+	EnemySpawn(0x2B, Actor.smallBug, 0xB8, 0xB4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_36 = [
+	EnemySpawn(0x3C, Actor.smallBug, 0xA0, 0x4C),
+	EnemySpawn(0x3D, Actor.smallBug, 0xA8, 0x84),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_37 = [
+	EnemySpawn(0x14, Actor.smallBug, 0xA0, 0x7C),
+	EnemySpawn(0x15, Actor.smallBug, 0xB0, 0xA4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_38 = [
+	EnemySpawn(0x41, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_39 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_3A = [
+	EnemySpawn(0x16, Actor.smallBug, 0xA0, 0x3C),
+	EnemySpawn(0x17, Actor.smallBug, 0xA0, 0x8C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_3B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_3C = [
+	EnemySpawn(0x19, Actor.halzyn, 0x80, 0x60),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_3D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_3E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_3F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_40 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_41 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_42 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_43 = [
+	EnemySpawn(0x35, Actor.glowflyIdle1, 0x40, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_44 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_45 = [
+	EnemySpawn(0x2C, Actor.smallBug, 0x90, 0x3C),
+	EnemySpawn(0x2D, Actor.smallBug, 0xB0, 0x8C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_46 = [
+	EnemySpawn(0x13, Actor.smallBug, 0x88, 0xA4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_47 = [
+	EnemySpawn(0x16, Actor.smallBug, 0xA0, 0x3C),
+	EnemySpawn(0x17, Actor.smallBug, 0xB0, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_48 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_49 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_4A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_4B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_4C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_4D = [
+	EnemySpawn(0x35, Actor.moto, 0x58, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_4E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_4F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_50 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_51 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_52 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_53 = [
+	EnemySpawn(0x36, Actor.glowflyIdle1, 0x40, 0x48),
+	EnemySpawn(0x37, Actor.glowflyIdle1, 0x40, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_54 = [
+	EnemySpawn(0x26, Actor.smallBug, 0xB0, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_55 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_56 = [
+	EnemySpawn(0x11, Actor.moto, 0x80, 0x18),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_57 = [
+	EnemySpawn(0x18, Actor.smallBug, 0xA0, 0x3C),
+	EnemySpawn(0x19, Actor.smallBug, 0xB0, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_58 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_59 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_5A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_5B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_5C = [
+	EnemySpawn(0x1A, Actor.halzyn, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_5D = [
+	EnemySpawn(0x36, Actor.moto, 0xA0, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_5E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_5F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_60 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_61 = [
+	EnemySpawn(0x27, Actor.smallBug, 0xB0, 0x94),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_62 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_63 = [
+	EnemySpawn(0x38, Actor.glowflyIdle1, 0x40, 0xC8),
+	EnemySpawn(0x39, Actor.moheekLeft, 0x80, 0x58),
+	EnemySpawn(0x3A, Actor.moheekLeft, 0x80, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_64 = [
+	EnemySpawn(0x23, Actor.smallBug, 0xB8, 0xAC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_65 = [
+	EnemySpawn(0x1B, Actor.smallBug, 0xB0, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_66 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_67 = [
+	EnemySpawn(0x1A, Actor.smallBug, 0xA0, 0x34),
+	EnemySpawn(0x1B, Actor.smallBug, 0xA8, 0x84),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_68 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_69 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_6A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_6B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_6C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_6D = [
+	EnemySpawn(0x37, Actor.moto, 0xB8, 0x88),
+	EnemySpawn(0x38, Actor.ramulken, 0xC0, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_6E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_6F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_70 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_71 = [
+	EnemySpawn(0x28, Actor.smallBug, 0xB8, 0x94),
+	EnemySpawn(0x29, Actor.tsumuriLeft, 0xC1, 0x30),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_72 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_73 = [
+	EnemySpawn(0x3B, Actor.glowflyIdle1, 0x40, 0x90),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_74 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_75 = [
+	EnemySpawn(0x1A, Actor.smallBug, 0x90, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_76 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_77 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_78 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_79 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_7A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_7B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_7C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_7D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_7E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_7F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_80 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_81 = [
+	EnemySpawn(0x2A, Actor.tsumuriLeft, 0xB8, 0x50),
+	EnemySpawn(0x2B, Actor.smallBug, 0xC0, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_82 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_83 = [
+	EnemySpawn(0x3C, Actor.skorpUp, 0x80, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_84 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_85 = [
+	EnemySpawn(0x18, Actor.smallBug, 0xA0, 0x54),
+	EnemySpawn(0x19, Actor.smallBug, 0xA0, 0x94),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_86 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_87 = [
+	EnemySpawn(0x1D, Actor.halzyn, 0x80, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_88 = [
+	EnemySpawn(0x40, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_89 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_8A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_8B = [
+	EnemySpawn(0x1D, Actor.halzyn, 0x80, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_8C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_8D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_8E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_8F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_90 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_91 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_92 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_93 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_94 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_95 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_96 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_97 = [
+	EnemySpawn(0x1C, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_98 = [
+	EnemySpawn(0x0F, Actor.energyRefill, 0xE8, 0x78),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_99 = [
+	EnemySpawn(0x22, Actor.halzyn, 0x80, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_9A = [
+	EnemySpawn(0x32, Actor.glowflyIdle1, 0x20, 0x68),
+	EnemySpawn(0x33, Actor.glowflyIdle1, 0x60, 0xF0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_9B = [
+	EnemySpawn(0x1C, Actor.halzyn, 0x80, 0x40),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_9C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_9D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_9E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_9F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A1 = [
+	EnemySpawn(0x10, Actor.moheekLeft, 0x70, 0x57),
+	EnemySpawn(0x11, Actor.moheekRight, 0xB9, 0x90),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A2 = [
+	EnemySpawn(0x21, Actor.tsumuriLeft, 0x60, 0xB8),
+	EnemySpawn(0x22, Actor.tsumuriRight, 0x80, 0x58),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A3 = [
+	EnemySpawn(0x1C, Actor.smallBug, 0xA0, 0x84),
+	EnemySpawn(0x1D, Actor.smallBug, 0x90, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_A9 = [
+	EnemySpawn(0x20, Actor.halzyn, 0xA8, 0x30),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_AA = [
+	EnemySpawn(0x34, Actor.glowflyIdle1, 0x20, 0x68),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_AB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_AC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_AD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_AE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_AF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B1 = [
+	EnemySpawn(0x19, Actor.moheekRight, 0x90, 0x87),
+	EnemySpawn(0x1A, Actor.smallBug, 0xB0, 0xAC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B2 = [
+	EnemySpawn(0x23, Actor.tsumuriRight, 0x60, 0xD7),
+	EnemySpawn(0x24, Actor.tsumuriLeft, 0x80, 0x77),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B3 = [
+	EnemySpawn(0x1E, Actor.smallBug, 0x90, 0x3C),
+	EnemySpawn(0x1F, Actor.smallBug, 0x90, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_B9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_BA = [
+	EnemySpawn(0x35, Actor.glowflyIdle1, 0xA0, 0x78),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_BB = [
+	EnemySpawn(0x34, Actor.glowflyIdle1, 0x90, 0x28),
+	EnemySpawn(0x35, Actor.glowflyIdle1, 0xB0, 0x70),
+	EnemySpawn(0x36, Actor.glowflyIdle1, 0x90, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_BC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_BD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_BE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_BF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C2 = [
+	EnemySpawn(0x25, Actor.tsumuriLeft, 0x90, 0x37),
+	EnemySpawn(0x26, Actor.tsumuriRight, 0xA7, 0x78),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C3 = [
+	EnemySpawn(0x30, Actor.smallBug, 0x90, 0x3C),
+	EnemySpawn(0x31, Actor.smallBug, 0x90, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C6 = [
+	EnemySpawn(0x14, Actor.skorpRight, 0x48, 0xF0),
+	EnemySpawn(0x15, Actor.skorpLeft, 0x68, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_C9 = [
+	EnemySpawn(0x1C, Actor.halzyn, 0x50, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_CA = [
+	EnemySpawn(0x36, Actor.glowflyIdle1, 0x20, 0x68),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_CB = [
+	EnemySpawn(0x37, Actor.glowflyIdle1, 0x20, 0x50),
+	EnemySpawn(0x38, Actor.glowflyIdle1, 0x20, 0x70),
+	EnemySpawn(0x39, Actor.glowflyIdle1, 0x40, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_CC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_CD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_CE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_CF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D1 = [
+	EnemySpawn(0x1E, Actor.needlerRight, 0x70, 0x58),
+	EnemySpawn(0x1F, Actor.needlerLeft, 0x80, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D2 = [
+	EnemySpawn(0x27, Actor.tsumuriLeft, 0x88, 0x77),
+	EnemySpawn(0x28, Actor.tsumuriRight, 0xB0, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D3 = [
+	EnemySpawn(0x32, Actor.smallBug, 0x90, 0x3C),
+	EnemySpawn(0x33, Actor.smallBug, 0x90, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_D9 = [
+	EnemySpawn(0x1A, Actor.halzyn, 0xB0, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_DA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_DB = [
+	EnemySpawn(0x3A, Actor.glowflyIdle1, 0xB0, 0x70),
+	EnemySpawn(0x3B, Actor.glowflyIdle1, 0x90, 0x98),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_DC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_DD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_DE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_DF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E1 = [
+	EnemySpawn(0x1D, Actor.smallBug, 0xB0, 0x4C),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E2 = [
+	EnemySpawn(0x29, Actor.tsumuriLeft, 0x88, 0x77),
+	EnemySpawn(0x2A, Actor.tsumuriRight, 0x98, 0x37),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E3 = [
+	EnemySpawn(0x34, Actor.smallBug, 0x90, 0x3C),
+	EnemySpawn(0x35, Actor.smallBug, 0x90, 0x84),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_E9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_EA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_EB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_EC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_ED = [
+	EnemySpawn(0x28, Actor.skorpRight, 0x98, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_EE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_EF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_F9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_FA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_FB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_FC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_FD = [
+	EnemySpawn(0x0C, Actor.skorpRight, 0x88, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_FE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankC_FF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_00 = [
+	EnemySpawn(0x47, Actor.metroid, 0xA0, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_01 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_02 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_03 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_04 = [
+	EnemySpawn(0x0F, Actor.energyRefill, 0x18, 0xE8),
+	EnemySpawn(0x46, Actor.alphaMetroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_05 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_06 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_07 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_08 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_09 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_0A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_0B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_0C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_0D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_0E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_0F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_10 = [
+	EnemySpawn(0x40, Actor.metroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_11 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_12 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_13 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_14 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_15 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_16 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_17 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_18 = [
+	EnemySpawn(0x60, Actor.missileTank, 0xB8, 0xE8),
+	EnemySpawn(0x1D, Actor.wallfire, 0xE4, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_19 = [
+	EnemySpawn(0x1C, Actor.wallfire, 0xB4, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_1A = [
+	EnemySpawn(0x61, Actor.missileTank, 0x48, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_1B = [
+	EnemySpawn(0x11, Actor.wallfireFlipped, 0xBC, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_1C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_1D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_1E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_1F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_20 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_21 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_22 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_23 = [
+	EnemySpawn(0x41, Actor.metroid, 0x80, 0x70),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_24 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_25 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_26 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_27 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_28 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_29 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_2A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_2B = [
+	EnemySpawn(0x12, Actor.wallfireFlipped, 0xBC, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_2C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_2D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_2E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_2F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_30 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_31 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_32 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_33 = [
+	EnemySpawn(0x42, Actor.metroid, 0x70, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_34 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_35 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_36 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_37 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_38 = [
+	EnemySpawn(0x10, Actor.wallfireFlipped, 0xFC, 0xCC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_39 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_3A = [
+	EnemySpawn(0x62, Actor.energyTank, 0x58, 0x78),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_3B = [
+	EnemySpawn(0x13, Actor.wallfire, 0x44, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_3C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_3D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_3E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_3F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_40 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_41 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_42 = [
+	EnemySpawn(0x43, Actor.metroid, 0x70, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_43 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_44 = [
+	EnemySpawn(0x63, Actor.bombsOrb, 0x5C, 0x60),
+	EnemySpawn(0x7A, Actor.missileTank, 0xA8, 0xC8),
+	EnemySpawn(0x64, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_45 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_46 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_47 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_48 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_49 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_4A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_4B = [
+	EnemySpawn(0x14, Actor.wallfireFlipped, 0xBC, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_4C = [
+	EnemySpawn(0x18, Actor.wallfire, 0x44, 0xB0),
+	EnemySpawn(0x65, Actor.missileTank, 0xB8, 0xE8),
+	EnemySpawn(0x19, Actor.wallfire, 0xE4, 0xBD),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_4D = [
+	EnemySpawn(0x1A, Actor.wallfireFlipped, 0x3C, 0xE0),
+	EnemySpawn(0x66, Actor.missileTank, 0x68, 0x58),
+	EnemySpawn(0x67, Actor.missileTank, 0x78, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_4E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_4F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_50 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_51 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_52 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_53 = [
+	EnemySpawn(0x10, Actor.autrackFlipped, 0x60, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_54 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_55 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_56 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_57 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_58 = [
+	EnemySpawn(0x0F, Actor.iceBeamOrb, 0x5C, 0x60),
+	EnemySpawn(0x68, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_59 = [
+	EnemySpawn(0x17, Actor.wallfire, 0x24, 0xD0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_5A = [
+	EnemySpawn(0x16, Actor.wallfireFlipped, 0xDC, 0xD4),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_5B = [
+	EnemySpawn(0x15, Actor.wallfire, 0x44, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_5C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_5D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_5E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_5F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_60 = [
+	EnemySpawn(0x69, Actor.variaSuitOrb, 0x48, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_61 = [
+	EnemySpawn(0x6A, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_62 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_63 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_64 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_65 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_66 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_67 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_68 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_69 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_6A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_6B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_6C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_6D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_6E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_6F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_70 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_71 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_72 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_73 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_74 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_75 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_76 = [
+	EnemySpawn(0x44, Actor.metroid1, 0xC0, 0x76),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_77 = [
+	EnemySpawn(0x6C, Actor.missileTank, 0xA8, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_78 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_79 = [
+	EnemySpawn(0x6C, Actor.missileTank, 0xA8, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_7A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_7B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_7C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_7D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_7E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_7F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_80 = [
+	EnemySpawn(0x78, Actor.missileTank, 0x98, 0x48),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_81 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_82 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_83 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_84 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_85 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_86 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_87 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_88 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_89 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_8A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_8B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_8C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_8D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_8E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_8F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_90 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_91 = [
+	EnemySpawn(0x6D, Actor.missileTank, 0x38, 0x28),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_92 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_93 = [
+	EnemySpawn(0x45, Actor.alphaMetroid, 0x78, 0xCC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_94 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_95 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_96 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_97 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_98 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_99 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_9A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_9B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_9C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_9D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_9E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_9F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A4 = [
+	EnemySpawn(0x0F, Actor.waveBeamOrb, 0x5C, 0x60),
+	EnemySpawn(0x6F, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A5 = [
+	EnemySpawn(0x13, Actor.autoad, 0x98, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_A9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_AA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_AB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_AC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_AD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_AE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_AF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_B9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_BA = [
+	EnemySpawn(0x1D, Actor.wallfireFlipped, 0xBC, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_BB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_BC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_BD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_BE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_BF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C0 = [
+	EnemySpawn(0x70, Actor.arachnusOrb, 0x4C, 0xB0),
+	EnemySpawn(0x71, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C5 = [
+	EnemySpawn(0x19, Actor.wallfire, 0x34, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C6 = [
+	EnemySpawn(0x18, Actor.wallfire, 0x44, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C7 = [
+	EnemySpawn(0x15, Actor.wallfireFlipped, 0x3C, 0xC0),
+	EnemySpawn(0x72, Actor.missileTank, 0x68, 0x58),
+	EnemySpawn(0x73, Actor.missileTank, 0x78, 0xE8),
+	EnemySpawn(0x16, Actor.wallfire, 0xB4, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C8 = [
+	EnemySpawn(0x17, Actor.wallfireFlipped, 0x1C, 0xE0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_C9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_CA = [
+	EnemySpawn(0x1E, Actor.wallfireFlipped, 0xBC, 0x40),
+	EnemySpawn(0x1F, Actor.wallfireFlipped, 0xBC, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_CB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_CC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_CD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_CE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_CF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D5 = [
+	EnemySpawn(0x1A, Actor.wallfire, 0x34, 0x10),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D6 = [
+	EnemySpawn(0x1B, Actor.wallfireFlipped, 0x8C, 0xC0),
+	EnemySpawn(0x7B, Actor.missileTank, 0xB8, 0xE8),
+	EnemySpawn(0x1C, Actor.wallfireFlipped, 0xFC, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D7 = [
+	EnemySpawn(0x74, Actor.missileTank, 0x18, 0xE8),
+	EnemySpawn(0x77, Actor.energyTank, 0x18, 0x58),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_D9 = [
+	EnemySpawn(0x75, Actor.hiJumpBootsOrb, 0x5C, 0x60),
+	EnemySpawn(0x76, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_DA = [
+	EnemySpawn(0x20, Actor.wallfireFlipped, 0xBC, 0x00),
+	EnemySpawn(0x21, Actor.wallfireFlipped, 0xBC, 0x60),
+	EnemySpawn(0x22, Actor.wallfireFlipped, 0xBC, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_DB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_DC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_DD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_DE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_DF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_E9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_EA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_EB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_EC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_ED = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_EE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_EF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_F9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_FA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_FB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_FC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_FD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_FE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankD_FF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_00 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_01 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_02 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_03 = [
+	EnemySpawn(0x41, Actor.metroid, 0xA0, 0x90),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_04 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_05 = [
+	EnemySpawn(0x42, Actor.metroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_06 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_07 = [
+	EnemySpawn(0x49, Actor.alphaMetroid, 0xB0, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_08 = [
+	EnemySpawn(0x0F, Actor.energyRefill, 0x18, 0xD8),
+	EnemySpawn(0x4A, Actor.alpha1, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_09 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_0A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_0B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_0C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_0D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_0E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_0F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_10 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_11 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_12 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_13 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_14 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_15 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_16 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_17 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_18 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_19 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_1A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_1B = [
+	EnemySpawn(0x60, Actor.missileTank, 0x88, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_1C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_1D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_1E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_1F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_20 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_21 = [
+	EnemySpawn(0x0F, Actor.babyMetroidEggPreview, 0xAC, 0xA7),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_22 = [
+	EnemySpawn(0x43, Actor.metroidStinger, 0x40, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_23 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_24 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_25 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_26 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_27 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_28 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_29 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_2A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_2B = [
+	EnemySpawn(0x61, Actor.screwAttackOrb, 0x5C, 0x60),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_2C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_2D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_2E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_2F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_30 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_31 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_32 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_33 = [
+	EnemySpawn(0x44, Actor.metroid, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_34 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_35 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_36 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_37 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_38 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_39 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_3A = [
+	EnemySpawn(0x45, Actor.zetaMetroid, 0x40, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_3B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_3C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_3D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_3E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_3F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_40 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_41 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_42 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_43 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_44 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_45 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_46 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_47 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_48 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_49 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_4A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_4B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_4C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_4D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_4E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_4F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_50 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_51 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_52 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_53 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_54 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_55 = [
+	EnemySpawn(0x6D, Actor.missileTank, 0x78, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_56 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_57 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_58 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_59 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_5A = [
+	EnemySpawn(0x0F, Actor.plasmaBeamOrb, 0x5C, 0x60),
+	EnemySpawn(0x62, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_5B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_5C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_5D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_5E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_5F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_60 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_61 = [
+	EnemySpawn(0x63, Actor.spaceJumpOrb, 0x5C, 0x60),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_62 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_63 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_64 = [
+	EnemySpawn(0x14, Actor.autrackFlipped, 0x46, 0x88),
+	EnemySpawn(0x15, Actor.autrack, 0xB9, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_65 = [
+	EnemySpawn(0x64, Actor.energyTank, 0x38, 0x68),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_66 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_67 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_68 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_69 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_6A = [
+	EnemySpawn(0x0F, Actor.spazerOrb, 0x5C, 0x60),
+	EnemySpawn(0x65, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_6B = [
+	EnemySpawn(0x10, Actor.gunzoo, 0x70, 0x60),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_6C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_6D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_6E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_6F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_70 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_71 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_72 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_73 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_74 = [
+	EnemySpawn(0x16, Actor.autrackFlipped, 0x46, 0x38),
+	EnemySpawn(0x17, Actor.autrack, 0xB9, 0xE8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_75 = [
+	EnemySpawn(0x6E, Actor.missileTank, 0x20, 0x28),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_76 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_77 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_78 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_79 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_7A = [
+	EnemySpawn(0x0F, Actor.waveBeamOrb, 0x5C, 0x60),
+	EnemySpawn(0x66, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_7B = [
+	EnemySpawn(0x11, Actor.gunzoo, 0x70, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_7C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_7D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_7E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_7F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_80 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_81 = [
+	EnemySpawn(0x0F, Actor.spazerOrb, 0x5C, 0x60),
+	EnemySpawn(0x67, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_82 = [
+	EnemySpawn(0x12, Actor.autoad, 0xB0, 0x80),
+	EnemySpawn(0x13, Actor.autrack, 0xC8, 0xD8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_83 = [
+	EnemySpawn(0x10, Actor.autoad, 0x40, 0x80),
+	EnemySpawn(0x11, Actor.autoad, 0x68, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_84 = [
+	EnemySpawn(0x18, Actor.autrack, 0xB9, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_85 = [
+	EnemySpawn(0x46, Actor.alpha1, 0x68, 0x68),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_86 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_87 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_88 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_89 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_8A = [
+	EnemySpawn(0x0F, Actor.iceBeam, 0x5C, 0x60),
+	EnemySpawn(0x68, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_8B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_8C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_8D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_8E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_8F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_90 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_91 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_92 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_93 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_94 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_95 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_96 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_97 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_98 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_99 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_9A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_9B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_9C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_9D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_9E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_9F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A0 = [
+	EnemySpawn(0x0F, Actor.plasmaBeamOrb, 0x5C, 0x60),
+	EnemySpawn(0x69, Actor.missileDoor, 0xFF, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A1 = [
+	EnemySpawn(0x1E, Actor.autoad, 0xC0, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A2 = [
+	EnemySpawn(0x1C, Actor.autoad, 0x2C, 0xD0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A4 = [
+	EnemySpawn(0x47, Actor.alpha1, 0x28, 0x68),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A5 = [
+	EnemySpawn(0x1B, Actor.autoad, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A6 = [
+	EnemySpawn(0x1A, Actor.autoad, 0x70, 0xC0),
+	EnemySpawn(0x70, Actor.missileTank, 0x80, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A7 = [
+	EnemySpawn(0x19, Actor.autoad, 0x30, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_A9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_AA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_AB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_AC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_AD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_AE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_AF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B0 = [
+	EnemySpawn(0x6A, Actor.energyTank, 0xA8, 0x58),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B2 = [
+	EnemySpawn(0x48, Actor.alphaMetroid, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B5 = [
+	EnemySpawn(0x20, Actor.autom, 0xE0, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B6 = [
+	EnemySpawn(0x21, Actor.shirk, 0xC0, 0xA0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B7 = [
+	EnemySpawn(0x1F, Actor.autom, 0x00, 0xBC),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_B9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_BA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_BB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_BC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_BD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_BE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_BF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_C9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_CA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_CB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_CC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_CD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_CE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_CF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D1 = [
+	EnemySpawn(0x0F, Actor.iceBeamOrb, 0x2C, 0x60),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D3 = [
+	EnemySpawn(0x0E, Actor.energyRefill, 0x48, 0x88),
+	EnemySpawn(0x0F, Actor.missileRefill, 0xB8, 0x88),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_D9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_DA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_DB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_DC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_DD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_DE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_DF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_E9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_EA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_EB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_EC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_ED = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_EE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_EF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_F9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_FA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_FB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_FC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_FD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_FE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankE_FF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_00 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_01 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_02 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_03 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_04 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_05 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_06 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_07 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_08 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_09 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_0A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_0B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_0C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_0D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_0E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_0F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_10 = [
+	EnemySpawn(0x41, Actor.metroid1, 0x90, 0xE6),
+	EnemySpawn(0x0E, Actor.energyRefill, 0xC8, 0x48),
+	EnemySpawn(0x0F, Actor.missileRefill, 0xE8, 0x48),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_11 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_12 = [
+	EnemySpawn(0x31, Actor.hornoad, 0x90, 0xC8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_13 = [
+	EnemySpawn(0x2F, Actor.smallBug, 0x60, 0xA8),
+	EnemySpawn(0x30, Actor.hornoad, 0x80, 0xB0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_14 = [
+	EnemySpawn(0x2D, Actor.smallBug, 0x50, 0xA0),
+	EnemySpawn(0x2E, Actor.smallBug, 0x80, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_15 = [
+	EnemySpawn(0x2C, Actor.hornoad, 0x60, 0xD0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_16 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_17 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_18 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_19 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_1A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_1B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_1C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_1D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_1E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_1F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_20 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_21 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_22 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_23 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_24 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_25 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_26 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_27 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_28 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_29 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_2A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_2B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_2C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_2D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_2E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_2F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_30 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_31 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_32 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_33 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_34 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_35 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_36 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_37 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_38 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_39 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_3A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_3B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_3C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_3D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_3E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_3F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_40 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_41 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_42 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_43 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_44 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_45 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_46 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_47 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_48 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_49 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_4A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_4B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_4C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_4D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_4E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_4F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_50 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_51 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_52 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_53 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_54 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_55 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_56 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_57 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_58 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_59 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_5A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_5B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_5C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_5D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_5E = [
+	EnemySpawn(0x0F, Actor.missileRefill, 0x08, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_5F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_60 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_61 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_62 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_63 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_64 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_65 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_66 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_67 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_68 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_69 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_6A = [
+	EnemySpawn(0x17, Actor.tsumuriRight, 0x80, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_6B = [
+	EnemySpawn(0x18, Actor.tsumuriLeft, 0x80, 0xA8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_6C = [
+	EnemySpawn(0x19, Actor.hornoad, 0x20, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_6D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_6E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_6F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_70 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_71 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_72 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_73 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_74 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_75 = [
+	EnemySpawn(0x0E, Actor.energyRefill, 0xD0, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_76 = [
+	EnemySpawn(0x0F, Actor.missileRefill, 0x38, 0xB8),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_77 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_78 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_79 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_7A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_7B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_7C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_7D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_7E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_7F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_80 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_81 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_82 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_83 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_84 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_85 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_86 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_87 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_88 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_89 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_8A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_8B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_8C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_8D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_8E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_8F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_90 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_91 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_92 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_93 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_94 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_95 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_96 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_97 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_98 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_99 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_9A = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_9B = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_9C = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_9D = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_9E = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_9F = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A7 = [
+	EnemySpawn(0x42, Actor.egg2, 0xAC, 0xA7),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_A9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_AA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_AB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_AC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_AD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_AE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_AF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B0 = [
+	EnemySpawn(0x43, Actor.zeta1, 0x40, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_B9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_BA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_BB = [
+	EnemySpawn(0x10, Actor.septogg, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_BC = [
+	EnemySpawn(0x11, Actor.septogg, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_BD = [
+	EnemySpawn(0x12, Actor.septogg, 0x80, 0xC0),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_BE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_BF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_C9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_CA = [
+	EnemySpawn(0x13, Actor.septogg, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_CB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_CC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_CD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_CE = [
+	EnemySpawn(0x14, Actor.septogg, 0x80, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_CF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_D9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_DA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_DB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_DC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_DD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_DE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_DF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E0 = [
+	EnemySpawn(0x40, Actor.zeta1, 0x40, 0x80),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_E9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_EA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_EB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_EC = [
+	EnemySpawn(0x15, Actor.septogg, 0x80, 0x50),
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_ED = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_EE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_EF = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F0 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F1 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F2 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F3 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F4 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F5 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F6 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F7 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F8 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_F9 = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_FA = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_FB = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_FC = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_FD = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_FE = [
+	EnemySpawn(0xFF)
+];
+immutable EnemySpawn[] enemyBankF_FF = [
+	EnemySpawn(0xFF)
+];
 
 immutable EnemyData[] enemyHeaderPointers = [
-	enHeadCrawlerRight, // Tsumari
-	enHeadCrawlerLeft, // Tsumari
-	enHeadNULL, // Tsumari
-	enHeadNULL, // Tsumari
-	enHeadSkreek, // Skreek
-	enHeadNULL, // Skreek
-	enHeadNULL, // Skreek
-	enHeadNULL, // Skreek
-	enHeadNULL, // Skreek projectile
-	enHeadDrivel, // Drivel
-	enHeadNULL, // Drivel
-	enHeadNULL, // Drivel
-	enHeadNULL, // Drivel projectile
-	enHeadNULL, // Drivel projectile
-	enHeadNULL, // Drivel projectile
-	enHeadNULL, // Drivel projectile
-	enHeadNULL, // Drivel projectile
-	enHeadNULL, // Drivel projectile
-	enHeadSmallBug, // Small bugs
-	enHeadNULL, // Small bugs
-	enHeadHornoad, // Hornoad
-	enHeadNULL, // Hornoad
-	enHeadSenjoo, // Senjoo
-	enHeadNULL, // Gawron
-	enHeadNULL, // Gawron
-	enHeadPipeBug, // Gawron spawner?
-	enHeadPipeBug, // Gawron spawner?
-	enHeadChuteLeech, // Chute leech
-	enHeadNULL, // Chute leech
-	enHeadNULL, // Chute leech
-	enHeadAutrackFlipped, // (uses same spritemap as 41h autrack)
-	enHeadWallfireFlipped, // (uses same spritemap as 4Ah wallfire)
-	enHeadCrawlerRight, // Needler
-	enHeadCrawlerLeft, // Needler
-	enHeadNULL, // Needler
-	enHeadNULL, // Needler
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadSkorpUp, // Skorp
-	enHeadSkorpDown, // Skorp
-	enHeadSkorpRight, // Skorp
-	enHeadSkorpLeft, // Skorp
-	enHeadGlowFly, // Glow fly
-	enHeadNULL, // Glow fly
-	enHeadNULL, // Glow fly
-	enHeadNULL, // Glow fly
-	enHeadMoheekRight, // Moheek
-	enHeadMoheekLeft, // Moheek
-	enHeadNULL, // Moheek
-	enHeadNULL, // Moheek
-	enHeadRockIcicle, // Rock icicle
-	enHeadNULL, // Rock icicle
-	enHeadNULL, // Rock icicle
-	enHeadNULL, // Rock icicle
-	enHeadNULL, // Yumee
-	enHeadNULL, // Yumee
-	enHeadNULL, // Yumee
-	enHeadNULL, // Yumee
-	enHeadPipeBug, // Yumee spawner?
-	enHeadPipeBug, // Yumee spawner?
-	enHeadNULL, // Octroll
-	enHeadNULL, // Octroll
-	enHeadOctroll, // Octroll
-	enHeadAutrack, // Autrack
-	enHeadNULL, // Autrack
-	enHeadNULL, // Autrack
-	enHeadNULL, // Autrack
-	enHeadNULL, // Autrack projectile
-	enHeadAutoad, // Autoad
-	enHeadNULL, // Autoad
-	enHeadNULL, // Sideways Autoad (unused)
-	enHeadNULL, // Sideways Autoad (unused)
-	enHeadWallfire, // Wallfire
-	enHeadNULL, // Wallfire
-	enHeadNULL, // Wallfire
-	enHeadNULL, // Wallfire projectile
-	enHeadNULL, // Wallfire projectile
-	enHeadNULL, // Wallfire projectile
-	enHeadNULL, // Wallfire projectile
-	enHeadGunzoo, // Gunzoo
-	enHeadNULL, // Gunzoo
-	enHeadNULL, // Gunzoo
-	enHeadNULL, // Gunzoo diagonal projectile
-	enHeadNULL, // Gunzoo diagonal projectile
-	enHeadNULL, // Gunzoo diagonal projectile
-	enHeadNULL, // Gunzoo horizontal projectile
-	enHeadNULL, // Gunzoo horizontal projectile (unused frame)
-	enHeadNULL, // Gunzoo horizontal projectile
-	enHeadNULL, // Gunzoo horizontal projectile
-	enHeadNULL, // Gunzoo horizontal projectile
-	enHeadAutom, // Autom
-	enHeadNULL, // Autom
-	enHeadNULL, // Autom projectile
-	enHeadNULL, // Autom projectile
-	enHeadNULL, // Autom projectile
-	enHeadNULL, // Autom projectile
-	enHeadNULL, // Autom projectile
-	enHeadShirk, // Shirk
-	enHeadNULL, // Shirk
-	enHeadSeptogg, // Septogg
-	enHeadNULL, // Septogg
-	enHeadNULL, // Moto
-	enHeadMoto, // Moto
-	enHeadNULL, // Moto
-	enHeadHalzyn, // Halzyn
-	enHeadRamulken, // Ramulken
-	enHeadNULL, // Ramulken
-	enHeadMetroidStinger, // Musical stinger event trigger
-	enHeadProboscumFlipped, // (uses same spritemap as 72h proboscum)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadProboscum, // Proboscum
-	enHeadNULL, // Proboscum
-	enHeadNULL, // Proboscum
-	enHeadMissileBlock, // Missile block
-	enHeadArachnus, // Arachnus
-	enHeadArachnus, // Arachnus
-	enHeadArachnus, // Arachnus
-	enHeadArachnus, // Arachnus
-	enHeadArachnus, // Arachnus
-	enHeadNULL, // Arachnus projectile
-	enHeadNULL, // Arachnus projectile
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadItem, // Plasma beam orb
-	enHeadItem, // Plasma beam
-	enHeadItem, // Ice beam orb (and bent neck of Queen’s vomiting pose!?)
-	enHeadItem, // Ice beam
-	enHeadItem, // Wave beam orb
-	enHeadItem, // Wave beam
-	enHeadItem, // Spazer beam orb
-	enHeadItem, // Spazer beam
-	enHeadItem, // Bombs orb
-	enHeadItem, // Bombs
-	enHeadItem, // Screw attack orb
-	enHeadItem, // Screw attack
-	enHeadItem, // Varia suit orb
-	enHeadItem, // Varia suit
-	enHeadItem, // Hi-jump boots orb
-	enHeadItem, // Hi-jump boots
-	enHeadItem, // Space jump orb
-	enHeadItem, // Space jump
-	enHeadItem, // (spider ball orb?)
-	enHeadItem, // Spider ball
-	enHeadItem, // (spring ball orb?)
-	enHeadItem, // Spring ball
-	enHeadItem, // (energy tank orb?)
-	enHeadItem, // Energy tank
-	enHeadItem, // (missile tank orb?)
-	enHeadItem, // Missile tank
-	enHeadBlobThrower, // Blob thrower (sprite is written to WRAM)
-	enHeadItem, // Energy refill
-	enHeadArachnusOrb, // Arachnus orb
-	enHeadItem, // Missile refill
-	enHeadNULL, // Blob thrower projectile
-	enHeadNULL, // Blob thrower projectile
-	enHeadAlphaHatching, // Metroid
-	enHeadNULL, // Metroid hatching
-	enHeadNULL, // (no graphics)
-	enHeadGammaMetroid, // Alpha metroid
-	enHeadAlphaMetroid, // Alpha metroid
-	enHeadNULL, // Baby metroid egg
-	enHeadBabyMetroid, // Baby metroid egg
-	enHeadNULL, // Baby metroid egg
-	enHeadNULL, // Baby metroid
-	enHeadNULL, // Baby metroid
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadZetaMetroid, // Gamma metroid
-	enHeadNULL, // Gamma metroid projectile
-	enHeadNULL, // Gamma metroid projectile
-	enHeadNULL, // Gamma metroid
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // Gamma metroid shell
-	enHeadOmegaMetroid, // Zeta metroid hatching
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid
-	enHeadNULL, // Zeta metroid projectile
-	enHeadNULL, // Omega metroid
-	enHeadNULL, // Omega metroid
-	enHeadNULL, // Omega metroid
-	enHeadNULL, // Omega metroid
-	enHeadNULL, // Omega metroid
-	enHeadNULL, // Omega metroid
-	enHeadNULL, // Omega metroid
-	enHeadNULL, // Omega metroid projectile
-	enHeadNULL, // Omega metroid projectile
-	enHeadNULL, // Omega metroid projectile
-	enHeadNULL, // Omega metroid projectile
-	enHeadNULL, // Omega metroid projectile
-	enHeadNULL, // Omega metroid projectile
-	enHeadNULL, // Omega metroid projectile
-	enHeadNULL, // (omega metroid projectile?)
-	enHeadMetroid, // Metroid
-	enHeadNULL, // Metroid (hurt)
-	enHeadFlittVanishing, // Flitt
-	enHeadFlittMoving, // Flitt
-	enHeadNULL, // Stalagtite (unused)
-	enHeadGravitt, // Gravitt
-	enHeadNULL, // Gravitt
-	enHeadNULL, // Gravitt
-	enHeadNULL, // Gravitt
-	enHeadNULL, // Gravitt
-	enHeadGullugg, // Gullugg
-	enHeadNULL, // Gullugg
-	enHeadNULL, // Gullugg
-	enHeadNULL, // Baby metroid egg preview
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // Small health drop
-	enHeadNULL, // Small health drop
-	enHeadNULL, // Metroid death / missile door / screw attack explosion
-	enHeadNULL, // Metroid death / missile door / screw attack explosion
-	enHeadNULL, // Metroid death / missile door / screw attack explosion
-	enHeadNULL, // Metroid death / missile door / screw attack explosion
-	enHeadNULL, // Metroid death / missile door / screw attack explosion
-	enHeadNULL, // Metroid death / missile door / screw attack explosion
-	enHeadNULL, // Enemy death explosion
-	enHeadNULL, // Enemy death explosion
-	enHeadNULL, // Enemy death explosion
-	enHeadNULL, // Enemy death explosion (extra frame for enemies not dropping small health)
-	enHeadNULL, // Big energy drop
-	enHeadNULL, // Big energy drop
-	enHeadNULL, // Missile drop
-	enHeadNULL, // Missile drop
-	enHeadNULL, // Metroid Queen neck (no graphics)
-	enHeadNULL, // Metroid Queen head left half (no graphics)
-	enHeadNULL, // Metroid Queen projectile/head right half (no graphics)
-	enHeadNULL, // Metroid Queen body (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // Metroid Queen mouth closed (no graphics)
-	enHeadNULL, // Metroid Queen mouth open (no graphics)
-	enHeadNULL, // Metroid Queen mouth stunned (no graphics)
-	enHeadMissileDoor, // Missile door
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // (no graphics)
-	enHeadNULL, // Nothing - flitt (no graphics)
-	enHeadNULL, // ?
+	Actor.tsumuriRight: enHeadCrawlerRight, // Tsumari
+	Actor.tsumuriLeft: enHeadCrawlerLeft, // Tsumari
+	Actor.tsumuri2: enHeadNULL, // Tsumari
+	Actor.tsumuri3: enHeadNULL, // Tsumari
+	Actor.skreek: enHeadSkreek, // Skreek
+	Actor.skreek2: enHeadNULL, // Skreek
+	Actor.skreek3: enHeadNULL, // Skreek
+	Actor.skreek4: enHeadNULL, // Skreek
+	Actor.skreekSpit: enHeadNULL, // Skreek projectile
+	Actor.drivel: enHeadDrivel, // Drivel
+	Actor.drivel2: enHeadNULL, // Drivel
+	Actor.drivel3: enHeadNULL, // Drivel
+	Actor.drivelSpit: enHeadNULL, // Drivel projectile
+	Actor.drivelSpit2: enHeadNULL, // Drivel projectile
+	Actor.drivelSpit3: enHeadNULL, // Drivel projectile
+	Actor.drivelSpit4: enHeadNULL, // Drivel projectile
+	Actor.drivelSpit5: enHeadNULL, // Drivel projectile
+	Actor.drivelSpit6: enHeadNULL, // Drivel projectile
+	Actor.smallBug: enHeadSmallBug, // Small bugs
+	Actor.smallBug2: enHeadNULL, // Small bugs
+	Actor.hornoad: enHeadHornoad, // Hornoad
+	Actor.hornoad2: enHeadNULL, // Hornoad
+	Actor.senjoo: enHeadSenjoo, // Senjoo
+	Actor.gawron: enHeadNULL, // Gawron
+	Actor.gawron2: enHeadNULL, // Gawron
+	Actor.pipeBug: enHeadPipeBug, // Gawron spawner?
+	Actor.pipeBug2: enHeadPipeBug, // Gawron spawner?
+	Actor.chuteLeech: enHeadChuteLeech, // Chute leech
+	Actor.chuteLeech2: enHeadNULL, // Chute leech
+	Actor.chuteLeech3: enHeadNULL, // Chute leech
+	Actor.autrackFlipped: enHeadAutrackFlipped, // (uses same spritemap as 41h autrack)
+	Actor.wallfireFlipped: enHeadWallfireFlipped, // (uses same spritemap as 4Ah wallfire)
+	Actor.needlerRight: enHeadCrawlerRight, // Needler
+	Actor.needlerLeft: enHeadCrawlerLeft, // Needler
+	Actor.needler3: enHeadNULL, // Needler
+	Actor.needler4: enHeadNULL, // Needler
+	Actor.actor24: enHeadNULL, // (no graphics)
+	Actor.actor25: enHeadNULL, // (no graphics)
+	Actor.actor26: enHeadNULL, // (no graphics)
+	Actor.actor27: enHeadNULL, // (no graphics)
+	Actor.skorpUp: enHeadSkorpUp, // Skorp
+	Actor.skorpDown: enHeadSkorpDown, // Skorp
+	Actor.skorpRight: enHeadSkorpRight, // Skorp
+	Actor.skorpLeft: enHeadSkorpLeft, // Skorp
+	Actor.glowflyIdle1: enHeadGlowFly, // Glow fly
+	Actor.glowflyIdle2: enHeadNULL, // Glow fly
+	Actor.glowflyWindup: enHeadNULL, // Glow fly
+	Actor.glowflyMoving: enHeadNULL, // Glow fly
+	Actor.moheekRight: enHeadMoheekRight, // Moheek
+	Actor.moheekLeft: enHeadMoheekLeft, // Moheek
+	0x32: enHeadNULL, // Moheek
+	0x33: enHeadNULL, // Moheek
+	0x34: enHeadRockIcicle, // Rock icicle
+	0x35: enHeadNULL, // Rock icicle
+	0x36: enHeadNULL, // Rock icicle
+	0x37: enHeadNULL, // Rock icicle
+	0x38: enHeadNULL, // Yumee
+	0x39: enHeadNULL, // Yumee
+	0x3A: enHeadNULL, // Yumee
+	0x3B: enHeadNULL, // Yumee
+	Actor.yumeeSpawner: enHeadPipeBug, // Yumee spawner?
+	Actor.yumeeSpawner2: enHeadPipeBug, // Yumee spawner?
+	0x3E: enHeadNULL, // Octroll
+	0x3F: enHeadNULL, // Octroll
+	Actor.octroll: enHeadOctroll, // Octroll
+	Actor.autrack: enHeadAutrack, // Autrack
+	0x42: enHeadNULL, // Autrack
+	0x43: enHeadNULL, // Autrack
+	0x44: enHeadNULL, // Autrack
+	0x45: enHeadNULL, // Autrack projectile
+	Actor.autoad: enHeadAutoad, // Autoad
+	0x47: enHeadNULL, // Autoad
+	0x48: enHeadNULL, // Sideways Autoad (unused)
+	0x49: enHeadNULL, // Sideways Autoad (unused)
+	Actor.wallfire: enHeadWallfire, // Wallfire
+	0x4B: enHeadNULL, // Wallfire
+	0x4C: enHeadNULL, // Wallfire
+	0x4D: enHeadNULL, // Wallfire projectile
+	0x4E: enHeadNULL, // Wallfire projectile
+	0x4F: enHeadNULL, // Wallfire projectile
+	0x50: enHeadNULL, // Wallfire projectile
+	Actor.gunzoo: enHeadGunzoo, // Gunzoo
+	0x52: enHeadNULL, // Gunzoo
+	0x53: enHeadNULL, // Gunzoo
+	0x54: enHeadNULL, // Gunzoo diagonal projectile
+	0x55: enHeadNULL, // Gunzoo diagonal projectile
+	0x56: enHeadNULL, // Gunzoo diagonal projectile
+	0x57: enHeadNULL, // Gunzoo horizontal projectile
+	0x58: enHeadNULL, // Gunzoo horizontal projectile (unused frame)
+	0x59: enHeadNULL, // Gunzoo horizontal projectile
+	0x5A: enHeadNULL, // Gunzoo horizontal projectile
+	0x5B: enHeadNULL, // Gunzoo horizontal projectile
+	Actor.autom: enHeadAutom, // Autom
+	0x5D: enHeadNULL, // Autom
+	0x5E: enHeadNULL, // Autom projectile
+	0x5F: enHeadNULL, // Autom projectile
+	0x60: enHeadNULL, // Autom projectile
+	0x61: enHeadNULL, // Autom projectile
+	0x62: enHeadNULL, // Autom projectile
+	Actor.shirk: enHeadShirk, // Shirk
+	0x64: enHeadNULL, // Shirk
+	Actor.septogg: enHeadSeptogg, // Septogg
+	0x66: enHeadNULL, // Septogg
+	0x67: enHeadNULL, // Moto
+	Actor.moto: enHeadMoto, // Moto
+	0x69: enHeadNULL, // Moto
+	Actor.halzyn: enHeadHalzyn, // Halzyn
+	Actor.ramulken: enHeadRamulken, // Ramulken
+	0x6C: enHeadNULL, // Ramulken
+	Actor.metroidStinger: enHeadMetroidStinger, // Musical stinger event trigger
+	0x6E: enHeadProboscumFlipped, // (uses same spritemap as 72h proboscum)
+	0x6F: enHeadNULL, // (no graphics)
+	0x70: enHeadNULL, // (no graphics)
+	0x71: enHeadNULL, // (no graphics)
+	0x72: enHeadProboscum, // Proboscum
+	0x73: enHeadNULL, // Proboscum
+	0x74: enHeadNULL, // Proboscum
+	Actor.missileBlock: enHeadMissileBlock, // Missile block
+	0x76: enHeadArachnus, // Arachnus
+	0x77: enHeadArachnus, // Arachnus
+	0x78: enHeadArachnus, // Arachnus
+	0x79: enHeadArachnus, // Arachnus
+	0x7A: enHeadArachnus, // Arachnus
+	0x7B: enHeadNULL, // Arachnus projectile
+	0x7C: enHeadNULL, // Arachnus projectile
+	0x7D: enHeadNULL, // (no graphics)
+	0x7E: enHeadNULL, // (no graphics)
+	0x7F: enHeadNULL, // (no graphics)
+	Actor.plasmaBeamOrb: enHeadItem, // Plasma beam orb
+	Actor.plasmaBeam: enHeadItem, // Plasma beam
+	Actor.iceBeamOrb: enHeadItem, // Ice beam orb (and bent neck of Queen’s vomiting pose!?)
+	Actor.iceBeam: enHeadItem, // Ice beam
+	Actor.waveBeamOrb: enHeadItem, // Wave beam orb
+	Actor.waveBeam: enHeadItem, // Wave beam
+	Actor.spazerOrb: enHeadItem, // Spazer orb
+	Actor.spazer: enHeadItem, // Spazer
+	Actor.bombsOrb: enHeadItem, // Bombs orb
+	Actor.bombs: enHeadItem, // Bombs
+	Actor.screwAttackOrb: enHeadItem, // Screw attack orb
+	Actor.screwAttack: enHeadItem, // Screw attack
+	Actor.variaSuitOrb: enHeadItem, // Varia suit orb
+	Actor.variaSuit: enHeadItem, // Varia suit
+	Actor.hiJumpBootsOrb: enHeadItem, // Hi-jump boots orb
+	Actor.hiJumpBoots: enHeadItem, // Hi-jump boots
+	Actor.spaceJumpOrb: enHeadItem, // Space jump orb
+	Actor.spaceJump: enHeadItem, // Space jump
+	Actor.spiderBallOrb: enHeadItem, // (spider ball orb?)
+	Actor.spiderBall: enHeadItem, // Spider ball
+	Actor.springBallOrb: enHeadItem, // (spring ball orb?)
+	Actor.springBall: enHeadItem, // Spring ball
+	Actor.energyTankOrb: enHeadItem, // (energy tank orb?)
+	Actor.energyTank: enHeadItem, // Energy tank
+	Actor.missileTankOrb: enHeadItem, // (missile tank orb?)
+	Actor.missileTank: enHeadItem, // Missile tank
+	Actor.blobThrower: enHeadBlobThrower, // Blob thrower (sprite is written to WRAM)
+	Actor.energyRefill: enHeadItem, // Energy refill
+	Actor.arachnusOrb: enHeadArachnusOrb, // Arachnus orb
+	Actor.missileRefill : enHeadItem, // Missile refill
+	0x9E: enHeadNULL, // Blob thrower projectile
+	0x9F: enHeadNULL, // Blob thrower projectile
+	0xA0: enHeadAlphaHatching, // Metroid
+	0xA1: enHeadNULL, // Metroid hatching
+	0xA2: enHeadNULL, // (no graphics)
+	0xA3: enHeadGammaMetroid, // Alpha metroid
+	Actor.alphaMetroid: enHeadAlphaMetroid, // Alpha metroid
+	0xA5: enHeadNULL, // Baby metroid egg
+	0xA6: enHeadBabyMetroid, // Baby metroid egg
+	0xA7: enHeadNULL, // Baby metroid egg
+	0xA8: enHeadNULL, // Baby metroid
+	0xA9: enHeadNULL, // Baby metroid
+	0xAA: enHeadNULL, // (no graphics)
+	0xAB: enHeadNULL, // (no graphics)
+	0xAC: enHeadNULL, // (no graphics)
+	Actor.zetaMetroid: enHeadZetaMetroid, // Zeta metroid
+	0xAE: enHeadNULL, // Gamma metroid projectile
+	0xAF: enHeadNULL, // Gamma metroid projectile
+	0xB0: enHeadNULL, // Gamma metroid
+	0xB1: enHeadNULL, // (no graphics)
+	0xB2: enHeadNULL, // Gamma metroid shell
+	0xB3: enHeadOmegaMetroid, // Zeta metroid hatching
+	0xB4: enHeadNULL, // Zeta metroid
+	0xB5: enHeadNULL, // Zeta metroid
+	0xB6: enHeadNULL, // Zeta metroid
+	0xB7: enHeadNULL, // Zeta metroid
+	0xB8: enHeadNULL, // Zeta metroid
+	0xB9: enHeadNULL, // Zeta metroid
+	0xBA: enHeadNULL, // Zeta metroid
+	0xBB: enHeadNULL, // Zeta metroid
+	0xBC: enHeadNULL, // Zeta metroid
+	0xBD: enHeadNULL, // Zeta metroid
+	0xBE: enHeadNULL, // Zeta metroid projectile
+	0xBF: enHeadNULL, // Omega metroid
+	0xC0: enHeadNULL, // Omega metroid
+	0xC1: enHeadNULL, // Omega metroid
+	0xC2: enHeadNULL, // Omega metroid
+	0xC3: enHeadNULL, // Omega metroid
+	0xC4: enHeadNULL, // Omega metroid
+	0xC5: enHeadNULL, // Omega metroid
+	0xC6: enHeadNULL, // Omega metroid projectile
+	0xC7: enHeadNULL, // Omega metroid projectile
+	0xC8: enHeadNULL, // Omega metroid projectile
+	0xC9: enHeadNULL, // Omega metroid projectile
+	0xCA: enHeadNULL, // Omega metroid projectile
+	0xCB: enHeadNULL, // Omega metroid projectile
+	0xCC: enHeadNULL, // Omega metroid projectile
+	0xCD: enHeadNULL, // (omega metroid projectile?)
+	Actor.metroid: enHeadMetroid, // Metroid
+	0xCF: enHeadNULL, // Metroid (hurt)
+	Actor.flittVanishing: enHeadFlittVanishing, // Flitt
+	Actor.flittMoving: enHeadFlittMoving, // Flitt
+	0xD2: enHeadNULL, // Stalagtite (unused)
+	Actor.gravitt: enHeadGravitt, // Gravitt
+	0xD4: enHeadNULL, // Gravitt
+	0xD5: enHeadNULL, // Gravitt
+	0xD6: enHeadNULL, // Gravitt
+	0xD7: enHeadNULL, // Gravitt
+	Actor.gullugg: enHeadGullugg, // Gullugg
+	0xD9: enHeadNULL, // Gullugg
+	0xDA: enHeadNULL, // Gullugg
+	Actor.babyMetroidEggPreview: enHeadNULL, // Baby metroid egg preview
+	0xDC: enHeadNULL, // (no graphics)
+	0xDD: enHeadNULL, // (no graphics)
+	0xDE: enHeadNULL, // (no graphics)
+	0xDF: enHeadNULL, // (no graphics)
+	0xE0: enHeadNULL, // Small health drop
+	0xE1: enHeadNULL, // Small health drop
+	0xE2: enHeadNULL, // Metroid death / missile door / screw attack explosion
+	0xE3: enHeadNULL, // Metroid death / missile door / screw attack explosion
+	0xE4: enHeadNULL, // Metroid death / missile door / screw attack explosion
+	0xE5: enHeadNULL, // Metroid death / missile door / screw attack explosion
+	0xE6: enHeadNULL, // Metroid death / missile door / screw attack explosion
+	0xE7: enHeadNULL, // Metroid death / missile door / screw attack explosion
+	0xE8: enHeadNULL, // Enemy death explosion
+	0xE9: enHeadNULL, // Enemy death explosion
+	0xEA: enHeadNULL, // Enemy death explosion
+	0xEB: enHeadNULL, // Enemy death explosion (extra frame for enemies not dropping small health)
+	0xEC: enHeadNULL, // Big energy drop
+	0xED: enHeadNULL, // Big energy drop
+	0xEE: enHeadNULL, // Missile drop
+	0xEF: enHeadNULL, // Missile drop
+	0xF0: enHeadNULL, // Metroid Queen neck (no graphics)
+	0xF1: enHeadNULL, // Metroid Queen head left half (no graphics)
+	0xF2: enHeadNULL, // Metroid Queen projectile/head right half (no graphics)
+	0xF3: enHeadNULL, // Metroid Queen body (no graphics)
+	0xF4: enHeadNULL, // (no graphics)
+	0xF5: enHeadNULL, // Metroid Queen mouth closed (no graphics)
+	0xF6: enHeadNULL, // Metroid Queen mouth open (no graphics)
+	0xF7: enHeadNULL, // Metroid Queen mouth stunned (no graphics)
+	Actor.missileDoor: enHeadMissileDoor, // Missile door
+	0xF9: enHeadNULL, // (no graphics)
+	0xFA: enHeadNULL, // (no graphics)
+	0xFB: enHeadNULL, // (no graphics)
+	0xFC: enHeadNULL, // (no graphics)
+	0xFD: enHeadNULL, // Nothing - flitt (no graphics)
+	0xFE: enHeadNULL, // ?
 ];
 
 immutable enHeadNULL = EnemyData(0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 , &enAINULL);
@@ -2233,10 +6484,10 @@ immutable enHeadArachnus = EnemyData(0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xF
 immutable enHeadArachnusOrb = EnemyData(0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFD, &enAIArachnus);
 
 immutable ubyte[] enemyDamageTable = [
-	0x08, // Tsumari
-	0x08, // Tsumari
-	0x08, // Tsumari
-	0x08, // Tsumari
+	0x08, // Tsumuri
+	0x08, // Tsumuri
+	0x08, // Tsumuri
+	0x08, // Tsumuri
 	0x10, // Skreek
 	0x10, // Skreek
 	0x10, // Skreek
@@ -2490,10 +6741,10 @@ immutable ubyte[] enemyDamageTable = [
 	0x00, // ?
 ];
 const Rectangle*[] enemyHitboxes = [
-	&hitboxBlock, // Tsumari
-	&hitboxBlock, // Tsumari
-	&hitboxBlock, // Tsumari
-	&hitboxBlock, // Tsumari
+	&hitboxBlock, // Tsumuri
+	&hitboxBlock, // Tsumuri
+	&hitboxBlock, // Tsumuri
+	&hitboxBlock, // Tsumuri
 	&hitbox6A6F, // Skreek
 	&hitbox6A6F, // Skreek
 	&hitbox6A6F, // Skreek
@@ -2791,3 +7042,2120 @@ immutable hitbox6AD7 = Rectangle(0, 39, 0, 31);
 immutable hitbox6ADB = Rectangle(-24, 23, -4, 3);
 immutable hitboxMissileDoor = Rectangle(-24, 23, -24, 23);
 immutable hitbox6AE3 = Rectangle(0, 55, 0, 47);
+
+const OAMEntry[][] enemySpriteTable = [
+    enSpriteTsumuriHoriFrame1, // Tsumuri
+    enSpriteTsumuriHoriFrame2, // Tsumuri
+    enSpriteTsumuriVertFrame1, // Tsumuri
+    enSpriteTsumuriVertFrame2, // Tsumuri
+    enSpriteSkreekFrame1, // Skreek
+    enSpriteSkreekFrame2, // Skreek
+    enSpriteSkreekFrame3, // Skreek
+    enSpriteSkreekFrame4, // Skreek
+    enSpriteSkreekSpit, // Skreek projectile
+    enSpriteDrivelFrame1, // Drivel
+    enSpriteDrivelFrame2, // Drivel
+    enSpriteDrivelFrame3, // Drivel
+    enSpriteDrivelSpitFrame1, // Drivel projectile
+    enSpriteDrivelSpitFrame2, // Drivel projectile
+    enSpriteDrivelSpitFrame3, // Drivel projectile
+    enSpriteDrivelSpitFrame4, // Drivel projectile
+    enSpriteDrivelSpitFrame5, // Drivel projectile
+    enSpriteDrivelSpitFrame6, // Drivel projectile
+    enSpriteSmallBugFrame1, // Small bugs
+    enSpriteSmallBugFrame2, // Small bugs
+    enSpriteHornoadFrame1, // Hornoad
+    enSpriteHornoadFrame2, // Hornoad
+    enSpriteSenjoo, // Senjoo
+    enSpriteGawronFrame1, // Gawron
+    enSpriteGawronFrame2, // Gawron
+    enSpriteBlankTile, // Gawron spawner?
+    enSpriteBlankTile, // Gawron spawner?
+    enSpriteChuteLeechFrame1, // Chute leech
+    enSpriteChuteLeechFrame2, // Chute leech
+    enSpriteChuteLeechFrame3, // Chute leech
+    enSpriteAutrackFrame1, // (uses same spritemap as 41h autrack)
+    enSpriteWallfireFrame1, // (uses same spritemap as 4Ah wallfire)
+    enSpriteNeedlerFrame1, // Needler
+    enSpriteNeedlerFrame2, // Needler
+    enSpriteNeedlerFrame1, // Needler
+    enSpriteNeedlerFrame2, // Needler
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteSkorpVert, // Skorp
+    enSpriteSkorpVert, // Skorp
+    enSpriteSkorpHori, // Skorp
+    enSpriteSkorpHori, // Skorp
+    enSpriteGlowFlyFrame1, // Glow fly
+    enSpriteGlowFlyFrame2, // Glow fly
+    enSpriteGlowFlyFrame3, // Glow fly
+    enSpriteGlowFlyFrame4, // Glow fly
+    enSpriteMoheekHoriFrame1, // Moheek
+    enSpriteMoheekHoriFrame2, // Moheek
+    enSpriteMoheekVertFrame1, // Moheek
+    enSpriteMoheekVertFrame2, // Moheek
+    enSpriteRockIcicleFrame1, // Rock icicle
+    enSpriteRockIcicleFrame2, // Rock icicle
+    enSpriteRockIcicleFrame3, // Rock icicle
+    enSpriteRockIcicleFrame4, // Rock icicle
+    enSpriteYumeeFrame1, // Yumee
+    enSpriteYumeeFrame2, // Yumee
+    enSpriteYumeeFrame3, // Yumee
+    enSpriteYumeeFrame4, // Yumee
+    enSpriteBlankTile, // Yumee spawner?
+    enSpriteBlankTile, // Yumee spawner?
+    enSpriteOctrollFrame1, // Octroll
+    enSpriteOctrollFrame2, // Octroll
+    enSpriteOctrollFrame3, // Octroll
+    enSpriteAutrackFrame1, // Autrack
+    enSpriteAutrackFrame2, // Autrack
+    enSpriteAutrackFrame3, // Autrack
+    enSpriteAutrackFrame4, // Autrack
+    enSpriteAutrackShot, // Autrack projectile
+    enSpriteAutoadFrame1, // Autoad
+    enSpriteAutoadFrame2, // Autoad
+    enSpriteSideAutoadFrame1, // Sideways Autoad (unused)
+    enSpriteSideAutoadFrame2, // Sideways Autoad (unused)
+    enSpriteWallfireFrame1, // Wallfire
+    enSpriteWallfireFrame2, // Wallfire
+    enSpriteWallfireBroken, // Wallfire
+    enSpriteWallfireShotFrame1, // Wallfire projectile
+    enSpriteWallfireShotFrame2, // Wallfire projectile
+    enSpriteWallfireShotFrame3, // Wallfire projectile
+    enSpriteWallfireShotFrame4, // Wallfire projectile
+    enSpriteGunzooFrame1, // Gunzoo
+    enSpriteGunzooFrame2, // Gunzoo
+    enSpriteGunzooFrame3, // Gunzoo
+    enSpriteGunzooShotDiagFrame1, // Gunzoo diagonal projectile
+    enSpriteGunzooShotDiagFrame2, // Gunzoo diagonal projectile
+    enSpriteGunzooShotDiagFrame3, // Gunzoo diagonal projectile
+    enSpriteGunzooShotHoriFrame1, // Gunzoo horizontal projectile
+    enSpriteGunzooShotHoriFrame2, // Gunzoo horizontal projectile (unused frame)
+    enSpriteGunzooShotHoriFrame3, // Gunzoo horizontal projectile
+    enSpriteGunzooShotHoriFrame4, // Gunzoo horizontal projectile
+    enSpriteGunzooShotHoriFrame5, // Gunzoo horizontal projectile
+    enSpriteAutomFrame1, // Autom
+    enSpriteAutomFrame2, // Autom
+    enSpriteAutomShotFrame1, // Autom projectile
+    enSpriteAutomShotFrame2, // Autom projectile
+    enSpriteAutomShotFrame3, // Autom projectile
+    enSpriteAutomShotFrame4, // Autom projectile
+    enSpriteAutomShotFrame5, // Autom projectile
+    enSpriteShirkFrame1, // Shirk
+    enSpriteShirkFrame2, // Shirk
+    enSpriteSeptoggFrame1, // Septogg
+    enSpriteSeptoggFrame2, // Septogg
+    enSpriteMotoFrame1, // Moto
+    enSpriteMotoFrame2, // Moto
+    enSpriteMotoFrame3, // Moto
+    enSpriteHalzyn, // Halzyn
+    enSpriteRamulkenFrame1, // Ramulken
+    enSpriteRamulkenFrame2, // Ramulken
+    enSpriteBlankTile, // Musical stinger event trigger
+    enSpriteProboscumFrame1, // (uses same spritemap as 72h proboscum)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteProboscumFrame1, // Proboscum
+    enSpriteProboscumFrame2, // Proboscum
+    enSpriteProboscumFrame3, // Proboscum
+    enSpriteMissileBlock, // Missile block
+    enSpriteArachnusFrame1, // Arachnus
+    enSpriteArachnusFrame2, // Arachnus
+    enSpriteArachnusFrame3, // Arachnus
+    enSpriteArachnusFrame4, // Arachnus
+    enSpriteArachnusFrame5, // Arachnus
+    enSpriteArachnusShotFrame1, // Arachnus projectile
+    enSpriteArachnusShotFrame2, // Arachnus projectile
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteItemOrb, // Plasma beam orb
+    enSpriteItem, // Plasma beam
+    enSpriteItemOrb, // Ice beam orb (and bent neck of Queen’s vomiting pose!?)
+    enSpriteItem, // Ice beam
+    enSpriteItemOrb, // Wave beam orb
+    enSpriteItem, // Wave beam
+    enSpriteItemOrb, // Spazer beam orb
+    enSpriteItem, // Spazer beam
+    enSpriteItemOrb, // Bombs orb
+    enSpriteItem, // Bombs
+    enSpriteItemOrb, // Screw attack orb
+    enSpriteItem, // Screw attack
+    enSpriteItemOrb, // Varia suit orb
+    enSpriteItem, // Varia suit
+    enSpriteItemOrb, // Hi-jump boots orb
+    enSpriteItem, // Hi-jump boots
+    enSpriteItemOrb, // Space jump orb
+    enSpriteItem, // Space jump
+    enSpriteItemOrb, // (spider ball orb?)
+    enSpriteItem, // Spider ball
+    enSpriteItemOrb, // (spring ball orb?)
+    enSpriteItem, // Spring ball
+    enSpriteItemOrb, // (energy tank orb?)
+    enSpriteEnergyTank, // Energy tank
+    enSpriteItemOrb, // (missile tank orb?)
+    enSpriteMissileTank, // Missile tank
+    null, // Blob thrower (sprite is written to WRAM)
+    enSpriteEnergyRefill, // Energy refill
+    enSpriteItemOrb, // Arachnus orb
+    enSpriteMissileRefill, // Missile refill
+    enSpriteBlobFrame1, // Blob thrower projectile
+    enSpriteBlobFrame2, // Blob thrower projectile
+    enSpriteMetroidFrame1, // Metroid
+    enSpriteAlphaFace, // Metroid hatching
+    enSpriteNone, // (no graphics)
+    enSpriteAlphaFrame1, // Alpha metroid
+    enSpriteAlphaFrame2, // Alpha metroid
+    enSpriteEggFrame1, // Baby metroid egg
+    enSpriteEggFrame2, // Baby metroid egg
+    enSpriteEggFrame3, // Baby metroid egg
+    enSpriteBabyFrame1, // Baby metroid
+    enSpriteBabyFrame2, // Baby metroid
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteGammaFrame1, // Gamma metroid
+    enSpriteGammaBoltFrame1, // Gamma metroid projectile
+    enSpriteGammaBoltFrame2, // Gamma metroid projectile
+    enSpriteGammaFrame2, // Gamma metroid
+    enSpriteNone, // (no graphics)
+    enSpriteGammaHusk, // Gamma metroid shell
+    enSpriteZetaFrame1, // Zeta metroid hatching
+    enSpriteZetaFrame2, // Zeta metroid
+    enSpriteZetaFrame3, // Zeta metroid
+    enSpriteZetaFrame4, // Zeta metroid
+    enSpriteZetaFrame5, // Zeta metroid
+    enSpriteZetaFrame6, // Zeta metroid
+    enSpriteZetaFrame7, // Zeta metroid
+    enSpriteZetaFrame8, // Zeta metroid
+    enSpriteZetaFrame9, // Zeta metroid
+    enSpriteZetaFrameA, // Zeta metroid
+    enSpriteZetaFrameB, // Zeta metroid
+    enSpriteZetaShot, // Zeta metroid projectile
+    enSpriteOmegaFrame1, // Omega metroid
+    enSpriteOmegaFrame2, // Omega metroid
+    enSpriteOmegaFrame3, // Omega metroid
+    enSpriteOmegaFrame4, // Omega metroid
+    enSpriteOmegaFrame5, // Omega metroid
+    enSpriteOmegaFrame6, // Omega metroid
+    enSpriteOmegaFrame7, // Omega metroid
+    enSpriteOmegaShotFrame1, // Omega metroid projectile
+    enSpriteOmegaShotFrame2, // Omega metroid projectile
+    enSpriteOmegaShotFrame3, // Omega metroid projectile
+    enSpriteOmegaShotFrame4, // Omega metroid projectile
+    enSpriteOmegaShotFrame5, // Omega metroid projectile
+    enSpriteOmegaShotFrame6, // Omega metroid projectile
+    enSpriteOmegaShotFrame7, // Omega metroid projectile
+    enSpriteOmegaShotFrame8, // (omega metroid projectile?)
+    enSpriteMetroidFrame2, // Metroid
+    enSpriteMetroidFrame3, // Metroid (hurt)
+    enSpriteFlittFrame1, // Flitt
+    enSpriteFlittFrame2, // Flitt
+    enSpriteStalagtite, // Stalagtite (unused)
+    enSpriteGravittFrame1, // Gravitt
+    enSpriteGravittFrame1, // Gravitt
+    enSpriteGravittFrame2, // Gravitt
+    enSpriteGravittFrame1, // Gravitt
+    enSpriteGravittFrame3, // Gravitt
+    enSpriteGulluggFrame1, // Gullugg
+    enSpriteGulluggFrame2, // Gullugg
+    enSpriteGulluggFrame3, // Gullugg
+    enSpriteEggFrame2, // Baby metroid egg preview
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteSmallHealthFrame1, // Small health drop
+    enSpriteSmallHealthFrame2, // Small health drop
+    enSpriteBigExplosionFrame1, // Metroid death / missile door / screw attack explosion
+    enSpriteBigExplosionFrame2, // Metroid death / missile door / screw attack explosion
+    enSpriteBigExplosionFrame3, // Metroid death / missile door / screw attack explosion
+    enSpriteBigExplosionFrame4, // Metroid death / missile door / screw attack explosion
+    enSpriteBigExplosionFrame5, // Metroid death / missile door / screw attack explosion
+    enSpriteBigExplosionFrame6, // Metroid death / missile door / screw attack explosion
+    enSpriteSmallExplosionFrame1, // Enemy death explosion
+    enSpriteSmallExplosionFrame2, // Enemy death explosion
+    enSpriteSmallExplosionFrame3, // Enemy death explosion
+    enSpriteSmallExplosionFrame4, // Enemy death explosion (extra frame for enemies not dropping small health)
+    enSpriteBigHealthFrame1, // Big energy drop
+    enSpriteBigHealthFrame2, // Big energy drop
+    enSpriteMissileDropFrame1, // Missile drop
+    enSpriteMissileDropFrame2, // Missile drop
+    enSpriteNone, // Metroid Queen neck (no graphics)
+    enSpriteNone, // Metroid Queen head left half (no graphics)
+    enSpriteNone, // Metroid Queen projectile/head right half (no graphics)
+    enSpriteNone, // Metroid Queen body (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // Metroid Queen mouth closed (no graphics)
+    enSpriteNone, // Metroid Queen mouth open (no graphics)
+    enSpriteNone, // Metroid Queen mouth stunned (no graphics)
+    enSpriteMissileDoor, // Missile door
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // (no graphics)
+    enSpriteNone, // Nothing - flitt (no graphics)
+    enSpriteBlankTile, // ?
+];
+
+immutable OAMEntry[] enSpriteNone = [
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBlankTile = [
+    OAMEntry(-4, -4, 0xFF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteTsumuriHoriFrame1 = [
+    OAMEntry(-8, -8, 0xB4, 0x00),
+    OAMEntry(-8, 0, 0xB5, 0x00),
+    OAMEntry(0, -8, 0xB6, 0x00),
+    OAMEntry(0, 0, 0xB7, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteTsumuriHoriFrame2 = [
+    OAMEntry(-8, -8, 0xB4, 0x00),
+    OAMEntry(-8, 0, 0xB5, 0x00),
+    OAMEntry(0, -8, 0xB9, 0x00),
+    OAMEntry(0, 0, 0xB8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteTsumuriVertFrame1 = [
+    OAMEntry(-8, -8, 0xBA, 0x00),
+    OAMEntry(-8, 0, 0xBB, 0x00),
+    OAMEntry(0, -8, 0xBC, 0x00),
+    OAMEntry(0, 0, 0xBD, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteTsumuriVertFrame2 = [
+    OAMEntry(-8, -8, 0xBA, 0x00),
+    OAMEntry(-8, 0, 0xBE, 0x00),
+    OAMEntry(0, -8, 0xBC, 0x00),
+    OAMEntry(0, 0, 0xBF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteSkreekFrame1 = [
+    OAMEntry(-6,-12, 0xC0, 0x00),
+    OAMEntry(-8, -4, 0xC1, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0, -4, 0xC3, 0x00),
+    OAMEntry(0, 4, 0xC4, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSkreekFrame2 = [
+    OAMEntry(-6,-12, 0xC5, 0x00),
+    OAMEntry(-8, -4, 0xC6, 0x00),
+    OAMEntry(-8, 4, 0xC7, 0x00),
+    OAMEntry(0, -4, 0xC8, 0x00),
+    OAMEntry(0, 4, 0xC9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSkreekFrame3 = [
+    OAMEntry(-6,-12, 0xCA, 0x00),
+    OAMEntry(-8, -4, 0xCB, 0x00),
+    OAMEntry(-8, 4, 0xCC, 0x00),
+    OAMEntry(0, -4, 0xCD, 0x00),
+    OAMEntry(0, 4, 0xCE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSkreekFrame4 = [
+    OAMEntry(-8,-12, 0xCF, 0x00),
+    OAMEntry(-8, -4, 0xD0, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0,-12, 0xD1, 0x00),
+    OAMEntry(0, -4, 0xD2, 0x00),
+    OAMEntry(0, 4, 0xC4, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSkreekSpit = [
+    OAMEntry(-4, -4, 0xD3, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteDrivelFrame1 = [
+    OAMEntry(-4,-16, 0xD4, 0x00),
+    OAMEntry(-4, -8, 0xD5, 0x00),
+    OAMEntry(-4, 0, 0xD5, 0x20),
+    OAMEntry(-4, 8, 0xD4, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteDrivelFrame2 = [
+    OAMEntry(-4,-16, 0xD7, 0x00),
+    OAMEntry(-4, -8, 0xD8, 0x00),
+    OAMEntry(-4, 0, 0xD8, 0x20),
+    OAMEntry(-4, 8, 0xD7, 0x20),
+    OAMEntry(4,-16, 0xD6, 0x00),
+    OAMEntry(4, 8, 0xD6, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteDrivelFrame3 = [
+    OAMEntry(-4, -8, 0xDA, 0x00),
+    OAMEntry(-4, 0, 0xDA, 0x20),
+    OAMEntry(4, -8, 0xD9, 0x00),
+    OAMEntry(4, 0, 0xD9, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteDrivelSpitFrame1 = [
+    OAMEntry(-4, -4, 0xDB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteDrivelSpitFrame2 = [
+    OAMEntry(-4, -4, 0xDC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteDrivelSpitFrame3 = [
+    OAMEntry(-4, -4, 0xDD, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteDrivelSpitFrame4 = [
+    OAMEntry(-4, -8, 0xDE, 0x00),
+    OAMEntry(-4, 0, 0xDE, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteDrivelSpitFrame5 = [
+    OAMEntry(-12, -4, 0xDF, 0x00),
+    OAMEntry(-10,-10, 0xE0, 0x00),
+    OAMEntry(-10, 2, 0xE0, 0x20),
+    OAMEntry(-4,-12, 0xE1, 0x00),
+    OAMEntry(-4, 4, 0xE1, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteDrivelSpitFrame6 = [
+    OAMEntry(-25, -4, 0xDF, 0x00),
+    OAMEntry(-17,-17, 0xE0, 0x00),
+    OAMEntry(-17, 9, 0xE0, 0x20),
+    OAMEntry(-4,-20, 0xE1, 0x00),
+    OAMEntry(-4, 12, 0xE1, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteSmallBugFrame1 = [
+    OAMEntry(-4, -8, 0xB0, 0x00),
+    OAMEntry(-4, 0, 0xB1, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSmallBugFrame2 = [
+    OAMEntry(-4, -8, 0xB2, 0x00),
+    OAMEntry(-4, 0, 0xB3, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteHornoadFrame1 = [
+    OAMEntry(-8,-12, 0xE2, 0x00),
+    OAMEntry(-8, -4, 0xE3, 0x00),
+    OAMEntry(-8, 4, 0xE4, 0x00),
+    OAMEntry(0,-12, 0xE5, 0x00),
+    OAMEntry(0, -4, 0xE6, 0x00),
+    OAMEntry(0, 4, 0xE7, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteHornoadFrame2 = [
+    OAMEntry(-8,-12, 0xE2, 0x00),
+    OAMEntry(-8, -4, 0xE3, 0x00),
+    OAMEntry(-8, 4, 0xE4, 0x00),
+    OAMEntry(0,-12, 0xE5, 0x00),
+    OAMEntry(0, -4, 0xE8, 0x00),
+    OAMEntry(0, 4, 0xE9, 0x00),
+    OAMEntry(8, 4, 0xEA, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteSeptoggFrame1 = [
+    OAMEntry(-12, -8, 0xEB, 0x00),
+    OAMEntry(-12, 0, 0xEB, 0x20),
+    OAMEntry(-4,-12, 0xEC, 0x00),
+    OAMEntry(-4, -4, 0xED, 0x00),
+    OAMEntry(-4, 4, 0xEC, 0x20),
+    OAMEntry(4, -8, 0xEF, 0x00),
+    OAMEntry(4, 0, 0xEF, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSeptoggFrame2 = [
+    OAMEntry(-12, -8, 0xEB, 0x00),
+    OAMEntry(-12, 0, 0xEB, 0x20),
+    OAMEntry(-4,-12, 0xEE, 0x00),
+    OAMEntry(-4, -4, 0xED, 0x00),
+    OAMEntry(-4, 4, 0xEE, 0x20),
+    OAMEntry(4, -8, 0xEF, 0x00),
+    OAMEntry(4, 0, 0xEF, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteSenjoo = [
+    OAMEntry(-8,-12, 0xB4, 0x00),
+    OAMEntry(-8, -4, 0xB5, 0x00),
+    OAMEntry(-8, 4, 0xB6, 0x00),
+    OAMEntry(0,-12, 0xB7, 0x00),
+    OAMEntry(0, -4, 0xB8, 0x00),
+    OAMEntry(0, 4, 0xB9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGawronFrame1 = [
+    OAMEntry(-8, -8, 0xBC, 0x00),
+    OAMEntry(-8, 0, 0xBD, 0x00),
+    OAMEntry(0, -8, 0xBE, 0x00),
+    OAMEntry(0, 0, 0xBF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGawronFrame2 = [
+    OAMEntry(-8, -8, 0xC0, 0x00),
+    OAMEntry(-8, 0, 0xC1, 0x00),
+    OAMEntry(0, -8, 0xBE, 0x00),
+    OAMEntry(0, 0, 0xBF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteChuteLeechFrame1 = [
+    OAMEntry(-4,-12, 0xC2, 0x00),
+    OAMEntry(-4, -4, 0xC3, 0x00),
+    OAMEntry(-4, 4, 0xC2, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteChuteLeechFrame2 = [
+    OAMEntry(-8, -8, 0xC5, 0x00),
+    OAMEntry(-8, 0, 0xC5, 0x20),
+    OAMEntry(0, -8, 0xC4, 0x00),
+    OAMEntry(0, 0, 0xC4, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteChuteLeechFrame3 = [
+    OAMEntry(-8, -4, 0xC9, 0x00),
+    OAMEntry(-8, 4, 0xCA, 0x00),
+    OAMEntry(0,-12, 0xC6, 0x00),
+    OAMEntry(0, -4, 0xC7, 0x00),
+    OAMEntry(0, 4, 0xC8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGulluggFrame1 = [
+    OAMEntry(-12,-16, 0xCB, 0x00),
+    OAMEntry(-12, -8, 0xCC, 0x00),
+    OAMEntry(-12, 0, 0xCC, 0x20),
+    OAMEntry(-12, 8, 0xCB, 0x20),
+    OAMEntry(-4, -8, 0xCD, 0x00),
+    OAMEntry(-4, 0, 0xCE, 0x00),
+    OAMEntry(4, 0, 0xCF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGulluggFrame2 = [
+    OAMEntry(-12,-16, 0xD0, 0x00),
+    OAMEntry(-12, -8, 0xD1, 0x00),
+    OAMEntry(-12, 0, 0xD1, 0x20),
+    OAMEntry(-12, 8, 0xD0, 0x20),
+    OAMEntry(-4, -8, 0xCD, 0x00),
+    OAMEntry(-4, 0, 0xCE, 0x00),
+    OAMEntry(4, 0, 0xCF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGulluggFrame3 = [
+    OAMEntry(-12, -8, 0xD2, 0x00),
+    OAMEntry(-12, 0, 0xD2, 0x20),
+    OAMEntry(-4, -8, 0xCD, 0x00),
+    OAMEntry(-4, 0, 0xCE, 0x00),
+    OAMEntry(4, 0, 0xCF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteNeedlerFrame1 = [
+    OAMEntry(-8, -8, 0xE6, 0x00),
+    OAMEntry(-8, 0, 0xE7, 0x00),
+    OAMEntry(0, -8, 0xE8, 0x00),
+    OAMEntry(0, 0, 0xE9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteNeedlerFrame2 = [
+    OAMEntry(-8, -8, 0xEA, 0x00),
+    OAMEntry(-8, 0, 0xEB, 0x00),
+    OAMEntry(0, -8, 0xEC, 0x00),
+    OAMEntry(0, 0, 0xED, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteSkorpVert = [
+    OAMEntry(-12, -8, 0xB4, 0x00),
+    OAMEntry(-12, 0, 0xB4, 0x00),
+    OAMEntry(-4, -8, 0xB6, 0x00),
+    OAMEntry(-4, 0, 0xB7, 0x00),
+    OAMEntry(4, -8, 0xB8, 0x00),
+    OAMEntry(4, 0, 0xB9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSkorpHori = [
+    OAMEntry(-8,-12, 0xBA, 0x00),
+    OAMEntry(-8, -4, 0xBB, 0x00),
+    OAMEntry(-8, 4, 0xB4, 0x00),
+    OAMEntry(0,-12, 0xBC, 0x00),
+    OAMEntry(0, -4, 0xBD, 0x00),
+    OAMEntry(0, 4, 0xB4, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGlowFlyFrame1 = [
+    OAMEntry(-12, -4, 0xBE, 0x00),
+    OAMEntry(-4, -4, 0xBF, 0x00),
+    OAMEntry(4, -4, 0xC1, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGlowFlyFrame2 = [
+    OAMEntry(-12, -4, 0xBE, 0x00),
+    OAMEntry(-4, -4, 0xBF, 0x00),
+    OAMEntry(4, -4, 0xC0, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGlowFlyFrame3 = [
+    OAMEntry(-8, -8, 0xC2, 0x00),
+    OAMEntry(-8, 0, 0xC3, 0x00),
+    OAMEntry(0, -8, 0xC4, 0x00),
+    OAMEntry(0, 0, 0xC5, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGlowFlyFrame4 = [
+    OAMEntry(-8, -8, 0xC6, 0x00),
+    OAMEntry(-8, 0, 0xC7, 0x00),
+    OAMEntry(0, -8, 0xC8, 0x00),
+    OAMEntry(0, 0, 0xC9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteRockIcicleFrame1 = [
+    OAMEntry(-4, -4, 0xD2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteRockIcicleFrame2 = [
+    OAMEntry(-4, -4, 0xD3, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteRockIcicleFrame3 = [
+    OAMEntry(-8, -4, 0xD4, 0x00),
+    OAMEntry(0, -4, 0xD5, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteRockIcicleFrame4 = [
+    OAMEntry(-8, -4, 0xD4, 0x00),
+    OAMEntry(0, -4, 0xD6, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteMoheekHoriFrame1 = [
+    OAMEntry(-8, -8, 0xD7, 0x00),
+    OAMEntry(-8, 0, 0xD8, 0x00),
+    OAMEntry(0, -8, 0xDB, 0x00),
+    OAMEntry(0, 0, 0xDC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMoheekHoriFrame2 = [
+    OAMEntry(-8, -8, 0xD9, 0x00),
+    OAMEntry(-8, 0, 0xDA, 0x00),
+    OAMEntry(0, -8, 0xDB, 0x00),
+    OAMEntry(0, 0, 0xDD, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMoheekVertFrame1 = [
+    OAMEntry(-8, -8, 0xDE, 0x00),
+    OAMEntry(-8, 0, 0xDF, 0x00),
+    OAMEntry(0, -8, 0xE1, 0x00),
+    OAMEntry(0, 0, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMoheekVertFrame2 = [
+    OAMEntry(-8, -8, 0xE3, 0x00),
+    OAMEntry(-8, 0, 0xE0, 0x00),
+    OAMEntry(0, -8, 0xE4, 0x00),
+    OAMEntry(0, 0, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteYumeeFrame1 = [
+    OAMEntry(-8, -8, 0xE5, 0x00),
+    OAMEntry(-8, 0, 0xE9, 0x00),
+    OAMEntry(0, 0, 0xEA, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteYumeeFrame2 = [
+    OAMEntry(-8, -8, 0xE5, 0x00),
+    OAMEntry(-8, 0, 0xE9, 0x00),
+    OAMEntry(0, 0, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteYumeeFrame3 = [
+    OAMEntry(-8, -8, 0xE5, 0x00),
+    OAMEntry(-8, 0, 0xE6, 0x00),
+    OAMEntry(-8, 8, 0xE7, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteYumeeFrame4 = [
+    OAMEntry(-8, -8, 0xE5, 0x00),
+    OAMEntry(-8, 0, 0xE6, 0x00),
+    OAMEntry(-8, 8, 0xE8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteFlittFrame1 = [
+    OAMEntry(-8, -8, 0xCA, 0x00),
+    OAMEntry(-8, 0, 0xCB, 0x00),
+    OAMEntry(0, -8, 0xCC, 0x00),
+    OAMEntry(0, 0, 0xCD, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteFlittFrame2 = [
+    OAMEntry(-8, -8, 0xCE, 0x00),
+    OAMEntry(-8, 0, 0xCF, 0x00),
+    OAMEntry(0, -8, 0xD0, 0x00),
+    OAMEntry(0, 0, 0xD1, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteStalagtite = [
+    OAMEntry(-8, -8, 0xEC, 0x00),
+    OAMEntry(-8, 0, 0xED, 0x00),
+    OAMEntry(0, -4, 0xEE, 0x00),
+    OAMEntry(8, -4, 0xEF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteOctrollFrame1 = [
+    OAMEntry(-8, -8, 0xB4, 0x00),
+    OAMEntry(-8, 0, 0xB4, 0x20),
+    OAMEntry(0,-16, 0xB5, 0x00),
+    OAMEntry(0, -8, 0xB6, 0x00),
+    OAMEntry(0, 0, 0xB6, 0x20),
+    OAMEntry(0, 8, 0xB5, 0x20),
+    OAMEntry(8, -8, 0xB7, 0x00),
+    OAMEntry(8, 0, 0xB7, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOctrollFrame2 = [
+    OAMEntry(-8, -8, 0xB4, 0x00),
+    OAMEntry(-8, 0, 0xB4, 0x20),
+    OAMEntry(0,-16, 0xBA, 0x00),
+    OAMEntry(0, -8, 0xB6, 0x00),
+    OAMEntry(0, 0, 0xB6, 0x20),
+    OAMEntry(0, 8, 0xBA, 0x20),
+    OAMEntry(8, -8, 0xB7, 0x00),
+    OAMEntry(8, 0, 0xB7, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOctrollFrame3 = [
+    OAMEntry(-8, -8, 0xB4, 0x00),
+    OAMEntry(-8, 0, 0xB4, 0x20),
+    OAMEntry(0,-16, 0xB8, 0x00),
+    OAMEntry(0, -8, 0xB9, 0x00),
+    OAMEntry(0, 0, 0xB9, 0x20),
+    OAMEntry(0, 8, 0xB8, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteAutrackFrame1 = [
+    OAMEntry(-8, -8, 0xBB, 0x00),
+    OAMEntry(-8, 0, 0xBC, 0x00),
+    OAMEntry(0, -8, 0xBD, 0x00),
+    OAMEntry(0, 0, 0xBE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutrackFrame2 = [
+    OAMEntry(-16, -8, 0xBF, 0x00),
+    OAMEntry(-16, 0, 0xC0, 0x00),
+    OAMEntry(-8, -8, 0xC1, 0x00),
+    OAMEntry(-8, 0, 0xC2, 0x00),
+    OAMEntry(0, -8, 0xBD, 0x00),
+    OAMEntry(0, 0, 0xBE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutrackFrame3 = [
+    OAMEntry(-24, -8, 0xBF, 0x00),
+    OAMEntry(-24, 0, 0xC0, 0x00),
+    OAMEntry(-16, -8, 0xC3, 0x00),
+    OAMEntry(-16, 0, 0xC4, 0x00),
+    OAMEntry(-8, -8, 0xC1, 0x00),
+    OAMEntry(-8, 0, 0xC2, 0x00),
+    OAMEntry(0, -8, 0xBD, 0x00),
+    OAMEntry(0, 0, 0xBE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutrackFrame4 = [
+    OAMEntry(-24, -8, 0xC5, 0x00),
+    OAMEntry(-24, 0, 0xC0, 0x00),
+    OAMEntry(-16, -8, 0xC3, 0x00),
+    OAMEntry(-16, 0, 0xC4, 0x00),
+    OAMEntry(-8, -8, 0xC1, 0x00),
+    OAMEntry(-8, 0, 0xC2, 0x00),
+    OAMEntry(0, -8, 0xBD, 0x00),
+    OAMEntry(0, 0, 0xBE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutrackShot = [
+    OAMEntry(-4, -8, 0xC6, 0x00),
+    OAMEntry(-4, 0, 0xC6, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteAutoadFrame1 = [
+    OAMEntry(-8,-12, 0xC8, 0x00),
+    OAMEntry(-8, -4, 0xC9, 0x00),
+    OAMEntry(-8, 4, 0xC8, 0x20),
+    OAMEntry(0,-12, 0xCA, 0x00),
+    OAMEntry(0, -4, 0xCB, 0x00),
+    OAMEntry(0, 4, 0xCA, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutoadFrame2 = [
+    OAMEntry(-8,-12, 0xC8, 0x00),
+    OAMEntry(-8, -4, 0xCF, 0x00),
+    OAMEntry(-8, 4, 0xC8, 0x20),
+    OAMEntry(0,-12, 0xCC, 0x00),
+    OAMEntry(0, -4, 0xCD, 0x00),
+    OAMEntry(0, 4, 0xCC, 0x20),
+    OAMEntry(8,-10, 0xCE, 0x00),
+    OAMEntry(8, 2, 0xCE, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteSideAutoadFrame1 = [
+    OAMEntry(-12, -8, 0xD0, 0x00),
+    OAMEntry(-12, 0, 0xD1, 0x00),
+    OAMEntry(-4, -8, 0xD2, 0x00),
+    OAMEntry(-4, 0, 0xD3, 0x00),
+    OAMEntry(4, -8, 0xD0, 0x40),
+    OAMEntry(4, 0, 0xD1, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSideAutoadFrame2 = [
+    OAMEntry(-12, -8, 0xD0, 0x00),
+    OAMEntry(-12, 0, 0xD4, 0x00),
+    OAMEntry(-10, 8, 0xD6, 0x00),
+    OAMEntry(-4, -8, 0xD7, 0x00),
+    OAMEntry(-4, 0, 0xD5, 0x00),
+    OAMEntry(2, 8, 0xD6, 0x40),
+    OAMEntry(4, -8, 0xD0, 0x40),
+    OAMEntry(4, 0, 0xD4, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteWallfireFrame1 = [
+    OAMEntry(-12, -4, 0xD8, 0x00),
+    OAMEntry(-12, 4, 0xD9, 0x00),
+    OAMEntry(-4, -4, 0xDA, 0x00),
+    OAMEntry(-4, 4, 0xDB, 0x00),
+    OAMEntry(4, -4, 0xDC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteWallfireFrame2 = [
+    OAMEntry(-12, -4, 0xDD, 0x00),
+    OAMEntry(-12, 4, 0xDE, 0x00),
+    OAMEntry(-4, -4, 0xDA, 0x00),
+    OAMEntry(-4, 4, 0xE0, 0x00),
+    OAMEntry(4, -4, 0xDC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteWallfireBroken = [
+    OAMEntry(-12, -4, 0xE5, 0x00),
+    OAMEntry(-4, -4, 0xE6, 0x00),
+    OAMEntry(4, -4, 0xE7, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteWallfireShotFrame1 = [
+    OAMEntry(-4,-12, 0xE1, 0x00),
+    OAMEntry(-4, -4, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteWallfireShotFrame2 = [
+    OAMEntry(-4, -4, 0xE3, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteWallfireShotFrame3 = [
+    OAMEntry(-8, -4, 0xE4, 0x00),
+    OAMEntry(0, -4, 0xE4, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteWallfireShotFrame4 = [
+    OAMEntry(-16, -4, 0xE4, 0x00),
+    OAMEntry(8, -4, 0xE4, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGunzooFrame1 = [
+    OAMEntry(-12,-12, 0xB4, 0x00),
+    OAMEntry(-12, -4, 0xB5, 0x00),
+    OAMEntry(-12, 4, 0xB6, 0x00),
+    OAMEntry(-4,-12, 0xB7, 0x00),
+    OAMEntry(-4, -4, 0xB8, 0x00),
+    OAMEntry(-4, 4, 0xB9, 0x00),
+    OAMEntry(4,-12, 0xBA, 0x00),
+    OAMEntry(4, -4, 0xBB, 0x00),
+    OAMEntry(4, 4, 0xBC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGunzooFrame2 = [
+    OAMEntry(-12,-12, 0xBD, 0x00),
+    OAMEntry(-12, -4, 0xB5, 0x00),
+    OAMEntry(-12, 4, 0xBF, 0x00),
+    OAMEntry(-12, 12, 0xC0, 0x00),
+    OAMEntry(-4,-12, 0xB7, 0x00),
+    OAMEntry(-4, -4, 0xCD, 0x00),
+    OAMEntry(-4, 4, 0xC1, 0x00),
+    OAMEntry(-4, 12, 0xC2, 0x00),
+    OAMEntry(4,-12, 0xBA, 0x00),
+    OAMEntry(4, -4, 0xC3, 0x00),
+    OAMEntry(4, 4, 0xC4, 0x00),
+    OAMEntry(4, 12, 0xC5, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGunzooFrame3 = [
+    OAMEntry(-12,-12, 0xB4, 0x00),
+    OAMEntry(-12, -4, 0xB5, 0x00),
+    OAMEntry(-12, 4, 0xBF, 0x00),
+    OAMEntry(-12, 12, 0xC0, 0x00),
+    OAMEntry(-4,-12, 0xBE, 0x00),
+    OAMEntry(-4, -4, 0xCD, 0x00),
+    OAMEntry(-4, 4, 0xC1, 0x00),
+    OAMEntry(-4, 12, 0xC2, 0x00),
+    OAMEntry(4,-12, 0xBA, 0x00),
+    OAMEntry(4, -4, 0xC3, 0x00),
+    OAMEntry(4, 4, 0xC4, 0x00),
+    OAMEntry(4, 12, 0xC5, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGunzooShotDiagFrame1 = [
+    OAMEntry(-4, -4, 0xCE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGunzooShotDiagFrame2 = [
+    OAMEntry(-8, -4, 0xD0, 0x00),
+    OAMEntry(0, -4, 0xCF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGunzooShotDiagFrame3 = [
+    OAMEntry(-16, -4, 0xD2, 0x00),
+    OAMEntry(-8, -4, 0xD1, 0x00),
+    OAMEntry(0, -4, 0xD0, 0x00),
+    OAMEntry(8, -4, 0xCF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGunzooShotHoriFrame1 = [
+    OAMEntry(-4, -4, 0xC6, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGunzooShotHoriFrame2 = [
+    OAMEntry(-4, -4, 0xC7, 0x00),
+    OAMEntry(-4, 4, 0xC8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGunzooShotHoriFrame3 = [
+    OAMEntry(-8, -4, 0xC9, 0x00),
+    OAMEntry(0, -4, 0xC9, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGunzooShotHoriFrame4 = [
+    OAMEntry(-20, -4, 0xCA, 0x00),
+    OAMEntry(-12, -4, 0xCB, 0x00),
+    OAMEntry(4, -4, 0xCB, 0x40),
+    OAMEntry(12, -4, 0xCA, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGunzooShotHoriFrame5 = [
+    OAMEntry(-24, -4, 0xCC, 0x00),
+    OAMEntry(16, -4, 0xCC, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteAutomFrame1 = [
+    OAMEntry(-12,-12, 0xD3, 0x00),
+    OAMEntry(-12, -4, 0xD4, 0x00),
+    OAMEntry(-4,-12, 0xD5, 0x00),
+    OAMEntry(-4, -4, 0xD6, 0x00),
+    OAMEntry(-4, 4, 0xD7, 0x00),
+    OAMEntry(4, -4, 0xD8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutomFrame2 = [
+    OAMEntry(-12,-12, 0xD3, 0x00),
+    OAMEntry(-12, -4, 0xD4, 0x00),
+    OAMEntry(-4,-12, 0xE0, 0x00),
+    OAMEntry(-4, -4, 0xD6, 0x00),
+    OAMEntry(-4, 4, 0xD7, 0x00),
+    OAMEntry(4, -4, 0xD8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutomShotFrame1 = [
+    OAMEntry(-4, -4, 0xD9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutomShotFrame2 = [
+    OAMEntry(-12, -4, 0xDA, 0x00),
+    OAMEntry(-4, -4, 0xDB, 0x00),
+    OAMEntry(4, -4, 0xD9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutomShotFrame3 = [
+    OAMEntry(-20, -4, 0xDB, 0x00),
+    OAMEntry(-12, -4, 0xDA, 0x00),
+    OAMEntry(-4, -4, 0xDB, 0x00),
+    OAMEntry(4, -4, 0xDA, 0x00),
+    OAMEntry(12, -4, 0xD9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutomShotFrame4 = [
+    OAMEntry(-20, -4, 0xDA, 0x00),
+    OAMEntry(-12, -4, 0xDB, 0x00),
+    OAMEntry(-4, -4, 0xDA, 0x00),
+    OAMEntry(4, -4, 0xDB, 0x00),
+    OAMEntry(12,-12, 0xDC, 0x00),
+    OAMEntry(12, -4, 0xDD, 0x00),
+    OAMEntry(12, 4, 0xDC, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAutomShotFrame5 = [
+    OAMEntry(-20, -4, 0xDB, 0x00),
+    OAMEntry(-12, -4, 0xDA, 0x00),
+    OAMEntry(-4, -4, 0xDB, 0x00),
+    OAMEntry(4, -4, 0xDA, 0x00),
+    OAMEntry(12,-12, 0xDE, 0x00),
+    OAMEntry(12, -4, 0xDF, 0x00),
+    OAMEntry(12, 4, 0xDE, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteShirkFrame1 = [
+    OAMEntry(-12,-12, 0xE1, 0x00),
+    OAMEntry(-12, -4, 0xE2, 0x00),
+    OAMEntry(-12, 4, 0xE3, 0x00),
+    OAMEntry(-4,-12, 0xE4, 0x00),
+    OAMEntry(-4, -4, 0xEF, 0x00),
+    OAMEntry(-4, 4, 0xE6, 0x00),
+    OAMEntry(4,-12, 0xED, 0x00),
+    OAMEntry(4, -4, 0xEE, 0x00),
+    OAMEntry(4, 4, 0xE9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteShirkFrame2 = [
+    OAMEntry(-12,-12, 0xEA, 0x00),
+    OAMEntry(-12, -4, 0xEB, 0x00),
+    OAMEntry(-12, 4, 0xE3, 0x00),
+    OAMEntry(-4,-12, 0xEC, 0x00),
+    OAMEntry(-4, -4, 0xE5, 0x00),
+    OAMEntry(-4, 4, 0xE6, 0x00),
+    OAMEntry(4,-12, 0xE7, 0x00),
+    OAMEntry(4, -4, 0xE8, 0x00),
+    OAMEntry(4, 4, 0xE9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteMotoFrame1 = [
+    OAMEntry(-12,-16, 0xBD, 0x00),
+    OAMEntry(-12, -8, 0xBE, 0x00),
+    OAMEntry(-12, 0, 0xBF, 0x00),
+    OAMEntry(-4,-16, 0xC0, 0x00),
+    OAMEntry(-4, -8, 0xC1, 0x00),
+    OAMEntry(-4, 0, 0xC2, 0x00),
+    OAMEntry(4,-16, 0xC3, 0x00),
+    OAMEntry(4, -8, 0xC4, 0x00),
+    OAMEntry(4, 0, 0xC5, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMotoFrame2 = [
+    OAMEntry(-13,-16, 0xBD, 0x00),
+    OAMEntry(-13, -8, 0xBE, 0x00),
+    OAMEntry(-13, 0, 0xBF, 0x00),
+    OAMEntry(-5,-16, 0xC0, 0x00),
+    OAMEntry(-5, -8, 0xC6, 0x00),
+    OAMEntry(-5, 0, 0xC7, 0x00),
+    OAMEntry(3,-16, 0xC3, 0x00),
+    OAMEntry(3, -8, 0xC8, 0x00),
+    OAMEntry(3, 0, 0xC9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMotoFrame3 = [
+    OAMEntry(-12,-16, 0xBD, 0x00),
+    OAMEntry(-12, -8, 0xBE, 0x00),
+    OAMEntry(-12, 0, 0xBF, 0x00),
+    OAMEntry(-4,-16, 0xC0, 0x00),
+    OAMEntry(-4, -8, 0xC6, 0x00),
+    OAMEntry(-4, 0, 0xC7, 0x00),
+    OAMEntry(4,-16, 0xC3, 0x00),
+    OAMEntry(4, -8, 0xCA, 0x00),
+    OAMEntry(4, 0, 0xCB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteHalzyn = [
+    OAMEntry(-8,-12, 0xCC, 0x00),
+    OAMEntry(-8, -4, 0xCD, 0x00),
+    OAMEntry(-8, 4, 0xCE, 0x00),
+    OAMEntry(0,-12, 0xCF, 0x00),
+    OAMEntry(0, -4, 0xD0, 0x00),
+    OAMEntry(0, 4, 0xD1, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteRamulkenFrame1 = [
+    OAMEntry(-16, -4, 0xD2, 0x00),
+    OAMEntry(-8,-12, 0xD3, 0x00),
+    OAMEntry(-8, -4, 0xD4, 0x00),
+    OAMEntry(-8, 4, 0xD5, 0x00),
+    OAMEntry(0,-12, 0xD6, 0x00),
+    OAMEntry(0, -4, 0xD7, 0x00),
+    OAMEntry(0, 4, 0xD8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteRamulkenFrame2 = [
+    OAMEntry(-16, -4, 0xD2, 0x00),
+    OAMEntry(-8,-12, 0xD3, 0x00),
+    OAMEntry(-8, -4, 0xD4, 0x00),
+    OAMEntry(-8, 4, 0xD5, 0x00),
+    OAMEntry(0,-12, 0xD9, 0x00),
+    OAMEntry(0, -4, 0xDA, 0x00),
+    OAMEntry(0, 4, 0xDB, 0x00),
+    OAMEntry(8, -8, 0xDC, 0x00),
+    OAMEntry(8, 0, 0xDD, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGravittFrame1 = [
+    OAMEntry(-16, -4, 0xB8, 0x00),
+    OAMEntry(-8, -8, 0xB6, 0x00),
+    OAMEntry(-8, 0, 0xB7, 0x00),
+    OAMEntry(0, -8, 0xB4, 0x00),
+    OAMEntry(0, 0, 0xB5, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGravittFrame2 = [
+    OAMEntry(-16, -4, 0xB8, 0x00),
+    OAMEntry(-8, -8, 0xB6, 0x00),
+    OAMEntry(-8, 0, 0xB7, 0x00),
+    OAMEntry(0, -8, 0xB9, 0x00),
+    OAMEntry(0, 0, 0xBA, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGravittFrame3 = [
+    OAMEntry(-16, -4, 0xB8, 0x00),
+    OAMEntry(-8, -8, 0xB6, 0x00),
+    OAMEntry(-8, 0, 0xB7, 0x00),
+    OAMEntry(0, -8, 0xBB, 0x00),
+    OAMEntry(0, 0, 0xBC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteProboscumFrame1 = [
+    OAMEntry(-4,-12, 0xE4, 0x00),
+    OAMEntry(-4, -4, 0xE5, 0x00),
+    OAMEntry(-4, 4, 0xE6, 0x00),
+    OAMEntry(4,-12, 0xE7, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteProboscumFrame2 = [
+    OAMEntry(-4,-12, 0xE4, 0x00),
+    OAMEntry(-4, -4, 0xE8, 0x00),
+    OAMEntry(4,-12, 0xE7, 0x00),
+    OAMEntry(4, -4, 0xE9, 0x00),
+    OAMEntry(4, 4, 0xEA, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteProboscumFrame3 = [
+    OAMEntry(-4,-12, 0xE4, 0x00),
+    OAMEntry(-4, -4, 0xEB, 0x00),
+    OAMEntry(4,-12, 0xE7, 0x00),
+    OAMEntry(4, -4, 0xEC, 0x00),
+    OAMEntry(12, -4, 0xED, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteArachnusFrame1 = [
+    OAMEntry(-8, -8, 0xCB, 0x00),
+    OAMEntry(-8, 0, 0xCC, 0x00),
+    OAMEntry(0, -8, 0xCD, 0x00),
+    OAMEntry(0, 0, 0xCE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteArachnusFrame2 = [
+    OAMEntry(-8, -8, 0xCD, 0x40),
+    OAMEntry(-8, 0, 0xCB, 0x20),
+    OAMEntry(0, -8, 0xCE, 0x20),
+    OAMEntry(0, 0, 0xCC, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteArachnusFrame3 = [
+    OAMEntry(-16, -4, 0xB8, 0x00),
+    OAMEntry(-16, 4, 0xB9, 0x00),
+    OAMEntry(-8,-12, 0xBB, 0x00),
+    OAMEntry(-8, -4, 0xBC, 0x00),
+    OAMEntry(-8, 4, 0xBD, 0x00),
+    OAMEntry(-5,-20, 0xBA, 0x00),
+    OAMEntry(0,-12, 0xBF, 0x00),
+    OAMEntry(0, -4, 0xC0, 0x00),
+    OAMEntry(0, 4, 0xC1, 0x00),
+    OAMEntry(3,-20, 0xBE, 0x00),
+    OAMEntry(8,-12, 0xC2, 0x00),
+    OAMEntry(8, -4, 0xC3, 0x00),
+    OAMEntry(8, 4, 0xC4, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteArachnusFrame4 = [
+    OAMEntry(-16, -4, 0xB8, 0x00),
+    OAMEntry(-16, 4, 0xB9, 0x00),
+    OAMEntry(-8,-28, 0xC5, 0x00),
+    OAMEntry(-8,-20, 0xC6, 0x00),
+    OAMEntry(-8,-12, 0xC7, 0x00),
+    OAMEntry(-8, -4, 0xBC, 0x00),
+    OAMEntry(-8, 4, 0xBD, 0x00),
+    OAMEntry(0,-12, 0xC8, 0x00),
+    OAMEntry(0, -4, 0xC0, 0x00),
+    OAMEntry(0, 4, 0xC1, 0x00),
+    OAMEntry(8,-12, 0xC2, 0x00),
+    OAMEntry(8, -4, 0xC3, 0x00),
+    OAMEntry(8, 4, 0xC4, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteArachnusFrame5 = [
+    OAMEntry(-16,-28, 0xCF, 0x00),
+    OAMEntry(-16, -4, 0xB8, 0x00),
+    OAMEntry(-16, 4, 0xB9, 0x00),
+    OAMEntry(-8,-28, 0xD0, 0x00),
+    OAMEntry(-8,-20, 0xD1, 0x00),
+    OAMEntry(-8,-12, 0xD2, 0x00),
+    OAMEntry(-8, -4, 0xBC, 0x00),
+    OAMEntry(-8, 4, 0xBD, 0x00),
+    OAMEntry(0,-12, 0xC8, 0x00),
+    OAMEntry(0, -4, 0xC0, 0x00),
+    OAMEntry(0, 4, 0xC1, 0x00),
+    OAMEntry(8,-12, 0xC2, 0x00),
+    OAMEntry(8, -4, 0xC3, 0x00),
+    OAMEntry(8, 4, 0xC4, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteArachnusShotFrame1 = [
+    OAMEntry(-4, -4, 0xCA, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteArachnusShotFrame2 = [
+    OAMEntry(-4, -4, 0xC9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteSmallHealthFrame1 = [
+    OAMEntry(-4, -4, 0x92, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSmallHealthFrame2 = [
+    OAMEntry(-4, -4, 0x93, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteBigHealthFrame1 = [
+    OAMEntry(-8, -8, 0x94, 0x00),
+    OAMEntry(-8, 0, 0x94, 0x20),
+    OAMEntry(0, -8, 0x94, 0x40),
+    OAMEntry(0, 0, 0x94, 0x60),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBigHealthFrame2 = [
+    OAMEntry(-8, -8, 0x95, 0x00),
+    OAMEntry(-8, 0, 0x95, 0x20),
+    OAMEntry(0, -8, 0x95, 0x40),
+    OAMEntry(0, 0, 0x95, 0x60),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteBigExplosionFrame1 = [
+    OAMEntry(-9, -4, 0x89, 0x00),
+    OAMEntry(-4,-10, 0x96, 0x20),
+    OAMEntry(-4, 1, 0x96, 0x20),
+    OAMEntry(1, -4, 0x89, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBigExplosionFrame2 = [
+    OAMEntry(-12, -4, 0x89, 0x00),
+    OAMEntry(-10,-10, 0x97, 0x00),
+    OAMEntry(-10, 2, 0x97, 0x20),
+    OAMEntry(-4,-16, 0x96, 0x00),
+    OAMEntry(-4, 4, 0x96, 0x20),
+    OAMEntry(2,-10, 0x97, 0x40),
+    OAMEntry(2, 2, 0x97, 0x60),
+    OAMEntry(4, -4, 0x89, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBigExplosionFrame3 = [
+    OAMEntry(-18,-18, 0x97, 0x00),
+    OAMEntry(-13, -4, 0x89, 0x00),
+    OAMEntry(-4,-18, 0x96, 0x00),
+    OAMEntry(-4, 5, 0x96, 0x20),
+    OAMEntry(4,-12, 0x97, 0x40),
+    OAMEntry(4, -4, 0x89, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBigExplosionFrame4 = [
+    OAMEntry(-20,-20, 0x97, 0x00),
+    OAMEntry(-20, 11, 0x97, 0x20),
+    OAMEntry(-14, -4, 0x89, 0x00),
+    OAMEntry(-4,-22, 0x96, 0x00),
+    OAMEntry(-4, 8, 0x96, 0x20),
+    OAMEntry(8,-16, 0x97, 0x40),
+    OAMEntry(16, -4, 0x89, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBigExplosionFrame5 = [
+    OAMEntry(-20, 16, 0x89, 0x00),
+    OAMEntry(-16, -4, 0x89, 0x20),
+    OAMEntry(-4,-20, 0x96, 0x00),
+    OAMEntry(-4, 12, 0x96, 0x20),
+    OAMEntry(12,-16, 0x89, 0x40),
+    OAMEntry(12, 12, 0x97, 0x60),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBigExplosionFrame6 = [
+    OAMEntry(-4,-20, 0x96, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteSmallExplosionFrame1 = [
+    OAMEntry(-8, -8, 0x88, 0x00),
+    OAMEntry(-8, 0, 0x88, 0x20),
+    OAMEntry(0, -8, 0x88, 0x40),
+    OAMEntry(0, 0, 0x88, 0x60),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSmallExplosionFrame2 = [
+    OAMEntry(-4, -4, 0x8A, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSmallExplosionFrame3 = [
+    OAMEntry(-12,-12, 0x85, 0x00),
+    OAMEntry(-12, -4, 0x86, 0x00),
+    OAMEntry(-12, 4, 0x85, 0x20),
+    OAMEntry(-4,-12, 0x87, 0x00),
+    OAMEntry(-4, 4, 0x87, 0x20),
+    OAMEntry(4,-12, 0x85, 0x40),
+    OAMEntry(4, -4, 0x86, 0x40),
+    OAMEntry(4, 4, 0x85, 0x60),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteSmallExplosionFrame4 = [
+    OAMEntry(-16,-16, 0x7B, 0x00),
+    OAMEntry(-16, -8, 0x7C, 0x00),
+    OAMEntry(-16, 0, 0x7C, 0x20),
+    OAMEntry(-16, 8, 0x7B, 0x20),
+    OAMEntry(-8,-16, 0x7D, 0x00),
+    OAMEntry(-8, 8, 0x7D, 0x20),
+    OAMEntry(0,-16, 0x7D, 0x40),
+    OAMEntry(0, 8, 0x7D, 0x60),
+    OAMEntry(8,-16, 0x7B, 0x40),
+    OAMEntry(8, -8, 0x7C, 0x40),
+    OAMEntry(8, 0, 0x7C, 0x60),
+    OAMEntry(8, 8, 0x7B, 0x60),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteMissileDropFrame1 = [
+    OAMEntry(-4, -4, 0x99, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMissileDropFrame2 = [
+    OAMEntry(-4, -4, 0x99, 0x10),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] unusedEnemySprites = [
+    OAMEntry(-8, -8, 0xB8, 0x00),
+    OAMEntry(0, -8, 0xC8, 0x00),
+    OAMEntry(8, -8, 0xD8, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xB9, 0x00),
+    OAMEntry(0, -8, 0xC9, 0x00),
+    OAMEntry(8, -8, 0xD9, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xC6, 0x00),
+    OAMEntry(-8, 0, 0xC7, 0x00),
+    OAMEntry(0, -8, 0xD6, 0x00),
+    OAMEntry(0, 0, 0xD7, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xBA, 0x00),
+    OAMEntry(-8, 0, 0xBB, 0x00),
+    OAMEntry(0, -8, 0xCA, 0x00),
+    OAMEntry(0, 0, 0xCB, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xDA, 0x00),
+    OAMEntry(-8, 0, 0xDB, 0x00),
+    OAMEntry(0, -8, 0xEA, 0x00),
+    OAMEntry(0, 0, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xDC, 0x00),
+    OAMEntry(-8, 0, 0xDD, 0x00),
+    OAMEntry(0, -8, 0xEC, 0x00),
+    OAMEntry(0, 0, 0xED, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xE4, 0x00),
+    OAMEntry(-8, 0, 0xE4, 0x20),
+    OAMEntry(0,-16, 0xD0, 0x00),
+    OAMEntry(0, -8, 0xD1, 0x00),
+    OAMEntry(0, 0, 0xD1, 0x20),
+    OAMEntry(0, 8, 0xD0, 0x20),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xE3, 0x00),
+    OAMEntry(-8, 0, 0xE3, 0x20),
+    OAMEntry(0,-16, 0xD0, 0x00),
+    OAMEntry(0, -8, 0xD1, 0x00),
+    OAMEntry(0, 0, 0xD1, 0x20),
+    OAMEntry(0, 8, 0xD0, 0x20),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-12, -8, 0xD2, 0x00),
+    OAMEntry(-12, 0, 0xD2, 0x20),
+    OAMEntry(-4, -8, 0xE2, 0x00),
+    OAMEntry(-4, 0, 0xE2, 0x20),
+    OAMEntry(4,-16, 0xE0, 0x00),
+    OAMEntry(4, -8, 0xE1, 0x00),
+    OAMEntry(4, 0, 0xE1, 0x20),
+    OAMEntry(4, 8, 0xE0, 0x20),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-12, -8, 0xB1, 0x00),
+    OAMEntry(-12, 0, 0xB2, 0x00),
+    OAMEntry(-4,-16, 0xC0, 0x00),
+    OAMEntry(-4, -8, 0xC1, 0x00),
+    OAMEntry(-4, 0, 0xC2, 0x00),
+    OAMEntry(4, -8, 0xB6, 0x00),
+    OAMEntry(4, 0, 0xB7, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-12, -8, 0xB1, 0x00),
+    OAMEntry(-12, 0, 0xB2, 0x00),
+    OAMEntry(-4,-16, 0xC0, 0x00),
+    OAMEntry(-4, -8, 0xC1, 0x00),
+    OAMEntry(-4, 0, 0xC2, 0x00),
+    OAMEntry(4, -8, 0xB0, 0x00),
+    OAMEntry(4, 0, 0xD5, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-16,-12, 0xB3, 0x00),
+    OAMEntry(-8,-12, 0xC3, 0x00),
+    OAMEntry(-8, -4, 0xC4, 0x00),
+    OAMEntry(-8, 4, 0xC5, 0x00),
+    OAMEntry(0,-12, 0xD3, 0x00),
+    OAMEntry(0, -4, 0xD4, 0x00),
+    OAMEntry(0, 4, 0xD5, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-16,-12, 0xB3, 0x00),
+    OAMEntry(-8,-12, 0xC3, 0x00),
+    OAMEntry(-8, -4, 0xB4, 0x00),
+    OAMEntry(-8, 4, 0xB5, 0x00),
+    OAMEntry(0,-12, 0xD3, 0x00),
+    OAMEntry(0, -4, 0xD4, 0x00),
+    OAMEntry(0, 4, 0xD5, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-4, -4, 0xE5, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xBC, 0x00),
+    OAMEntry(-8, 0, 0xBD, 0x00),
+    OAMEntry(0, -8, 0xCC, 0x00),
+    OAMEntry(0, 0, 0xCD, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -8, 0xBE, 0x00),
+    OAMEntry(-8, 0, 0xBF, 0x00),
+    OAMEntry(0, -8, 0xCE, 0x00),
+    OAMEntry(0, 0, 0xCF, 0x00),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-4, -8, 0xDE, 0x00),
+    OAMEntry(-4, 0, 0xDE, 0x20),
+    OAMEntry(metaSpriteEnd),
+    OAMEntry(-8, -4, 0xDF, 0x00),
+    OAMEntry(-16, -4, 0xDF, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteMissileDoor = [
+    OAMEntry(-24,-23, 0xF4, 0x20),
+    OAMEntry(-16,-23, 0xF5, 0x20),
+    OAMEntry(-8,-23, 0xF6, 0x20),
+    OAMEntry(0,-23, 0xF6, 0x60),
+    OAMEntry(8,-23, 0xF5, 0x60),
+    OAMEntry(16,-23, 0xF4, 0x60),
+    OAMEntry(-24, 16, 0xF4, 0x00),
+    OAMEntry(-16, 16, 0xF5, 0x00),
+    OAMEntry(-8, 16, 0xF6, 0x00),
+    OAMEntry(0, 16, 0xF6, 0x40),
+    OAMEntry(8, 16, 0xF5, 0x40),
+    OAMEntry(16, 16, 0xF4, 0x40),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMissileBlock = [
+    OAMEntry(-8, -8, 0xF7, 0x00),
+    OAMEntry(-8, 0, 0xF8, 0x00),
+    OAMEntry(0, -8, 0xF9, 0x00),
+    OAMEntry(0, 0, 0xFA, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteMetroidFrame1 = [
+    OAMEntry(-12,-16, 0xB4, 0x00),
+    OAMEntry(-12, -8, 0xB5, 0x00),
+    OAMEntry(-12, 0, 0xB6, 0x00),
+    OAMEntry(-12, 8, 0xB7, 0x00),
+    OAMEntry(-4,-16, 0xC4, 0x00),
+    OAMEntry(-4, -8, 0xC5, 0x00),
+    OAMEntry(-4, 0, 0xC6, 0x00),
+    OAMEntry(-4, 8, 0xC7, 0x00),
+    OAMEntry(4,-16, 0xD4, 0x00),
+    OAMEntry(4, -8, 0xD5, 0x00),
+    OAMEntry(4, 0, 0xD6, 0x00),
+    OAMEntry(4, 8, 0xD7, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAlphaFace = [
+    OAMEntry(-12,-12, 0xC8, 0x00),
+    OAMEntry(-12, -4, 0xC9, 0x00),
+    OAMEntry(-12, 4, 0xCA, 0x00),
+    OAMEntry(-4,-16, 0xD8, 0x00),
+    OAMEntry(-4, -8, 0xD9, 0x00),
+    OAMEntry(-4, 0, 0xDA, 0x00),
+    OAMEntry(-4, 8, 0xDB, 0x00),
+    OAMEntry(4,-12, 0xE8, 0x00),
+    OAMEntry(4, -4, 0xE9, 0x00),
+    OAMEntry(4, 4, 0xEA, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAlphaFrame1 = [
+    OAMEntry(-12,-16, 0xB0, 0x00),
+    OAMEntry(-12, -8, 0xB1, 0x00),
+    OAMEntry(-12, 0, 0xB2, 0x00),
+    OAMEntry(-12, 8, 0xB3, 0x00),
+    OAMEntry(-4,-16, 0xC0, 0x00),
+    OAMEntry(-4, -8, 0xC1, 0x00),
+    OAMEntry(-4, 0, 0xC2, 0x00),
+    OAMEntry(-4, 8, 0xC3, 0x00),
+    OAMEntry(4, -9, 0xD1, 0x00),
+    OAMEntry(4, -1, 0xD2, 0x00),
+    OAMEntry(4, 7, 0xD3, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteAlphaFrame2 = [
+    OAMEntry(-12,-16, 0xB0, 0x00),
+    OAMEntry(-12, -8, 0xB1, 0x00),
+    OAMEntry(-12, 0, 0xE4, 0x00),
+    OAMEntry(-12, 8, 0xE5, 0x00),
+    OAMEntry(-4,-16, 0xB8, 0x00),
+    OAMEntry(-4, -8, 0xB9, 0x00),
+    OAMEntry(-4, 0, 0xE6, 0x00),
+    OAMEntry(-4, 8, 0xE7, 0x00),
+    OAMEntry(4, -8, 0xD1, 0x00),
+    OAMEntry(4, 0, 0xD2, 0x00),
+    OAMEntry(4, 8, 0xD3, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMetroidFrame2 = [
+    OAMEntry(-12,-16, 0xEB, 0x00),
+    OAMEntry(-12, -8, 0xEC, 0x00),
+    OAMEntry(-12, 0, 0xED, 0x00),
+    OAMEntry(-12, 8, 0xEE, 0x00),
+    OAMEntry(-4,-16, 0xBE, 0x00),
+    OAMEntry(-4, -8, 0xC5, 0x00),
+    OAMEntry(-4, 0, 0xC6, 0x00),
+    OAMEntry(-4, 8, 0xBF, 0x00),
+    OAMEntry(4,-16, 0xCB, 0x00),
+    OAMEntry(4, -8, 0xCF, 0x00),
+    OAMEntry(4, 0, 0xDF, 0x00),
+    OAMEntry(4, 8, 0xEF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMetroidFrame3 = [
+    OAMEntry(-12,-16, 0xB4, 0x00),
+    OAMEntry(-12, -8, 0xD0, 0x00),
+    OAMEntry(-12, 0, 0xDC, 0x00),
+    OAMEntry(-12, 8, 0xB7, 0x00),
+    OAMEntry(-4,-16, 0xC4, 0x00),
+    OAMEntry(-4, -8, 0xDD, 0x00),
+    OAMEntry(-4, 0, 0xDE, 0x00),
+    OAMEntry(-4, 8, 0xC7, 0x00),
+    OAMEntry(4,-16, 0xD4, 0x00),
+    OAMEntry(4, -8, 0xD5, 0x00),
+    OAMEntry(4, 0, 0xD6, 0x00),
+    OAMEntry(4, 8, 0xD7, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGammaBoltFrame1 = [
+    OAMEntry(-4, -4, 0xBE, 0x00),
+    OAMEntry(4,-12, 0xCE, 0x00),
+    OAMEntry(4, -4, 0xCF, 0x00),
+    OAMEntry(12,-12, 0xBF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGammaBoltFrame2 = [
+    OAMEntry(-4,-20, 0xED, 0x00),
+    OAMEntry(-4,-12, 0xEE, 0x00),
+    OAMEntry(-4, -4, 0xEF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGammaFrame1 = [
+    OAMEntry(-12,-20, 0xB4, 0x00),
+    OAMEntry(-12,-12, 0xB5, 0x00),
+    OAMEntry(-12, -4, 0xB6, 0x00),
+    OAMEntry(-12, 4, 0xB7, 0x00),
+    OAMEntry(-12, 12, 0xB8, 0x00),
+    OAMEntry(-4,-12, 0xC5, 0x00),
+    OAMEntry(-4, -4, 0xC6, 0x00),
+    OAMEntry(-4, 4, 0xC7, 0x00),
+    OAMEntry(-4, 12, 0xC8, 0x00),
+    OAMEntry(4,-20, 0xD4, 0x00),
+    OAMEntry(4,-12, 0xD5, 0x00),
+    OAMEntry(4, -4, 0xD6, 0x00),
+    OAMEntry(4, 4, 0xD7, 0x00),
+    OAMEntry(4, 12, 0xD8, 0x00),
+    OAMEntry(12, -4, 0xE6, 0x00),
+    OAMEntry(12, 4, 0xE7, 0x00),
+    OAMEntry(12, 12, 0xE8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteGammaFrame2 = [
+    OAMEntry(-16,-20, 0xB4, 0x00),
+    OAMEntry(-16,-12, 0xB5, 0x00),
+    OAMEntry(-16, -4, 0xB6, 0x00),
+    OAMEntry(-16, 4, 0xB7, 0x00),
+    OAMEntry(-16, 12, 0xB8, 0x00),
+    OAMEntry(-8,-12, 0xC5, 0x00),
+    OAMEntry(-8, -4, 0xBB, 0x00),
+    OAMEntry(-8, 4, 0xBC, 0x00),
+    OAMEntry(-8, 12, 0xBD, 0x00),
+    OAMEntry(0,-20, 0xD4, 0x00),
+    OAMEntry(0,-12, 0xD5, 0x00),
+    OAMEntry(0, -4, 0xCB, 0x00),
+    OAMEntry(0, 4, 0xCC, 0x00),
+    OAMEntry(0, 12, 0xCD, 0x00),
+    OAMEntry(8, -4, 0xDB, 0x00),
+    OAMEntry(8, 4, 0xDC, 0x00),
+    OAMEntry(8, 12, 0xDD, 0x00),
+    OAMEntry(16, -4, 0xEB, 0x00),
+    OAMEntry(16, 4, 0xEC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteGammaHusk = [
+    OAMEntry(-12,-20, 0xB4, 0x00),
+    OAMEntry(-12,-12, 0xB5, 0x00),
+    OAMEntry(-12, -4, 0xC4, 0x00),
+    OAMEntry(-4,-12, 0xC5, 0x00),
+    OAMEntry(-4, -4, 0xC6, 0x00),
+    OAMEntry(-4, 4, 0xE5, 0x00),
+    OAMEntry(-4, 12, 0xE0, 0x00),
+    OAMEntry(4,-20, 0xD4, 0x00),
+    OAMEntry(4,-12, 0xD5, 0x00),
+    OAMEntry(4, -4, 0xD6, 0x00),
+    OAMEntry(4, 4, 0xD7, 0x00),
+    OAMEntry(4, 12, 0xD8, 0x00),
+    OAMEntry(12, -4, 0xE6, 0x00),
+    OAMEntry(12, 4, 0xE7, 0x00),
+    OAMEntry(12, 12, 0xE8, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame1 = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xC0, 0x00),
+    OAMEntry(-8, -4, 0xC1, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0,-12, 0xD0, 0x00),
+    OAMEntry(0, -4, 0xD1, 0x00),
+    OAMEntry(0, 4, 0xD2, 0x00),
+    OAMEntry(0, 12, 0xBE, 0x00),
+    OAMEntry(0, 20, 0xBF, 0x00),
+    OAMEntry(8, -4, 0xE1, 0x00),
+    OAMEntry(8, 4, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame2 = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xC0, 0x00),
+    OAMEntry(-8, -4, 0xC1, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0,-12, 0xD0, 0x00),
+    OAMEntry(0, -4, 0xD1, 0x00),
+    OAMEntry(0, 4, 0xD2, 0x00),
+    OAMEntry(0, 12, 0xCE, 0x00),
+    OAMEntry(0, 20, 0xCF, 0x00),
+    OAMEntry(8, -4, 0xE1, 0x00),
+    OAMEntry(8, 4, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame3 = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xC0, 0x00),
+    OAMEntry(-8, -4, 0xC1, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0,-12, 0xD0, 0x00),
+    OAMEntry(0, -4, 0xD1, 0x00),
+    OAMEntry(0, 4, 0xD2, 0x00),
+    OAMEntry(0, 12, 0xDE, 0x00),
+    OAMEntry(0, 20, 0xDF, 0x00),
+    OAMEntry(8, -4, 0xE1, 0x00),
+    OAMEntry(8, 4, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame4 = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xC0, 0x00),
+    OAMEntry(-8, -4, 0xC1, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0,-12, 0xD0, 0x00),
+    OAMEntry(0, -4, 0xD1, 0x00),
+    OAMEntry(0, 4, 0xD2, 0x00),
+    OAMEntry(0, 12, 0xEE, 0x00),
+    OAMEntry(0, 20, 0xEF, 0x00),
+    OAMEntry(8, -4, 0xE1, 0x00),
+    OAMEntry(8, 4, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame5 = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xC0, 0x00),
+    OAMEntry(-8, -4, 0xC1, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0,-12, 0xD0, 0x00),
+    OAMEntry(0, -4, 0xCA, 0x00),
+    OAMEntry(0, 4, 0xCB, 0x00),
+    OAMEntry(0, 12, 0xBE, 0x00),
+    OAMEntry(0, 20, 0xBF, 0x00),
+    OAMEntry(8, -4, 0xDA, 0x00),
+    OAMEntry(8, 4, 0xDB, 0x00),
+    OAMEntry(16, -4, 0xEA, 0x00),
+    OAMEntry(16, 4, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame6 = [
+    OAMEntry(-16,-20, 0xB3, 0x00),
+    OAMEntry(-16,-12, 0xB9, 0x00),
+    OAMEntry(-16, -4, 0xBA, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-20, 0xC3, 0x00),
+    OAMEntry(-8,-12, 0xC9, 0x00),
+    OAMEntry(-8, -4, 0xC1, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0,-12, 0xD9, 0x00),
+    OAMEntry(0, -4, 0xD1, 0x00),
+    OAMEntry(0, 4, 0xD2, 0x00),
+    OAMEntry(0, 12, 0xBE, 0x00),
+    OAMEntry(0, 20, 0xBF, 0x00),
+    OAMEntry(8, -4, 0xE1, 0x00),
+    OAMEntry(8, 4, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame7 = [
+    OAMEntry(-16,-20, 0xB3, 0x00),
+    OAMEntry(-16,-12, 0xB9, 0x00),
+    OAMEntry(-16, -4, 0xBA, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-20, 0xBB, 0x00),
+    OAMEntry(-8,-12, 0xC9, 0x00),
+    OAMEntry(-8, -4, 0xC1, 0x00),
+    OAMEntry(-8, 4, 0xC2, 0x00),
+    OAMEntry(0,-12, 0xCC, 0x00),
+    OAMEntry(0, -4, 0xD1, 0x00),
+    OAMEntry(0, 4, 0xD2, 0x00),
+    OAMEntry(0, 12, 0xEE, 0x00),
+    OAMEntry(0, 20, 0xEF, 0x00),
+    OAMEntry(8, -4, 0xE1, 0x00),
+    OAMEntry(8, 4, 0xE2, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame8 = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xBD, 0x00),
+    OAMEntry(-8, -4, 0xE3, 0x00),
+    OAMEntry(-8, 4, 0xE9, 0x00),
+    OAMEntry(0,-12, 0xCD, 0x00),
+    OAMEntry(0, -4, 0xD3, 0x00),
+    OAMEntry(0, 4, 0xCB, 0x00),
+    OAMEntry(0, 12, 0xBE, 0x00),
+    OAMEntry(0, 20, 0xBF, 0x00),
+    OAMEntry(8, -4, 0xDA, 0x00),
+    OAMEntry(8, 4, 0xDB, 0x00),
+    OAMEntry(16, -4, 0xEA, 0x00),
+    OAMEntry(16, 4, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrame9 = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xBD, 0x00),
+    OAMEntry(-8, -4, 0xE3, 0x00),
+    OAMEntry(-8, 4, 0xE9, 0x00),
+    OAMEntry(0,-12, 0xCD, 0x00),
+    OAMEntry(0, -4, 0xD3, 0x00),
+    OAMEntry(0, 4, 0xCB, 0x00),
+    OAMEntry(0, 12, 0xCE, 0x00),
+    OAMEntry(0, 20, 0xCF, 0x00),
+    OAMEntry(8, -4, 0xDA, 0x00),
+    OAMEntry(8, 4, 0xDB, 0x00),
+    OAMEntry(16, -4, 0xEA, 0x00),
+    OAMEntry(16, 4, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrameA = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xBD, 0x00),
+    OAMEntry(-8, -4, 0xE3, 0x00),
+    OAMEntry(-8, 4, 0xE9, 0x00),
+    OAMEntry(0,-12, 0xCD, 0x00),
+    OAMEntry(0, -4, 0xD3, 0x00),
+    OAMEntry(0, 4, 0xCB, 0x00),
+    OAMEntry(0, 12, 0xDE, 0x00),
+    OAMEntry(0, 20, 0xDF, 0x00),
+    OAMEntry(8, -4, 0xDA, 0x00),
+    OAMEntry(8, 4, 0xDB, 0x00),
+    OAMEntry(16, -4, 0xEA, 0x00),
+    OAMEntry(16, 4, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaFrameB = [
+    OAMEntry(-16,-12, 0xB0, 0x00),
+    OAMEntry(-16, -4, 0xB1, 0x00),
+    OAMEntry(-16, 4, 0xB2, 0x00),
+    OAMEntry(-8,-12, 0xBD, 0x00),
+    OAMEntry(-8, -4, 0xE3, 0x00),
+    OAMEntry(-8, 4, 0xE9, 0x00),
+    OAMEntry(0,-12, 0xCD, 0x00),
+    OAMEntry(0, -4, 0xD3, 0x00),
+    OAMEntry(0, 4, 0xCB, 0x00),
+    OAMEntry(0, 12, 0xEE, 0x00),
+    OAMEntry(0, 20, 0xEF, 0x00),
+    OAMEntry(8, -4, 0xDA, 0x00),
+    OAMEntry(8, 4, 0xDB, 0x00),
+    OAMEntry(16, -4, 0xEA, 0x00),
+    OAMEntry(16, 4, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteZetaShot = [
+    OAMEntry(-4, -4, 0xDC, 0x00),
+    OAMEntry(-4, 4, 0xDD, 0x00),
+    OAMEntry(4, -4, 0xEC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteOmegaFrame1 = [
+    OAMEntry(-16,-16, 0xB4, 0x00),
+    OAMEntry(-16, -8, 0xB5, 0x00),
+    OAMEntry(-8,-24, 0xC3, 0x00),
+    OAMEntry(-8,-16, 0xC4, 0x00),
+    OAMEntry(-8, -8, 0xC5, 0x00),
+    OAMEntry(-8, 0, 0xC6, 0x00),
+    OAMEntry(-8, 8, 0xC7, 0x00),
+    OAMEntry(0,-16, 0xD4, 0x00),
+    OAMEntry(0, -8, 0xD5, 0x00),
+    OAMEntry(0, 0, 0xD6, 0x00),
+    OAMEntry(0, 8, 0xD7, 0x00),
+    OAMEntry(8, -8, 0xE5, 0x00),
+    OAMEntry(8, 0, 0xE6, 0x00),
+    OAMEntry(8, 8, 0xE7, 0x00),
+    OAMEntry(16, 0, 0xC8, 0x00),
+    OAMEntry(16, 8, 0xC9, 0x00),
+    OAMEntry(16, 16, 0xCA, 0x00),
+    OAMEntry(24, 0, 0xD8, 0x00),
+    OAMEntry(24, 8, 0xD9, 0x00),
+    OAMEntry(32, 0, 0xE8, 0x00),
+    OAMEntry(32, 8, 0xE9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaFrame2 = [
+    OAMEntry(-16,-16, 0xB4, 0x00),
+    OAMEntry(-16, -8, 0xB5, 0x00),
+    OAMEntry(-8,-24, 0xC3, 0x00),
+    OAMEntry(-8,-16, 0xC4, 0x00),
+    OAMEntry(-8, -8, 0xC5, 0x00),
+    OAMEntry(-8, 0, 0xC6, 0x00),
+    OAMEntry(-8, 8, 0xC7, 0x00),
+    OAMEntry(0,-16, 0xD4, 0x00),
+    OAMEntry(0, -8, 0xD5, 0x00),
+    OAMEntry(0, 0, 0xD6, 0x00),
+    OAMEntry(0, 8, 0xD7, 0x00),
+    OAMEntry(8, -8, 0xE5, 0x00),
+    OAMEntry(8, 0, 0xE6, 0x00),
+    OAMEntry(8, 8, 0xE7, 0x00),
+    OAMEntry(16, 0, 0xC8, 0x00),
+    OAMEntry(16, 8, 0xC9, 0x00),
+    OAMEntry(16, 16, 0xDA, 0x00),
+    OAMEntry(24, 0, 0xD8, 0x00),
+    OAMEntry(24, 8, 0xD9, 0x00),
+    OAMEntry(32, 0, 0xE8, 0x00),
+    OAMEntry(32, 8, 0xE9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaFrame3 = [
+    OAMEntry(-16,-16, 0xB4, 0x00),
+    OAMEntry(-16, -8, 0xB5, 0x00),
+    OAMEntry(-8,-24, 0xB3, 0x00),
+    OAMEntry(-8,-16, 0xC4, 0x00),
+    OAMEntry(-8, -8, 0xC5, 0x00),
+    OAMEntry(-8, 0, 0xC6, 0x00),
+    OAMEntry(-8, 8, 0xC7, 0x00),
+    OAMEntry(0,-16, 0xE4, 0x00),
+    OAMEntry(0, -8, 0xD5, 0x00),
+    OAMEntry(0, 0, 0xD6, 0x00),
+    OAMEntry(0, 8, 0xD7, 0x00),
+    OAMEntry(8, -8, 0xE5, 0x00),
+    OAMEntry(8, 0, 0xE6, 0x00),
+    OAMEntry(8, 8, 0xE7, 0x00),
+    OAMEntry(16, 0, 0xC8, 0x00),
+    OAMEntry(16, 8, 0xC9, 0x00),
+    OAMEntry(16, 16, 0xCA, 0x00),
+    OAMEntry(24, 0, 0xD8, 0x00),
+    OAMEntry(24, 8, 0xD9, 0x00),
+    OAMEntry(32, 0, 0xE8, 0x00),
+    OAMEntry(32, 8, 0xE9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaFrame4 = [
+    OAMEntry(-16,-16, 0xB4, 0x00),
+    OAMEntry(-16, -8, 0xB5, 0x00),
+    OAMEntry(-8,-24, 0xB3, 0x00),
+    OAMEntry(-8,-16, 0xC4, 0x00),
+    OAMEntry(-8, -8, 0xC5, 0x00),
+    OAMEntry(-8, 0, 0xC6, 0x00),
+    OAMEntry(-8, 8, 0xC7, 0x00),
+    OAMEntry(0,-16, 0xE4, 0x00),
+    OAMEntry(0, -8, 0xD5, 0x00),
+    OAMEntry(0, 0, 0xD6, 0x00),
+    OAMEntry(0, 8, 0xD7, 0x00),
+    OAMEntry(8, -8, 0xE5, 0x00),
+    OAMEntry(8, 0, 0xE6, 0x00),
+    OAMEntry(8, 8, 0xE7, 0x00),
+    OAMEntry(16, 0, 0xC8, 0x00),
+    OAMEntry(16, 8, 0xC9, 0x00),
+    OAMEntry(16, 16, 0xDA, 0x00),
+    OAMEntry(24, 0, 0xD8, 0x00),
+    OAMEntry(24, 8, 0xD9, 0x00),
+    OAMEntry(32, 0, 0xE8, 0x00),
+    OAMEntry(32, 8, 0xE9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaFrame5 = [
+    OAMEntry(-16,-16, 0xB4, 0x00),
+    OAMEntry(-16, -8, 0xB5, 0x00),
+    OAMEntry(-8,-24, 0xC3, 0x00),
+    OAMEntry(-8,-16, 0xC4, 0x00),
+    OAMEntry(-8, -8, 0xC5, 0x00),
+    OAMEntry(-8, 0, 0xC6, 0x00),
+    OAMEntry(-8, 8, 0xC7, 0x00),
+    OAMEntry(0,-16, 0xD4, 0x00),
+    OAMEntry(0, -8, 0xD5, 0x00),
+    OAMEntry(0, 0, 0xD6, 0x00),
+    OAMEntry(0, 8, 0xD7, 0x00),
+    OAMEntry(8, -8, 0xE5, 0x00),
+    OAMEntry(8, 0, 0xE6, 0x00),
+    OAMEntry(8, 8, 0xE7, 0x00),
+    OAMEntry(16, 0, 0xC8, 0x00),
+    OAMEntry(16, 8, 0xCB, 0x00),
+    OAMEntry(16, 16, 0xDA, 0x00),
+    OAMEntry(24, 8, 0xDB, 0x00),
+    OAMEntry(24, 16, 0xDC, 0x00),
+    OAMEntry(32, 8, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaFrame6 = [
+    OAMEntry(-16,-16, 0xB6, 0x00),
+    OAMEntry(-16, -8, 0xB7, 0x00),
+    OAMEntry(-8,-24, 0xB8, 0x00),
+    OAMEntry(-8,-16, 0xB9, 0x00),
+    OAMEntry(-8, -8, 0xBA, 0x00),
+    OAMEntry(-8, 0, 0xC6, 0x00),
+    OAMEntry(-8, 8, 0xC7, 0x00),
+    OAMEntry(0,-16, 0xBB, 0x00),
+    OAMEntry(0, -8, 0xD5, 0x00),
+    OAMEntry(0, 0, 0xD6, 0x00),
+    OAMEntry(0, 8, 0xD7, 0x00),
+    OAMEntry(8, -8, 0xE5, 0x00),
+    OAMEntry(8, 0, 0xE6, 0x00),
+    OAMEntry(8, 8, 0xE7, 0x00),
+    OAMEntry(16, 0, 0xC8, 0x00),
+    OAMEntry(16, 8, 0xC9, 0x00),
+    OAMEntry(16, 16, 0xCA, 0x00),
+    OAMEntry(24, 0, 0xD8, 0x00),
+    OAMEntry(24, 8, 0xD9, 0x00),
+    OAMEntry(32, 0, 0xE8, 0x00),
+    OAMEntry(32, 8, 0xE9, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaFrame7 = [
+    OAMEntry(-16,-16, 0xB6, 0x00),
+    OAMEntry(-16, -8, 0xB7, 0x00),
+    OAMEntry(-8,-24, 0xB8, 0x00),
+    OAMEntry(-8,-16, 0xB9, 0x00),
+    OAMEntry(-8, -8, 0xBA, 0x00),
+    OAMEntry(-8, 0, 0xC6, 0x00),
+    OAMEntry(-8, 8, 0xC7, 0x00),
+    OAMEntry(0,-16, 0xBB, 0x00),
+    OAMEntry(0, -8, 0xD5, 0x00),
+    OAMEntry(0, 0, 0xD6, 0x00),
+    OAMEntry(0, 8, 0xD7, 0x00),
+    OAMEntry(8, -8, 0xE5, 0x00),
+    OAMEntry(8, 0, 0xE6, 0x00),
+    OAMEntry(8, 8, 0xE7, 0x00),
+    OAMEntry(16, 0, 0xC8, 0x00),
+    OAMEntry(16, 8, 0xCB, 0x00),
+    OAMEntry(16, 16, 0xDA, 0x00),
+    OAMEntry(24, 8, 0xDB, 0x00),
+    OAMEntry(24, 16, 0xDC, 0x00),
+    OAMEntry(32, 8, 0xEB, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteOmegaShotFrame1 = [
+    OAMEntry(-12, -4, 0xBC, 0x00),
+    OAMEntry(-12, 4, 0xBD, 0x00),
+    OAMEntry(-4, -4, 0xCC, 0x00),
+    OAMEntry(-4, 4, 0xCD, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaShotFrame2 = [
+    OAMEntry(-12, -4, 0xD3, 0x00),
+    OAMEntry(-12, 4, 0xE3, 0x00),
+    OAMEntry(-4, -4, 0xCE, 0x00),
+    OAMEntry(-4, 4, 0xCF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaShotFrame3 = [
+    OAMEntry(-4, -8, 0xDD, 0x00),
+    OAMEntry(-4, 0, 0xDE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaShotFrame4 = [
+    OAMEntry(-4,-20, 0xEC, 0x00),
+    OAMEntry(-4,-12, 0xED, 0x00),
+    OAMEntry(-4, 4, 0xED, 0x20),
+    OAMEntry(-4, 12, 0xEC, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaShotFrame5 = [
+    OAMEntry(-4,-24, 0xEE, 0x00),
+    OAMEntry(-4, 16, 0xEE, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaShotFrame6 = [
+    OAMEntry(-4,-28, 0xEF, 0x00),
+    OAMEntry(-4, 20, 0xEF, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaShotFrame7 = [
+    OAMEntry(-4, -4, 0xDF, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteOmegaShotFrame8 = [
+    OAMEntry(-4, -4, 0xEA, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteEggFrame1 = [
+    OAMEntry(-12,-15, 0xB4, 0x00),
+    OAMEntry(-12, -7, 0xB5, 0x00),
+    OAMEntry(-12, 1, 0xB4, 0x20),
+    OAMEntry(-4,-14, 0xB6, 0x00),
+    OAMEntry(-4, -6, 0xB7, 0x00),
+    OAMEntry(-4, 2, 0xB6, 0x20),
+    OAMEntry(4,-13, 0xB8, 0x00),
+    OAMEntry(4, -5, 0xB9, 0x00),
+    OAMEntry(4, 3, 0xB8, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteEggFrame2 = [
+    OAMEntry(-12,-12, 0xB4, 0x00),
+    OAMEntry(-12, -4, 0xB5, 0x00),
+    OAMEntry(-12, 4, 0xB4, 0x20),
+    OAMEntry(-4,-12, 0xB6, 0x00),
+    OAMEntry(-4, -4, 0xB7, 0x00),
+    OAMEntry(-4, 4, 0xB6, 0x20),
+    OAMEntry(4,-12, 0xB8, 0x00),
+    OAMEntry(4, -4, 0xB9, 0x00),
+    OAMEntry(4, 4, 0xB8, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteEggFrame3 = [
+    OAMEntry(-12, -9, 0xB4, 0x00),
+    OAMEntry(-12, -1, 0xB5, 0x00),
+    OAMEntry(-12, 7, 0xB4, 0x20),
+    OAMEntry(-4,-10, 0xB6, 0x00),
+    OAMEntry(-4, -2, 0xB7, 0x00),
+    OAMEntry(-4, 6, 0xB6, 0x20),
+    OAMEntry(4,-11, 0xB8, 0x00),
+    OAMEntry(4, -3, 0xB9, 0x00),
+    OAMEntry(4, 5, 0xB8, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteBabyFrame1 = [
+    OAMEntry(-8, -8, 0xB0, 0x00),
+    OAMEntry(-8, 0, 0xB0, 0x20),
+    OAMEntry(0, -8, 0xB1, 0x00),
+    OAMEntry(0, 0, 0xB1, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBabyFrame2 = [
+    OAMEntry(-8, -8, 0xB2, 0x00),
+    OAMEntry(-8, 0, 0xB2, 0x20),
+    OAMEntry(0, -8, 0xB3, 0x00),
+    OAMEntry(0, 0, 0xB3, 0x20),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteItemOrb = [
+    OAMEntry(-8, -8, 0xB0, 0x00),
+    OAMEntry(-8, 0, 0xB1, 0x00),
+    OAMEntry(0, -8, 0xB2, 0x00),
+    OAMEntry(0, 0, 0xB3, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteItem = [
+    OAMEntry(-8, -8, 0xB4, 0x00),
+    OAMEntry(-8, 0, 0xB5, 0x00),
+    OAMEntry(0, -8, 0xB6, 0x00),
+    OAMEntry(0, 0, 0xB7, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteEnergyTank = [
+    OAMEntry(-8, -8, 0xAB, 0x00),
+    OAMEntry(-8, 0, 0xAC, 0x00),
+    OAMEntry(0, -8, 0xAD, 0x00),
+    OAMEntry(0, 0, 0xAE, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMissileTank = [
+    OAMEntry(-8, -8, 0xF0, 0x00),
+    OAMEntry(-8, 0, 0xF1, 0x00),
+    OAMEntry(0, -8, 0xF2, 0x00),
+    OAMEntry(0, 0, 0xF3, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteEnergyRefill = [
+    OAMEntry(-8, -8, 0xFD, 0x00),
+    OAMEntry(-8, 0, 0xFD, 0x20),
+    OAMEntry(0, -8, 0xFD, 0x40),
+    OAMEntry(0, 0, 0xFD, 0x60),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteMissileRefill = [
+    OAMEntry(-8, -4, 0xFB, 0x00),
+    OAMEntry(0, -4, 0xFC, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+
+immutable OAMEntry[] enSpriteBlobFrame1 = [
+    OAMEntry(-4, -4, 0xE4, 0x00),
+    OAMEntry(metaSpriteEnd),
+];
+immutable OAMEntry[] enSpriteBlobFrame2 = [
+    OAMEntry(-4, -4, 0xE5, 0x00),
+    OAMEntry(metaSpriteEnd),
+];

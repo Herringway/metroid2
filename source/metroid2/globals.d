@@ -25,7 +25,7 @@ __gshared ubyte blobThrowerState;
 __gshared ubyte blobThrowerFacingDirection;
 __gshared ubyte blobThrowerBlobUnknownVar;
 
-__gshared ubyte tempSpriteType;
+__gshared Actor tempSpriteType;
 
 __gshared ubyte arachnusJumpCounter;
 __gshared ubyte arachnusActionTimer;
@@ -87,7 +87,7 @@ __gshared const(ubyte)* queenHeadSrc;
 
 __gshared ubyte loadEnemiesUnusedVar;
 __gshared ubyte loadEnemiesOscillator;
-__gshared ubyte bgCollisionResult;
+__gshared ubyte enBGCollisionResult;
 __gshared ubyte enemySolidityIndex;
 struct ScrollHistoryXYPair {
 	ubyte y;
@@ -96,14 +96,10 @@ struct ScrollHistoryXYPair {
 __gshared ScrollHistoryXYPair[3] scrollHistoryA;
 __gshared ubyte samusDirectionFromEnemy;
 
-__gshared ubyte bottomEdgeScreen;
-__gshared ubyte bottomEdgePixel;
-__gshared ubyte topEdgeScreen;
-__gshared ubyte topEdgePixel;
-__gshared ubyte rightEdgeScreen;
-__gshared ubyte rightEdgePixel;
-__gshared ubyte leftEdgeScreen;
-__gshared ubyte leftEdgePixel;
+__gshared ushort bottomEdge;
+__gshared ushort topEdge;
+__gshared ushort rightEdge;
+__gshared ushort leftEdge;
 
 __gshared ubyte metroidBabyTouchingTile;
 
@@ -131,7 +127,7 @@ __gshared ubyte unknownC42D;
 
 __gshared ubyte drawEnemyYPos;
 __gshared ubyte drawEnemyXPos;
-__gshared ubyte drawEnemySprite;
+__gshared Actor drawEnemySpr;
 __gshared ubyte drawEnemyAttr;
 
 struct ScrollHistoryB {
@@ -165,7 +161,7 @@ __gshared ubyte omegaTempSpriteType;
 __gshared EnemySlot* enemyWRAM;
 
 __gshared EnemySlot[] enemyFirstEnemy;
-__gshared void* drawEnemy;
+__gshared EnemySlot* drawEnemy;
 
 __gshared ubyte loadEnemyUnusedVarA;
 __gshared ubyte loadEnemyUnusedVarB;
@@ -188,14 +184,14 @@ __gshared ubyte metroidFightActive;
 
 
 struct EnSprCollision {
-	ubyte weaponType;
-	void* enemy;
-	ubyte weaponDir;
+	CollisionType weaponType = CollisionType.nothing;
+	EnemySlot* enemy;
+	ubyte weaponDir = 0xFF;
 }
 __gshared EnSprCollision enSprCollision;
 
 __gshared ubyte gammaStunCounter;
-__gshared ubyte enemyWeaponType;
+__gshared CollisionType enemyWeaponType;
 __gshared ubyte enemyWeaponDir;
 
 __gshared ubyte omegaWaitCounter;
@@ -212,8 +208,13 @@ __gshared ubyte omegaChaseTimerIndex;
 
 __gshared ubyte hasMovedOffscreen;
 
-__gshared ubyte[0x40] enemySpawnFlagsUnsaved;
-__gshared ubyte[0x40] enemySpawnFlagsSaved;
+__gshared ubyte[0x80] enemySpawnFlags;
+ref ubyte[0x40] enemySpawnFlagsUnsaved() {
+	return enemySpawnFlags[0x00 .. 0x40];
+}
+ref ubyte[0x40] enemySpawnFlagsSaved() {
+	return enemySpawnFlags[0x40 .. 0x80];
+}
 
 __gshared EnemySlot[16] enemyDataSlots;
 
@@ -239,11 +240,11 @@ __gshared Song2 songInterruptionPlaying;
 __gshared ubyte sfxActiveSquare1;
 __gshared ubyte sfxActiveSquare2;
 __gshared ubyte sfxActiveWave;
-__gshared ubyte sfxActiveNoise;
+__gshared NoiseSFX sfxActiveNoise;
 __gshared ubyte resumeScrewAttackSoundEffectFlag;
 __gshared ubyte[0x60] songProcessingState;
 __gshared ubyte songTranspose;
-__gshared void* songInstructionTimerArrayPointer;
+__gshared const(ubyte)[] songInstructionTimerArrayPointer;
 __gshared ubyte workingSoundChannel;
 __gshared ubyte songChannelEnableSquare1;
 __gshared ubyte songChannelEnableSquare2;
@@ -251,12 +252,12 @@ __gshared ubyte songChannelEnableWave;
 __gshared ubyte songChannelEnableNoise;
 __gshared ubyte songOptionsSetFlagWorking;
 __gshared const(void)* songWavePatternDataPointer;
-//__gshared ubyte songSweepWorking;
+alias songSweepWorking = songEnableWorking;
 __gshared ubyte songEnableWorking;
 __gshared ubyte songSoundLengthWorking;
-//__gshared ubyte songEnvelopeWorking;
+alias songEnvelopeWorking = songVolumeWorking;
 __gshared ubyte songVolumeWorking;
-__gshared ubyte songFrequencyWorking;
+__gshared ushort songFrequencyWorking;
 __gshared ubyte songPolynomialCounterWorking;
 __gshared ubyte songCounterControlWorking;
 __gshared ubyte songSweepSquare1;
@@ -278,15 +279,15 @@ __gshared ubyte songEnvelopeNoise;
 __gshared ubyte songPolynomialCounterNoise;
 __gshared ubyte songCounterControlNoise;
 
-__gshared void* songChannelInstructionPointerSquare1;
-__gshared void* songChannelInstructionPointerSquare2;
-__gshared void* songChannelInstructionPointerWave;
-__gshared void* songChannelInstructionPointerNoise;
+__gshared const(ubyte)* songChannelInstructionPointerSquare1;
+__gshared const(ubyte)* songChannelInstructionPointerSquare2;
+__gshared const(ubyte)* songChannelInstructionPointerWave;
+__gshared const(ubyte)* songChannelInstructionPointerNoise;
 
 __gshared ubyte songSoundChannelEffectTimer;
 
 struct ChannelSongProcessingState {
-	void* sectionPointer;
+	const(ubyte)* sectionPointer;
 	ushort repeatCount;
 	ubyte repeatPoint;
 	ubyte instructionLength;
@@ -387,14 +388,14 @@ __gshared ubyte bombMapXPixel;
 
 __gshared ubyte mapUpdateUnusedVar;
 
-__gshared ubyte samusActiveWeapon;
+__gshared CollisionType samusActiveWeapon;
 __gshared ubyte bankRegMirror;
 
 __gshared ubyte samusInvulnerableTimer;
 __gshared ubyte samusEnergyTanks;
 __gshared ushort samusCurHealth;
 __gshared ushort samusCurMissiles;
-__gshared ubyte samusBeam;
+__gshared CollisionType samusBeam;
 __gshared ubyte samusSolidityIndex;
 __gshared ubyte samusScreenSpritePriority;
 __gshared ubyte currentLevelBank;
@@ -419,8 +420,8 @@ __gshared ubyte itemCollectionFlag;
 
 __gshared ubyte maxOAMPrevFrame;
 
-__gshared ubyte itemOrbCollisionType;
-__gshared void* itemOrbEnemyWRAM;
+__gshared CollisionType itemOrbCollisionType;
+__gshared EnemySlot* itemOrbEnemyWRAM;
 
 __gshared ubyte samusSpinAnimationTimer;
 
@@ -459,7 +460,7 @@ __gshared ubyte queenRoomFlag;
 
 __gshared ubyte variaAnimationFlag;
 
-__gshared ubyte weaponType;
+__gshared CollisionType weaponType;
 
 __gshared ushort doorIndex;
 
@@ -523,7 +524,7 @@ __gshared RespawningBlock[0x10] respawningBlockArray;
 __gshared ubyte[0x200] tileTableArray;
 __gshared ubyte[0x100] collisionArray;
 struct Projectile {
-	ubyte type = ProjectileType.invalid;
+	CollisionType type = CollisionType.nothing;
 	ubyte direction;
 	ubyte y;
 	ubyte x;
@@ -556,7 +557,7 @@ __gshared MapUpdate mapUpdate;
 __gshared VRAMTransfer vramTransfer;
 
 __gshared Projectile* beamP;
-__gshared ubyte beamType;
+__gshared CollisionType beamType;
 __gshared ubyte beamWaveIndex;
 __gshared ubyte beamFrameCounter;
 
@@ -564,7 +565,7 @@ __gshared ubyte[5] hudTanks;
 
 __gshared ubyte collisionEnY;
 __gshared ubyte collisionEnX;
-__gshared ubyte collisionEnSprite;
+__gshared Actor collisionEnSprite;
 __gshared ubyte collisionEnTop;
 __gshared ubyte collisionEnBottom;
 __gshared ubyte collisionEnLeft;
@@ -592,11 +593,12 @@ struct EnemyWorking {
 	ubyte status = 0xFF;
 	ubyte y = 0xFF;
 	ubyte x = 0xFF;
-	ubyte spriteType = 0xFF;
-	ubyte baseAttr = 0xFF;
-	ubyte attr = 0xFF;
+	Actor spriteType = Actor.invalid;
+	ubyte baseSpriteAttributes = 0xFF;
+	ubyte spriteAttributes = 0xFF;
+	deprecated("use spriteAttributes") alias attr = spriteAttributes;
 	ubyte stunCounter = 0xFF;
-	ubyte generalVar = 0xFF;
+	ubyte misc = 0xFF;
 	ubyte directionFlags = 0xFF;
 	ubyte counter = 0xFF;
 	ubyte state = 0xFF;
@@ -606,7 +608,7 @@ struct EnemyWorking {
 	ubyte explosionFlag = 0xFF;
 	ubyte spawnFlag = 0xFF;
 	ubyte spawnNumber = 0xFF;
-	void* ai;
+	void function() ai;
 	ubyte yScreen = 0xFF;
 	ubyte xScreen = 0xFF;
 	ubyte maxHealth = 0xFF;

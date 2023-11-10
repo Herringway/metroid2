@@ -24,6 +24,8 @@ struct Settings {
 enum settingsFile = "settings.yaml";
 
 Renderer renderer;
+APU apu;
+
 void main() {
 	if (!settingsFile.exists) {
 		Settings.init.toFile!YAML(settingsFile);
@@ -52,6 +54,9 @@ void main() {
 	const data = cast(ubyte[])read("metroid2.gb");
 	loadData(data);
 	bool frameLimit = true;
+	bool paused;
+	apu.initialize();
+	initAudio(&apu);
 
 	loop: while (true) {
 		while(SDL_PollEvent(&event)) {
@@ -65,8 +70,11 @@ void main() {
 					if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
 						break loop;
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_P) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_O) {
 						File("vram.bin", "w").rawWrite(renderer.ppu.vram);
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_P) {
+						paused ^= true;
 					}
 					input &= ~getButtonMask(event.key.keysym.scancode);
 					break;
@@ -79,7 +87,9 @@ void main() {
 				default: break;
 			}
 		}
-		game.call(Fiber.Rethrow.yes);
+		if (!paused) {
+			game.call(Fiber.Rethrow.yes);
+		}
 		if (game.state == Fiber.State.TERM) {
 			break;
 		}
@@ -123,6 +133,31 @@ void copyRegisters(ref PPU ppu) {
 	ppu.registers.obp1 = OBP1;
 	ppu.registers.wy = WY;
 	ppu.registers.wx = WX;
+	apu.audio_write(0xFF10, NR10);
+	apu.audio_write(0xFF11, NR11);
+	apu.audio_write(0xFF12, NR12);
+	apu.audio_write(0xFF13, NR13);
+	apu.audio_write(0xFF14, NR14);
+	apu.audio_write(0xFF16, NR21);
+	apu.audio_write(0xFF17, NR22);
+	apu.audio_write(0xFF18, NR23);
+	apu.audio_write(0xFF19, NR24);
+	apu.audio_write(0xFF1A, NR30);
+	apu.audio_write(0xFF1B, NR31);
+	apu.audio_write(0xFF1C, NR32);
+	apu.audio_write(0xFF1D, NR33);
+	apu.audio_write(0xFF1E, NR34);
+	apu.audio_write(0xFF20, NR41);
+	apu.audio_write(0xFF21, NR42);
+	apu.audio_write(0xFF22, NR43);
+	apu.audio_write(0xFF23, NR44);
+	apu.audio_write(0xFF24, NR50);
+	apu.audio_write(0xFF25, NR51);
+	apu.audio_write(0xFF26, NR52);
+	foreach (idx, w; waveRAM) {
+		apu.audio_write(cast(ushort)(0xFF30 + idx), w);
+
+	}
 }
 void loadSRAM() {
 	import metroid2.sram : SRAM, sram;

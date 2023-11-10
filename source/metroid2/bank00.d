@@ -1139,13 +1139,22 @@ void samusHandlePose() {
 				}
 				return;
 			case SamusPose.morphBall:
+				static void activateSpiderBall() {
+					if (!(samusItems & ItemFlag.spiderBall)) {
+						return;
+					}
+					samusPose = SamusPose.spiderBall;
+					samusFallArcCounter = 1;
+					spiderRotationState = 0;
+					sfxRequestSquare1 = Square1SFX.spiderBall;
+				}
 				if (!collisionSamusBottom()) {
 					samusPose = SamusPose.morphBallFalling;
 					samusFallArcCounter = 1;
 					return;
 				}
 				if (inputRisingEdge & Pad.down) {
-					// activateSpiderBall
+					return activateSpiderBall();
 				}
 				if (inputRisingEdge & Pad.up) {
 					samusGroundUnmorph();
@@ -1159,7 +1168,7 @@ void samusHandlePose() {
 				}
 				if (samusSpeedDown >= 2) {
 					if (inputPressed & Pad.down) {
-						// activateSpiderBall
+						return activateSpiderBall();
 					}
 					samusPose = SamusPose.morphBallJumping;
 					sfxRequestSquare1 = Square1SFX.jumping;
@@ -1946,16 +1955,21 @@ bool collisionSamusHorizontal() {
 	if (collisionSamusEnemiesHorizontal()) {
 		return true;
 	}
-	for (int i = 4; i >= 0; i--) {
+	bool seen80;
+	for (int i = 5; i >= 0; i--) {
 		const a = samusHorizontalYOffsetLists[samusPose][i];
-		if (a != 0x80) {
-			if (i < 4) {
-				collisionSamusYOffsets[i] = a;
+		if (!seen80) {
+			if (a == 0x80) {
+				seen80 = true;
 			}
-			tileY = cast(ubyte)(samusY.pixel + a);
-			if (samusGetTileIndex() < samusSolidityIndex) {
-				return true;
-			}
+			continue;
+		}
+		if (i < 4) {
+			collisionSamusYOffsets[i] = a;
+		}
+		tileY = cast(ubyte)(samusY.pixel + a);
+		if (samusGetTileIndex() < samusSolidityIndex) {
+			return true;
 		}
 	}
 	return false;
@@ -2005,7 +2019,7 @@ bool collisionSamusBottom() {
 	if (collisionSamusEnemiesDown(enemy)) {
 		samusOnSolidSprite = 1;
 		collision.enemy = enemy;
-		collision.weaponType = 0x20;
+		collision.weaponType = CollisionType.contact;
 		return true;
 	}
 	tileX = cast(ubyte)(samusX.pixel + 12);
@@ -2087,7 +2101,7 @@ immutable ubyte[8] saveMagic = [
 	0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef
 ];
 
-immutable ubyte[] samusDamagePoseTransitionTable = [
+immutable SamusPose[] samusDamagePoseTransitionTable = [
 	SamusPose.standing: SamusPose.knockBack,
 	SamusPose.jumping: SamusPose.knockBack,
 	SamusPose.spinJumping: SamusPose.knockBack,
@@ -2260,8 +2274,8 @@ void samusTryShooting() {
 			}
 			ubyte shotY = cast(ubyte)(samusCannonYOffsetByPose[samusPose] + samusCannonYOffsetByAimDirection[firingDirection] - 4);
 			ubyte shotX = cast(ubyte)(samusCannonXOffsetTable[firingDirection][samusFacingDirection] - 4);
-			if (samusActiveWeapon == ProjectileType.plasma) {
-				if (projectileArray[0].type != ProjectileType.invalid) {
+			if (samusActiveWeapon == CollisionType.plasmaBeam) {
+				if (projectileArray[0].type != CollisionType.nothing) {
 					return;
 				}
 				for (int slot = 0; slot < projectileArray.length; slot++) {
@@ -2289,7 +2303,7 @@ void samusTryShooting() {
 			if (slot >= projectileArray.length) {
 				return;
 			}
-			if (samusActiveWeapon == ProjectileType.missile) {
+			if (samusActiveWeapon == CollisionType.missiles) {
 				if (!samusCurMissiles) {
 					sfxRequestSquare1 = Square1SFX.noMissileDudShot;
 					return;
@@ -2302,7 +2316,7 @@ void samusTryShooting() {
 			projectileArray[slot].x = cast(ubyte)(shotX + samusX.pixel);
 			projectileArray[slot].waveIndex = (frameCounter & 0x10) >> 1;
 			projectileArray[slot].frameCounter = 0;
-			if ((samusActiveWeapon != ProjectileType.spazer) || (slot >= projectileArray.length - 1)) {
+			if ((samusActiveWeapon != CollisionType.spazer) || (slot >= projectileArray.length - 1)) {
 				break beamLoop;
 			}
 		}
@@ -2312,16 +2326,21 @@ void samusTryShooting() {
 	samusTryShootingToggleMissiles();
 }
 
+GraphicsInfo graphicsInfoCannonMissile() {
+	return GraphicsInfo(graphicsCannonMissile, VRAMDest.cannon, 0x20);
+}
+GraphicsInfo graphicsInfoCannonBeam() {
+	return GraphicsInfo(graphicsCannonBeam, VRAMDest.cannon, 0x20);
+}
+
 void samusTryShootingToggleMissiles() {
-	auto graphicsInfoCannonMissile = GraphicsInfo(graphicsCannonMissile, VRAMDest.cannon, 0x20);
-	auto graphicsInfoCannonBeam = GraphicsInfo(graphicsCannonBeam, VRAMDest.cannon, 0x20);
-	if (samusActiveWeapon == ProjectileType.missile) {
+	if (samusActiveWeapon == CollisionType.missiles) {
 		samusActiveWeapon = samusBeam;
 		loadGraphics(graphicsInfoCannonBeam);
 		sfxRequestSquare1 = Square1SFX.select;
 	} else {
 		samusBeam = samusActiveWeapon;
-		samusActiveWeapon = ProjectileType.missile;
+		samusActiveWeapon = CollisionType.missiles;
 		loadGraphics(graphicsInfoCannonMissile);
 		sfxRequestSquare1 = Square1SFX.select;
 	}
@@ -2610,7 +2629,7 @@ void beginGraphicsTransfer() {
 	}
 }
 
-void animateGettingVaria() {
+void animateGettingVaria(const GraphicsInfo) {
 	assert(0); // TODO
 }
 
@@ -2957,7 +2976,19 @@ void hurtSamus() {
 	if (samusHurtFlag != 1) {
 		return;
 	}
-	assert(0); // TODO
+	samusHurtFlag = 0;
+	if (samusInvulnerableTimer) {
+		return;
+	}
+	applyDamageEnemySpike(samusDamageValue);
+	samusInvulnerableTimer = 51;
+	samusPose = samusDamagePoseTransitionTable[samusPose];
+	samusAirDirection = samusDamageBoostDirection;
+	if (queenRoomFlag == 0x11) {
+		samusAirDirection = 1;
+	}
+	samusJumpArcCounter = samusJumpArrayBaseOffset;
+	samusUnmorphJumpTimer = 0;
 }
 
 void applyDamageQueenStomach() {
@@ -3079,8 +3110,47 @@ bool collisionProjectileEnemies() {
 	return false;
 }
 bool collisionProjectileOneEnemy(EnemySlot* enemy, ubyte x, ubyte y) {
-	return false;
-	// TODO assert(0);
+	if (enemy.y >= 224) {
+		return false;
+	}
+	collisionEnY = enemy.y;
+	if (enemy.x >= 224) {
+		return false;
+	}
+	collisionEnX = enemy.x;
+	collisionEnSprite = enemy.spriteType;
+	collisionEnAttr = enemy.baseSpriteAttributes;
+	if (enemyDamageTable[collisionEnSprite] == 0) {
+		return false;
+	}
+	const(Rectangle)* hitbox = enemyHitboxes[collisionEnSprite];
+	if (!(collisionEnAttr & OAMFlags.yFlip)) {
+		collisionEnTop = cast(ubyte)(hitbox.top + collisionEnY);
+		collisionEnBottom = cast(ubyte)(hitbox.bottom + collisionEnY);
+	} else {
+		collisionEnBottom = cast(ubyte)(-(hitbox.top - collisionEnY - 1));
+		collisionEnTop = cast(ubyte)(-(hitbox.bottom - collisionEnY - 1));
+	}
+	if (!(collisionEnAttr & OAMFlags.xFlip)) {
+		collisionEnLeft = cast(ubyte)(hitbox.left + collisionEnX);
+		collisionEnRight = cast(ubyte)(hitbox.right + collisionEnX);
+	} else {
+		collisionEnRight = cast(ubyte)(-(hitbox.left - collisionEnX - 1));
+		collisionEnLeft = cast(ubyte)(-(hitbox.right - collisionEnX - 1));
+	}
+	if (cast(ubyte)(y - collisionEnTop) > collisionEnBottom - collisionEnTop) {
+		return false;
+	}
+	if (cast(ubyte)(x - collisionEnLeft) > collisionEnRight - collisionEnLeft) {
+		return false;
+	}
+	collision.weaponType = weaponType;
+	collision.enemy = enemy;
+	collision.weaponDir = weaponDirection;
+	if ((weaponType == CollisionType.missiles) && (collisionEnSprite == Actor.queenMouthOpen)) {
+		queenEatingState = 16;
+	}
+	return true;
 }
 bool collisionSamusEnemiesStandard() {
 	if ((samusPose >= SamusPose.eatenByMetroidQueen) || deathFlag || samusInvulnerableTimer || samusSpriteCollisionProcessedFlag) {
@@ -3113,7 +3183,7 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 	}
 	collisionEnX = enemy.x;
 	collisionEnSprite = enemy.spriteType;
-	collisionEnAttr = enemy.attributes;
+	collisionEnAttr = enemy.baseSpriteAttributes;
 	collisionEnIce = enemy.iceCounter;
 	const(Rectangle)* hitbox = enemyHitboxes[collisionEnSprite];
 	if (!(collisionEnAttr & OAMFlags.yFlip)) {
@@ -3131,20 +3201,20 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 		collisionEnLeft = cast(ubyte)(-(hitbox.right - collisionEnX) - 5);
 	}
 	collisionEnBottom = cast(ubyte)(collisionEnBottom - collisionSamusSpriteHitboxTopTable[samusPose & 0x7F]);
-	if (samusY - collisionEnTop >  collisionEnBottom - collisionEnTop) {
+	if (cast(ubyte)(samusY - collisionEnTop) > collisionEnBottom - collisionEnTop) {
 		return false;
 	}
 	samusDamageBoostDirection = 1;
-	if (samusX - collisionEnLeft > collisionEnRight - collisionEnLeft) {
+	if (cast(ubyte)(samusX - collisionEnLeft) > collisionEnRight - collisionEnLeft) {
 		return false;
 	}
-	if (samusX - collisionEnLeft < (collisionEnRight - collisionEnLeft) / 2) {
+	if (cast(ubyte)(samusX - collisionEnLeft) < (collisionEnRight - collisionEnLeft) / 2) {
 		samusDamageBoostDirection = 0xFF;
 	}
 	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
 		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != 0xFF)) {
 			samusDamageValue = enemyDamageTable[collisionEnSprite];
-			collision.weaponType = 16;
+			collision.weaponType = CollisionType.screwAttack;
 			collision.enemy = enemy;
 			return false;
 		}
@@ -3161,18 +3231,18 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 	if (enemyDamageTable[collisionEnSprite] == 0xFE) {
 		applyDamageLarvaMetroid();
 		collision.enemy = enemy;
-		collision.weaponType = 0x20;
+		collision.weaponType = CollisionType.contact;
 		return false;
 	}
 	if (enemyDamageTable[collisionEnSprite] == 0) {
 		collision.enemy = enemy;
-		collision.weaponType = 0x20;
+		collision.weaponType = CollisionType.contact;
 		return false;
 	}
 	samusDamageValue = enemyDamageTable[collisionEnSprite];
 	samusHurtFlag = 1;
 	collision.enemy = enemy;
-	collision.weaponType = 0x20;
+	collision.weaponType = CollisionType.contact;
 	return true;
 }
 
@@ -3219,7 +3289,7 @@ bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY
 		return false;
 	}
 	collisionEnSprite = enemy.spriteType;
-	collisionEnAttr = enemy.attributes;
+	collisionEnAttr = enemy.baseSpriteAttributes;
 	collisionEnIce = enemy.iceCounter;
 	const(Rectangle)* hitbox = enemyHitboxes[collisionEnSprite];
 	if (!(collisionEnAttr & OAMFlags.yFlip)) {
@@ -3237,17 +3307,17 @@ bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY
 		collisionEnLeft = cast(ubyte)(-(hitbox.right - collisionEnX) - 5);
 	}
 	enemyTop = cast(ubyte)(samusY - (collisionEnBottom - collisionEnTop));
-	if (samusY - collisionEnTop >  collisionEnBottom - collisionEnTop) {
+	if (cast(ubyte)(samusY - collisionEnTop) >  collisionEnBottom - collisionEnTop) {
 		return false;
 	}
 	samusDamageBoostDirection = 1;
-	if (samusX - collisionEnLeft > collisionEnRight - collisionEnLeft) {
+	if (cast(ubyte)(samusX - collisionEnLeft) > collisionEnRight - collisionEnLeft) {
 		return false;
 	}
 	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
 		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != 0xFF)) {
 			samusDamageValue = enemyDamageTable[collisionEnSprite];
-			collision.weaponType = 16;
+			collision.weaponType = CollisionType.screwAttack;
 			collision.enemy = enemy;
 			return false;
 		}
@@ -3264,18 +3334,18 @@ bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY
 	if (enemyDamageTable[collisionEnSprite] == 0xFE) {
 		applyDamageLarvaMetroid();
 		collision.enemy = enemy;
-		collision.weaponType = 0x20;
+		collision.weaponType = CollisionType.contact;
 		return false;
 	}
 	if (enemyDamageTable[collisionEnSprite] == 0) {
 		collision.enemy = enemy;
-		collision.weaponType = 0x20;
+		collision.weaponType = CollisionType.contact;
 		return false;
 	}
 	samusDamageValue = enemyDamageTable[collisionEnSprite];
 	samusHurtFlag = 1;
 	collision.enemy = enemy;
-	collision.weaponType = 0x20;
+	collision.weaponType = CollisionType.contact;
 	return false;
 }
 immutable ubyte[] collisionSamusSpriteHitboxTopTable = [
@@ -3312,7 +3382,10 @@ void handleDead() {
 	clearTilemaps();
 	oamBufferIndex = 0;
 	clearAllOAM();
-	vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0x1000] = graphicsTitleScreen[];
+	vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
+	vram()[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
+	vram()[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
+	vram()[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
 	auto text = &gameOverText[0];
 	auto textDest = &(vram()[0x9800 + 8 * 32 + 6]);
 	while (*text != 0x80) {
@@ -3343,7 +3416,177 @@ void handleItemPickup() {
 	if (!itemCollected) {
 		return;
 	}
-	assert(0); // TODO
+	waitOneFrame();
+	waitOneFrame();
+	waitOneFrame();
+	waitOneFrame();
+	itemCollectedCopy = itemCollected;
+	sfxRequestSquare1 = Square1SFX.u12;
+	songInterruptionRequest = Song2.itemGet;
+	countdownTimer = 352;
+	if (itemCollected - 1 >= ItemID.energyRefill) {
+		if (itemCollected - 1 < ItemID.missileRefill) {
+			songInterruptionRequest = Song2.missilePickup;
+			countdownTimer = 96;
+		} else {
+			songInterruptionRequest = Song2.nothing;
+			countdownTimer = 0;
+			sfxRequestSquare1 = Square1SFX.pickedUpSmallEnergyDrop;
+			if (sfxRequestSquare1 != 0) { // ok.
+				sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
+			}
+		}
+	}
+	if (songInterruptionPlaying == Song2.earthquake) {
+		songInterruptionRequest = Song2.nothing;
+	}
+	final switch (cast(ItemID)(itemCollected - 1)) {
+		case ItemID.plasmaBeam:
+			samusBeam = CollisionType.plasmaBeam;
+			loadGraphics(graphicsInfoPlasma);
+			if (samusActiveWeapon != CollisionType.missiles) {
+				samusActiveWeapon = CollisionType.plasmaBeam;
+				samusBeam = CollisionType.plasmaBeam;
+			}
+			break;
+		case ItemID.iceBeam:
+			samusBeam = CollisionType.iceBeam;
+			loadGraphics(graphicsInfoIce);
+			if (samusActiveWeapon != CollisionType.missiles) {
+				samusActiveWeapon = CollisionType.iceBeam;
+				samusBeam = CollisionType.iceBeam;
+			}
+			break;
+		case ItemID.waveBeam:
+			samusBeam = CollisionType.waveBeam;
+			loadGraphics(graphicsInfoWave);
+			if (samusActiveWeapon != CollisionType.missiles) {
+				samusActiveWeapon = CollisionType.waveBeam;
+				samusBeam = CollisionType.waveBeam;
+			}
+			break;
+		case ItemID.spazer:
+			samusBeam = CollisionType.spazer;
+			loadGraphics(graphicsInfoSpazer);
+			if (samusActiveWeapon != CollisionType.missiles) {
+				samusActiveWeapon = CollisionType.spazer;
+				samusBeam = CollisionType.spazer;
+			}
+			break;
+		case ItemID.bombs:
+			samusItems |= ItemFlag.bomb;
+			break;
+		case ItemID.screwAttack:
+			samusItems |= ItemFlag.screwAttack;
+			if (!(samusItems & ItemFlag.spaceJump)) {
+				loadGraphics(graphicsInfoSpinScrewTop);
+				loadGraphics(graphicsInfoSpinScrewBottom);
+			} else {
+				loadGraphics(graphicsInfoSpinSpaceTop);
+				loadGraphics(graphicsInfoSpinSpaceBottom);
+			}
+			break;
+		case ItemID.variaSuit:
+			while (--countdownTimer) {
+				drawSamus();
+				handleEnemiesOrQueen();
+				drawHUDMetroid();
+				clearUnusedOAMSlots();
+				WY = 0x80;
+				waitOneFrame();
+			}
+			samusItems |= ItemFlag.variaSuit;
+			samusPose = cast(SamusPose)(SamusPose.standing | 0x80);
+			samusTurnAnimTimer = 0x10;
+			waitOneFrame();
+			sfxRequestSquare1 = Square1SFX.variaSuitTransformation;
+			variaAnimationFlag = 0xFF;
+			animateGettingVaria(graphicsInfoVariaSuit);
+			variaAnimationFlag = 0;
+			loadGraphics(graphicsInfoVariaSuit);
+			if (samusActiveWeapon == CollisionType.missiles) {
+				loadGraphics(graphicsInfoCannonMissile);
+			}
+			variaLoadExtraGraphics();
+			break;
+		case ItemID.hiJumpBoots:
+			samusItems |= ItemFlag.hiJump;
+			break;
+		case ItemID.spaceJump:
+			samusItems |= ItemFlag.spaceJump;
+			if (!(samusItems & ItemFlag.screwAttack)) {
+				loadGraphics(graphicsInfoSpinSpaceTop);
+				loadGraphics(graphicsInfoSpinSpaceBottom);
+			} else {
+				loadGraphics(graphicsInfoSpinSpaceTop);
+				loadGraphics(graphicsInfoSpinSpaceBottom);
+			}
+			break;
+		case ItemID.spiderBall:
+			samusItems |= ItemFlag.spiderBall;
+			break;
+		case ItemID.springBall:
+			samusItems |= ItemFlag.springBall;
+			loadGraphics(graphicsInfoSpringBallTop);
+			loadGraphics(graphicsInfoSpringBallBottom);
+			break;
+		case ItemID.energyTank:
+			if (samusEnergyTanks != 5) {
+				samusEnergyTanks++;
+			}
+			samusCurHealth = cast(ushort)(((samusEnergyTanks + 1) * 100) - 1);
+			break;
+		case ItemID.missileTank:
+			samusMaxMissiles += 10;
+			if (samusMaxMissiles >= 1000) {
+				samusMaxMissiles = 999;
+			}
+			samusCurMissiles += 10;
+			if (samusCurMissiles >= 1000) {
+				samusCurMissiles = 999;
+			}
+			break;
+		case ItemID.energyRefill:
+			samusCurHealth = cast(ushort)(((samusEnergyTanks + 1) * 100) - 1);
+			break;
+		case ItemID.missileRefill:
+			if (metroidCountReal == 0) {
+				countdownTimer = 0xFF;
+				songInterruptionRequest = Song2.fadeOut;
+				gameMode = GameMode.prepareCredits;
+				return;
+			} else {
+				samusCurMissiles = samusMaxMissiles;
+			}
+			break;
+	}
+	while (countdownTimer > 0) {
+		drawSamus();
+		drawHUDMetroid();
+		enemyHandler();
+		handleAudio();
+		clearUnusedOAMSlots();
+		if (itemCollectedCopy < ItemID.energyTank) {
+			WY = 0x80;
+		}
+		waitNextFrame();
+	}
+	if ((itemCollectedCopy - 1 < ItemID.energyRefill) && (songInterruptionPlaying != Song2.earthquake)) {
+		songInterruptionRequest = Song2.endRequest;
+	}
+	itemCollectedCopy = 0;
+	itemCollectionFlag = 3;
+	enSprCollision.weaponType = itemOrbCollisionType;
+	enSprCollision.enemy = itemOrbEnemyWRAM;
+	while (itemCollectionFlag) {
+		drawSamus();
+		drawHUDMetroid();
+		collisionSamusEnemiesStandard();
+		enemyHandler();
+		handleAudio();
+		clearUnusedOAMSlots();
+		waitNextFrame();
+	}
 }
 
 GraphicsInfo graphicsInfoPlasma() {
@@ -3404,7 +3647,10 @@ void handleUnusedA() {
 	version(original) {
 		vram()[0x8000 .. 0x9800] = graphicsTitleScreen[];
 	} else {
-		vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0x1000] = graphicsTitleScreen[];
+		vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
+		vram()[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
+		vram()[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
+		vram()[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
 	}
 	auto text = &gameSavedText[0];
 	auto textDest = &(vram()[0x9800 + 8 * 32 + 5]);
@@ -3435,7 +3681,10 @@ void handleUnusedC() {
 	clearTilemaps();
 	oamBufferIndex = 0;
 	clearAllOAM();
-	vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0x1000] = graphicsTitleScreen[];
+	vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
+	vram()[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
+	vram()[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
+	vram()[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
 	auto text = &gameClearedText[0];
 	auto textDest = &(vram()[0x9800 + 8 * 32 + 4]);
 	while (*text != 0x80) {
@@ -3476,16 +3725,16 @@ void loadGameSamusItemGraphics() {
 		loadGameCopyItemToVRAM(graphicsInfoSpinScrewBottom);
 	}
 	switch (samusActiveWeapon) {
-		case ProjectileType.ice:
+		case CollisionType.iceBeam:
 			loadGameCopyItemToVRAM(graphicsInfoIce);
 			break;
-		case ProjectileType.spazer:
+		case CollisionType.spazer:
 			loadGameCopyItemToVRAM(graphicsInfoSpazer);
 			break;
-		case ProjectileType.wave:
+		case CollisionType.waveBeam:
 			loadGameCopyItemToVRAM(graphicsInfoWave);
 			break;
-		case ProjectileType.plasma:
+		case CollisionType.plasmaBeam:
 			loadGameCopyItemToVRAM(graphicsInfoPlasma);
 			break;
 		default: break;

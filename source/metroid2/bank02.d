@@ -1,5 +1,6 @@
 module metroid2.bank02;
 
+import metroid2.bank00;
 import metroid2.bank01;
 import metroid2.bank03;
 import metroid2.defs;
@@ -8,6 +9,8 @@ import metroid2.registers;
 
 import libgb;
 
+import std.logger;
+
 void enemyHandler() {
 	unusedROMBankPlusOne = cast(ubyte)(currentLevelBank + 1);
 	const started = justStartedTransition;
@@ -15,10 +18,10 @@ void enemyHandler() {
 		larvaBombState = 0;
 		larvaLatchState = 0;
 		justStartedTransition = 0;
-		enSprCollision.weaponType = 0xFF;
+		enSprCollision.weaponType = CollisionType.nothing;
 		enSprCollision.enemy = null;
 		enSprCollision.weaponDir = 0xFF;
-		collision.weaponType = 0xFF;
+		collision.weaponType = CollisionType.nothing;
 		collision.enemy = null;
 		collision.weaponDir = 0xFF;
 	}
@@ -38,7 +41,7 @@ void enemyHandler() {
 		scrollEnemies();
 		processEnemies();
 		updateScrollHistory();
-		if (LY >= 0x70) {
+		if (LY < 0x70) {
 			drawEnemies();
 		}
 	}
@@ -79,8 +82,12 @@ void processEnemies() {
 		enemyFrameCounter++;
 		enemiesLeftToProcess = numEnemies.total;
 	}
+	static void allEnemiesDone() {
+		enemyFirstEnemy = enemyDataSlots[];
+		enemySameEnemyFrameFlag = !enemySameEnemyFrameFlag;
+	}
 	if (enemiesLeftToProcess) {
-		for (int i = 0; i < enemyFirstEnemy.length; i++) {
+		for (int i = 0; i < enemyDataSlots.length; i++) {
 			if ((enemyDataSlots[i].status & 0xF) == 0) {
 				if (!enemyMoveFromWRAMtoHRAM(&enemyDataSlots[i]) && !enemyGetDamagedOrGiveDrop() && !deactivateOffscreenEnemy()) {
 					enemyCommonAI();
@@ -92,8 +99,7 @@ void processEnemies() {
 			}
 			enemyMoveFromHRAMtoWRAM();
 			if (--enemiesLeftToProcess == 0) {
-				enemyFirstEnemy = enemyDataSlots[];
-				enemySameEnemyFrameFlag = !enemySameEnemyFrameFlag;
+				allEnemiesDone();
 				break;
 			}
 			//we don't need to restore the enemy address.
@@ -103,6 +109,8 @@ void processEnemies() {
 				break;
 			}
 		}
+	} else {
+		allEnemiesDone();
 	}
 	if (LY >= 108) {
 		return;
@@ -121,9 +129,9 @@ void ingameLoadEnemySaveFlags() {
 	numEnemies.active = 0;
 	numEnemies.offscreen = 0;
 	enemySameEnemyFrameFlag = 0;
-	enSprCollision.weaponType = 0xFF;
+	enSprCollision.weaponType = CollisionType.nothing;
 	enSprCollision.enemy = null;
-	enemyWeaponType = 0xFF;
+	enemyWeaponType = CollisionType.nothing;
 	scrollHistoryB.y[] = scrollY;
 	scrollHistoryB.x[] = scrollX;
 	blobThrowerLoadSprite();
@@ -152,7 +160,7 @@ void ingameSaveAndLoadEnemySaveFlags() {
 	enemyFirstEnemy = enemyDataSlots[];
 	enemiesLeftToProcess = 0;
 	enemySameEnemyFrameFlag = 0;
-	enSprCollision.weaponType = 0xFF;
+	enSprCollision.weaponType = CollisionType.nothing;
 	enSprCollision.enemy = null;
 	scrollHistoryB.y[] = scrollY;
 	scrollHistoryB.x[] = scrollX;
@@ -167,31 +175,319 @@ void deactivateAllEnemies() {
 }
 
 bool enemyGetDamagedOrGiveDrop() {
-	assert(0); // TODO
+	static bool transferCollisionResults() {
+		enSprCollision.weaponType = collision.weaponType;
+		enSprCollision.enemy = collision.enemy;
+		enSprCollision.weaponDir = collision.weaponDir;
+		collision = EnSprCollision.init;
+		return false;
+	}
+	if (collision.weaponType == 0xFF) {
+		return false;
+	}
+	if (enemyWRAMAddr != collision.enemy) {
+		return false;
+	}
+	if (enemyWorking.explosionFlag) {
+		 return transferCollisionResults();
+	}
+	static bool prepareDrop(ubyte v) {
+		ubyte drop;
+		if ((enemyWorking.spawnFlag == 6) || ((enemyWorking.spawnFlag & 0xF) == 0) || (enemyWorking.maxHealth < 10)) {
+			v |= 1 << 1;
+		} else if ((enemyWorking.maxHealth == 0xFD) || (enemyWorking.maxHealth == 0xFE)) {
+			// nothing
+		} else if ((enemyWorking.maxHealth & 1) == 0) {
+			v |= 1 << 2;
+		} else {
+			v |= 1 << 1;
+		}
+		enemyWorking.explosionFlag = v;
+		enemyWorking.counter = 0;
+		sfxRequestNoise = NoiseSFX.u02;
+		transferCollisionResults();
+		return true;
+	}
+	if (!enemyWorking.dropType) {
+		if ((enemyWorking.spriteType >= Actor.metroid1) && (enemyWorking.spriteType <= Actor.metroid3)) {
+			return transferCollisionResults();
+		}
+		if (collision.weaponType == 0x10) {
+			if (enemyWorking.health != 0xFF) {
+				return prepareDrop(0x20);
+			}
+			sfxRequestSquare1 = Square1SFX.beamDink;
+			 return transferCollisionResults();
+		} else if (collision.weaponType > 0x10) {
+			return transferCollisionResults();
+		}
+		if (collision.weaponType != 1) {
+			enemyCheckDirectionalShields();
+			if (enemyWorking.health >= 0xFE) {
+				sfxRequestSquare1 = Square1SFX.beamDink;
+				return transferCollisionResults();
+			}
+			const overkill = enemyWorking.health < weaponDamageTable[collision.weaponType];
+			enemyWorking.health -= weaponDamageTable[collision.weaponType];
+			if ((enemyWorking.health == 0) || overkill) {
+				return prepareDrop(0x10);
+			}
+			sfxRequestNoise = NoiseSFX.u01;
+			transferCollisionResults();
+			enemyWorking.stunCounter = 17;
+			return true;
+		} else {
+			if (enemyWorking.health == 0) {
+				return prepareDrop(0x10);
+			} else if (enemyWorking.health == 0xFF) {
+				sfxRequestSquare1 = Square1SFX.beamDink;
+				return transferCollisionResults();
+			} else if (enemyWorking.health == 0xFE) {
+				sfxRequestSquare1 = Square1SFX.beamDink;
+			} else {
+				enemyCheckDirectionalShields();
+				enemyWorking.health--;
+				if (enemyWorking.health) {
+					enemyWorking.health--;
+				}
+				sfxRequestNoise = NoiseSFX.u01;
+			}
+			enemyWorking.stunCounter = 0x10;
+			enemyWorking.iceCounter = 0x1;
+			return transferCollisionResults();
+		}
+	}
+	if (collision.weaponType < 0x10) {
+		return transferCollisionResults();
+	}
+	static void giveHealth(ubyte amount) {
+		samusCurHealth += amount;
+		if (samusCurHealth / 100 >= samusEnergyTanks) {
+			samusCurHealth = cast(ushort)((samusEnergyTanks * 100) - 1);
+		}
+	}
+	switch (enemyWorking.dropType) {
+		case 1:
+			sfxRequestSquare1 = Square1SFX.pickedUpSmallEnergyDrop;
+			giveHealth(5);
+			break;
+		case 2:
+			sfxRequestSquare1 = Square1SFX.pickedUpLargeEnergyDrop;
+			giveHealth(20);
+			break;
+		default:
+			sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
+			samusCurMissiles += 5;
+			if (samusCurMissiles > samusMaxMissiles) {
+				samusCurMissiles = samusMaxMissiles;
+			}
+			break;
+	}
+	enemyDeleteSelf();
+	enemyWorking.spawnFlag = 2;
+	transferCollisionResults();
+	collision = enSprCollision.init;
+	return true;
 }
 
-void enemyGetDirectionalShields() {
-	assert(0); // TODO
+void enemyCheckDirectionalShields() {
+	if (collision.weaponType == CollisionType.waveBeam) {
+		return;
+	}
+	if (!(enemyWorking.directionFlags & 0xF0)) {
+		return;
+	}
+	if (((enemyWorking.directionFlags & 0xF0) >> 4) & collision.weaponDir) {
+		sfxRequestSquare1 = Square1SFX.beamDink;
+		enSprCollision.weaponType = collision.weaponType;
+		enSprCollision.enemy = collision.enemy;
+		enSprCollision.weaponDir = collision.weaponDir;
+		collision = EnSprCollision.init;
+	}
 }
+
+
+immutable ubyte[] weaponDamageTable = [
+	CollisionType.powerBeam: 0x01,
+	CollisionType.iceBeam: 0x02,
+	CollisionType.waveBeam: 0x04,
+	CollisionType.spazer: 0x08,
+	CollisionType.plasmaBeam: 0x1E,
+	CollisionType.unk5: 0x00,
+	CollisionType.unk6: 0x00,
+	CollisionType.bombs: 0x02,
+	CollisionType.missiles: 0x14,
+	CollisionType.bombExplosion: 0x0A,
+];
 
 bool enemyMoveFromWRAMtoHRAM(EnemySlot* enemy) {
-	assert(0); // TODO
+	enemyWRAMAddr = enemy;
+	enemyWorking.status = enemy.status;
+	enemyWorking.y = enemy.y;
+	enemyWorking.x = enemy.x;
+	enemyWorking.spriteType = enemy.spriteType;
+	enemyWorking.baseSpriteAttributes = enemy.baseSpriteAttributes;
+	enemyWorking.spriteAttributes = enemy.spriteAttributes;
+	enemyWorking.stunCounter = enemy.stunCounter;
+	enemyWorking.misc = enemy.misc;
+	enemyWorking.directionFlags = enemy.directionFlags;
+	enemyWorking.counter = enemy.counter;
+	enemyWorking.state = enemy.state;
+	enemyWorking.iceCounter = enemy.iceCounter;
+	enemyWorking.health = enemy.health;
+	enemyWorking.dropType = enemy.dropType;
+	enemyWorking.explosionFlag = enemy.explosionFlag;
+	enemyWorking.yScreen = enemy.yScreen;
+	enemyWorking.xScreen = enemy.xScreen;
+	enemyWorking.maxHealth = enemy.maxHealth;
+	enemyWorking.spawnFlag = enemy.spawnFlag;
+	enemyWorking.spawnNumber = enemy.spawnNumber;
+	enemyWorking.ai = enemy.ai;
+	enemyYPosMirror = enemy.y;
+	enemyXPosMirror = enemy.x;
+	if (enemy.stunCounter < 17) {
+		return false;
+	}
+	if (++enemy.stunCounter != 20) {
+		return true;
+	} else if (enemy.iceCounter == 0) {
+		enemy.stunCounter = 0;
+	} else {
+		enemy.stunCounter = 16;
+	}
+	return false;
 }
 
 void enemyMoveFromHRAMtoWRAM() {
-	assert(0); // TODO
+	enemyWRAMAddr.status = enemyWorking.status;
+	enemyWRAMAddr.y = enemyWorking.y;
+	enemyWRAMAddr.x = enemyWorking.x;
+	enemyWRAMAddr.spriteType = enemyWorking.spriteType;
+	enemyWRAMAddr.baseSpriteAttributes = enemyWorking.baseSpriteAttributes;
+	enemyWRAMAddr.spriteAttributes = enemyWorking.spriteAttributes;
+	enemyWRAMAddr.stunCounter = enemyWorking.stunCounter;
+	enemyWRAMAddr.misc = enemyWorking.misc;
+	enemyWRAMAddr.directionFlags = enemyWorking.directionFlags;
+	enemyWRAMAddr.counter = enemyWorking.counter;
+	enemyWRAMAddr.state = enemyWorking.state;
+	enemyWRAMAddr.iceCounter = enemyWorking.iceCounter;
+	enemyWRAMAddr.health = enemyWorking.health;
+	enemyWRAMAddr.dropType = enemyWorking.dropType;
+	enemyWRAMAddr.explosionFlag = enemyWorking.explosionFlag;
+	enemyWRAMAddr.spawnFlag = enemyWorking.spawnFlag;
+	enemyWRAMAddr.spawnNumber = enemyWorking.spawnNumber;
+	enemyWRAMAddr.yScreen = enemyWorking.yScreen;
+	enemyWRAMAddr.xScreen = enemyWorking.xScreen;
+	enemyWRAMAddr.ai = enemyWorking.ai;
+	enemySpawnFlags[enemyWorking.spawnNumber] = enemyWorking.spawnFlag;
+	if (enemyWRAMAddr.status != 0xFF) {
+		return;
+	}
+	infof("Was deleted");
+	enemyWRAMAddr.spawnFlag = 0xFF;
+	enemyWRAMAddr.spawnNumber = 0xFF;
 }
 
 bool deleteOffscreenEnemy() {
-	assert(0); // TODO
+	if ((enemyWorking.yScreen != 0xFE) && (enemyWorking.yScreen != 3) && (enemyWorking.xScreen != 0xFE) && (enemyWorking.xScreen != 3)) {
+		return false;
+	}
+	(cast(ubyte*)&enemyWorking)[0 .. 15] = 0xFF;
+	if (enemyWorking.spawnFlag != 2) {
+		if (enemyWorking.spawnFlag == 4) {
+			enemyWorking.spawnFlag = 0xFE;
+		} else {
+			enemyWorking.spawnFlag = 0xFF;
+		}
+	}
+	enemyWorking.ai = null;
+	enemyWorking.yScreen = 0xFF;
+	enemyWorking.xScreen = 0xFF;
+	numEnemies.total--;
+	numEnemies.offscreen--;
+	if (enSprCollision.enemy == enemyWRAMAddr) {
+		enSprCollision = EnSprCollision.init;
+	}
+	return true;
 }
 
 bool reactivateOffscreenEnemy() {
-	assert(0); // TODO
+	if (enemyWorking.yScreen == 0xFF) {
+		if (enemyWorking.y >= 240) {
+			enemyWorking.y++;
+		}
+	} else if (enemyWorking.yScreen == 0) {
+		if ((enemyWorking.y >= 192) && (enemyWorking.y < 216)) {
+			enemyWorking.y++;
+		} else if ((enemyWorking.y >= 216) && (enemyWorking.y < 240)) {
+			enemyWorking.y--;
+		}
+	} else if (enemyWorking.yScreen == 1) {
+		if (enemyWorking.y < 192) {
+			enemyWorking.y--;
+		}
+	}
+	if (enemyWorking.xScreen == 0xFF) {
+		if (enemyWorking.x >= 240) {
+			enemyWorking.x++;
+		}
+	} else if (enemyWorking.xScreen == 0) {
+		if ((enemyWorking.x >= 192) && (enemyWorking.x < 216)) {
+			enemyWorking.x++;
+		} else if ((enemyWorking.x >= 216) && (enemyWorking.x < 240)) {
+			enemyWorking.x--;
+		}
+	} else if (enemyWorking.xScreen == 1) {
+		if (enemyWorking.x < 192) {
+			enemyWorking.x--;
+		}
+	}
+	if (enemyWorking.yScreen | enemyWorking.xScreen) {
+		return false;
+	}
+	enemyWorking.status = 0;
+	numEnemies.active++;
+	numEnemies.offscreen--;
+	return true;
 }
 
 bool deactivateOffscreenEnemy() {
-	assert(0); // TODO
+	hasMovedOffscreen = 0;
+	if ((enemyWorking.y >= 0xC0) && (enemyWorking.y < 0xD8)) {
+		enemyWorking.yScreen = 1;
+		hasMovedOffscreen = 1;
+	} else if ((enemyWorking.y >= 0xD8) && (enemyWorking.y < 0xF0)) {
+		enemyWorking.yScreen = 0xFF;
+		hasMovedOffscreen = 1;
+	}
+	if ((enemyWorking.x >= 0xC0) && (enemyWorking.x < 0xD8)) {
+		enemyWorking.xScreen = 1;
+		hasMovedOffscreen = 1;
+	} else if ((enemyWorking.x >= 0xD8) && (enemyWorking.x < 0xF0)) {
+		enemyWorking.xScreen = 0xFF;
+		hasMovedOffscreen = 1;
+	}
+	if (!hasMovedOffscreen) {
+		return false;
+	}
+	enemyWorking.status = 1;
+	if (enemyWorking.spawnFlag == 2) {
+		enemyDeleteSelf();
+		enemyWorking.spawnFlag = 2;
+	} else if ((enemyWorking.spawnFlag == 6) || ((enemyWorking.spawnFlag & 0xF) == 0)) {
+		enemyDeleteSelf();
+		enemyWorking.spawnFlag = 0xFF;
+	} else {
+		numEnemies.active--;
+		if (enemyWorking.spawnFlag == 3) {
+			enemyWorking.spawnFlag = 1;
+		} else if ((enemyWorking.spawnFlag == 4) || (enemyWorking.spawnFlag == 5)) {
+			enemyWorking.spawnFlag = 4;
+			metroidPostDeathTimer = 0;
+			metroidState = 0;
+		}
+	}
+	return true;
 }
 
 void updateScrollHistory() {
@@ -211,19 +507,68 @@ void unusedSetXFlip() {
 	assert(0); // TODO
 }
 
-void enCollisonRight() {
+void enCollisionRight() {
 	assert(0); // TODO
 }
 
-void enCollisonLeft() {
+void enCollisionLeft() {
 	assert(0); // TODO
 }
 
-void enCollisonDown() {
+void enCollisionDownNearSmall() {
 	assert(0); // TODO
 }
 
-void enCollisonUp() {
+void enCollisionDownNearMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionDownMidMedium() {
+	enBGCollisionResult = 0b00100010;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 7);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 6);
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
+}
+
+void enCollisionDownMidWide() {
+	assert(0); // TODO
+}
+
+void enCollisionDownOnePoint() {
+	assert(0); // TODO
+}
+
+void enCollisionDownFarMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionDownFarWide() {
+	assert(0); // TODO
+}
+
+void enCollisionDownCrawlA() {
+	assert(0); // TODO
+}
+
+void enCollisionDownCrawlB() {
+	assert(0); // TODO
+}
+
+void enCollisionUp() {
 	assert(0); // TODO
 }
 
@@ -234,7 +579,64 @@ void blobThrowerLoadSprite() {
 }
 
 void enAIItemOrb() {
-	assert(0); // TODO
+	if (enemyWorking.spriteType & 1) { //not orb
+		if ((frameCounter & 6) == 0) {
+			enemyWorking.stunCounter ^= 0x10;
+		}
+	}
+	enemyGetSamusCollisionResults();
+	if (enemyWeaponType == CollisionType.nothing) {
+		return;
+	}
+	itemOrbCollisionType = enemyWeaponType;
+	itemOrbEnemyWRAM = enemyWRAMAddr;
+	if (!(enemyWorking.spriteType & 1)) { //is orb
+		if ((enemyWeaponType == CollisionType.bombExplosion) || (enemyWeaponType == CollisionType.screwAttack) || (enemyWeaponType == CollisionType.contact)) {
+			return;
+		}
+		sfxRequestSquare1 = Square1SFX.nothing;
+		sfxRequestNoise = NoiseSFX.u02;
+		enemyWorking.spriteType++;
+	} else {
+		if (enemyWeaponType != CollisionType.contact) {
+			if (enemyWeaponType != CollisionType.screwAttack) {
+				return;
+			}
+			sfxRequestSquare1 = Square1SFX.clear;
+		}
+		if (itemCollectionFlag != 0) {
+			itemCollected = 0;
+			if (itemCollectionFlag == 0xFF) {
+				return;
+			}
+			itemCollected = 0;
+			itemCollectionFlag = 0;
+			if (tempSpriteType == Actor.energyRefill) {
+				return;
+			}
+			if (tempSpriteType == Actor.missileRefill) {
+				return;
+			}
+			enemyDeleteSelf();
+			enemyWorking.spawnFlag = 2;
+			return;
+		}
+		if (enemyWorking.spriteType != Actor.energyRefill) {
+			if (enemyWorking.spriteType == Actor.missileRefill) {
+				if (samusCurMissiles == samusMaxMissiles) {
+					return;
+				}
+			}
+		} else if (samusCurHealth == ((samusEnergyTanks + 1) * 100) - 1) {
+			return;
+		}
+	}
+	tempSpriteType = enemyWorking.spriteType;
+	const itemType = cast(ubyte)(((enemyWorking.spriteType - Actor.itemBaseID) / 2) + 1);
+	itemCollected = itemType;
+	unusedItemOrbYPos = enemyWorking.y;
+	unusedItemOrbXPos = enemyWorking.x;
+	itemCollectionFlag = 0xFF;
 }
 
 void enAIBlobThrower() {
@@ -272,12 +674,107 @@ void enAIGlowFly() {
 	assert(0); // TODO
 }
 
+enum RockIcicleState {
+	state0 = 0,
+	state1 = 1,
+	state2 = 2,
+	state3 = 3,
+	state4 = 4,
+	state5 = 5,
+}
+
 void enAIRockIcicle() {
-	assert(0); // TODO
+	static void animate() {
+		if (enemyFrameCounter & 1) {
+			return;
+		}
+		if (enemyWorking.spriteType == Actor.rockIcicleMoving1) {
+			enemyWorking.spriteType = Actor.rockIcicleMoving2;
+			return;
+		}
+		if (enemyWorking.spriteType == Actor.rockIcicleMoving2) {
+			enemyWorking.spriteType = Actor.rockIcicleMoving1;
+			return;
+		}
+		enemyWorking.spriteType = Actor.rockIcicleMoving1;
+	}
+	final switch (cast(RockIcicleState)enemyWorking.state) {
+		case RockIcicleState.state0:
+			enemyWorking.spriteType = Actor.rockIcicleIdle1;
+			if (++enemyWorking.counter < 11) {
+				return;
+			}
+			enemyWorking.state = RockIcicleState.state1;
+			enemyWorking.spriteType = Actor.rockIcicleIdle2;
+			enemyWorking.counter = 0;
+			break;
+		case RockIcicleState.state1:
+			if (++enemyWorking.counter < 7) {
+				return;
+			}
+			enemyWorking.state = RockIcicleState.state2;
+			enemyWorking.counter = 0;
+			break;
+		case RockIcicleState.state2:
+			if (enemyFrameCounter & 3) {
+				return;
+			}
+			animate();
+			enemyWorking.y++;
+			if (++enemyWorking.misc != 4) {
+				return;
+			}
+			enemyWorking.spriteType = Actor.rockIcicleMoving1;
+			enemyWorking.state = RockIcicleState.state3;
+			break;
+		case RockIcicleState.state3:
+			animate();
+			if (enemyFrameCounter != 5) {
+				return;
+			}
+			enemyWorking.state = RockIcicleState.state4;
+			break;
+		case RockIcicleState.state4:
+			animate();
+			if (++enemyWorking.counter != 16) {
+				return;
+			}
+			enemyWorking.counter = 0;
+			enemyWorking.state = RockIcicleState.state5;
+			break;
+		case RockIcicleState.state5:
+			animate();
+			enemyWorking.y += 4;
+			enemyWorking.misc += 4;
+			enCollisionDownNearSmall();
+			if (!(enBGCollisionResult & 2)) {
+				if (enemyWorking.y < 160) {
+					return;
+				}
+			}
+			sfxRequestNoise = NoiseSFX.u11;
+			enemyWorking.y -= enemyWorking.misc;
+			enemyWorking.misc = 0;
+			enemyWorking.state = RockIcicleState.state0;
+			enemyWorking.spriteType = Actor.rockIcicleIdle1;
+			break;
+	}
 }
 
 void enemyCommonAI() {
-	assert(0); // TODO
+	if (enemyWorking.dropType) {
+		return enemyAnimateDrop();
+	}
+	if (enemyWorking.explosionFlag) {
+		return enemyAnimateExplosion(enemyWorking.explosionFlag);
+	}
+	if (enemyWorking.iceCounter) {
+		return enemyAnimateIce();
+	}
+	if (metroidState == 0x80) {
+		return enemyMetroidExplosion();
+	}
+	enemyWorking.ai();
 }
 
 void enAINULL() {}
@@ -287,11 +784,69 @@ void enemyAnimateIce() {
 }
 
 void enemyAnimateDrop() {
-	assert(0); // TODO
+	if (++enemyWorking.counter != 176) {
+		if (enemyWorking.counter < 128) {
+			if (enemyFrameCounter & 3) {
+				return;
+			}
+		} else {
+			if (enemyFrameCounter & 1) {
+				return;
+			}
+		}
+		enemyWorking.spriteType ^= 1;
+	} else {
+		enemyWorking.dropType = 0;
+		enemyDeleteSelf();
+		enemyWorking.spawnFlag = 2;
+	}
 }
 
-void enemyAnimateExplosion() {
-	assert(0); // TODO
+void enemyAnimateExplosion(ubyte type) {
+	if (type & (1 << 5)) {
+		if (++enemyWorking.counter != Actor.screwExplosionEnd - Actor.screwExplosionStart + 1) {
+			enemyWorking.spriteType = cast(Actor)(enemyWorking.counter + Actor.screwExplosionStart);
+			return;
+		}
+	} else {
+		if (type != 0x11) {
+			type++;
+		}
+		if (++enemyWorking.counter != Actor.normalExplosionEnd - Actor.normalExplosionStart + 1) {
+			enemyWorking.spriteType = cast(Actor)(Actor.normalExplosionStart + enemyWorking.counter);
+			return;
+		}
+	}
+	if (enemyWorking.maxHealth == 0xFD) {
+		enemyWorking.stunCounter = 0;
+		enemyWorking.iceCounter = 0;
+		enemyWorking.explosionFlag = 0;
+		enemyWorking.counter++;
+		return;
+	}
+	static void dropNothing() {
+		enemyDeleteSelf();
+		enemyWorking.spawnFlag = 2;
+	}
+	if (DIV & 1) {
+		return dropNothing();
+	}
+	ushort drop;
+	if ((enemyWorking.explosionFlag & 0xF) == 0) {
+		return dropNothing();
+	} else if ((enemyWorking.explosionFlag & 0xF) == 1) {
+		drop = (1 << 8) | Actor.smallHealth;
+	} else if ((enemyWorking.explosionFlag & 0xF) == 2) {
+		drop = (2 << 8) | Actor.bigHealth;
+	} else {
+		drop = (4 << 8) | Actor.missileDrop;
+	}
+	enemyWorking.dropType = (drop >> 8);
+	enemyWorking.spriteType = cast(Actor)(drop & 0xFF);
+	enemyWorking.stunCounter = 0;
+	enemyWorking.iceCounter = 0;
+	enemyWorking.counter = 0;
+	enemyWorking.explosionFlag = 0;
 }
 
 void enemyMetroidExplosion() {
@@ -323,7 +878,17 @@ void enAISkreek() {
 }
 
 void enAISmallBug() {
-	assert(0); // TODO
+	enemyFlipSpriteIDNow();
+	if (++enemyWorking.counter == 0x40) {
+		enemyWorking.counter = 0;
+		enemyFlipHorizontalNow();
+		return;
+	}
+	if (enemyWorking.spriteAttributes & OAMFlags.xFlip) {
+		enemyWorking.x++;
+	} else {
+		enemyWorking.x--;
+	}
 }
 
 void enAIDrivel() {
@@ -362,8 +927,73 @@ void enAIAutrack() {
 	assert(0); // TODO
 }
 
+
+enum HopperState {
+	jumping = 0,
+	falling = 1,
+	attemptTurnAround = 2,
+}
 void enAIHopper() {
-	assert(0); // TODO
+	static immutable ubyte[] jumpYSpeedTable = [0x04, 0x03, 0x04, 0x03, 0x03, 0x02, 0x03, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00];
+	static immutable ubyte[] jumpXSpeedTable = [0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01];
+	final switch (cast(HopperState)enemyWorking.state) {
+		case HopperState.falling:
+			if (enemyWorking.counter == 16) { // fall speed maxed out
+				enCollisionDownMidMedium();
+				if (enBGCollisionResult & 2) { // found ground, start jumping again
+					enemyWorking.counter = 0;
+					enemyWorking.state = HopperState.jumping;
+					if (++enemyWorking.misc == 3) {
+						enemyFlipHorizontalNow();
+						enemyWorking.misc = 0;
+					}
+					return;
+				} else { // no collision, keep falling
+					enemyWorking.counter = 15;
+				}
+			}
+			enemyWorking.y += jumpYSpeedTable[$ - 1 - enemyWorking.counter];
+			enCollisionDownMidMedium();
+			if (enBGCollisionResult & 2) { // found ground, start jumping again
+				enemyWorking.counter = 0;
+				enemyWorking.state = HopperState.jumping;
+				if (++enemyWorking.misc == 3) {
+					enemyFlipHorizontalNow();
+					enemyWorking.misc = 0;
+				}
+			} else { // no ground, keep falling
+				if (enemyWorking.spriteAttributes) { // falling to the right
+					enemyWorking.x += jumpXSpeedTable[$ - 1 - enemyWorking.counter];
+				} else { // falling to the left
+					enemyWorking.x -= jumpXSpeedTable[$ - 1 - enemyWorking.counter];
+				}
+				enemyWorking.counter++;
+			}
+			break;
+		case HopperState.attemptTurnAround:
+			if (enemyWorking.x < 200) {
+				enemyFlipHorizontalNow();
+			}
+			enemyWorking.state = HopperState.jumping;
+			break;
+		case HopperState.jumping:
+			if (enemyWorking.counter != 16) {
+				enemyWorking.y -= jumpYSpeedTable[enemyWorking.counter];
+				if (enemyWorking.spriteAttributes) {
+					enemyWorking.x += jumpXSpeedTable[enemyWorking.counter];
+				} else {
+					enemyWorking.x -= jumpXSpeedTable[enemyWorking.counter];
+				}
+				if ((++enemyWorking.counter == 5) && (++enemyWorking.spriteType == Actor.autoad2)) {
+					sfxRequestNoise = NoiseSFX.u1A;
+				}
+			} else {
+				enemyWorking.counter = 0;
+				enemyWorking.state = HopperState.falling;
+				enemyWorking.spriteType--;
+			}
+			break;
+	}
 }
 
 void enAIWallfire() {
@@ -430,16 +1060,40 @@ void enemyCreateLinkForChildObject() {
 	assert(0); // TODO
 }
 
-void enemyFlipSpriteID() {
-	assert(0); // TODO
+void enemyFlipSpriteIDFourFrame() {
+	if (enemyFrameCounter & 1) {
+		return;
+	}
+	enemyFlipSpriteIDNow();
+}
+void enemyFlipSpriteIDTwoFrame() {
+	if (enemyFrameCounter & 3) {
+		return;
+	}
+	enemyFlipSpriteIDNow();
+}
+void enemyFlipSpriteIDNow() {
+	enemyWorking.spriteType ^= 1;
 }
 
 void enemyFlipSpriteID2Bits() {
 	assert(0); // TODO
 }
 
-void enemyFlipHorizontal() {
-	assert(0); // TODO
+void enemyFlipHorizontalTwoFrame() {
+	if (enemyFrameCounter & 1) {
+		return;
+	}
+	enemyFlipHorizontalNow();
+}
+void enemyFlipHorizontalFourFrame() {
+	if (enemyFrameCounter & 3) {
+		return;
+	}
+	enemyFlipHorizontalNow();
+}
+void enemyFlipHorizontalNow() {
+	enemyWorking.spriteAttributes ^= OAMFlags.xFlip;
 }
 
 void enemyFlipVertical() {
@@ -511,7 +1165,13 @@ void babyClearBlocks() {
 }
 
 void enemyGetSamusCollisionResults() {
-	assert(0); // TODO
+	enemyWeaponType = CollisionType.nothing;
+	if (enSprCollision.enemy != enemyWRAMAddr) {
+		return;
+	}
+	enemyWeaponType = enSprCollision.weaponType;
+	enemyWeaponDir = enSprCollision.weaponDir;
+	enSprCollision = EnSprCollision.init;
 }
 
 void enemyKeepOnscreen() {
