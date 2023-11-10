@@ -6,7 +6,6 @@ import metroid2.enemies;
 import metroid2.external;
 import metroid2.globals;
 import metroid2.registers;
-import metroid2.sram;
 import libgb;
 
 import std.logger;

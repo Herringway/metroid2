@@ -4,6 +4,8 @@ import metroid2.external;
 
 import libgb;
 
+struct GameSettings {}
+
 void main() {
 	gb.entryPoint = &start;
 	gb.interruptHandler = &vblank;
@@ -11,5 +13,6 @@ void main() {
 	gb.sourceFile = "metroid2.gb";
 	gb.saveFile = "metroid2.sav";
 	loadData(gb.romData);
+	gb.loadSettings!GameSettings();
 	gb.run();
 }

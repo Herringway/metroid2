@@ -3,7 +3,7 @@ module metroid2.globals;
 import libgb;
 
 import metroid2.defs;
-import metroid2.sram;
+import metroid2.external;
 
 __gshared OAMEntry[40] oamBuffer;
 

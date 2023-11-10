@@ -9,7 +9,6 @@ import metroid2.defs;
 import metroid2.external;
 import metroid2.globals;
 import metroid2.registers;
-import metroid2.sram;
 
 public import metroid2.doors;
 

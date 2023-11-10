@@ -16,7 +16,6 @@ import metroid2.external;
 import metroid2.globals;
 import metroid2.mapbanks;
 import metroid2.registers;
-import metroid2.sram;
 
 import libgb;
 
