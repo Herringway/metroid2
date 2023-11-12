@@ -2400,11 +2400,11 @@ void oamDMA() {
 }
 void executeDoorScript() {
 	if (doorIndex) {
+		infof("Executing script %s", doorIndex);
 		oamBufferIndex = samusTopOAMOffset;
 		clearUnusedOAMSlots();
 		waitOneFrame();
 		oamDMA();
-		//hl = doorPointerTable[doorIndex]
 		doorScriptBuffer[0 .. doorPointerTable[doorIndex].length] = doorPointerTable[doorIndex][];
 		const(ubyte)* script = &doorScriptBuffer[0];
 		while (true) {
