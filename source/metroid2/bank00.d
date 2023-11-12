@@ -579,7 +579,7 @@ void handleCamera() {
 		if (cameraX.pixel == 80) {
 			if (samusOnScreenXPos < 15) {
 				doorScrollDirection = 2;
-				samusX += 0x100;
+				samusX = (samusX + 0x100) & 0xF00;
 				loadDoorIndex();
 			}
 			goto leftDone;
@@ -631,7 +631,8 @@ void handleCamera() {
 			goto exit;
 		}
 	}
-	tmp2 = cast(ubyte)-tmp2;
+	//upward
+	cameraSpeedUp = cast(ubyte)-(samusY.pixel - samusPrevYPixel);
 	cameraScrollDirection |= ScrollDirection.up;
 	if (tmp & 4) {
 		if (cameraY.pixel == 72) {
@@ -642,12 +643,12 @@ void handleCamera() {
 					loadDoorIndex();
 				}
 			}
-		}  else if (cameraY.pixel < 72) {
+		} else if (cameraY.pixel < 72) {
 			cameraY = (cameraY + 1) & 0xFFF;
-		} else if (tmp2 >= 62) {
+		} else if (tmp2 < 62) {
 			cameraY = cast(ushort)(cameraY - cameraSpeedUp); // no & 0xFFF?
 		}
-	} else if (tmp2 >= 78) {
+	} else if (tmp2 < 78) {
 		cameraY = cast(ushort)(cameraY - cameraSpeedUp); // no & 0xFFF?
 	}
 	exit:
@@ -660,7 +661,7 @@ immutable ubyte[11] unknown0B39 = [0, 1, 1, 0, 0, 0, 1, 2, 2, 1, 1];
 void handleCameraDoor() {
 	samusSpinAnimationTimer++;
 	if (doorScrollDirection & DoorDirection.right) {
-		cameraX = (cameraX + 4) &0xFFF;
+		cameraX = (cameraX + 4) & 0xFFF;
 		samusAnimationTimer += 3;
 		cameraScrollDirection = ScrollDirection.right;
 		samusX++;
@@ -668,7 +669,7 @@ void handleCameraDoor() {
 			return;
 		}
 	} else if (doorScrollDirection & DoorDirection.left) {
-		cameraX = (cameraX - 4) &0xFFF;
+		cameraX = (cameraX - 4) & 0xFFF;
 		samusAnimationTimer += 3;
 		cameraScrollDirection = ScrollDirection.left;
 		samusX--;
@@ -676,7 +677,7 @@ void handleCameraDoor() {
 			return;
 		}
 	} else if (doorScrollDirection & DoorDirection.up) {
-		cameraY = (cameraY - 4) &0xFFF;
+		cameraY = (cameraY - 4) & 0xFFF;
 		samusAnimationTimer += 3;
 		cameraScrollDirection = ScrollDirection.up;
 		samusY -= (frameCounter & 1) + 1;
@@ -684,7 +685,7 @@ void handleCameraDoor() {
 			return;
 		}
 	} else if (doorScrollDirection & DoorDirection.down) {
-		cameraY = (cameraY + 4) &0xFFF;
+		cameraY = (cameraY + 4) & 0xFFF;
 		samusAnimationTimer += 3;
 		cameraScrollDirection = ScrollDirection.down;
 		samusY += (frameCounter & 1) + 1;
@@ -3773,7 +3774,7 @@ void handleTitle() {
 }
 
 void loadScreenSpritePriorityBit() {
-	samusScreenSpritePriority = (roomTransitionIndices[(samusY.screen << 4) | samusX.screen] >> 11) & 1;
+	samusScreenSpritePriority = (roomTransitionIndices[((samusY.screen & 0xF) << 4) | (samusX.screen & 0xF)] >> 11) & 1;
 }
 void unusedDeathAnimationCopy() {
 	assert(0); // TODO
