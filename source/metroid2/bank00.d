@@ -1288,7 +1288,7 @@ void samusHandlePose() {
 						samusTryStanding();
 						return;
 					}
-					if (++samusJumpStartCounter >= 6) {
+					if (++samusJumpStartCounter < 6) {
 						 if (inputPressed & Pad.right) {
 							samusMoveRightInAirTurn();
 							return;
