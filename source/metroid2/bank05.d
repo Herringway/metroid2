@@ -117,7 +117,13 @@ void titleScreenRoutine() {
 	debugFlag = 0;
 	bgPalette = 0x93;
 	if (titleClearSelected) {
-		// TODO clearSaveBranch
+		sfxRequestNoise = NoiseSFX.u0F;
+		enableSRAM();
+		sram.saves[activeSaveSlot].magic[0 .. 2] = 0;
+		disableSRAM();
+		titleShowClearOption = 0;
+		infof("Save file %s cleared", activeSaveSlot);
+		return;
 	}
 	sfxRequestSquare1 = Square1SFX.select;
 	songRequest = Song.samusFanfare;
