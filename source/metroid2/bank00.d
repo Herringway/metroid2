@@ -383,7 +383,9 @@ void handleEnemiesOrQueen() {
 }
 
 void loadGameLoadGraphics() {
-	copyToVRAM(&graphicsCommonItems[0], &(vram()[VRAMDest.commonItems]), graphicsCommonItems.length);
+	foreach (i, commonGraphics; graphicsItems[12 .. 16]) {
+		copyToVRAM(&commonGraphics[0], &(vram()[VRAMDest.commonItems + i * 0x40]), commonGraphics.length);
+	}
 	copyToVRAM(&graphicsSamusPowerSuit[0], &(vram()[VRAMDest.samus]), graphicsSamusPowerSuit.length);
 	copyToVRAM(enGfx(saveBuf.enGfxID), &(vram()[VRAMDest.enemies]), 0x400);
 	if (loadingFromFile) {
@@ -2636,7 +2638,7 @@ void animateGettingVaria(const GraphicsInfo) {
 void doorLoadTileTable(ref const(ubyte)* script) {
 	const tiles = (script++)[0] & 0xF;
 	saveBuf.tiletableID = tiles;
-	tileTableArray[] = metatileTable[tiles][];
+	tileTableArray[0 .. metatileTable[tiles].length] = metatileTable[tiles][];
 	doorWarpRerender();
 }
 void doorLoadCollision(ref const(ubyte)* script) {
