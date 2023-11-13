@@ -263,7 +263,7 @@ bool enemyGetDamagedOrGiveDrop() {
 	static void giveHealth(ubyte amount) {
 		samusCurHealth += amount;
 		if (samusCurHealth / 100 >= samusEnergyTanks) {
-			samusCurHealth = cast(ushort)((samusEnergyTanks * 100) - 1);
+			samusCurHealth = cast(ushort)(((samusEnergyTanks + 1) * 100) - 1);
 		}
 	}
 	switch (enemyWorking.dropType) {
