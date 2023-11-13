@@ -84,7 +84,7 @@ void loadEnemiesVertical() {
 		}
 		if (enemySpawnFlags[enemies[0].spawnNumber] >= 0xFE) {
 			const x = enemies[0].x & 0xF8;
-			if (leftEdge.pixel < x) {
+			if (leftEdge.pixel >= x) {
 				enemies++;
 				continue;
 			}
