@@ -3214,14 +3214,14 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 		samusDamageBoostDirection = 0xFF;
 	}
 	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
-		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != 0xFF)) {
+		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != solidEnemy)) {
 			samusDamageValue = enemyDamageTable[collisionEnSprite];
 			collision.weaponType = CollisionType.screwAttack;
 			collision.enemy = enemy;
 			return false;
 		}
 	}
-	if (collisionEnIce || (enemyDamageTable[collisionEnSprite] == 0xFF)) {
+	if (collisionEnIce || (enemyDamageTable[collisionEnSprite] == solidEnemy)) {
 		if (collisionEnSprite == Actor.queenMouthStunned) {
 			if ((samusPose == SamusPose.morphBall) || (samusPose == SamusPose.morphBallJumping) || (samusPose == SamusPose.morphBallFalling)) {
 				queenEatingState = 1;
@@ -3230,7 +3230,7 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 		}
 		return true;
 	}
-	if (enemyDamageTable[collisionEnSprite] == 0xFE) {
+	if (enemyDamageTable[collisionEnSprite] == drainsHealth) {
 		applyDamageLarvaMetroid();
 		collision.enemy = enemy;
 		collision.weaponType = CollisionType.contact;
@@ -3317,14 +3317,14 @@ bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY
 		return false;
 	}
 	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
-		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != 0xFF)) {
+		if (!collisionEnIce && (enemyDamageTable[collisionEnSprite] != solidEnemy)) {
 			samusDamageValue = enemyDamageTable[collisionEnSprite];
 			collision.weaponType = CollisionType.screwAttack;
 			collision.enemy = enemy;
 			return false;
 		}
 	}
-	if (collisionEnIce || (collisionEnSprite == 0) || (enemyDamageTable[collisionEnSprite] == 0xFF)) {
+	if (collisionEnIce || (collisionEnSprite == 0) || (enemyDamageTable[collisionEnSprite] == solidEnemy)) {
 		if (collisionEnSprite == Actor.queenMouthStunned) {
 			if ((samusPose == SamusPose.morphBall) || (samusPose == SamusPose.morphBallJumping) || (samusPose == SamusPose.morphBallFalling)) {
 				queenEatingState = 1;
@@ -3333,7 +3333,7 @@ bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY
 		}
 		return true;
 	}
-	if (enemyDamageTable[collisionEnSprite] == 0xFE) {
+	if (enemyDamageTable[collisionEnSprite] == drainsHealth) {
 		applyDamageLarvaMetroid();
 		collision.enemy = enemy;
 		collision.weaponType = CollisionType.contact;

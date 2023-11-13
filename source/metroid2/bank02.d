@@ -507,12 +507,116 @@ void unusedSetXFlip() {
 	assert(0); // TODO
 }
 
-void enCollisionRight() {
+void enCollisionRightNearSmall() {
 	assert(0); // TODO
 }
 
-void enCollisionLeft() {
+void enCollisionRightMidSmall() {
 	assert(0); // TODO
+}
+
+void enCollisionRightMidMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionRightFarMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionRightMidWide() {
+	assert(0); // TODO
+}
+
+void enCollisionRightFarWide() {
+	assert(0); // TODO
+}
+
+void enCollisionRightCrawlA() {
+	enBGCollisionResult = 0b00010001;
+	// check upper right
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 8);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x + 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	// check lower right
+	enemyTestPointYPos += 15;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000001;
+}
+
+void enCollisionRightCrawlB() {
+	enBGCollisionResult = 0b00010001;
+	// check upper right
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 7);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x + 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	// check lower right
+	enemyTestPointYPos += 15;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000001;
+}
+
+void enCollisionLeftNearSmall() {
+	assert(0); // TODO
+}
+
+void enCollisionLeftMidSmall() {
+	assert(0); // TODO
+}
+
+void enCollisionLeftMidMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionLeftFarMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionLeftMidWide() {
+	assert(0); // TODO
+}
+
+void enCollisionLeftFarWide() {
+	assert(0); // TODO
+}
+
+void enCollisionLeftCrawlA() {
+	enBGCollisionResult = 0b01000100;
+	// check upper left
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 7);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 9);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	// check lower left
+	enemyTestPointYPos += 15;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000100;
+}
+
+void enCollisionLeftCrawlB() {
+	enBGCollisionResult = 0b01000100;
+	// check upper left
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 8);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 9);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	// check lower left
+	enemyTestPointYPos += 15;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000100;
 }
 
 void enCollisionDownNearSmall() {
@@ -561,11 +665,91 @@ void enCollisionDownFarWide() {
 }
 
 void enCollisionDownCrawlA() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00100010;
+	// check lower left
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 8);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 8);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	// check lower right
+	enemyTestPointXPos += 15;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
 }
 
 void enCollisionDownCrawlB() {
+	enBGCollisionResult = 0b00100010;
+	// check lower left
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 8);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 9);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	// check lower right
+	enemyTestPointXPos += 15;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
+}
+
+void enCollisionUpNearSmall() {
 	assert(0); // TODO
+}
+
+void enCollisionUpNearMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionUpMidMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionUpMidWide() {
+	assert(0); // TODO
+}
+
+void enCollisionUpFarMedium() {
+	assert(0); // TODO
+}
+
+void enCollisionUpFarWide() {
+	assert(0); // TODO
+}
+
+void enCollisionUpCrawlA() {
+	enBGCollisionResult = 0b10001000;
+	// check upper left
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 8);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 9);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	// check upper right
+	enemyTestPointXPos += 15;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00001000;
+}
+
+void enCollisionUpCrawlB() {
+	enBGCollisionResult = 0b10001000;
+	// check upper left
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 8);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 8);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	// check upper right
+	enemyTestPointXPos += 15;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00001000;
 }
 
 void enCollisionUp() {
@@ -853,20 +1037,204 @@ void enemyMetroidExplosion() {
 	assert(0); // TODO
 }
 
+// AI for enemies that stick to a surface and move along it (clockwise)
 void enAICrawlerA() {
-	assert(0); // TODO
+	switch (enemyWorking.directionFlags) {
+		case 0: //right
+			enCollisionDownCrawlA();
+			if (enBGCollisionResult & 0b0010) {
+				break; //concave
+			}
+			crawlerTurnDown();
+			return;
+		case 1: //down
+			enCollisionLeftCrawlA();
+			if (enBGCollisionResult & 0b0100) {
+				break; //concave
+			}
+			crawlerTurnLeft();
+			return;
+		case 2: //left
+			enCollisionUpCrawlA();
+			if (enBGCollisionResult & 0b1000) {
+				break; //concave
+			}
+			crawlerTurnUp();
+			return;
+		case 3: //up
+		default:
+			enCollisionRightCrawlA();
+			if (enBGCollisionResult & 0b0001) {
+				break; //concave
+			}
+			crawlerTurnRight();
+			return;
+	}
+	enemyWorking.counter = 0xFF;
+	static void moveAndAnimate() {
+		crawlerMove();
+		if (enemyFrameCounter & 1) {
+			return;
+		}
+		enemyFlipSpriteIDNow();
+	}
+	switch (enemyWorking.directionFlags) {
+		case 0: //right
+			enCollisionRightCrawlA();
+			if (!(enBGCollisionResult & 0b0001)) {
+				return moveAndAnimate();
+			}
+			crawlerTurnUp();
+			break;
+		case 1: //down
+			enCollisionDownCrawlA();
+			if (!(enBGCollisionResult & 0b0010)) {
+				return moveAndAnimate();
+			}
+			crawlerTurnRight();
+			break;
+		case 2: //left
+			enCollisionLeftCrawlA();
+			if (!(enBGCollisionResult & 0b0100)) {
+				return moveAndAnimate();
+			}
+			crawlerTurnDown();
+			break;
+		case 3: //up
+		default:
+			enCollisionUpCrawlA();
+			if (!(enBGCollisionResult & 0b1000)) {
+				return moveAndAnimate();
+			}
+			crawlerTurnLeft();
+			break;
+	}
 }
 
 void crawlerMove() {
-	assert(0); // TODO
+	switch (enemyWorking.directionFlags) {
+		case 0:
+			enemyWorking.x++;
+			break;
+		case 1:
+			enemyWorking.y++;
+			break;
+		default:
+		case 2:
+			enemyWorking.x--;
+			break;
+		case 3:
+			enemyWorking.y--;
+			break;
+	}
 }
 
-void crawlerTurn() {
-	assert(0); // TODO
+void crawlerTurnRight() {
+	enemyWorking.directionFlags &= 0xF0;
+	enemyWorking.directionFlags |= 0x00;
+	enemyWorking.spriteType &= 0xF0;
+	enemyWorking.spriteAttributes = OAMFlags.xFlip;
 }
 
+void crawlerTurnDown() {
+	enemyWorking.directionFlags &= 0xF0;
+	enemyWorking.directionFlags |= 0x01;
+	enemyWorking.spriteType = cast(Actor)((enemyWorking.spriteType & 0xF0) + 2);
+	enemyWorking.spriteAttributes = OAMFlags.xFlip;
+}
+void crawlerTurnLeft() {
+	enemyWorking.directionFlags &= 0xF0;
+	enemyWorking.directionFlags |= 0x02;
+	enemyWorking.spriteType = cast(Actor)((enemyWorking.spriteType & 0xF0));
+	enemyWorking.spriteAttributes = OAMFlags.yFlip;
+}
+void crawlerTurnUp() {
+	enemyWorking.directionFlags &= 0xF0;
+	enemyWorking.directionFlags |= 0x03;
+	enemyWorking.spriteType = cast(Actor)((enemyWorking.spriteType & 0xF0) + 2);
+	enemyWorking.spriteAttributes = OAMFlags.yFlip;
+}
+
+// AI for enemies that stick to a surface and move along it (counter-clockwise)
 void enAICrawlerB() {
-	assert(0); // TODO
+	switch (enemyWorking.directionFlags) {
+		case 0: //right
+			enCollisionUpCrawlB();
+			if (enBGCollisionResult & 0b1000) {
+				break; //concave
+			}
+			crawlerTurnUp();
+			enemyWorking.spriteAttributes |= OAMFlags.xFlip;
+			return;
+		case 1: //down
+			enCollisionRightCrawlB();
+			if (enBGCollisionResult & 0b0001) {
+				break; //concave
+			}
+			crawlerTurnRight();
+			enemyWorking.spriteAttributes |= OAMFlags.yFlip;
+			return;
+		case 2: //left
+			enCollisionDownCrawlB();
+			if (enBGCollisionResult & 0b0010) {
+				break; //concave
+			}
+			crawlerTurnDown();
+			enemyWorking.spriteAttributes &= ~OAMFlags.xFlip;
+			return;
+		case 3: //up
+		default:
+			enCollisionLeftCrawlB();
+			if (enBGCollisionResult & 0b0100) {
+				break; //concave
+			}
+			crawlerTurnLeft();
+			enemyWorking.spriteAttributes &= ~OAMFlags.yFlip;
+			return;
+	}
+	enemyWorking.counter = 0xFF;
+	static void moveAndAnimate() {
+		crawlerMove();
+		if (enemyFrameCounter & 1) {
+			return;
+		}
+		enemyFlipSpriteIDNow();
+	}
+	switch (enemyWorking.directionFlags) {
+		case 0: //right
+			enCollisionRightCrawlB();
+			if (!(enBGCollisionResult & 0b0001)) {
+				return moveAndAnimate();
+			}
+			crawlerTurnDown();
+			enemyWorking.spriteAttributes &= ~OAMFlags.xFlip;
+			break;
+		case 1: //down
+			enCollisionDownCrawlB();
+			if (!(enBGCollisionResult & 0b0010)) {
+				return moveAndAnimate();
+			}
+			crawlerTurnLeft();
+			enemyWorking.spriteAttributes &= ~OAMFlags.yFlip;
+			break;
+		case 2: //left
+			enCollisionLeftCrawlB();
+			if (!(enBGCollisionResult & 0b0100)) {
+				return moveAndAnimate();
+			}
+			crawlerTurnUp();
+			enemyWorking.spriteAttributes |= OAMFlags.xFlip;
+			break;
+		case 3: //up
+		default:
+			enCollisionUpCrawlB();
+			if (!(enBGCollisionResult & 0b1000)) {
+				return moveAndAnimate();
+			}
+			crawlerTurnRight();
+			enemyWorking.spriteAttributes |= OAMFlags.yFlip;
+			break;
+	}
 }
 
 void skreekProjectileCode() {
@@ -1101,7 +1469,18 @@ void enemyFlipVertical() {
 }
 
 void enAIMetroidStinger() {
-	assert(0); // TODO
+	if (++enemyWorking.counter != 138) {
+		if (enemyWorking.counter == 1) { // stuff only happens on frame 0
+			metroidCountDisplayed += 8;
+			metroidCountShuffleTimer = 202;
+			songRequest = Song.metroidHiveWithIntro;
+			cutsceneActive = 1;
+		}
+	} else { // after 138 frames, clean up
+		enemyDeleteSelf();
+		enemyWorking.spawnFlag = 2;
+		cutsceneActive = 0;
+	}
 }
 
 void enAIHatchingAlpha() {

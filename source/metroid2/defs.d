@@ -18,6 +18,9 @@ enum defaultBeamSpeed = 4;
 enum spazerSpeed = 4;
 enum plasmaBeamSpeed = 6;
 
+enum ubyte drainsHealth = 0xFE;
+enum ubyte solidEnemy = 0xFF;
+
 enum ScrollDirection {
 	right = 1 << 4,
 	left = 1 << 5,
