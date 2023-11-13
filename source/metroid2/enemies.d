@@ -6484,261 +6484,261 @@ immutable enHeadArachnus = EnemyData(0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xF
 immutable enHeadArachnusOrb = EnemyData(0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFD, &enAIArachnus);
 
 immutable ubyte[] enemyDamageTable = [
-	0x08, // Tsumuri
-	0x08, // Tsumuri
-	0x08, // Tsumuri
-	0x08, // Tsumuri
-	0x10, // Skreek
-	0x10, // Skreek
-	0x10, // Skreek
-	0x10, // Skreek
-	0x03, // Skreek projectile
-	0x10, // Drivel
-	0x10, // Drivel
-	0x10, // Drivel
-	0x03, // Drivel projectile
-	0x03, // Drivel projectile
-	0x03, // Drivel projectile
-	0x03, // Drivel projectile
-	0x03, // Drivel projectile
-	0x03, // Drivel projectile
-	0x05, // Small bugs
-	0x05, // Small bugs
-	0x10, // Hornoad
-	0x10, // Hornoad
-	0x15, // Senjoo
-	0x08, // Gawron
-	0x08, // Gawron
-	0x00, // Gawron spawner?
-	0x00, // Gawron spawner?
-	0x12, // Chute leech
-	0x12, // Chute leech
-	0x12, // Chute leech
-	0x15, // (uses same spritemap as 41h autrack)
-	0x15, // (uses same spritemap as 4Ah wallfire)
-	0x10, // Needler
-	0x10, // Needler
-	0x10, // Needler
-	0x10, // Needler
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x11, // Skorp
-	0x11, // Skorp
-	0x11, // Skorp
-	0x11, // Skorp
-	0x10, // Glow fly
-	0x10, // Glow fly
-	0x10, // Glow fly
-	0x10, // Glow fly
-	0x13, // Moheek
-	0x13, // Moheek
-	0x13, // Moheek
-	0x13, // Moheek
-	0x00, // Rock icicle
-	0x08, // Rock icicle
-	0x08, // Rock icicle
-	0x08, // Rock icicle
-	0x12, // Yumee
-	0x12, // Yumee
-	0x12, // Yumee
-	0x12, // Yumee
-	0x00, // Yumee spawner?
-	0x00, // Yumee spawner?
-	0x20, // Octroll
-	0x20, // Octroll
-	0x20, // Octroll
-	0x15, // Autrack
-	0x15, // Autrack
-	0x15, // Autrack
-	0x15, // Autrack
-	0x10, // Autrack projectile
-	0x15, // Autoad
-	0x15, // Autoad
-	0x00, // Sideways Autoad (unused)
-	0x00, // Sideways Autoad (unused)
-	0x15, // Wallfire
-	0x15, // Wallfire
-	0xFF, // Wallfire
-	0x10, // Wallfire projectile
-	0x10, // Wallfire projectile
-	0x10, // Wallfire projectile
-	0x10, // Wallfire projectile
-	0x15, // Gunzoo
-	0x15, // Gunzoo
-	0x15, // Gunzoo
-	0x08, // Gunzoo diagonal projectile
-	0x08, // Gunzoo diagonal projectile
-	0x08, // Gunzoo diagonal projectile
-	0x08, // Gunzoo horizontal projectile
-	0x08, // Gunzoo horizontal projectile (unused frame)
-	0x08, // Gunzoo horizontal projectile
-	0x08, // Gunzoo horizontal projectile
-	0x08, // Gunzoo horizontal projectile
-	0x15, // Autom
-	0x15, // Autom
-	0x10, // Autom projectile
-	0x10, // Autom projectile
-	0x10, // Autom projectile
-	0x10, // Autom projectile
-	0x10, // Autom projectile
-	0x15, // Shirk
-	0x15, // Shirk
-	0xFF, // Septogg
-	0xFF, // Septogg
-	0x20, // Moto
-	0x20, // Moto
-	0x20, // Moto
-	0x10, // Halzyn
-	0x20, // Ramulken
-	0x20, // Ramulken
-	0x00, // Musical stinger event trigger
-	0xFF, // (uses same spritemap as 72h proboscum)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0xFF, // Proboscum
-	0x00, // Proboscum
-	0x00, // Proboscum
-	0xFF, // Missile block
-	0x20, // Arachnus
-	0x20, // Arachnus
-	0x20, // Arachnus
-	0x20, // Arachnus
-	0x20, // Arachnus
-	0x02, // Arachnus projectile
-	0x02, // Arachnus projectile
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0xFF, // Plasma beam orb
-	0x00, // Plasma beam
-	0xFF, // Ice beam orb (and bent neck of Queen’s vomiting pose!?)
-	0x00, // Ice beam
-	0xFF, // Wave beam orb
-	0x00, // Wave beam
-	0xFF, // Spazer beam orb
-	0x00, // Spazer beam
-	0xFF, // Bombs orb
-	0x00, // Bombs
-	0xFF, // Screw attack orb
-	0x00, // Screw attack
-	0xFF, // Varia suit orb
-	0x00, // Varia suit
-	0xFF, // Hi-jump boots orb
-	0x00, // Hi-jump boots
-	0xFF, // Space jump orb
-	0x00, // Space jump
-	0xFF, // (spider ball orb?)
-	0x00, // Spider ball
-	0xFF, // (spring ball orb?)
-	0x00, // Spring ball
-	0xFF, // (energy tank orb?)
-	0x00, // Energy tank
-	0xFF, // (missile tank orb?)
-	0x00, // Missile tank
-	0x30, // Blob thrower (sprite is written to WRAM)
-	0x00, // Energy refill
-	0xFF, // Arachnus orb
-	0x00, // Missile refill
-	0x10, // Blob thrower projectile
-	0x10, // Blob thrower projectile
-	0xFE, // Metroid
-	0x00, // Metroid hatching
-	0x00, // (no graphics)
-	0x10, // Alpha metroid
-	0x10, // Alpha metroid
-	0xFF, // Baby metroid egg
-	0xFF, // Baby metroid egg
-	0xFF, // Baby metroid egg
-	0x00, // Baby metroid
-	0x00, // Baby metroid
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x15, // Gamma metroid
-	0x15, // Gamma metroid projectile
-	0x15, // Gamma metroid projectile
-	0x15, // Gamma metroid
-	0x00, // (no graphics)
-	0x00, // Gamma metroid shell
-	0x20, // Zeta metroid hatching
-	0x20, // Zeta metroid
-	0x20, // Zeta metroid
-	0x20, // Zeta metroid
-	0x20, // Zeta metroid
-	0x20, // Zeta metroid
-	0x20, // Zeta metroid
-	0x00, // Zeta metroid
-	0x00, // Zeta metroid
-	0x00, // Zeta metroid
-	0x00, // Zeta metroid
-	0x10, // Zeta metroid projectile
-	0x25, // Omega metroid
-	0x25, // Omega metroid
-	0x25, // Omega metroid
-	0x25, // Omega metroid
-	0x25, // Omega metroid
-	0x00, // Omega metroid
-	0x00, // Omega metroid
-	0x12, // Omega metroid projectile
-	0x12, // Omega metroid projectile
-	0x12, // Omega metroid projectile
-	0x12, // Omega metroid projectile
-	0x12, // Omega metroid projectile
-	0x12, // Omega metroid projectile
-	0x12, // Omega metroid projectile
-	0x12, // (omega metroid projectile?)
-	0xFE, // Metroid
-	0xFE, // Metroid (hurt)
-	0xFF, // Flitt
-	0xFF, // Flitt
-	0x00, // Stalagtite (unused)
-	0x10, // Gravitt
-	0x10, // Gravitt
-	0x10, // Gravitt
-	0x10, // Gravitt
-	0x10, // Gravitt
-	0x12, // Gullugg
-	0x12, // Gullugg
-	0x12, // Gullugg
-	0x00, // Baby metroid egg preview
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // Small health drop
-	0x00, // Small health drop
-	0x00, // Metroid death / missile door / screw attack explosion
-	0x00, // Metroid death / missile door / screw attack explosion
-	0x00, // Metroid death / missile door / screw attack explosion
-	0x00, // Metroid death / missile door / screw attack explosion
-	0x00, // Metroid death / missile door / screw attack explosion
-	0x00, // Metroid death / missile door / screw attack explosion
-	0x00, // Enemy death explosion
-	0x00, // Enemy death explosion
-	0x00, // Enemy death explosion
-	0x00, // Enemy death explosion (extra frame for enemies not dropping small health)
-	0x00, // Big energy drop
-	0x00, // Big energy drop
-	0x00, // Missile drop
-	0x00, // Missile drop
-	0x40, // Metroid Queen neck (no graphics)
-	0x40, // Metroid Queen head left half (no graphics)
-	0x20, // Metroid Queen projectile/head right half (no graphics)
-	0x40, // Metroid Queen body (no graphics)
-	0x00, // (no graphics)
-	0x40, // Metroid Queen mouth closed (no graphics)
-	0x40, // Metroid Queen mouth open (no graphics)
-	0xFF, // Metroid Queen mouth stunned (no graphics)
-	0xFF, // Missile door
-	0xFF, // (no graphics)
-	0xFF, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // (no graphics)
-	0x00, // Nothing - flitt (no graphics)
-	0x00, // ?
+	8, // Tsumuri
+	8, // Tsumuri
+	8, // Tsumuri
+	8, // Tsumuri
+	16, // Skreek
+	16, // Skreek
+	16, // Skreek
+	16, // Skreek
+	3, // Skreek projectile
+	16, // Drivel
+	16, // Drivel
+	16, // Drivel
+	3, // Drivel projectile
+	3, // Drivel projectile
+	3, // Drivel projectile
+	3, // Drivel projectile
+	3, // Drivel projectile
+	3, // Drivel projectile
+	5, // Small bugs
+	5, // Small bugs
+	16, // Hornoad
+	16, // Hornoad
+	21, // Senjoo
+	8, // Gawron
+	8, // Gawron
+	0, // Gawron spawner?
+	0, // Gawron spawner?
+	18, // Chute leech
+	18, // Chute leech
+	18, // Chute leech
+	21, // (uses same spritemap as 41h autrack)
+	21, // (uses same spritemap as 4Ah wallfire)
+	16, // Needler
+	16, // Needler
+	16, // Needler
+	16, // Needler
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // (no graphics)
+	17, // Skorp
+	17, // Skorp
+	17, // Skorp
+	17, // Skorp
+	16, // Glow fly
+	16, // Glow fly
+	16, // Glow fly
+	16, // Glow fly
+	19, // Moheek
+	19, // Moheek
+	19, // Moheek
+	19, // Moheek
+	0, // Rock icicle
+	8, // Rock icicle
+	8, // Rock icicle
+	8, // Rock icicle
+	18, // Yumee
+	18, // Yumee
+	18, // Yumee
+	18, // Yumee
+	0, // Yumee spawner?
+	0, // Yumee spawner?
+	32, // Octroll
+	32, // Octroll
+	32, // Octroll
+	21, // Autrack
+	21, // Autrack
+	21, // Autrack
+	21, // Autrack
+	16, // Autrack projectile
+	21, // Autoad
+	21, // Autoad
+	0, // Sideways Autoad (unused)
+	0, // Sideways Autoad (unused)
+	21, // Wallfire
+	21, // Wallfire
+	solidEnemy, // Wallfire
+	16, // Wallfire projectile
+	16, // Wallfire projectile
+	16, // Wallfire projectile
+	16, // Wallfire projectile
+	21, // Gunzoo
+	21, // Gunzoo
+	21, // Gunzoo
+	8, // Gunzoo diagonal projectile
+	8, // Gunzoo diagonal projectile
+	8, // Gunzoo diagonal projectile
+	8, // Gunzoo horizontal projectile
+	8, // Gunzoo horizontal projectile (unused frame)
+	8, // Gunzoo horizontal projectile
+	8, // Gunzoo horizontal projectile
+	8, // Gunzoo horizontal projectile
+	21, // Autom
+	21, // Autom
+	16, // Autom projectile
+	16, // Autom projectile
+	16, // Autom projectile
+	16, // Autom projectile
+	16, // Autom projectile
+	21, // Shirk
+	21, // Shirk
+	solidEnemy, // Septogg
+	solidEnemy, // Septogg
+	32, // Moto
+	32, // Moto
+	32, // Moto
+	16, // Halzyn
+	32, // Ramulken
+	32, // Ramulken
+	0, // Musical stinger event trigger
+	solidEnemy, // (uses same spritemap as 72h proboscum)
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // (no graphics)
+	solidEnemy, // Proboscum
+	0, // Proboscum
+	0, // Proboscum
+	solidEnemy, // Missile block
+	32, // Arachnus
+	32, // Arachnus
+	32, // Arachnus
+	32, // Arachnus
+	32, // Arachnus
+	2, // Arachnus projectile
+	2, // Arachnus projectile
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // (no graphics)
+	solidEnemy, // Plasma beam orb
+	0, // Plasma beam
+	solidEnemy, // Ice beam orb (and bent neck of Queen’s vomiting pose!?)
+	0, // Ice beam
+	solidEnemy, // Wave beam orb
+	0, // Wave beam
+	solidEnemy, // Spazer beam orb
+	0, // Spazer beam
+	solidEnemy, // Bombs orb
+	0, // Bombs
+	solidEnemy, // Screw attack orb
+	0, // Screw attack
+	solidEnemy, // Varia suit orb
+	0, // Varia suit
+	solidEnemy, // Hi-jump boots orb
+	0, // Hi-jump boots
+	solidEnemy, // Space jump orb
+	0, // Space jump
+	solidEnemy, // (spider ball orb?)
+	0, // Spider ball
+	solidEnemy, // (spring ball orb?)
+	0, // Spring ball
+	solidEnemy, // (energy tank orb?)
+	0, // Energy tank
+	solidEnemy, // (missile tank orb?)
+	0, // Missile tank
+	48, // Blob thrower (sprite is written to WRAM)
+	0, // Energy refill
+	solidEnemy, // Arachnus orb
+	0, // Missile refill
+	16, // Blob thrower projectile
+	16, // Blob thrower projectile
+	drainsHealth, // Metroid
+	0, // Metroid hatching
+	0, // (no graphics)
+	16, // Alpha metroid
+	16, // Alpha metroid
+	solidEnemy, // Baby metroid egg
+	solidEnemy, // Baby metroid egg
+	solidEnemy, // Baby metroid egg
+	0, // Baby metroid
+	0, // Baby metroid
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // (no graphics)
+	21, // Gamma metroid
+	21, // Gamma metroid projectile
+	21, // Gamma metroid projectile
+	21, // Gamma metroid
+	0, // (no graphics)
+	0, // Gamma metroid shell
+	32, // Zeta metroid hatching
+	32, // Zeta metroid
+	32, // Zeta metroid
+	32, // Zeta metroid
+	32, // Zeta metroid
+	32, // Zeta metroid
+	32, // Zeta metroid
+	0, // Zeta metroid
+	0, // Zeta metroid
+	0, // Zeta metroid
+	0, // Zeta metroid
+	16, // Zeta metroid projectile
+	37, // Omega metroid
+	37, // Omega metroid
+	37, // Omega metroid
+	37, // Omega metroid
+	37, // Omega metroid
+	0, // Omega metroid
+	0, // Omega metroid
+	18, // Omega metroid projectile
+	18, // Omega metroid projectile
+	18, // Omega metroid projectile
+	18, // Omega metroid projectile
+	18, // Omega metroid projectile
+	18, // Omega metroid projectile
+	18, // Omega metroid projectile
+	18, // (omega metroid projectile?)
+	drainsHealth, // Metroid
+	drainsHealth, // Metroid (hurt)
+	solidEnemy, // Flitt
+	solidEnemy, // Flitt
+	0, // Stalagtite (unused)
+	16, // Gravitt
+	16, // Gravitt
+	16, // Gravitt
+	16, // Gravitt
+	16, // Gravitt
+	18, // Gullugg
+	18, // Gullugg
+	18, // Gullugg
+	0, // Baby metroid egg preview
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // Small health drop
+	0, // Small health drop
+	0, // Metroid death / missile door / screw attack explosion
+	0, // Metroid death / missile door / screw attack explosion
+	0, // Metroid death / missile door / screw attack explosion
+	0, // Metroid death / missile door / screw attack explosion
+	0, // Metroid death / missile door / screw attack explosion
+	0, // Metroid death / missile door / screw attack explosion
+	0, // Enemy death explosion
+	0, // Enemy death explosion
+	0, // Enemy death explosion
+	0, // Enemy death explosion (extra frame for enemies not dropping small health)
+	0, // Big energy drop
+	0, // Big energy drop
+	0, // Missile drop
+	0, // Missile drop
+	64, // Metroid Queen neck (no graphics)
+	64, // Metroid Queen head left half (no graphics)
+	32, // Metroid Queen projectile/head right half (no graphics)
+	64, // Metroid Queen body (no graphics)
+	0, // (no graphics)
+	64, // Metroid Queen mouth closed (no graphics)
+	64, // Metroid Queen mouth open (no graphics)
+	solidEnemy, // Metroid Queen mouth stunned (no graphics)
+	solidEnemy, // Missile door
+	solidEnemy, // (no graphics)
+	solidEnemy, // (no graphics)
+	0, // (no graphics)
+	0, // (no graphics)
+	0, // Nothing - flitt (no graphics)
+	0, // ?
 ];
 const Rectangle*[] enemyHitboxes = [
 	&hitboxBlock, // Tsumuri
