@@ -736,7 +736,7 @@ void vblankUpdateStatusBar() {
 		if (metroidCountShuffleTimer == 0) {
 			vram()[hudBase + 18] = ((metroidCountDisplayed % 100) / 10) + 0xA0;
 			vram()[hudBase + 19] = (metroidCountDisplayed % 10) + 0xA0;
-		} else if (metroidCountShuffleTimer < 0x80) {
+		} else if (--metroidCountShuffleTimer < 0x80) {
 			vram()[hudBase + 18] = ((frameCounter % 100) / 10) + 0xA0;
 			vram()[hudBase + 19] = (frameCounter % 10) + 0xA0;
 		}
