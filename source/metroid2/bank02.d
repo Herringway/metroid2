@@ -346,15 +346,15 @@ bool enemyMoveFromWRAMtoHRAM(EnemySlot* enemy) {
 	enemyWorking.ai = enemy.ai;
 	enemyYPosMirror = enemy.y;
 	enemyXPosMirror = enemy.x;
-	if (enemy.stunCounter < 17) {
+	if (enemyWorking.stunCounter < 17) {
 		return false;
 	}
-	if (++enemy.stunCounter != 20) {
+	if (++enemyWorking.stunCounter != 20) {
 		return true;
-	} else if (enemy.iceCounter == 0) {
-		enemy.stunCounter = 0;
+	} else if (enemyWorking.iceCounter == 0) {
+		enemyWorking.stunCounter = 0;
 	} else {
-		enemy.stunCounter = 16;
+		enemyWorking.stunCounter = 16;
 	}
 	return false;
 }
