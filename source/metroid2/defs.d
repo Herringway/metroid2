@@ -674,6 +674,10 @@ struct EnemySpawn {
 	Actor id;
 	ubyte x;
 	ubyte y;
+	void toString(W)(ref W writer) const {
+		import std.format : formattedWrite;
+		writer.formattedWrite!"%s (at (%s,%s), flag %02X)"(id, x, y, spawnNumber);
+	}
 }
 
 struct EnemyData {
