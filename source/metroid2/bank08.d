@@ -13,7 +13,7 @@ immutable ubyte[32][4] queenHead = [
 void earthquakeCheck() {
 	const(ubyte)* hl = &earthquakeThresholds[0];
 	while (*hl != 0xFF) {
-		if (metroidCountReal == *hl) {
+		if (metroidCountReal == *(hl++)) {
 			nextEarthquakeTimer = 3;
 			if (metroidCountReal == 1) {
 				nextEarthquakeTimer = 1;
