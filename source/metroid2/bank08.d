@@ -24,7 +24,7 @@ void earthquakeCheck() {
 }
 
 immutable ubyte[] earthquakeThresholds = [
-	0x46, 0x42, 0x34, 0x24, 0x23, 0x21, 0x14, 0x13, 0x12, 0x09, 0x01, 0xFF
+	46, 42, 34, 24, 23, 21, 14, 13, 12, 9, 1, 0xFF
 ];
 
 immutable ubyte[][CollisionSet.max + 1] collisionTable = [
