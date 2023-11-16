@@ -309,16 +309,16 @@ void enemyCheckDirectionalShields() {
 
 
 immutable ubyte[] weaponDamageTable = [
-	CollisionType.powerBeam: 0x01,
-	CollisionType.iceBeam: 0x02,
-	CollisionType.waveBeam: 0x04,
-	CollisionType.spazer: 0x08,
-	CollisionType.plasmaBeam: 0x1E,
-	CollisionType.unk5: 0x00,
-	CollisionType.unk6: 0x00,
-	CollisionType.bombs: 0x02,
-	CollisionType.missiles: 0x14,
-	CollisionType.bombExplosion: 0x0A,
+	CollisionType.powerBeam: 1,
+	CollisionType.iceBeam: 2,
+	CollisionType.waveBeam: 4,
+	CollisionType.spazer: 8,
+	CollisionType.plasmaBeam: 30,
+	CollisionType.unk5: 0,
+	CollisionType.unk6: 0,
+	CollisionType.bombs: 2,
+	CollisionType.missiles: 20,
+	CollisionType.bombExplosion: 10,
 ];
 
 bool enemyMoveFromWRAMtoHRAM(EnemySlot* enemy) {
