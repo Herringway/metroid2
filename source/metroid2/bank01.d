@@ -1741,6 +1741,119 @@ void drawEnemySpriteGetInfo(EnemySlot* enemy) {
 	drawEnemySpr = enemy.spriteType;
 	drawEnemyAttr = (enemy.baseSpriteAttributes ^ enemy.spriteAttributes ^ enemy.stunCounter) & 0xF0;
 }
+
+void alphaGetAngle() {
+	metroidGetDistanceAndDirection();
+	alphaGetAngleFromTable();
+}
+
+void metroidGetDistanceAndDirection() {
+	byte distance;
+	ubyte direction;
+	distance = cast(byte)(samusOnScreenYPos - (enemyWorking.y + 16));
+	if (distance == 0) {
+		direction = 0;
+	} else if (distance > 0) {
+		direction = 1;
+	} else if (distance < 0) {
+		distance = cast(byte)-distance;
+		direction = 0xFF;
+	}
+	metroidAbsSamusDistY = distance;
+	metroidSamusYDir = direction;
+
+	distance = cast(byte)(samusOnScreenXPos - (enemyWorking.x + 16));
+	if (distance == 0) {
+		direction = 0;
+	} else if (distance > 0) {
+		direction = 1;
+	} else if (distance < 0) {
+		distance = cast(byte)-distance;
+		direction = 0xFF;
+	}
+	metroidAbsSamusDistX = distance;
+	metroidSamusXDir = direction;
+}
+void alphaGetAngleFromTable() {
+	static immutable ubyte[] angleTable = [
+		0x00, 0x01, 0x02, 0x03,
+		0x00, 0x04, 0x05, 0x06, 0x02,
+		0x01, 0x07, 0x08, 0x09, 0x02,
+		0x00, 0x0A, 0x0B, 0x0C, 0x03,
+		0x01, 0x0D, 0x0E, 0x0F, 0x03,
+	];
+	if (metroidSamusXDir == 0) {
+		if (metroidSamusYDir != 1) {
+			enemyWorking.state = angleTable[3];
+		} else {
+			enemyWorking.state = angleTable[2];
+		}
+	}
+	if (metroidSamusYDir == 0) {
+		if (metroidSamusXDir != 1) {
+			enemyWorking.state = angleTable[1];
+		} else {
+			enemyWorking.state = angleTable[0];
+		}
+	}
+	if (metroidSamusYDir != 0xFF) {
+		if (metroidSamusXDir != 0xFF) {
+			metroidAngleTableIndex = 4;
+		} else {
+			metroidAngleTableIndex = 9;
+		}
+	} else {
+		if (metroidSamusXDir != 0xFF) {
+			metroidAngleTableIndex = 14;
+		} else {
+			metroidAngleTableIndex = 19;
+		}
+	}
+	metroidGetSlopeToSamus();
+	alphaConvertSlopeToAngleIndex();
+	enemyWorking.state = angleTable[metroidAngleTableIndex];
+}
+
+void metroidGetSlopeToSamus() {
+	metroidSlopeToSamus = cast(ushort)((metroidAbsSamusDistY * 100) / metroidAbsSamusDistX);
+}
+
+void alphaConvertSlopeToAngleIndex() {
+	if (metroidSlopeToSamus < 20) {
+		metroidAngleTableIndex += 0;
+	} else if (metroidSlopeToSamus < 60) {
+		metroidAngleTableIndex += 1;
+	} else if (metroidSlopeToSamus < 200) {
+		metroidAngleTableIndex += 2;
+	} else if (metroidSlopeToSamus < 600) {
+		metroidAngleTableIndex += 3;
+	} else if (metroidSlopeToSamus >= 600) {
+		metroidAngleTableIndex += 4;
+	}
+}
+
+ushort alphaGetSpeedVector() {
+	switch (enemyWorking.state) {
+		case 0: return 0x0003;
+		case 1: return 0x0083;
+		case 2: return 0x0300;
+		case 3: return 0x8300;
+		case 4: return 0x0103;
+		case 5: return 0x0202;
+		case 6: return 0x0301;
+		case 7: return 0x0183;
+		case 8: return 0x0282;
+		case 9: return 0x0381;
+		case 10: return 0x8103;
+		case 11: return 0x8202;
+		case 12: return 0x8301;
+		case 13: return 0x8183;
+		case 14: return 0x8282;
+		case 15: return 0x8381;
+		default: assert(0);
+	}
+}
+
 void drawNonGameSprite() {
 	auto de = &creditsSpritePointerTable[spriteID][0];
 	auto hl = &oamBuffer[oamBufferIndex / 4];

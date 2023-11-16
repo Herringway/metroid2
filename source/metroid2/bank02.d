@@ -3,6 +3,7 @@ module metroid2.bank02;
 import metroid2.bank00;
 import metroid2.bank01;
 import metroid2.bank03;
+import metroid2.bank08;
 import metroid2.defs;
 import metroid2.globals;
 import metroid2.registers;
@@ -528,7 +529,25 @@ void enCollisionRightMidWide() {
 }
 
 void enCollisionRightFarWide() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00010001;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 11);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x + 11);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000001;
 }
 
 void enCollisionRightCrawlA() {
@@ -584,7 +603,25 @@ void enCollisionLeftMidWide() {
 }
 
 void enCollisionLeftFarWide() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b01000100;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 11);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 11);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000100;
 }
 
 void enCollisionLeftCrawlA() {
@@ -661,7 +698,25 @@ void enCollisionDownFarMedium() {
 }
 
 void enCollisionDownFarWide() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00100010;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 11);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 11);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
 }
 
 void enCollisionDownCrawlA() {
@@ -717,7 +772,25 @@ void enCollisionUpFarMedium() {
 }
 
 void enCollisionUpFarWide() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b10001000;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 11);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 11);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00001000;
 }
 
 void enCollisionUpCrawlA() {
@@ -1034,7 +1107,66 @@ void enemyAnimateExplosion(ubyte type) {
 }
 
 void enemyMetroidExplosion() {
-	assert(0); // TODO
+	static void deleteProjectile() {
+		enemyDeleteSelf();
+		enemyWorking.spawnFlag = 0xFF;
+	}
+	static void forceOnscreen() {
+		if (enemyWorking.y >= 0xF0) {
+			enemyWorking.y = 24;
+		} else if (enemyWorking.y >= 0xA0) {
+			enemyWorking.y = 152;
+		} else if (enemyWorking.y < 0x0A) {
+			enemyWorking.y = 24;
+		}
+		if (enemyWorking.x >= 0xF0) {
+			enemyWorking.x = 24;
+		} else if (enemyWorking.x >= 0xA0) {
+			enemyWorking.x = 152;
+		} else if (enemyWorking.x < 0x0A) {
+			enemyWorking.x = 24;
+		}
+	}
+	if (enemyWorking.spawnFlag == 6) {
+		return deleteProjectile();
+	}
+	if ((enemyWorking.spriteType < Actor.screwExplosionStart) || (enemyWorking.spriteType > Actor.screwExplosionEnd)) {
+		return enemyWorking.ai();
+	}
+	if (cutsceneActive) {
+		cutsceneActive = 1;
+		forceOnscreen();
+	}
+	if (enemyWorking.counter != 6) {
+		enemyWorking.spriteType = cast(Actor)(Actor.screwExplosionStart + enemyWorking.counter);
+		enemyWorking.counter++;
+	} else {
+		enemyWorking.counter = 0;
+		switch (++enemyWorking.state) {
+			case 1:
+				enemyWorking.x -= 16;
+				forceOnscreen();
+				break;
+			case 2:
+				enemyWorking.y -= 16;
+				enemyWorking.x -= 16;
+				forceOnscreen();
+				break;
+			case 3:
+				enemyWorking.y += 16;
+				enemyWorking.x -= 16;
+				forceOnscreen();
+				break;
+			default:
+			case 4:
+				enSprCollision = EnSprCollision.init;
+				enemyDeleteSelf();
+				enemyWorking.spawnFlag = 2;
+				metroidState = 0;
+				cutsceneActive = 0;
+				break;
+		}
+	}
 }
 
 // AI for enemies that stick to a surface and move along it (clockwise)
@@ -1484,23 +1616,381 @@ void enAIMetroidStinger() {
 }
 
 void enAIHatchingAlpha() {
-	assert(0); // TODO
+	enemyGetSamusCollisionResults();
+	if (alphaStunCounter) {
+		if (--alphaStunCounter != 0) {
+			metroidMissileKnockback();
+			enemyToggleVisibility();
+			if (enemyWeaponType >= CollisionType.screwAttack) {
+				return;
+			}
+			sfxRequestSquare1 = Square1SFX.beamDink;
+			return;
+		} else {
+			enemyWorking.status = 0;
+			enemyWorking.directionFlags = 0xFF;
+			enemyWorking.spriteType = Actor.alpha1;
+		}
+	}
+	if (metroidState == 2) {
+		enAIAlphaMetroidCheckIfHurt();
+		return;
+	}
+	if (enemyWorking.spawnFlag == 4) {
+		enAIAlphaMetroidCheckIfInRange();
+		return;
+	}
+	// c = spawnflag
+	if (metroidState == 1) {
+		enAIAlphaMetroidStartFight();
+		return;
+	}
+	if (enemyWorking.spriteType == Actor.alphaFace) {
+		enAIAlphaMetroidAppearanceRise();
+		return;
+	}
+	if (!cutsceneActive) {
+		if (enemyFrameCounter & 3) {
+			return;
+		}
+		enemyWorking.stunCounter ^= 0x10;
+		byte distance = cast(byte)(samusOnScreenXPos - enemyWorking.x);
+		if (distance < 0) {
+			distance = cast(byte)-distance;
+		}
+		if (distance >= 0x50) {
+			return;
+		}
+		cutsceneActive = 1;
+		metroidFightActive = 1;
+		if (songPlaying == Song.metroidBattle) {
+			return;
+		}
+		songRequest = Song.metroidBattle;
+	} else {
+		if (enemyFrameCounter & 3) {
+			return;
+		}
+		if (++enemyWorking.counter == 8) {
+			enAIAlphaMetroidAppearanceFaceScreen();
+		} else {
+			enemyWorking.stunCounter ^= 0x10;
+		}
+	}
 }
 
 void enAIAlphaMetroid() {
-	assert(0); // TODO
+	if (metroidFightActive) {
+		enAIHatchingAlpha();
+	} else {
+		enemyWorking.spawnFlag = 4;
+		enAIAlphaMetroidCheckIfInRange();
+	}
+}
+
+void enAIAlphaMetroidCheckIfInRange() {
+	enemyWorking.spriteType = Actor.alpha1;
+	byte distance = cast(byte)(samusOnScreenXPos - enemyWorking.x);
+	if (distance < 0) {
+		distance = cast(byte)-distance;
+	}
+	if (distance >= 0x50) {
+		return;
+	}
+	alphaStunCounter = 0;
+	metroidFightActive = 1;
+	metroidState = 2;
+	if (songPlaying == Song.metroidBattle) {
+		return;
+	}
+	songRequest = Song.metroidBattle;
+	enAIAlphaMetroidStandardAction();
+}
+
+void enAIAlphaMetroidCheckIfHurt() {
+	if (enemyWeaponType >= CollisionType.contact) {
+		enAIAlphaMetroidStandardAction();
+	} else if (enemyWeaponType == CollisionType.screwAttack) {
+		enAIAlphaMetroidScrewReaction();
+	} else if (enemyWeaponType == CollisionType.missiles) {
+		enAIAlphaMetroidHurtReaction();
+	} else {
+		sfxRequestSquare1 = Square1SFX.beamDink;
+	}
+}
+void enAIAlphaMetroidStandardAction() {
+	if (enemyWorking.directionFlags != 0xFF) {
+		metroidScrewKnockback();
+		if (!metroidScrewKnockbackDone) {
+			return;
+		}
+		metroidScrewKnockbackDone = 0;
+		enemyWorking.directionFlags = 0xFF;
+		enemyWorking.spriteType = Actor.alpha1;
+		enemyWorking.counter = 0;
+		enemyWorking.state = 0;
+		return;
+	}
+	if (enemyWorking.counter == 0) {
+		alphaGetAngle();
+		if (samusOnScreenXPos >= (enemyWorking.x + 16)) {
+			enemyWorking.spriteAttributes = OAMFlags.xFlip;
+		} else {
+			enemyWorking.spriteAttributes = 0;
+		}
+	}
+	if (++enemyWorking.counter >= 14) {
+		if (enemyWorking.counter != 20) {
+			return;
+		}
+		enemyWorking.counter = 0;
+	}
+	enAIAlphaMetroidLungeMovement(alphaGetSpeedVector());
+	enAIAlphaMetroidAnimate();
+}
+
+void enAIAlphaMetroidScrewReaction() {
+	metroidScrewReaction();
+	sfxRequestSquare1 = Square1SFX.u1A;
+}
+
+void enAIAlphaMetroidHurtReaction() {
+	if (--enemyWorking.health == 0) {
+		enAIAlphaMetroidDeath();
+		return;
+	}
+	alphaStunCounter = 8;
+	sfxRequestNoise = NoiseSFX.u05;
+	enemyWorking.directionFlags = 0;
+	static void knockbackRandHorizontal(ref ubyte dir) {
+		if (DIV & 1) {
+			dir |= 0b0001;
+		} else {
+			dir |= 0b0100;
+		}
+	}
+	static void knockbackRandVertical(ref ubyte dir) {
+		if (DIV & 1) {
+			dir |= 0b0010;
+		} else {
+			dir |= 0b1000;
+		}
+	}
+	if (enemyWeaponDir & 0b0001) { //right
+		enemyWorking.directionFlags |= 0b0001;
+		enemyWorking.x += 5;
+		knockbackRandVertical(enemyWorking.directionFlags);
+	} else if (enemyWeaponDir & 0b1000) { //down
+		enemyWorking.directionFlags |= 0b0010;
+		enemyWorking.y += 5;
+		knockbackRandHorizontal(enemyWorking.directionFlags);
+	} else if (enemyWeaponDir & 0b0010) { //left
+		if (enemyWorking.x - 5 >= 8) {
+			enemyWorking.x -= 5;
+			enemyWorking.directionFlags |= 0b0100;
+		}
+		knockbackRandVertical(enemyWorking.directionFlags);
+	} else { //up
+		if (enemyWorking.y - 5 >= 16) {
+			enemyWorking.y -= 5;
+			enemyWorking.directionFlags |= 0b1000;
+		}
+		knockbackRandHorizontal(enemyWorking.directionFlags);
+	}
+}
+void enAIAlphaMetroidDeath() {
+	enemyWorking.counter = 0;
+	enemyWorking.state = 0;
+	metroidState = 0x80;
+	enemyWorking.spriteType = Actor.screwExplosionStart;
+	sfxRequestNoise = NoiseSFX.u0D;
+	songRequest = Song.killedMetroid;
+	metroidFightActive = 2;
+	enemyWorking.spawnFlag = 2;
+	metroidCountReal--;
+	metroidCountDisplayed--;
+	metroidCountShuffleTimer = 192;
+	earthquakeCheck();
+}
+void enAIAlphaMetroidStartFight() {
+	enemyWorking.spriteType = Actor.alpha1;
+	enemyWorking.spawnFlag = 4;
+	cutsceneActive = 0;
+	metroidState = 2;
+}
+void enAIAlphaMetroidAppearanceFaceScreen() {
+	enemyWorking.counter = 0;
+	enemyWorking.stunCounter = 0;
+	enemyWorking.spriteType = Actor.alphaFace;
+}
+void enAIAlphaMetroidAppearanceRise() {
+	enAIZetaMetroidOscillateNarrow();
+	if (enemyFrameCounter & 7) {
+		return;
+	}
+	enemyWorking.y -= 2;
+	if (++enemyWorking.counter != 13) {
+		return;
+	}
+	enemyWorking.counter = 0;
+	metroidState = 1;
+}
+void enAIAlphaMetroidLungeMovement(ushort vector) {
+	const ubyte x = vector & 0xFF;
+	const ubyte y = vector >> 8;
+	if (y != 0) {
+		if (y & 0x80) {
+			enemyWorking.y -= y & 0x7F;
+			enCollisionUpFarWide();
+			if (enBGCollisionResult & 0b1000) {
+				enemyWorking.y = enemyYPosMirror;
+			}
+		} else {
+			enemyWorking.y += y;
+			enCollisionDownFarWide();
+			if (enBGCollisionResult & 0b0010) {
+				enemyWorking.y = enemyYPosMirror;
+			}
+		}
+	}
+	if (x == 0) {
+		return;
+	}
+	if (x & 0x80) {
+		enemyWorking.x -= x & 0x7F;
+		enCollisionLeftFarWide();
+		if (enBGCollisionResult & 0b0100) {
+			enemyWorking.x = enemyXPosMirror;
+		}
+	} else {
+		enemyWorking.x += x;
+		enCollisionRightFarWide();
+		if (enBGCollisionResult & 0b0001) {
+			enemyWorking.x = enemyXPosMirror;
+		}
+	}
+}
+void enAIAlphaMetroidAnimate() {
+	enemyWorking.spriteType ^= 7;
 }
 
 void metroidScrewReaction() {
-	assert(0); // TODO
+	ubyte d;
+	ubyte e;
+	byte distanceY = cast(byte)(samusOnScreenYPos - enemyWorking.y);
+	if (distanceY < 0) {
+		distanceY = cast(byte)-distanceY;
+		e++;
+	}
+	byte distanceX = cast(byte)(samusOnScreenXPos - enemyWorking.x);
+	if (distanceX < 0) {
+		distanceX = cast(byte)-distanceX;
+		d++;
+	}
+	ubyte dir;
+	if (distanceX < distanceY) {
+		if (e) {
+			dir = 1;
+		} else {
+			dir = 3;
+		}
+	} else {
+		if (d) {
+			dir = 2;
+		} else {
+			dir = 0;
+		}
+	}
+	enemyWorking.directionFlags = dir;
+	enemyWorking.counter = 0;
+	enemyWorking.state = 0;
+	metroidScrewKnockback();
 }
 
 void metroidScrewKnockback() {
-	assert(0); // TODO
+	if (++enemyWorking.counter == 6) {
+		metroidScrewKnockbackDone = 1;
+		return;
+	}
+	switch (enemyWorking.directionFlags) {
+		case 0:
+			enemyWorking.x += 5;
+			enCollisionRightFarWide();
+			if (enBGCollisionResult & 0b0001) {
+				enemyWorking.x = enemyXPosMirror;
+			}
+			break;
+		case 2:
+			if (enemyWorking.x - 5 < 16) {
+				return;
+			}
+			enemyWorking.x -= 5;
+			enCollisionLeftFarWide();
+			if (enBGCollisionResult & 0b0100) {
+				enemyWorking.x = enemyXPosMirror;
+			}
+			break;
+		case 1:
+			enemyWorking.y += 5;
+			enCollisionDownFarWide();
+			if (enBGCollisionResult & 0b0010) {
+				enemyWorking.y = enemyYPosMirror;
+			}
+			break;
+		default:
+		case 3:
+			if (enemyWorking.y - 5 < 16) {
+				return;
+			}
+			enemyWorking.y -= 5;
+			enCollisionUpFarWide();
+			if (enBGCollisionResult & 0b1000) {
+				enemyWorking.y = enemyYPosMirror;
+			}
+			break;
+	}
 }
 
 void metroidMissileKnockback() {
-	assert(0); // TODO
+	static void moveBack(ref ubyte pos) {
+		if (pos - 4 >= 16) {
+			pos -= 4;
+		}
+	}
+	static void moveForwards(ref ubyte pos) {
+		pos += 4;
+	}
+	if (!(enemyWorking.directionFlags & 0b0010)) {
+		if (enemyWorking.directionFlags & 0b1000) {
+			moveBack(enemyWorking.y);
+			enCollisionUpFarWide();
+			if (enBGCollisionResult & 0b1000) { // collided, undo Y movement
+				enemyWorking.y = enemyYPosMirror;
+			}
+		}
+	} else {
+		moveForwards(enemyWorking.y);
+		enCollisionDownFarWide();
+		if (enBGCollisionResult & 0b0010) { // collided, undo Y movement
+			enemyWorking.y = enemyYPosMirror;
+		}
+	}
+	if (!(enemyWorking.directionFlags & 0b0001)) {
+		if (!(enemyWorking.directionFlags & 0b0100)) {
+			return;
+		}
+		moveBack(enemyWorking.x);
+		enCollisionLeftFarWide();
+		if (enBGCollisionResult & 0b0100) { // collided, undo X movement
+			enemyWorking.x = enemyXPosMirror;
+		}
+	} else {
+		moveForwards(enemyWorking.x);
+		enCollisionRightFarWide();
+		if (enBGCollisionResult & 0b0001) { // collided, undo X movement
+			enemyWorking.x= enemyXPosMirror;
+		}
+	}
 }
 
 void enAIGammaMetroid() {
@@ -1517,6 +2007,17 @@ void enemyGetAddressOfParentObject() {
 
 void enAIZetaMetroid() {
 	assert(0); // TODO
+}
+
+void enAIZetaMetroidOscillateNarrow() {
+	if (enemyFrameCounter & 3) {
+		return;
+	}
+	if ((enemyFrameCounter & 3) == 2) {
+		enemyWorking.x -= 2;
+	} else if ((enemyFrameCounter & 3) == 1) {
+		enemyWorking.x += 2;
+	}
 }
 
 void enAIOmegaMetroid() {
@@ -1562,5 +2063,8 @@ void babyKeepOnscreen() {
 }
 
 void enemyToggleVisibility() {
-	assert(0); // TODO
+	if (enemyFrameCounter & 1) {
+		return;
+	}
+	enemyWorking.status ^= 0x80;
 }
