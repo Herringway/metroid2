@@ -118,7 +118,7 @@ void loadEnemiesHorizontal() {
 		enemies = loadEnemyGetPointerScreen(loadEnemyGetBankOffset(), leftEdge.screen, topEdge.screen);
 	}
 	while (true) {
-		if (enemies[0].spawnNumber == 0xFF) {
+		if (enemies[0].spawnNumber == 0xFF) { //nothing left on this screen, check screen below
 			checkBottom:
 			if (bottomEdge.screen != topEdge.screen + 1) {
 				return;
