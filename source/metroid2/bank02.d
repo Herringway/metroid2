@@ -150,7 +150,7 @@ void ingameSaveAndLoadEnemySaveFlags() {
 					goto case;
 				case 2:
 				case 0xFE:
-					saveBuf.enemySpawnFlags[currentLevelBank][i] = value;
+					saveBuf.enemySpawnFlags[currentLevelBank - 9][i] = value;
 					break;
 				default: break;
 			}
