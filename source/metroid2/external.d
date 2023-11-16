@@ -64,7 +64,7 @@ struct SaveFileData {
 	ubyte gameTimeMinutes;
 	ubyte gameTimeHours;
 	ubyte metroidCountDisplayed;
-	ubyte[0x40][7] enemySpawnFlags;
+	ubyte[0x40][7] enemySpawnFlags = 0xFF;
 }
 struct SaveFile {
 	ubyte[8] magic;
