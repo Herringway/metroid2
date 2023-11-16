@@ -2861,6 +2861,12 @@ void handlePaused() {
 	const b = (frameCounter & (1 << 4)) ? 147 : 231;
 	bgPalette = b;
 	obPalette0 = b;
+	debug (saveAnywhere) {
+		if (inputRisingEdge & Pad.b) {
+			handleSaveGame();
+			gameMode = GameMode.paused;
+		}
+	}
 	if (debugFlag) {
 		drawHUDMetroid();
 		if (!(inputRisingEdge & Pad.start)) {
