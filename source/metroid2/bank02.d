@@ -7,7 +7,7 @@ import metroid2.defs;
 import metroid2.globals;
 import metroid2.registers;
 
-import libgb;
+import librehome.gameboy;
 
 import std.logger;
 

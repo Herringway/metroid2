@@ -17,7 +17,7 @@ import metroid2.globals;
 import metroid2.mapbanks;
 import metroid2.registers;
 
-import libgb;
+import librehome.gameboy;
 
 void vblank() {
 	SCY = scrollY;

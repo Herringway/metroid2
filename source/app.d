@@ -2,7 +2,7 @@ import metroid2.bank00;
 import metroid2.data;
 import metroid2.external;
 
-import libgb;
+import librehome.gameboy;
 
 struct GameSettings {}
 

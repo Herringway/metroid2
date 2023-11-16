@@ -5,7 +5,7 @@
 	"description": "metroid II",
 	"license": "proprietary",
 	"dependencies": {
-		"libgb": "*"
+		"librehome": "*"
 	},
 	"name": "metroid2"
 }

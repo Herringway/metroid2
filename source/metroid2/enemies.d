@@ -4,7 +4,7 @@ import metroid2.bank02;
 import metroid2.defs;
 import metroid2.globals;
 
-import libgb;
+import librehome.gameboy;
 
 immutable EnemySpawn[][][] enemyDataPointers = [
 	[

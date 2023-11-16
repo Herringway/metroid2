@@ -2,7 +2,7 @@ module metroid2.external;
 
 import metroid2.defs;
 
-import libgb;
+import librehome.gameboy;
 
 GameBoySimple gb;
 

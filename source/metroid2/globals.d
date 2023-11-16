@@ -1,6 +1,6 @@
 module metroid2.globals;
 
-import libgb;
+import librehome.gameboy;
 
 import metroid2.defs;
 import metroid2.external;

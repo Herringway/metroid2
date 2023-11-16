@@ -1,5 +1,7 @@
 module metroid2.defs;
 
+public import librehome.gameboy : Pad;
+
 enum screenWidth = 160;
 enum screenHeight = 144;
 
@@ -274,17 +276,6 @@ enum ItemFlag {
 	spiderBall = 1 << 5,
 	variaSuit = 1 << 6,
 	unused = 1 << 7,
-}
-
-enum Pad : ubyte {
-	a = 1 << 0,
-	b = 1 << 1,
-	select = 1 << 2,
-	start = 1 << 3,
-	right = 1 << 4,
-	left = 1 << 5,
-	up = 1 << 6,
-	down = 1 << 7,
 }
 
 enum GameMode : ubyte {
