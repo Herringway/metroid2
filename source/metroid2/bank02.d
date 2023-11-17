@@ -657,7 +657,19 @@ void enCollisionLeftCrawlB() {
 }
 
 void enCollisionDownNearSmall() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00100010;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 3);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 3);
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
 }
 
 void enCollisionDownNearMedium() {
@@ -1407,8 +1419,89 @@ void enAIGullugg() {
 	assert(0); // TODO
 }
 
+enum ChuteLeechState {
+	resting = 0,
+	ascending = 1,
+	descending = 2,
+}
 void enAIChuteLeech() {
-	assert(0); // TODO
+	static immutable ubyte[] xSpeedTable = [
+	    0xFF, 0xFF, 0xFE, 0xFE, 0xFF, 0xFF, 0x02, 0x02, 0x02, 0x02, 0x03, 0x03, 0x02, 0x04, 0x02, 0x02,
+	    0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFD, 0xFD, 0xFD, 0xFD, 0xFD, 0xFD, 0xFC, 0xFD, 0xFD, 0xFE, 0x02,
+	    0x03, 0x02, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x04, 0x03, 0x04,
+	    0x03, 0x02, 0xFE, 0xFD, 0xFD, 0xFD, 0xFD, 0xFC, 0xFC, 0xFC, 0xFC, 0xFD, 0xFB, 0xFD, 0xFC, 0xFB,
+	    0xFC, 0xFC, 0xFD, 0xFD, 0x03, 0x03, 0x03, 0x02, 0x04, 0x03, 0x03, 0x03, 0x04, 0x02, 0x02, 0x80,
+	];
+	static immutable ubyte[] ySpeedTable = [
+	    0x02, 0x02, 0x02, 0x01, 0x01, 0x00, 0x02, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x01, 0x00, 0x00,
+	    0x02, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x01, 0x01, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x02,
+	    0x01, 0x02, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01,
+	    0x00, 0x00, 0x02, 0x03, 0x02, 0x02, 0x01, 0x02, 0x02, 0x01, 0x01, 0x02, 0x02, 0x01, 0x01, 0x00,
+	    0x01, 0x01, 0x00, 0x00, 0x03, 0x02, 0x02, 0x01, 0x02, 0x02, 0x01, 0x01, 0x01, 0x01, 0x00,
+	];
+	final switch (cast(ChuteLeechState)enemyWorking.state) {
+		case ChuteLeechState.ascending:
+			if (enemyWorking.spriteType >= Actor.octroll1) {
+				enemyFlipSpriteIDTwoFrame();
+			}
+			if (enemyWorking.counter == 22) { //peak of ascent
+				enemyWorking.counter = 0;
+				enemyWorking.state = ChuteLeechState.descending;
+				if (enemyWorking.spriteType < Actor.octroll1) {
+					enemyWorking.spriteType = Actor.chuteLeech3;
+				} else {
+					enemyWorking.spriteType = Actor.octroll;
+				}
+			} else {
+				enemyWorking.y -= 4;
+				enemyWorking.counter++;
+			}
+			break;
+		case ChuteLeechState.descending:
+			if (xSpeedTable[enemyWorking.counter] == 0x80) {
+				enemyWorking.counter = 0;
+				enemyWorking.state = ChuteLeechState.resting;
+				if (enemyWorking.spriteType < Actor.octroll1) {
+					enemyWorking.spriteType = Actor.chuteLeech;
+				}
+			} else {
+				if (enemyWorking.spriteAttributes == 0) {
+					if (!(xSpeedTable[enemyWorking.counter] & 0x80)) {
+						if (++enemyWorking.misc == 4) {
+							enemyWorking.misc = 0;
+							enemyWorking.spriteAttributes ^= OAMFlags.xFlip;
+						}
+					}
+				} else {
+					if (xSpeedTable[enemyWorking.counter] & 0x80) {
+						if (++enemyWorking.misc == 4) {
+							enemyWorking.misc = 0;
+							enemyWorking.spriteAttributes ^= OAMFlags.xFlip;
+						}
+					}
+				}
+				enemyWorking.x += xSpeedTable[enemyWorking.counter];
+				enemyWorking.y += ySpeedTable[enemyWorking.counter];
+				enemyWorking.counter++;
+			}
+			break;
+		case ChuteLeechState.resting:
+			auto distance = cast(byte)(enemyWorking.x - samusOnScreenXPos);
+			if (distance < 0) {
+				distance = cast(byte)-distance;
+			}
+			if (distance >= 80) { //don't activate until samus is near
+				return;
+			}
+			enemyWorking.state = ChuteLeechState.ascending;
+			enemyWorking.spriteAttributes = 0;
+			if (enemyWorking.spriteType < Actor.octroll1) {
+				enemyWorking.spriteType = Actor.chuteLeech2;
+			} else {
+				enemyWorking.spriteType = Actor.octroll1;
+			}
+			break;
+	}
 }
 
 void enAIPipeBug() {
