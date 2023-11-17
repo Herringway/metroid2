@@ -866,6 +866,7 @@ void enAIItemOrb() {
 		sfxRequestSquare1 = Square1SFX.nothing;
 		sfxRequestNoise = NoiseSFX.u02;
 		enemyWorking.spriteType++;
+		return;
 	} else {
 		if (enemyWeaponType != CollisionType.contact) {
 			if (enemyWeaponType != CollisionType.screwAttack) {
