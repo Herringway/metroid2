@@ -1417,7 +1417,51 @@ void enAISenjooShirk() {
 }
 
 void enAIGullugg() {
-	assert(0); // TODO
+	static immutable ubyte[][2] ySpeedTable = [
+	    [ // not used
+	        0x01, 0x00, 0x01, 0x02, 0x01, 0x02, 0x03, 0x02, 0x03, 0x03, 0x04, 0x03, 0x04, 0x04, 0x03, 0x04,
+	        0x04, 0x04, 0x03, 0x03, 0x04, 0x03, 0x02, 0x03, 0x02, 0x01, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00,
+	        0xFF, 0xFE, 0xFF, 0xFE, 0xFD, 0xFE, 0xFD, 0xFC, 0xFD, 0xFD, 0xFC, 0xFC, 0xFC, 0xFD, 0xFC, 0xFC,
+	        0xFD, 0xFC, 0xFD, 0xFD, 0xFE, 0xFD, 0xFE, 0xFF, 0xFE, 0xFF, 0x00, 0xFF, 0x80,
+	    ], [
+	        0x01, 0x00, 0x01, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02, 0x02, 0x03, 0x03, 0x03, 0x03, 0x02, 0x03,
+	        0x03, 0x03, 0x03, 0x02, 0x03, 0x02, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
+	        0xFF, 0xFF, 0xFF, 0xFE, 0xFE, 0xFE, 0xFE, 0xFD, 0xFE, 0xFD, 0xFD, 0xFD, 0xFD, 0xFE, 0xFD, 0xFD,
+	        0xFD, 0xFD, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFF, 0xFF, 0xFF, 0x00, 0xFF, 0x80,
+	    ]
+	];
+	static immutable ubyte[][2] xSpeedTable = [
+	    [ // not used
+	        0xFD, 0xFC, 0xFC, 0xFD, 0xFC, 0xFD, 0xFD, 0xFE, 0xFD, 0xFE, 0xFF, 0xFE, 0xFF, 0x00, 0xFF, 0x01,
+	        0x00, 0x01, 0x02, 0x01, 0x02, 0x03, 0x02, 0x03, 0x03, 0x04, 0x03, 0x04, 0x04, 0x03, 0x04, 0x04,
+	        0x04, 0x03, 0x03, 0x04, 0x03, 0x02, 0x03, 0x02, 0x01, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0xFF,
+	        0xFE, 0xFF, 0xFE, 0xFD, 0xFE, 0xFD, 0xFC, 0xFD, 0xFD, 0xFC, 0xFC, 0xFC,
+	    ], [
+	        0x02, 0x03, 0x03, 0x03, 0x03, 0x02, 0x02, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x00, 0x01, 0xFF,
+	        0x00, 0xFF, 0xFF, 0xFF, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFD, 0xFD, 0xFD, 0xFD, 0xFE, 0xFD, 0xFD,
+	        0xFD, 0xFD, 0xFE, 0xFD, 0xFE, 0xFE, 0xFE, 0xFE, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x01,
+	        0x01, 0x01, 0x02, 0x02, 0x02, 0x02, 0x03, 0x02, 0x03, 0x03, 0x03, 0x03,
+	    ]
+	];
+	static void animate() {
+		if (enemyWorking.spriteType < Actor.gullugg3) {
+			enemyWorking.spriteType++;
+		} else {
+			enemyWorking.spriteType = Actor.gullugg;
+		}
+	}
+	animate();
+	ubyte y;
+	while (true) {
+		y = ySpeedTable[1][enemyWorking.counter];
+		if (y != 0x80) {
+			break;
+		}
+		enemyWorking.counter = 0;
+	}
+	enemyWorking.y += y;
+	enemyWorking.x += xSpeedTable[1][enemyWorking.counter];
+	enemyWorking.counter++;
 }
 
 enum ChuteLeechState {
@@ -1505,8 +1549,116 @@ void enAIChuteLeech() {
 	}
 }
 
+enum PipeBugState {
+	waiting = 0,
+	rising = 1,
+	movingForward = 2,
+}
+
 void enAIPipeBug() {
-	assert(0); // TODO
+	static void animate() {
+		if (enemyWorking.spriteType < Actor.yumee1) {
+			enemyWorking.spriteType ^= 0xF;
+		} else {
+			enemyWorking.spriteType ^= 0x1;
+		}
+	}
+	if (enemyWorking.spawnFlag == 3) { // bug spawned
+		return;
+	}
+	if (enemyWorking.spawnFlag != 1) { // I am bug
+		animate();
+		final switch (cast(PipeBugState)enemyWorking.state) {
+			case PipeBugState.waiting:
+				ubyte bugDirection = 2;
+				auto distance = cast(byte)(enemyWorking.x - samusOnScreenXPos);
+				if (distance < 0) {
+					distance = cast(byte)-distance;
+					bugDirection = 0;
+				}
+				if (distance >= 0x50) {
+					return;
+				}
+				enemyWorking.directionFlags = bugDirection;
+				if (bugDirection) {
+					enemyWorking.spriteAttributes = 0;
+				} else {
+					enemyWorking.spriteAttributes = OAMFlags.xFlip;
+				}
+				enemyWorking.state = PipeBugState.rising;
+				goto case;
+			case PipeBugState.rising:
+				enemyWorking.y -= 4;
+				if (samusOnScreenYPos + 5 < enemyWorking.y) {
+					return; // not aligned with samus vertically yet
+				}
+				enemyWorking.state = PipeBugState.movingForward;
+				if (enemyWorking.spriteType >= Actor.yumee1) {
+					enemyWorking.spriteType = Actor.yumee3;
+				}
+				break;
+			case PipeBugState.movingForward:
+				if (enemyWorking.x < 168) {
+					if (enemyWorking.directionFlags) {
+						enemyWorking.x -= 2;
+						enemyAccelBackwards(enemyWorking.x);
+					} else {
+						enemyWorking.x += 2;
+						enemyAccelForwards(enemyWorking.x);
+					}
+				} else {
+					if (enemyDataSlots[enemyWorking.spawnFlag >> 4].status == 3) {
+						enemyDataSlots[enemyWorking.spawnFlag >> 4].status = 1; //reactivate parent
+						enemySpawnFlags[enemyWorking.spawnNumber] = 1;
+					}
+					enemyDeleteSelf();
+					enemyWorking.spawnFlag = 0xFF;
+				}
+				break;
+		}
+	} else { // I am pipe, no bug spawned
+		if (++enemyWorking.counter < 24) {
+			return;
+		}
+		enemyWorking.counter = 0;
+		if (enemyWorking.misc >= 10) {
+			enemyDeleteSelf();
+			sfxRequestSquare1 = Square1SFX.u14;
+			enemyWorking.spawnFlag = 2;
+		}
+		enemyWorking.misc++;
+		const slot = loadEnemyGetFirstEmptySlot();
+		enemyDataSlots[slot].status = 0;
+		enemyDataSlots[slot].y = enemyWorking.y;
+		enemyDataSlots[slot].x = enemyWorking.x;
+		if (enemyWorking.spriteType < Actor.yumeeSpawner) {
+			enemyDataSlots[slot].spriteType = Actor.gawron;
+		} else {
+			enemyDataSlots[slot].spriteType = Actor.yumee1;
+		}
+		enemyDataSlots[slot].baseSpriteAttributes = 0x80;
+		enemyDataSlots[slot].spriteAttributes = 0;
+		enemyDataSlots[slot].stunCounter = 0;
+		enemyDataSlots[slot].misc = 0;
+		enemyDataSlots[slot].directionFlags = 0;
+		enemyDataSlots[slot].counter = 0;
+		enemyDataSlots[slot].state = 0;
+		enemyDataSlots[slot].iceCounter = 0;
+		enemyDataSlots[slot].health = 1;
+		enemyDataSlots[slot].dropType = 0;
+		enemyDataSlots[slot].explosionFlag = 0;
+		enemyDataSlots[slot].yScreen = 0;
+		enemyDataSlots[slot].xScreen = 0;
+		enemyDataSlots[slot].maxHealth = enemyDataSlots[slot].health;
+		enemyDataSlots[slot].spawnFlag = cast(ubyte)((enemyWRAMAddr - &enemyDataSlots[0]) / EnemySlot.sizeof);
+		enemyTempSpawnFlag = enemyDataSlots[slot].spawnFlag;
+		enemyDataSlots[slot].spawnNumber = enemyWorking.spriteType & 1;
+		enemyDataSlots[slot].ai = &enAIPipeBug;
+		enemySpawnFlags[enemyDataSlots[slot].spawnNumber] = enemyTempSpawnFlag;
+		numEnemies.total++;
+		numEnemies.active++;
+		enemyWorking.spawnFlag = 3;
+	}
 }
 
 void enAISkorpVert() {
@@ -1635,15 +1787,60 @@ void enAIGravitt() {
 }
 
 void enAIMissileDoor() {
-	assert(0); // TODO
+	enemyGetSamusCollisionResults();
+	if (enemyWorking.spriteType != Actor.missileDoor) {
+		if (enemyWorking.spriteType == Actor.screwExplosionEnd) {
+			enemyDeleteSelf();
+			enemyWorking.spawnFlag = 2;
+		} else {
+			enemyWorking.spriteType++;
+		}
+		return;
+	}
+	if (enemyWeaponType >= CollisionType.contact) {
+		return;
+	}
+	sfxRequestSquare1 = Square1SFX.beamDink;
+	if (enemyWeaponType != CollisionType.missiles) {
+		return;
+	}
+	sfxRequestSquare1 = Square1SFX.clear;
+	sfxRequestNoise = NoiseSFX.u08;
+	enemyWorking.stunCounter = 19;
+	if (++enemyWorking.counter != 5) {
+		return;
+	}
+	enemyWorking.counter = 0;
+	enemyWorking.stunCounter = 0;
+	enemyWorking.spriteType = Actor.screwExplosionStart;
+	sfxRequestSquare1 = Square1SFX.u10;
+	if (enemyWeaponDir & 2) {
+		enemyWorking.x += 24;
+	} else {
+		enemyWorking.x -= 24;
+	}
 }
 
-void enemyAccelForwards() {
-	assert(0); // TODO
+void enemyAccelForwards(ref ubyte pos) {
+	static immutable ubyte[] speedTable = [
+	    0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x02, 0x03, 0x02,
+	    0x03, 0x03, 0x04, 0x03, 0x04, 0x04, 0x03, 0x04,
+	];
+	if (enemyWorking.misc != 23) {
+		enemyWorking.misc++;
+	}
+	pos += speedTable[enemyWorking.misc];
 }
 
-void enemyAccelBackwards() {
-	assert(0); // TODO
+void enemyAccelBackwards(ref ubyte pos) {
+	static immutable ubyte[] speedTable = [
+		0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0xFF, 0xFE, 0xFF, 0xFE, 0xFF, 0xFE, 0xFE, 0xFD, 0xFE,
+		0xFD, 0xFD, 0xFC, 0xFD, 0xFC, 0xFC, 0xFD, 0xFC,
+	];
+	if (enemyWorking.misc != 23) {
+		enemyWorking.misc++;
+	}
+	pos += speedTable[enemyWorking.misc];
 }
 
 void unknownProc6AE1() {
