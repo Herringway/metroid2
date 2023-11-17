@@ -3414,7 +3414,7 @@ immutable ubyte[] gameOverText = [0x56, 0x50, 0x5C, 0x54, 0xFF, 0x5E, 0x65, 0x54
 bool handleGameOver() {
 	handleAudio();
 	waitNextFrame();
-	if ((countdownTimer != 0) && (inputRisingEdge & Pad.start)) {
+	if ((countdownTimer != 0) && !(inputRisingEdge & Pad.start)) {
 		return false;
 	}
 	return true;
