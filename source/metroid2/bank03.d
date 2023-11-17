@@ -232,8 +232,7 @@ void enemyDeleteSelf() {
 	const c = enemyWorking.status;
 	(cast(ubyte*)&enemyWorking)[0 .. EnemyWorking.spawnFlag.offsetof] = 0xFF;
 	if ((enemyWorking.spawnFlag & 0xF) == 0) {
-		// is an offset into the enemySlotTable, but the MSB is bit 4
-		EnemySlot* slot = &enemyDataSlots[(enemyWorking.spawnFlag >> 5) + ((enemyWorking.spawnFlag & 0x10) << 3)];
+		EnemySlot* slot = &enemyDataSlots[enemyWorking.spawnFlag >> 4];
 		ubyte a;
 		if (slot.spawnFlag != 3) {
 			if (slot.spawnFlag == 5) {

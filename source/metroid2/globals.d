@@ -621,3 +621,5 @@ __gshared EnemySlot* enemyWRAMAddr;
 // Temporary state, but stored in SRAM
 __gshared ubyte[0x800] creditsTextBuffer;
 
+
+__gshared bool variaTransferDone;
