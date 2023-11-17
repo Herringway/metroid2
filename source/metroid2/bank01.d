@@ -1344,10 +1344,57 @@ void handleBombs() {
 }
 
 void bombsSamusAndBGCollision() {
-	assert(0); // TODO
+	if ((samusOnScreenYPos - 32 < spriteYPixel) && (samusOnScreenYPos + 32 >= spriteYPixel) && (samusOnScreenXPos - 16 < spriteXPixel) && (samusOnScreenXPos + 16 >= spriteXPixel)) {
+		samusAirDirection = 0xFF;
+		if (samusOnScreenXPos >= spriteXPixel) {
+			samusAirDirection = 0;
+			if (samusOnScreenXPos != spriteXPixel) {
+				samusAirDirection = 1;
+			}
+		}
+		samusJumpArcCounter = 64;
+		samusPose = samusBombPoseTable[samusPose];
+	}
+	tileY = cast(ubyte)(bombMapYPixel - 16);
+	tileX = bombMapXPixel;
+	auto tile = getTileIndexProjectile();
+	if (tile < 4) {
+		destroyRespawningBlock();
+	} else if (collisionArray[tile] & BlockType.bomb) {
+		destroyBlock(/*0xFF*/);
+	}
+	tileY = bombMapYPixel;
+	tile = getTileIndexProjectile();
+	if (tile < 4) {
+		destroyRespawningBlock();
+	} else if (collisionArray[tile] & BlockType.bomb) {
+		destroyBlock(/*0xFF*/);
+	}
+	tileY = cast(ubyte)(bombMapYPixel + 16);
+	tile = getTileIndexProjectile();
+	if (tile < 4) {
+		destroyRespawningBlock();
+	} else if (collisionArray[tile] & BlockType.bomb) {
+		destroyBlock(/*0xFF*/);
+	}
+	tileY = bombMapYPixel;
+	tileX = cast(ubyte)(bombMapXPixel + 16);
+	tile = getTileIndexProjectile();
+	if (tile < 4) {
+		destroyRespawningBlock();
+	} else if (collisionArray[tile] & BlockType.bomb) {
+		destroyBlock(/*0xFF*/);
+	}
+	tileX = cast(ubyte)(bombMapXPixel - 16);
+	tile = getTileIndexProjectile();
+	if (tile < 4) {
+		destroyRespawningBlock();
+	} else if (collisionArray[tile] & BlockType.bomb) {
+		destroyBlock(/*0xFF*/);
+	}
 }
 
-immutable ubyte[] samusBombPoseTable = [
+immutable SamusPose[] samusBombPoseTable = [
 	SamusPose.standing: SamusPose.standingBombed,
 	SamusPose.jumping: SamusPose.standingBombed,
 	SamusPose.spinJumping: SamusPose.standingBombed,

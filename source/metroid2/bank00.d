@@ -3126,9 +3126,13 @@ void unusedDeathAnimation() {
 }
 
 void collisionBombEnemies() {
-	assert(0); // TODO
+	for (int i = 0; i < enemyDataSlots.length; i++) {
+		if ((enemyDataSlots[i].status & 0xF) == 0) {
+			collisionBombOneEnemy(&enemyDataSlots[i]);
+		}
+	}
 }
-void collisionBombOneEnemy() {
+void collisionBombOneEnemy(EnemySlot* enemy) {
 	assert(0); // TODO
 }
 bool collisionProjectileEnemies() {
