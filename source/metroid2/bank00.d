@@ -2389,11 +2389,11 @@ unittest {
 }
 
 void getTilemapCoordinates() {
-	assert(0); // TODO
+	assert(0); // not used
 }
 
 void unknown230C() {
-	assert(0); // TODO
+	assert(0); // not used
 }
 void oamDMA() {
 	vram()[0xFE00 .. 0xFEA0] = cast(ubyte[])(oamBuffer[]);
