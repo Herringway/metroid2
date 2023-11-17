@@ -85,7 +85,7 @@ void titleScreenRoutine() {
 		spriteID = 1;
 		drawNonGameSprite();
 	}
-	// TODO titleClearUnusedOAMSlots();
+	titleClearUnusedOAMSlots();
 	if (inputRisingEdge == Pad.select) {
 		sfxRequestSquare1 = Square1SFX.select;
 		titleShowClearOption ^= 0xFF;
@@ -169,7 +169,9 @@ void titleScreenRoutine() {
 void titleLoadGraphics() {
 	copyToVRAM(&graphicsTitleScreen[0], &(vram()[VRAMDest.titleTiles]), 0x1000);
 }
-
+void titleClearUnusedOAMSlots() {
+	oamBuffer[oamBufferIndex / 4 .. $] = oamBuffer[0].init;
+}
 
 immutable ubyte[] titleCursorTable = [2, 3, 4, 3];
 
