@@ -607,7 +607,7 @@ void handleCamera() {
 	auto tmp2 = cast(ubyte)(samusY.pixel - cameraY.pixel + 0x60);
 	if (samusY.pixel == samusPrevYPixel) {
 		goto exit;
-	} else if (samusY.pixel > samusPrevYPixel) {
+	} else if (!(cast(ubyte)(samusY.pixel - samusPrevYPixel) & 0x80)) {
 		cameraSpeedDown = cast(ubyte)(samusY.pixel - samusPrevYPixel);
 		cameraScrollDirection |= ScrollDirection.down;
 		if (tmp & 8) {
