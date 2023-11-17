@@ -2602,7 +2602,18 @@ void doorLoadGraphics(ref const(ubyte)* script) {
 }
 
 void doorCopyData(ref const(ubyte)* script) {
-	assert(0); // TODO
+	switch ((script++)[0] & 0xF) {
+		case DoorCommand.copyBG & 0xF:
+		case DoorCommand.copySpr & 0xF:
+			vramTransfer.src = specialData(script++[0]);
+			vramTransfer.dest = &(vram()[*cast(const(ushort)*)(script)]);
+			script += 2;
+			vramTransfer.size = *cast(const(ushort)*)(script);
+			script += 2;
+			beginGraphicsTransfer();
+			break;
+		default: return loadGraphics(*cast(const(GraphicsInfo)*)script);
+	}
 }
 
 void loadGraphics(const GraphicsInfo gfx) {
@@ -2631,8 +2642,21 @@ void beginGraphicsTransfer() {
 	}
 }
 
-void animateGettingVaria(const GraphicsInfo) {
-	assert(0); // TODO
+void animateGettingVaria(const GraphicsInfo gfx) {
+	vramTransfer.src = &gfx.data[0];
+	vramTransfer.dest = &(vram()[gfx.destination]);
+	vramTransfer.size = gfx.length;
+	vramTransferFlag = 0xFF;
+	variaTransferDone = false;
+	while (!variaTransferDone) {
+		WY = 0x80;
+		drawSamus();
+		handleEnemiesOrQueen();
+		drawHUDMetroid();
+		clearUnusedOAMSlots();
+		waitOneFrame();
+	}
+	variaAnimationFlag = 0;
 }
 
 void doorLoadTileTable(ref const(ubyte)* script) {
