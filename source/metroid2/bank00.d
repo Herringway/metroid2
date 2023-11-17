@@ -2495,12 +2495,12 @@ void executeDoorScript() {
 					break;
 				case DoorCommand.ifMetLess:
 					script++;
-					if (metroidCountReal > (script++)[0]) {
+					if ((script++)[0] < metroidCountReal) {
 						script += 2;
 					} else {
 						doorIndex = *cast(const(ushort)*)script;
 						script += 2; // doesn't actually matter since we're loading a new script
-						executeDoorScript();
+						return executeDoorScript();
 					}
 					break;
 				case DoorCommand.fadeout:

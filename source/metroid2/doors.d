@@ -295,13 +295,13 @@ immutable ubyte[] door033 = doorScript(
 );
 immutable ubyte[] door034 = doorScript(
     WARP(0xA, 0x12),
-    IF_MET_LESS(42, 0x01E1),
+    IF_MET_LESS(42, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
 immutable ubyte[] door035 = doorScript(
     WARP(0xA, 0x44),
-    IF_MET_LESS(42, 0x01E1),
+    IF_MET_LESS(42, 481),
     END_DOOR,
 );
 immutable ubyte[] door036 = doorScript(
@@ -312,7 +312,7 @@ immutable ubyte[] door036 = doorScript(
 );
 immutable ubyte[] door037 = doorScript(
     WARP(0xC, 0xB2),
-    IF_MET_LESS(46, 0x01E1),
+    IF_MET_LESS(46, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -320,19 +320,19 @@ immutable ubyte[] door038 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesB),
     WARP(0xB, 0x12),
     SONG(Song.subCaves1),
-    IF_MET_LESS(42, 0x01E1),
-    IF_MET_LESS(46, 0x01E3),
+    IF_MET_LESS(42, 481),
+    IF_MET_LESS(46, 483),
     END_DOOR,
 );
 immutable ubyte[] door039 = doorScript(
     WARP(0xC, 0xA0),
-    IF_MET_LESS(46, 0x01E1),
+    IF_MET_LESS(46, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
 immutable ubyte[] door040 = doorScript(
     WARP(0xC, 0xEC),
-    IF_MET_LESS(12, 0x01E1),
+    IF_MET_LESS(12, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -344,7 +344,7 @@ immutable ubyte[] door041 = doorScript(
 );
 immutable ubyte[] door042 = doorScript(
     WARP(0xA, 0x4A),
-    IF_MET_LESS(42, 0x01E1),
+    IF_MET_LESS(42, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -360,7 +360,7 @@ immutable ubyte[] door043 = doorScript(
 );
 immutable ubyte[] door044 = doorScript(
     WARP(0xC, 0x82),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -368,13 +368,13 @@ immutable ubyte[] door045 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesA),
     SONG(Song.subCaves2),
     WARP(0xC, 0x86),
-    IF_MET_LESS(42, 0x01E1),
+    IF_MET_LESS(42, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door046 = doorScript(
     WARP(0xC, 0x4B),
-    IF_MET_LESS(24, 0x01E1),
+    IF_MET_LESS(24, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -382,9 +382,9 @@ immutable ubyte[] door047 = doorScript(
     SONG(Song.subCaves4),
     LOAD_SPR(EnemyTileSet.enemiesF),
     WARP(0xC, 0x3B),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(21, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(21, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -394,7 +394,7 @@ immutable ubyte[] door048 = doorScript(
 );
 immutable ubyte[] door049 = doorScript(
     WARP(0xC, 0xCB),
-    IF_MET_LESS(12, 0x01E1),
+    IF_MET_LESS(12, 481),
     END_DOOR,
 );
 immutable ubyte[] door050 = doorScript(
@@ -403,8 +403,8 @@ immutable ubyte[] door050 = doorScript(
 );
 immutable ubyte[] door051 = doorScript(
     WARP(0xC, 0xEA),
-    IF_MET_LESS(23, 0x01E1),
-    IF_MET_LESS(34, 0x01E2),
+    IF_MET_LESS(23, 481),
+    IF_MET_LESS(34, 482),
     END_DOOR,
 );
 immutable ubyte[] door052 = doorScript(
@@ -414,9 +414,9 @@ immutable ubyte[] door052 = doorScript(
 immutable ubyte[] door053 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesA),
     WARP(0xB, 0x50),
-    IF_MET_LESS(12, 0x01E3),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(21, 0x01E3),
+    IF_MET_LESS(12, 483),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(21, 483),
     END_DOOR,
 );
 immutable ubyte[] door054 = doorScript(
@@ -427,8 +427,8 @@ immutable ubyte[] door054 = doorScript(
     SONG(Song.subCaves3),
     LOAD_SPR(EnemyTileSet.enemiesF),
     WARP(0xC, 0x3),
-    IF_MET_LESS(34, 0x01E1),
-    IF_MET_LESS(42, 0x01E2),
+    IF_MET_LESS(34, 481),
+    IF_MET_LESS(42, 482),
     END_DOOR,
 );
 immutable ubyte[] door055 = doorScript(
@@ -438,9 +438,9 @@ immutable ubyte[] door055 = doorScript(
 );
 immutable ubyte[] door056 = doorScript(
     WARP(0xC, 0xFC),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E3),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 483),
     END_DOOR,
 );
 immutable ubyte[] door057 = doorScript(
@@ -459,7 +459,7 @@ immutable ubyte[] door059 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesD),
     SONG(Song.subCaves4),
     WARP(0xB, 0xF0),
-    IF_MET_LESS(34, 0x01E2),
+    IF_MET_LESS(34, 482),
     END_DOOR,
 );
 immutable ubyte[] door060 = doorScript(
@@ -470,10 +470,10 @@ immutable ubyte[] door060 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesC),
     DAMAGE(0x06, 0x08),
     WARP(0xB, 0x9D),
-    IF_MET_LESS(12, 0x01E3),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E3),
-    IF_MET_LESS(21, 0x01E2),
+    IF_MET_LESS(12, 483),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 483),
+    IF_MET_LESS(21, 482),
     END_DOOR,
 );
 immutable ubyte[] door061 = doorScript(
@@ -482,16 +482,16 @@ immutable ubyte[] door061 = doorScript(
 );
 immutable ubyte[] door062 = doorScript(
     WARP(0xC, 0xE5),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 481),
     END_DOOR,
 );
 immutable ubyte[] door063 = doorScript(
     WARP(0xA, 0xE8),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(14, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(14, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -523,8 +523,8 @@ immutable ubyte[] door069 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesF),
     WARP(0xB, 0x61),
     TILETABLE(0x6),
-    IF_MET_LESS(11, 0x018B),
-    IF_MET_LESS(13, 0x01E0),
+    IF_MET_LESS(11, 395),
+    IF_MET_LESS(13, 480),
     END_DOOR,
 );
 immutable ubyte[] door070 = doorScript(
@@ -557,29 +557,29 @@ immutable ubyte[] door074 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xB, 0xC),
-    IF_MET_LESS(46, 0x01E1),
+    IF_MET_LESS(46, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door075 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesA),
     WARP(0xB, 0x55),
-    IF_MET_LESS(34, 0x01E2),
+    IF_MET_LESS(34, 482),
     END_DOOR,
 );
 immutable ubyte[] door076 = doorScript(
     WARP(0xC, 0xDE),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E3),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
 immutable ubyte[] door077 = doorScript(
     WARP(0xB, 0xCF),
-    IF_MET_LESS(12, 0x01E3),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E3),
+    IF_MET_LESS(12, 483),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -594,7 +594,7 @@ immutable ubyte[] door079 = doorScript(
 immutable ubyte[] door080 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesA),
     SONG(Song.finalCaves),
-    IF_MET_LESS(9, 0x018E),
+    IF_MET_LESS(9, 398),
     WARP(0xC, 0x1),
     END_DOOR,
 );
@@ -635,13 +635,13 @@ immutable ubyte[] door087 = doorScript(
     COLLISION(0x5),
     SOLIDITY(0x5),
     WARP(0xC, 0xC2),
-    IF_MET_LESS(46, 0x01E1),
+    IF_MET_LESS(46, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door088 = doorScript(
     WARP(0xC, 0xE0),
-    IF_MET_LESS(46, 0x01E1),
+    IF_MET_LESS(46, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -672,7 +672,7 @@ immutable ubyte[] door094 = doorScript(
     COLLISION(0x5),
     SOLIDITY(0x5),
     WARP(0xC, 0x54),
-    IF_MET_LESS(46, 0x01E1),
+    IF_MET_LESS(46, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -682,7 +682,7 @@ immutable ubyte[] door095 = doorScript(
     COLLISION(0x5),
     SOLIDITY(0x5),
     WARP(0xC, 0x6),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -721,8 +721,8 @@ immutable ubyte[] door102 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesC),
     SONG(Song.mainCaves),
     WARP(0xA, 0xA1),
-    IF_MET_LESS(24, 0x00E3),
-    IF_MET_LESS(34, 0x01E3),
+    IF_MET_LESS(24, 227),
+    IF_MET_LESS(34, 483),
     END_DOOR,
 );
 immutable ubyte[] door103 = doorScript(
@@ -732,14 +732,14 @@ immutable ubyte[] door103 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xA, 0x30),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door104 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesB),
     WARP(0xC, 0xC2),
-    IF_MET_LESS(34, 0x01B1),
+    IF_MET_LESS(34, 433),
     END_DOOR,
 );
 immutable ubyte[] door105 = doorScript(
@@ -764,17 +764,17 @@ immutable ubyte[] door108 = doorScript(
 immutable ubyte[] door109 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xA, 0x78),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E1),
-    IF_MET_LESS(21, 0x01E3),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 481),
+    IF_MET_LESS(21, 483),
     END_DOOR,
 );
 immutable ubyte[] door110 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesC),
-    IF_MET_LESS(24, 0x018F),
+    IF_MET_LESS(24, 399),
     WARP(0xA, 0xE1),
-    IF_MET_LESS(34, 0x01E3),
+    IF_MET_LESS(34, 483),
     END_DOOR,
 );
 immutable ubyte[] door111 = doorScript(
@@ -793,9 +793,9 @@ immutable ubyte[] door113 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesF),
     WARP(0xC, 0x9),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(21, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(21, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -811,9 +811,9 @@ immutable ubyte[] door115 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xA, 0xC8),
-    IF_MET_LESS(11, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(14, 0x01E1),
+    IF_MET_LESS(11, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(14, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -853,7 +853,7 @@ immutable ubyte[] door122 = doorScript(
     COLLISION(0x5),
     SOLIDITY(0x5),
     WARP(0xC, 0x74),
-    IF_MET_LESS(9, 0x01E1),
+    IF_MET_LESS(9, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -907,18 +907,18 @@ immutable ubyte[] door129 = doorScript(
 );
 immutable ubyte[] door130 = doorScript(
     WARP(0xB, 0x96),
-    IF_MET_LESS(12, 0x01E3),
+    IF_MET_LESS(12, 483),
     END_DOOR,
 );
 immutable ubyte[] door131 = doorScript(
     WARP(0xC, 0x46),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door132 = doorScript(
     WARP(0xC, 0x62),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -934,13 +934,13 @@ immutable ubyte[] door134 = doorScript(
 );
 immutable ubyte[] door135 = doorScript(
     WARP(0xC, 0x9A),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
 immutable ubyte[] door136 = doorScript(
     WARP(0xC, 0xB8),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -951,9 +951,9 @@ immutable ubyte[] door137 = doorScript(
 );
 immutable ubyte[] door138 = doorScript(
     WARP(0xC, 0xA7),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 481),
     END_DOOR,
 );
 immutable ubyte[] door139 = doorScript(
@@ -963,10 +963,10 @@ immutable ubyte[] door139 = doorScript(
     SOLIDITY(0x5),
     DAMAGE(0x02, 0x08),
     WARP(0xA, 0xA5),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E1),
-    IF_MET_LESS(21, 0x01E3),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 481),
+    IF_MET_LESS(21, 483),
     END_DOOR,
 );
 immutable ubyte[] door140 = doorScript(
@@ -1032,28 +1032,28 @@ immutable ubyte[] door153 = doorScript(
 immutable ubyte[] door154 = doorScript(
     LOAD_SPR(EnemyTileSet.metAlpha),
     WARP(0xA, 0x8),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door155 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesF),
     WARP(0xC, 0x53),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door156 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesF),
     WARP(0xC, 0x47),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door157 = doorScript(
     LOAD_SPR(EnemyTileSet.metGamma),
     WARP(0xA, 0x25),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -1061,7 +1061,7 @@ immutable ubyte[] door158 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesC),
     SONG(Song.mainCaves),
     WARP(0xA, 0x41),
-    IF_MET_LESS(42, 0x01E1),
+    IF_MET_LESS(42, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -1083,8 +1083,8 @@ immutable ubyte[] door162 = doorScript(
     SONG(Song.mainCaves),
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xA, 0x86),
-    IF_MET_LESS(34, 0x01E1),
-    IF_MET_LESS(42, 0x01E3),
+    IF_MET_LESS(34, 481),
+    IF_MET_LESS(42, 483),
     END_DOOR,
 );
 immutable ubyte[] door163 = doorScript(
@@ -1122,7 +1122,7 @@ immutable ubyte[] door167 = doorScript(
     COLLISION(0x5),
     SOLIDITY(0x5),
     WARP(0xC, 0x44),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -1178,7 +1178,7 @@ immutable ubyte[] door176 = doorScript(
 );
 immutable ubyte[] door177 = doorScript(
     WARP(0xC, 0x75),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -1221,10 +1221,10 @@ immutable ubyte[] door184 = doorScript(
     SONG(Song.mainCaves),
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xA, 0x65),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E1),
-    IF_MET_LESS(21, 0x01E3),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 481),
+    IF_MET_LESS(21, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -1243,7 +1243,7 @@ immutable ubyte[] door187 = doorScript(
     COLLISION(0x0),
     SOLIDITY(0x0),
     WARP(0xB, 0xCB),
-    IF_MET_LESS(34, 0x01B1),
+    IF_MET_LESS(34, 433),
     TILETABLE(0x2),
     END_DOOR,
 );
@@ -1254,7 +1254,7 @@ immutable ubyte[] door188 = doorScript(
 );
 immutable ubyte[] door189 = doorScript(
     WARP(0xB, 0x88),
-    IF_MET_LESS(34, 0x01E3),
+    IF_MET_LESS(34, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -1275,9 +1275,9 @@ immutable ubyte[] door192 = doorScript(
 );
 immutable ubyte[] door193 = doorScript(
     WARP(0xB, 0xC4),
-    IF_MET_LESS(12, 0x01E3),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E3),
+    IF_MET_LESS(12, 483),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 483),
     END_DOOR,
 );
 immutable ubyte[] door194 = doorScript(
@@ -1290,7 +1290,7 @@ immutable ubyte[] door195 = doorScript(
 );
 immutable ubyte[] door196 = doorScript(
     WARP(0xB, 0x8B),
-    IF_MET_LESS(34, 0x01E3),
+    IF_MET_LESS(34, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -1319,7 +1319,7 @@ immutable ubyte[] door201 = doorScript(
 );
 immutable ubyte[] door202 = doorScript(
     WARP(0xA, 0x42),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -1343,7 +1343,7 @@ immutable ubyte[] door205 = doorScript(
 );
 immutable ubyte[] door206 = doorScript(
     WARP(0xC, 0x65),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -1357,7 +1357,7 @@ immutable ubyte[] door208 = doorScript(
 );
 immutable ubyte[] door209 = doorScript(
     WARP(0xA, 0x22),
-    IF_MET_LESS(46, 0x01E1),
+    IF_MET_LESS(46, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -1373,15 +1373,15 @@ immutable ubyte[] door211 = doorScript(
 );
 immutable ubyte[] door212 = doorScript(
     WARP(0xC, 0xDF),
-    IF_MET_LESS(9, 0x019B),
+    IF_MET_LESS(9, 411),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door213 = doorScript(
     WARP(0xB, 0x9A),
-    IF_MET_LESS(12, 0x01E3),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(14, 0x01E3),
+    IF_MET_LESS(12, 483),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(14, 483),
     END_DOOR,
 );
 immutable ubyte[] door214 = doorScript(
@@ -1404,8 +1404,8 @@ immutable ubyte[] door216 = doorScript(
 );
 immutable ubyte[] door217 = doorScript(
     WARP(0xA, 0x7),
-    IF_MET_LESS(42, 0x01E1),
-    IF_MET_LESS(46, 0x01E3),
+    IF_MET_LESS(42, 481),
+    IF_MET_LESS(46, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -1458,9 +1458,9 @@ immutable ubyte[] door226 = doorScript(
 );
 immutable ubyte[] door227 = doorScript(
     WARP(0xA, 0xAF),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(21, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(21, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -1472,7 +1472,7 @@ immutable ubyte[] door228 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesC),
     SONG(Song.mainCaves),
     WARP(0xC, 0xAA),
-    IF_MET_LESS(12, 0x01E1),
+    IF_MET_LESS(12, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -1488,16 +1488,16 @@ immutable ubyte[] door230 = doorScript(
 immutable ubyte[] door231 = door230;
 immutable ubyte[] door232 = doorScript(
     WARP(0xA, 0xE5),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(14, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(14, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door233 = doorScript(
     WARP(0xB, 0x16),
-    IF_MET_LESS(42, 0x01E1),
-    IF_MET_LESS(46, 0x01E3),
+    IF_MET_LESS(42, 481),
+    IF_MET_LESS(46, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -1522,13 +1522,13 @@ immutable ubyte[] door236 = doorScript(
 immutable ubyte[] door237 = door236;
 immutable ubyte[] door238 = doorScript(
     WARP(0xA, 0x6F),
-    IF_MET_LESS(23, 0x01E1),
+    IF_MET_LESS(23, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door239 = doorScript(
     WARP(0xC, 0x99),
-    IF_MET_LESS(12, 0x01E1),
+    IF_MET_LESS(12, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -1542,8 +1542,8 @@ immutable ubyte[] door241 = doorScript(
 );
 immutable ubyte[] door242 = doorScript(
     WARP(0xB, 0x9B),
-    IF_MET_LESS(12, 0x01E3),
-    IF_MET_LESS(14, 0x01E2),
+    IF_MET_LESS(12, 483),
+    IF_MET_LESS(14, 482),
     END_DOOR,
 );
 immutable ubyte[] door243 = doorScript(
@@ -1594,7 +1594,7 @@ immutable ubyte[] door248 = doorScript(
 immutable ubyte[] door249 = doorScript(
     SONG(0xA), // special
     WARP(0xE, 0x10),
-    IF_MET_LESS(01, 0x0169),
+    IF_MET_LESS(01, 361),
     END_DOOR,
 );
 immutable ubyte[] door250 = doorScript(
@@ -1968,7 +1968,7 @@ immutable ubyte[] door314 = doorScript(
     END_DOOR,
 );
 immutable ubyte[] door315 = doorScript(
-    IF_MET_LESS(01, 0x019D),
+    IF_MET_LESS(01, 413),
     FADEOUT,
     LOAD_BG(BGTileSet.queenBG),
     COLLISION(0x2),
@@ -2037,20 +2037,20 @@ immutable ubyte[] door329 = doorScript(
 );
 immutable ubyte[] door330 = doorScript(
     WARP(0xC, 0x15),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
 immutable ubyte[] door331 = doorScript(
     WARP(0xC, 0x44),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door332 = doorScript(
     WARP(0xA, 0x42),
-    IF_MET_LESS(23, 0x01E1),
-    IF_MET_LESS(34, 0x01E3),
+    IF_MET_LESS(23, 481),
+    IF_MET_LESS(34, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -2071,7 +2071,7 @@ immutable ubyte[] door334 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesF),
     WARP(0xC, 0x26),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -2086,7 +2086,7 @@ immutable ubyte[] door336 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesF),
     WARP(0xC, 0x55),
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -2340,20 +2340,20 @@ immutable ubyte[] door390 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xA, 0xC5),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
     END_DOOR,
 );
 immutable ubyte[] door391 = doorScript(
     WARP(0xA, 0x83),
-    IF_MET_LESS(24, 0x01E1),
+    IF_MET_LESS(24, 481),
     END_DOOR,
 );
 immutable ubyte[] door392 = doorScript(
     WARP(0xA, 0x82),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(21, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(21, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -2365,7 +2365,7 @@ immutable ubyte[] door393 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesD),
     SONG(Song.subCaves4),
     WARP(0xB, 0xF0),
-    IF_MET_LESS(24, 0x01E3),
+    IF_MET_LESS(24, 483),
     END_DOOR,
 );
 immutable ubyte[] door394 = doorScript(
@@ -2379,10 +2379,10 @@ immutable ubyte[] door395 = doorScript(
 immutable ubyte[] door396 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesA),
     WARP(0xB, 0x55),
-    IF_MET_LESS(12, 0x01E3),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(21, 0x01E3),
-    IF_MET_LESS(24, 0x01E2),
+    IF_MET_LESS(12, 483),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(21, 483),
+    IF_MET_LESS(24, 482),
     END_DOOR,
 );
 immutable ubyte[] door397 = door396;
@@ -2392,9 +2392,9 @@ immutable ubyte[] door398 = doorScript(
 );
 immutable ubyte[] door399 = doorScript(
     WARP(0xA, 0xEF),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(21, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(21, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -2415,8 +2415,8 @@ immutable ubyte[] door402 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xA, 0xC8),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
     END_DOOR,
 );
 immutable ubyte[] door403 = doorScript(
@@ -2425,8 +2425,8 @@ immutable ubyte[] door403 = doorScript(
 );
 immutable ubyte[] door404 = doorScript(
     WARP(0xA, 0xAF),
-    IF_MET_LESS(13, 0x01B1),
-    IF_MET_LESS(21, 0x01AF),
+    IF_MET_LESS(13, 433),
+    IF_MET_LESS(21, 431),
     TILETABLE(0x2),
     END_DOOR,
 );
@@ -2461,7 +2461,7 @@ immutable ubyte[] door411 = doorScript(
 );
 immutable ubyte[] door412 = doorScript(
     WARP(0xC, 0xB5),
-    IF_MET_LESS(9, 0x01E1),
+    IF_MET_LESS(9, 481),
     END_DOOR,
 );
 immutable ubyte[] door413 = doorScript(
@@ -2480,7 +2480,7 @@ immutable ubyte[] door413 = doorScript(
 );
 immutable ubyte[] door414 = doorScript(
     COPY_DATA(SpecialDoorCopySrc.commonItems, SpecialDoorCopyDest.commonItems, 0x0100),
-    IF_MET_LESS(0, 0x019F),
+    IF_MET_LESS(0, 415),
     FADEOUT,
     LOAD_BG(BGTileSet.finalLab),
     COLLISION(0x7),
@@ -2504,9 +2504,9 @@ immutable ubyte[] door415 = doorScript(
     END_DOOR,
 );
 immutable ubyte[] door416 = doorScript(
-    IF_MET_LESS(24, 0x0188),
-    IF_MET_LESS(34, 0x01E3),
-    IF_MET_LESS(42, 0x01E2),
+    IF_MET_LESS(24, 392),
+    IF_MET_LESS(34, 483),
+    IF_MET_LESS(42, 482),
     END_DOOR,
 );
 immutable ubyte[] door417 = doorScript(
@@ -2516,8 +2516,8 @@ immutable ubyte[] door417 = doorScript(
     SOLIDITY(0x5),
     TILETABLE(0x6),
     LOAD_SPR(EnemyTileSet.enemiesF),
-    IF_MET_LESS(11, 0x01CD),
-    IF_MET_LESS(13, 0x00C7),
+    IF_MET_LESS(11, 461),
+    IF_MET_LESS(13, 199),
     END_DOOR,
 );
 immutable ubyte[] door418 = doorScript(
@@ -2527,9 +2527,9 @@ immutable ubyte[] door418 = doorScript(
     SOLIDITY(0x5),
     LOAD_SPR(EnemyTileSet.enemiesC),
     WARP(0xA, 0xC5),
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E3),
-    IF_MET_LESS(14, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 483),
+    IF_MET_LESS(14, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
@@ -2541,8 +2541,8 @@ immutable ubyte[] door420 = doorScript(
     LOAD_SPR(EnemyTileSet.enemiesC),
     SONG(Song.mainCaves),
     WARP(0xA, 0xC),
-    IF_MET_LESS(42, 0x01E1),
-    IF_MET_LESS(46, 0x01E3),
+    IF_MET_LESS(42, 481),
+    IF_MET_LESS(46, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -2576,19 +2576,19 @@ immutable ubyte[] door426 = doorScript(
 );
 immutable ubyte[] door427 = doorScript(
     WARP(0xA, 0x4F),
-    IF_MET_LESS(23, 0x01E1),
-    IF_MET_LESS(34, 0x01E3),
+    IF_MET_LESS(23, 481),
+    IF_MET_LESS(34, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
 immutable ubyte[] door428 = doorScript(
-    IF_MET_LESS(34, 0x01E1),
+    IF_MET_LESS(34, 481),
     TILETABLE(0x7),
     END_DOOR,
 );
 immutable ubyte[] door429 = doorScript(
     WARP(0xB, 0xF8),
-    IF_MET_LESS(24, 0x01E3),
+    IF_MET_LESS(24, 483),
     TILETABLE(0x7),
     END_DOOR,
 );
@@ -2621,19 +2621,19 @@ immutable ubyte[] door434 = doorScript(
 );
 immutable ubyte[] door435 = doorScript(
     WARP(0xA, 0x53),
-    IF_MET_LESS(34, 0x01E1),
-    IF_MET_LESS(42, 0x01E3),
+    IF_MET_LESS(34, 481),
+    IF_MET_LESS(42, 483),
     END_DOOR,
 );
 immutable ubyte[] door436 = doorScript(
     WARP(0xC, 0x6B),
-    IF_MET_LESS(24, 0x01E1),
+    IF_MET_LESS(24, 481),
     TILETABLE(0x8),
     END_DOOR,
 );
 immutable ubyte[] door437 = doorScript(
-    IF_MET_LESS(34, 0x01E1),
-    IF_MET_LESS(42, 0x01E3),
+    IF_MET_LESS(34, 481),
+    IF_MET_LESS(42, 483),
     END_DOOR,
 );
 immutable ubyte[] door438 = doorScript(
@@ -2833,9 +2833,9 @@ immutable ubyte[] door483 = doorScript(
     END_DOOR,
 );
 immutable ubyte[] door484 = doorScript(
-    IF_MET_LESS(12, 0x01E1),
-    IF_MET_LESS(13, 0x01E2),
-    IF_MET_LESS(21, 0x01E1),
+    IF_MET_LESS(12, 481),
+    IF_MET_LESS(13, 482),
+    IF_MET_LESS(21, 481),
     END_DOOR,
 );
 immutable ubyte[] door485 = doorScript(
