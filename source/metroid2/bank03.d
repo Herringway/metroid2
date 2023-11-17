@@ -17,8 +17,8 @@ void handleEnemyLoading() {
 void loadEnemies() {
 	bottomEdge = (cameraY + 104) & 0xFFF0;
 	topEdge = (cameraY - 88) & 0xFFF0;
-	rightEdge = (cameraX + 104) & 0xFFF0;
-	leftEdge = (cameraX - 96) & 0xFFF0;
+	rightEdge = (cameraX + 104) & 0xFFF8;
+	leftEdge = (cameraX - 96) & 0xFFF8;
 	// avoid map wraparound
 	if (!(bottomEdge & 0xF00) && ((topEdge & 0xF00) == 0xF)) {
 		if (cameraY.screen != bottomEdge.screen) {
