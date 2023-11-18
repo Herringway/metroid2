@@ -680,6 +680,33 @@ struct EnemySpawn {
 	}
 }
 
+struct EnemyHeader {
+	Actor spriteType;
+	ubyte baseSpriteAttributes;
+	ubyte spriteAttributes;
+	ubyte stunCounter;
+	ubyte misc;
+	ubyte directionFlags;
+	ubyte counter;
+	ubyte state;
+	ubyte iceCounter;
+	ubyte health;
+	ubyte spawnNumber;
+	void function() ai;
+}
+
+struct ShortEnemyHeader {
+	ubyte stunCounter;
+	ubyte misc;
+	ubyte directionFlags;
+	ubyte counter;
+	ubyte state;
+	ubyte iceCounter;
+	ubyte health;
+	ubyte spawnNumber;
+	void function() ai;
+}
+
 struct EnemyData {
 	ubyte baseSpriteAttributes;
 	ubyte spriteAttributes;

@@ -509,7 +509,17 @@ void unusedSetXFlip() {
 }
 
 void enCollisionRightNearSmall() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00010001;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 3);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x + 3);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000001;
 }
 
 void enCollisionRightMidSmall() {
@@ -583,7 +593,17 @@ void enCollisionRightCrawlB() {
 }
 
 void enCollisionLeftNearSmall() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b01000100;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 3);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 3);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000100;
 }
 
 void enCollisionLeftMidSmall() {
@@ -1050,7 +1070,32 @@ void enemyCommonAI() {
 void enAINULL() {}
 
 void enemyAnimateIce() {
-	assert(0); // TODO
+	if ((enemyWorking.spriteType == Actor.metroid1) || (enemyWorking.spriteType == Actor.metroid) || (enemyWorking.spriteType == Actor.metroid3)) {
+		return enemyWorking.ai();
+	}
+	enemyAnimateIceCall();
+}
+void enemyAnimateIceCall() {
+	if (enemyFrameCounter & 1) {
+		return;
+	}
+	enemyWorking.iceCounter += 2;
+	if (enemyWorking.iceCounter < 198) {
+		return;
+	}
+	if (enemyWorking.iceCounter < 208) {
+		enemyWorking.status ^= 0x80;
+	} else {
+		enemyWorking.iceCounter = 0;
+		if (enemyWorking.health != 0) {
+			enemyWorking.stunCounter = 0;
+			enemyWorking.status = 0;
+		} else {
+			sfxRequestNoise = NoiseSFX.u02;
+			enemyDeleteSelf();
+			enemyWorking.spawnFlag = 2;
+		}
+	}
 }
 
 void enemyAnimateDrop() {
@@ -1383,7 +1428,16 @@ void enAICrawlerB() {
 }
 
 void skreekProjectileCode() {
-	assert(0); // TODO
+	if (--enemyWorking.counter != 0) {
+		if (!(enemyWorking.spriteAttributes & OAMFlags.xFlip)) {
+			enemyWorking.x -= 2;
+		} else {
+			enemyWorking.x += 2;
+		}
+	} else {
+		enemyDeleteSelf();
+		enemyWorking.spawnFlag = 0xFF;
+	}
 }
 
 void enAISkreek() {
@@ -1743,7 +1797,73 @@ void enAIHopper() {
 }
 
 void enAIWallfire() {
-	assert(0); // TODO
+	static immutable fireballHeader = ShortEnemyHeader(0, 0, 0, 0, 0, 0, 254, 1, &enAIWallfire);
+	if (enemyWorking.spriteType == Actor.wallfireFlipped) {
+		enemyWorking.spriteType = Actor.wallfire;
+	}
+	enemyGetSamusCollisionResults();
+	if (enemyWorking.spawnFlag == 6) {
+		if (enemyWorking.spriteType >= Actor.wallfireShot3) {
+			if (enemyWorking.spriteType != Actor.wallfireShot4) {
+				enemyWorking.spriteType++;
+			} else {
+				enemyDeleteSelf();
+				enemyWorking.spawnFlag = 0xFF;
+			}
+			return;
+		}
+		enemyFlipSpriteIDTwoFrame();
+		static void startExploding() {
+			enemyWorking.spriteType = Actor.wallfireShot3;
+			sfxRequestNoise = NoiseSFX.u03;
+		}
+		if (!(enemyWorking.spriteAttributes & OAMFlags.xFlip)) {
+			enemyWorking.x += 4;
+			enCollisionRightNearSmall();
+			if (enBGCollisionResult & 0b0001) {
+				return startExploding();
+			}
+		} else {
+			enemyWorking.x -= 4;
+			enCollisionLeftNearSmall();
+			if (enBGCollisionResult & 0b0100) {
+				return startExploding();
+			}
+		}
+		return;
+	}
+	if (enemyWorking.spriteType == Actor.wallfireDead) {
+		return;
+	}
+	if (enemyWeaponType >= CollisionType.contact) {
+		if (enemyWorking.spriteType == Actor.wallfire2) {
+			if (++enemyWorking.counter != 8) {
+				return;
+			}
+			enemyWorking.counter = 0;
+			enemyWorking.spriteType = Actor.wallfire;
+			return;
+		}
+		if (++enemyWorking.counter != 80) {
+			return;
+		}
+		enemyWorking.counter = 0;
+		const newSlot = loadEnemyGetFirstEmptySlot();
+		enemyDataSlots[newSlot].status = 0;
+		enemyDataSlots[newSlot].y = cast(ubyte)(enemyWorking.y - 4);
+		enemyDataSlots[newSlot].x = cast(ubyte)(enemyWorking.x + (enemyWorking.spriteAttributes & OAMFlags.xFlip) ? -8 : 8);
+		enemyDataSlots[newSlot].spriteType = Actor.wallfireShot1;
+		enemyDataSlots[newSlot].baseSpriteAttributes = 0;
+		enemyDataSlots[newSlot].spriteAttributes = enemyWorking.spriteAttributes;
+		enemyTempSpawnFlag = 6;
+		enemySpawnObjectShortHeader(&fireballHeader, &enemyDataSlots[newSlot]);
+		enemyWorking.spriteType = Actor.wallfire2;
+		sfxRequestNoise = NoiseSFX.u12;
+		return;
+	}
+	enemyWorking.spriteType = Actor.wallfireDead;
+	sfxRequestSquare1 = Square1SFX.clear;
+	sfxRequestNoise = NoiseSFX.u02;
 }
 
 void enAIGunzoo() {
@@ -2288,8 +2408,48 @@ void enAIGammaMetroid() {
 	assert(0); // TODO
 }
 
-void enemySpawnObject() {
-	assert(0); // TODO
+void enemySpawnObjectLongHeader(const(EnemyHeader)* header, EnemySlot* dest) {
+	dest.spriteType = header.spriteType;
+	dest.baseSpriteAttributes = header.baseSpriteAttributes;
+	dest.spriteAttributes = header.spriteAttributes;
+	dest.stunCounter = header.stunCounter;
+	dest.misc = header.misc;
+	dest.directionFlags = header.directionFlags;
+	dest.counter = header.counter;
+	dest.state = header.state;
+	dest.iceCounter = header.iceCounter;
+	dest.health = header.health;
+	dest.dropType = 0;
+	dest.explosionFlag = 0;
+	dest.yScreen = 0;
+	dest.xScreen = 0;
+	dest.maxHealth = header.health;
+	dest.spawnFlag = enemyTempSpawnFlag;
+	dest.spawnNumber = header.spawnNumber;
+	dest.ai = header.ai;
+	enemySpawnFlags[dest.spawnNumber] = enemyTempSpawnFlag;
+	numEnemies.total++;
+	numEnemies.active++;
+}
+void enemySpawnObjectShortHeader(const(ShortEnemyHeader)* header, EnemySlot* dest) {
+	dest.stunCounter = header.stunCounter;
+	dest.misc = header.misc;
+	dest.directionFlags = header.directionFlags;
+	dest.counter = header.counter;
+	dest.state = header.state;
+	dest.iceCounter = header.iceCounter;
+	dest.health = header.health;
+	dest.dropType = 0;
+	dest.explosionFlag = 0;
+	dest.yScreen = 0;
+	dest.xScreen = 0;
+	dest.maxHealth = header.health;
+	dest.spawnFlag = enemyTempSpawnFlag;
+	dest.spawnNumber = header.spawnNumber;
+	dest.ai = header.ai;
+	enemySpawnFlags[dest.spawnNumber] = enemyTempSpawnFlag;
+	numEnemies.total++;
+	numEnemies.active++;
 }
 
 void enemyGetAddressOfParentObject() {
