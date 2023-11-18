@@ -3750,7 +3750,7 @@ void loadGameSamusItemGraphics() {
 		loadGameCopyItemToVRAM(graphicsInfoSpringBallTop);
 		loadGameCopyItemToVRAM(graphicsInfoSpringBallBottom);
 	}
-	if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack) == (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
+	if ((samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) == (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
 		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceScrewTop);
 		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceScrewBottom);
 	} else if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack) == ItemFlag.spaceJump) {
