@@ -183,7 +183,7 @@ bool enemyGetDamagedOrGiveDrop() {
 		collision = EnSprCollision.init;
 		return false;
 	}
-	if (collision.weaponType == 0xFF) {
+	if (collision.weaponType == CollisionType.nothing) {
 		return false;
 	}
 	if (enemyWRAMAddr != collision.enemy) {
@@ -213,13 +213,13 @@ bool enemyGetDamagedOrGiveDrop() {
 		if ((enemyWorking.spriteType >= Actor.metroid1) && (enemyWorking.spriteType <= Actor.metroid3)) {
 			return transferCollisionResults();
 		}
-		if (collision.weaponType == 0x10) {
+		if (collision.weaponType == CollisionType.screwAttack) {
 			if (enemyWorking.health != 0xFF) {
 				return prepareDrop(0x20);
 			}
 			sfxRequestSquare1 = Square1SFX.beamDink;
 			 return transferCollisionResults();
-		} else if (collision.weaponType > 0x10) {
+		} else if (collision.weaponType > CollisionType.screwAttack) {
 			return transferCollisionResults();
 		}
 		if (collision.weaponType != 1) {
@@ -258,7 +258,7 @@ bool enemyGetDamagedOrGiveDrop() {
 			return transferCollisionResults();
 		}
 	}
-	if (collision.weaponType < 0x10) {
+	if (collision.weaponType < CollisionType.screwAttack) {
 		return transferCollisionResults();
 	}
 	static void giveHealth(ubyte amount) {
