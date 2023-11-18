@@ -3174,10 +3174,10 @@ bool collisionProjectileOneEnemy(EnemySlot* enemy, ubyte x, ubyte y) {
 		collisionEnRight = cast(ubyte)(-(hitbox.left - collisionEnX - 1));
 		collisionEnLeft = cast(ubyte)(-(hitbox.right - collisionEnX - 1));
 	}
-	if (cast(ubyte)(y - collisionEnTop) > collisionEnBottom - collisionEnTop) {
+	if (cast(ubyte)(y - collisionEnTop) > cast(ubyte)(collisionEnBottom - collisionEnTop)) {
 		return false;
 	}
-	if (cast(ubyte)(x - collisionEnLeft) > collisionEnRight - collisionEnLeft) {
+	if (cast(ubyte)(x - collisionEnLeft) > cast(ubyte)(collisionEnRight - collisionEnLeft)) {
 		return false;
 	}
 	collision.weaponType = weaponType;
@@ -3241,10 +3241,10 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 		return false;
 	}
 	samusDamageBoostDirection = 1;
-	if (cast(ubyte)(samusX - collisionEnLeft) > collisionEnRight - collisionEnLeft) {
+	if (cast(ubyte)(samusX - collisionEnLeft) >cast(ubyte)(collisionEnRight - collisionEnLeft)) {
 		return false;
 	}
-	if (cast(ubyte)(samusX - collisionEnLeft) < (collisionEnRight - collisionEnLeft) / 2) {
+	if (cast(ubyte)(samusX - collisionEnLeft) < cast(ubyte)((collisionEnRight - collisionEnLeft) / 2)) {
 		samusDamageBoostDirection = 0xFF;
 	}
 	if ((samusItems & ItemFlag.screwAttack) && ((samusPose == SamusPose.spinJumping) || (samusPose == SamusPose.startingToSpinJump))) {
