@@ -523,19 +523,78 @@ void enCollisionRightNearSmall() {
 }
 
 void enCollisionRightMidSmall() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00010001;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 3);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x + 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000001;
 }
 
 void enCollisionRightMidMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00010001;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 6);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x + 7);
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000001;
 }
 
 void enCollisionRightFarMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00010001;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 7);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x + 11);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000001;
 }
 
 void enCollisionRightMidWide() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00010001;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 11);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x + 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000001;
 }
 
 void enCollisionRightFarWide() {
@@ -607,19 +666,78 @@ void enCollisionLeftNearSmall() {
 }
 
 void enCollisionLeftMidSmall() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b01000100;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 3);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000100;
 }
 
 void enCollisionLeftMidMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b01000100;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 6);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 7);
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000100;
 }
 
 void enCollisionLeftFarMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b01000100;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 7);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 11);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000100;
 }
 
 void enCollisionLeftMidWide() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b01000100;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 11);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointYPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000100;
 }
 
 void enCollisionLeftFarWide() {
@@ -718,15 +836,53 @@ void enCollisionDownMidMedium() {
 }
 
 void enCollisionDownMidWide() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00100010;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 7);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 11);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
 }
 
 void enCollisionDownOnePoint() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00100010;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 11);
+	enemyTestPointXPos = enemyWorking.x;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
 }
 
 void enCollisionDownFarMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00100010;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 11);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
 }
 
 void enCollisionDownFarWide() {
@@ -784,23 +940,96 @@ void enCollisionDownCrawlB() {
 }
 
 void enCollisionUpNearSmall() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b10001000;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 3);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 3);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00001000;
 }
 
 void enCollisionUpNearMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b10001000;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 3);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00001000;
 }
 
 void enCollisionUpMidMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b10001000;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 7);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 6);
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	metroidBabyTouchingTile = getTileIndexEnemy();
+	if (metroidBabyTouchingTile < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00001000;
 }
 
 void enCollisionUpMidWide() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b10001000;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 7);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 11);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 6;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 8;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00001000;
 }
 
 void enCollisionUpFarMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b10001000;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y - 11);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00001000;
 }
 
 void enCollisionUpFarWide() {
@@ -855,10 +1084,6 @@ void enCollisionUpCrawlB() {
 		return;
 	}
 	enBGCollisionResult &= ~0b00001000;
-}
-
-void enCollisionUp() {
-	assert(0); // TODO
 }
 
 void blobThrowerLoadSprite() {
