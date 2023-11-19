@@ -3128,12 +3128,58 @@ void unusedDeathAnimation() {
 void collisionBombEnemies() {
 	for (int i = 0; i < enemyDataSlots.length; i++) {
 		if ((enemyDataSlots[i].status & 0xF) == 0) {
-			collisionBombOneEnemy(&enemyDataSlots[i]);
+			if (collisionBombOneEnemy(&enemyDataSlots[i])) {
+				break;
+			}
 		}
 	}
 }
-void collisionBombOneEnemy(EnemySlot* enemy) {
-	assert(0); // TODO
+bool collisionBombOneEnemy(EnemySlot* enemy) {
+	if (enemy.y >= 224) {
+		return false;
+	}
+	collisionEnY = enemy.y;
+	if (enemy.x >= 224) {
+		return false;
+	}
+	collisionEnX = enemy.x;
+	collisionEnSprite = enemy.spriteType;
+	collisionEnAttr = enemy.spriteAttributes;
+	const(Rectangle)* hitbox = enemyHitboxes[collisionEnSprite];
+	if (!(collisionEnAttr & OAMFlags.yFlip)) {
+		collisionEnTop = cast(ubyte)(enemy.y + hitbox.top - 16);
+		collisionEnBottom = cast(ubyte)(enemy.y + hitbox.bottom + 16);
+	} else {
+		collisionEnTop = cast(ubyte)(-(enemy.y - hitbox.top) + 15);
+		collisionEnBottom = cast(ubyte)(-(enemy.y - hitbox.bottom) - 15);
+	}
+	if (!(collisionEnAttr & OAMFlags.xFlip)) {
+		collisionEnLeft = cast(ubyte)(enemy.x + hitbox.left - 16);
+		collisionEnRight = cast(ubyte)(enemy.x + hitbox.right + 16);
+	} else {
+		collisionEnLeft = cast(ubyte)(-(enemy.x - hitbox.left) + 15);
+		collisionEnRight = cast(ubyte)(-(enemy.x - hitbox.right) - 15);
+	}
+	if (cast(ubyte)(spriteYPixel - collisionEnTop) > cast(ubyte)(collisionEnBottom - collisionEnTop)) {
+		return false;
+	}
+	if (cast(ubyte)(spriteXPixel - collisionEnLeft) > cast(ubyte)(collisionEnRight - collisionEnLeft)) {
+		return false;
+	}
+	collision.weaponType = CollisionType.bombExplosion;
+	collision.enemy = enemy;
+	if (queenEatingState == 3) {
+		if (collisionEnSprite == Actor.queenHeadLeft) {
+			queenEatingState = 4;
+		}
+	}
+	if (queenEatingState == 6) {
+		if (collisionEnSprite == Actor.queenBody){
+			queenEatingState = 7;
+			samusPose = SamusPose.escapingMetroidQueen;
+		}
+	}
+	return true;
 }
 bool collisionProjectileEnemies() {
 	const y = cast(ubyte)(tileY - scrollY);
