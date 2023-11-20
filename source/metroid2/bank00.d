@@ -1320,6 +1320,7 @@ void samusHandlePose() {
 				}
 				collisionCheckSpiderSet();
 				if (!spiderContactState) {
+					assert(0);
 					// TODO goto spiderballfall;
 				}
 				const(ubyte)[] hl;
@@ -1408,10 +1409,12 @@ void samusHandlePose() {
 				}
 				static void moveVertical(byte amt) {
 					if (samusMoveVertical(amt)) {
+						assert(0);
 						// TODO goto spiderFallLand
 					}
 					collisionCheckSpiderSet();
 					if (spiderContactState) {
+						assert(0);
 						// TODO goto spiderFallAttach
 					}
 					samusJumpArcCounter++;
