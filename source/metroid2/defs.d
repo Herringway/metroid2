@@ -720,10 +720,9 @@ struct EnemyData {
 	void function() ai;
 }
 
-ubyte rr(ubyte value) @safe pure {
-	const bit = value & 1;
+ubyte rr(ubyte value, bool carry) @safe pure {
 	value >>= 1;
-	value |= (bit << 7);
+	value |= (carry << 7);
 	return value;
 }
 ubyte rl(ubyte value) @safe pure {

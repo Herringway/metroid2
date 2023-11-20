@@ -1706,21 +1706,17 @@ void collisionCheckSpiderSet() {
 
 	tileX = cast(ubyte)(samusX.pixel + spiderXRight);
 	tileY = cast(ubyte)(samusY.pixel + spiderYTop);
-	collisionCheckSpiderPoint();
-	spiderContactState = rr(spiderContactState);
+	spiderContactState = rr(spiderContactState, collisionCheckSpiderPoint());
 
 	tileY = cast(ubyte)(samusY.pixel + spiderYBottom);
-	collisionCheckSpiderPoint();
-	spiderContactState = rr(spiderContactState);
+	spiderContactState = rr(spiderContactState, collisionCheckSpiderPoint());
 
 	tileX = cast(ubyte)(samusX.pixel + spiderXLeft);
 	tileY = cast(ubyte)(samusY.pixel + spiderYTop);
-	collisionCheckSpiderPoint();
-	spiderContactState = rr(spiderContactState);
+	spiderContactState = rr(spiderContactState, collisionCheckSpiderPoint());
 
 	tileY = cast(ubyte)(samusY.pixel + spiderYBottom);
-	collisionCheckSpiderPoint();
-	spiderContactState = swap(rr(spiderContactState));
+	spiderContactState = swap(rr(spiderContactState, collisionCheckSpiderPoint()));
 
 	tileX = cast(ubyte)(samusX.pixel + spiderXRight);
 	tileY = cast(ubyte)(samusY.pixel + spiderYMid);
@@ -2073,7 +2069,19 @@ bool collisionSamusBottom() {
 	return a2 < samusSolidityIndex;
 }
 bool collisionCheckSpiderPoint() {
-	assert(0); // TODO
+	const index = samusGetTileIndex();
+	if (index < samusSolidityIndex) {
+		if (collisionArray[index] & BlockType.acid) {
+			acidContactFlag = 0x40;
+			applyDamageAcid(acidDamageValue);
+		}
+		return false;
+	}
+	if (collisionArray[index] & BlockType.acid) {
+		acidContactFlag = 0x40;
+		applyDamageAcid(acidDamageValue);
+	}
+	return true;
 }
 ubyte samusGetTileIndex() {
 	getTilemapAddress();
