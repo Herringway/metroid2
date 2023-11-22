@@ -38,6 +38,8 @@ void debugFunction(const UIState state) {
 		InputEditable("Active weapon", samusActiveWeapon);
 		InputEditable("Equipped beam", samusBeam);
 		InputEditable("Coords", samusX, samusY);
+		InputEditable("Fall counter", samusFallArcCounter);
+		InputEditable("Jump counter", samusJumpArcCounter);
 		foreach (idx, flagName; ["Bombs", "High Jump Boots", "Screw Attack", "Space Jump", "Spring Ball", "Spider Ball", "Varia Suit", "???"]) {
 			const mask = 1 << idx;
 			bool flagEnabled = !!(samusItems & mask);
@@ -83,6 +85,44 @@ void debugFunction(const UIState state) {
 				}
 			}
 		}
+		ImGui.TreePop();
+	}
+	if (ImGui.TreeNode("Misc State")) {
+		ImGui.SeparatorText("Save");
+		InputEditable("Save station contact", saveContactFlag);
+		InputEditable("Game is loaded from save file", loadingFromFile);
+		InputEditable("Save slot", activeSaveSlot);
+		ImGui.SeparatorText("Metroid Count");
+		InputEditable("Total Metroids left currently displayed", metroidCountDisplayed);
+		InputEditable("Total Metroids left", metroidCountReal);
+		InputEditable("Metroids left currently displayed", metroidLCounterDisp);
+		ImGui.SeparatorText("Earthquake");
+		InputEditable("Time until next earthquake", nextEarthquakeTimer);
+		InputEditable("Time until earthquake ends", earthquakeTimer);
+		ImGui.SeparatorText("Debugging");
+		InputEditable("Debug mode", debugFlag);
+		InputEditable("Item index", debugItemIndex);
+		ImGui.SeparatorText("Misc");
+		InputEditable("Door index", doorIndex);
+		InputEditable("Varia animation flag", variaAnimationFlag);
+		ImGui.TreePop();
+	}
+	if (ImGui.TreeNode("Audio")) {
+		ImGui.SeparatorText("Song");
+		InputEditable("Next", songRequest);
+		InputEditable("Playing", songPlaying);
+		ImGui.SeparatorText("Song interruption");
+		InputEditable("Next", songInterruptionRequest);
+		InputEditable("Playing", songInterruptionPlaying);
+		ImGui.SeparatorText("SFX (Square 1)");
+		InputEditable("Next", sfxRequestSquare1);
+		InputEditable("Playing", sfxPlayingSquare1);
+		ImGui.SeparatorText("SFX (Square 2)");
+		InputEditable("Next", sfxRequestSquare2);
+		InputEditable("Playing", sfxPlayingSquare2);
+		ImGui.SeparatorText("Noise");
+		InputEditable("Next", sfxRequestNoise);
+		InputEditable("Playing", sfxPlayingNoise);
 		ImGui.TreePop();
 	}
 	ImGui.End();
