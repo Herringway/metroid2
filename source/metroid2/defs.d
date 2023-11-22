@@ -234,6 +234,7 @@ enum Actor {
 	gravitt = 0xD3, // Gravitt
 	gravitt5 = 0xD7, // Gravitt
 	gullugg = 0xD8, // Gullugg
+	gullugg2 = 0xD9, // Gullugg
 	gullugg3 = 0xDA, // Gullugg
 	babyMetroidEggPreview = 0xDB, // Baby metroid egg (preview)
 	smallHealth = 0xE0, // Small health drop
