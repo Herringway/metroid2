@@ -2459,7 +2459,7 @@ void executeDoorScript() {
 					break;
 				case DoorCommand.escapeQueen:
 					script++;
-					IE &= ~(1 << 1);
+					IE =  IE & ~(1 << 1);
 					samusY = (samusY.screen << 8) | 0xD7;
 					samusX = (samusX.screen << 8) | 0x78;
 					cameraY = (cameraY.screen << 8) | 0xC0;
@@ -2484,7 +2484,7 @@ void executeDoorScript() {
 					queenRoomFlag = 0;
 					WY = 0x88;
 					WX = 7;
-					IE &= ~(1 << 1);
+					IE = IE & ~(1 << 1);
 					vramTransfer.src = &hudBaseTilemap[0];
 					vramTransfer.dest = &(vram()[VRAMDest.statusBar]);
 					vramTransfer.size = 0x14;
@@ -2502,7 +2502,7 @@ void executeDoorScript() {
 					doorQueen(script);
 					doorExitStatus = 1;
 					queenRoomFlag = 0x11;
-					IE |= 1 << 1;
+					IE = IE | (1 << 1);
 					break;
 				case DoorCommand.ifMetLess:
 					script++;

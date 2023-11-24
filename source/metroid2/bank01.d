@@ -1672,7 +1672,7 @@ void miscInGameTasks() {
 	}
 	if (queenRoomFlag != 0x11) {
 		if (!(LCDC & LCDCFlags.windowDisplay)) {
-			LCDC |= LCDCFlags.windowDisplay;
+			LCDC = LCDC | LCDCFlags.windowDisplay;
 		}
 		WY = 0x88;
 		if (!saveContactFlag) {

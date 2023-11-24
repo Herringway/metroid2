@@ -1,50 +1,51 @@
 module metroid2.registers;
 
 import metroid2.external;
+import librehome.gameboy;
 
-ref auto JOYP() { return gb.registers.JOYP; }
-ref auto SB() { return gb.registers.SB; }
-ref auto SC() { return gb.registers.SC; }
-ref auto DIV() { return gb.registers.DIV; }
-ref auto TIMA() { return gb.registers.TIMA; }
-ref auto TMA() { return gb.registers.TMA; }
-ref auto TAC() { return gb.registers.TAC; }
-ref auto IF() { return gb.registers.IF; }
-ref auto LCDC() { return gb.registers.LCDC; }
-ref auto STAT() { return gb.registers.STAT; }
-ref auto SCY() { return gb.registers.SCY; }
-ref auto SCX() { return gb.registers.SCX; }
-ref auto LY() { return gb.registers.LY; }
-ref auto LYC() { return gb.registers.LYC; }
-ref auto BGP() { return gb.registers.BGP; }
-ref auto OBP0() { return gb.registers.OBP0; }
-ref auto OBP1() { return gb.registers.OBP1; }
-ref auto WY() { return gb.registers.WY; }
-ref auto WX() { return gb.registers.WX; }
-ref auto IE() { return gb.registers.IE; }
-ref auto NR10() { return gb.registers.NR10; }
-ref auto NR11() { return gb.registers.NR11; }
-ref auto NR12() { return gb.registers.NR12; }
-ref auto NR13() { return gb.registers.NR13; }
-ref auto NR14() { return gb.registers.NR14; }
-ref auto NR21() { return gb.registers.NR21; }
-ref auto NR22() { return gb.registers.NR22; }
-ref auto NR23() { return gb.registers.NR23; }
-ref auto NR24() { return gb.registers.NR24; }
-ref auto NR30() { return gb.registers.NR30; }
-ref auto NR31() { return gb.registers.NR31; }
-ref auto NR32() { return gb.registers.NR32; }
-ref auto NR33() { return gb.registers.NR33; }
-ref auto NR34() { return gb.registers.NR34; }
-ref auto NR41() { return gb.registers.NR41; }
-ref auto NR42() { return gb.registers.NR42; }
-ref auto NR43() { return gb.registers.NR43; }
-ref auto NR44() { return gb.registers.NR44; }
-ref auto NR50() { return gb.registers.NR50; }
-ref auto NR51() { return gb.registers.NR51; }
-ref auto NR52() { return gb.registers.NR52; }
+alias JOYP = gb.Register!(gb, GameBoyRegister.JOYP);
+alias SB = gb.Register!(gb, GameBoyRegister.SB);
+alias SC = gb.Register!(gb, GameBoyRegister.SC);
+alias DIV = gb.Register!(gb, GameBoyRegister.DIV);
+alias TIMA = gb.Register!(gb, GameBoyRegister.TIMA);
+alias TMA = gb.Register!(gb, GameBoyRegister.TMA);
+alias TAC = gb.Register!(gb, GameBoyRegister.TAC);
+alias IF = gb.Register!(gb, GameBoyRegister.IF);
+alias LCDC = gb.Register!(gb, GameBoyRegister.LCDC);
+alias STAT = gb.Register!(gb, GameBoyRegister.STAT);
+alias SCY = gb.Register!(gb, GameBoyRegister.SCY);
+alias SCX = gb.Register!(gb, GameBoyRegister.SCX);
+alias LY = gb.Register!(gb, GameBoyRegister.LY);
+alias LYC = gb.Register!(gb, GameBoyRegister.LYC);
+alias BGP = gb.Register!(gb, GameBoyRegister.BGP);
+alias OBP0 = gb.Register!(gb, GameBoyRegister.OBP0);
+alias OBP1 = gb.Register!(gb, GameBoyRegister.OBP1);
+alias WY = gb.Register!(gb, GameBoyRegister.WY);
+alias WX = gb.Register!(gb, GameBoyRegister.WX);
+alias IE = gb.Register!(gb, GameBoyRegister.IE);
+alias NR10 = gb.Register!(gb, GameBoyRegister.NR10);
+alias NR11 = gb.Register!(gb, GameBoyRegister.NR11);
+alias NR12 = gb.Register!(gb, GameBoyRegister.NR12);
+alias NR13 = gb.Register!(gb, GameBoyRegister.NR13);
+alias NR14 = gb.Register!(gb, GameBoyRegister.NR14);
+alias NR21 = gb.Register!(gb, GameBoyRegister.NR21);
+alias NR22 = gb.Register!(gb, GameBoyRegister.NR22);
+alias NR23 = gb.Register!(gb, GameBoyRegister.NR23);
+alias NR24 = gb.Register!(gb, GameBoyRegister.NR24);
+alias NR30 = gb.Register!(gb, GameBoyRegister.NR30);
+alias NR31 = gb.Register!(gb, GameBoyRegister.NR31);
+alias NR32 = gb.Register!(gb, GameBoyRegister.NR32);
+alias NR33 = gb.Register!(gb, GameBoyRegister.NR33);
+alias NR34 = gb.Register!(gb, GameBoyRegister.NR34);
+alias NR41 = gb.Register!(gb, GameBoyRegister.NR41);
+alias NR42 = gb.Register!(gb, GameBoyRegister.NR42);
+alias NR43 = gb.Register!(gb, GameBoyRegister.NR43);
+alias NR44 = gb.Register!(gb, GameBoyRegister.NR44);
+alias NR50 = gb.Register!(gb, GameBoyRegister.NR50);
+alias NR51 = gb.Register!(gb, GameBoyRegister.NR51);
+alias NR52 = gb.Register!(gb, GameBoyRegister.NR52);
 
-ref auto waveRAM() { return gb.registers.waveRAM; };
+ref auto waveRAM() { return gb.waveRAM; };
 
 alias AUD1SWEEP = NR10;
 alias AUD1LEN = NR11;
