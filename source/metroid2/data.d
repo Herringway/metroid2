@@ -1,5 +1,7 @@
 module metroid2.data;
 
+import metroid2.audiodata;
+
 void loadData(const ubyte[] sourceData) {
 	loadDatum(graphicsTitleScreen, sourceData, 0x015F34, 0xA00);
 	loadDatum(graphicsCreditsFont, sourceData, 0x016934, 0x300);
@@ -52,6 +54,7 @@ void loadData(const ubyte[] sourceData) {
 	loadDatum(graphicsRuinsExt, sourceData, 0x0229BC, 0x800);
 	loadDatum(graphicsFinalLab, sourceData, 0x0231BC, 0x800);
 	loadDatum(graphicsQueenSPR, sourceData, 0x0239BC, 0x800);
+	loadSongs(songDataTable, sourceData, 32);
 }
 void loadDatum(T)(ref T dest, const(ubyte)[] data, size_t offset, size_t length) {
 	dest = data[offset .. offset + length];

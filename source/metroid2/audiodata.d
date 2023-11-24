@@ -1416,78 +1416,99 @@ immutable ubyte[] songStereoFlags = [
    Song.missilePickup: 0xDE,
 ];
 
-immutable SongHeader[] songDataTable = [
-	Song.babyMetroid: songBabyMetroidHeader,
-	Song.metroidQueenBattle: songMetroidQueenBattleHeader,
-	Song.chozoRuins: songChozoRuinsHeader,
-	Song.mainCaves: songMainCavesHeader,
-	Song.subCaves1: songSubCaves1Header,
-	Song.subCaves2: songSubCaves2Header,
-	Song.subCaves3: songSubCaves3Header,
-	Song.finalCaves: songFinalCavesHeader,
-	Song.metroidHive: songMetroidHiveHeader,
-	Song.itemGet: songItemGetHeader,
-	Song.metroidQueenHallway: songMetroidQueenHallwayHeader,
-	Song.metroidBattle: songMetroidBattleHeader,
-	Song.subCaves4: songSubCaves4Header,
-	Song.earthquake: songEarthquakeHeader,
-	Song.killedMetroid: songKilledMetroidHeader,
-	Song.nothingCopy: SongHeader.init,
-	Song.title: songTitleHeader,
-	Song.samusFanfare: songSamusFanfareHeader,
-	Song.reachedTheGunship: songReachedTheGunshipHeader,
-	Song.chozoRuinsCopy: songChozoRuinsCloneHeader,
-	Song.mainCavesNoIntro: songMainCavesNoIntroHeader,
-	Song.subCaves1NoIntro: songSubCaves1NoIntroHeader,
-	Song.subCaves2NoIntro: songSubCaves2NoIntroHeader,
-	Song.subCaves3NoIntro: songSubCaves3NoIntroHeader,
-	Song.finalCavesCopy: songFinalCavesCloneHeader,
-	Song.metroidHiveCopy: songMetroidHiveCloneHeader,
-	Song.itemGetCopy: songItemGetCloneHeader,
-	Song.metroidQueenHallwayCopy: songMetroidQueenHallwayCloneHeader,
-	Song.metroidBattleCopy: songMetroidBattleCloneHeader,
-	Song.subCaves4NoIntro: songSubCaves4NoIntroHeader,
-	Song.metroidHiveWithIntro: songMetroidHiveWithIntroHeader,
-	Song.missilePickup: songMissilePickupHeader,
-];
+const(SongHeader)[] songDataTable;
+
+void loadSongs(ref const(SongHeader)[] dest, const(ubyte)[] data, size_t entries) {
+    import metroid2.bank04;
+    static struct OriginalSongHeader {
+        align(1):
+        ubyte noteOffset;
+        ushort tempo;
+        ushort toneSweepChannel;
+        ushort toneChannel;
+        ushort waveChannel;
+        ushort noiseChannel;
+    }
+    import std.logger;
+    static const(ubyte)[] decompileTrack(const(ubyte)[] trackData) {
+        for (int idx = 0; idx < trackData.length; idx++) {
+            switch (trackData[idx]) {
+                case 0:
+                    return trackData[0 .. idx + 1];
+                case 0xF1:
+                    idx += 3;
+                    break;
+                case 0xF2:
+                    idx += 2;
+                    break;
+                case 0xF3:
+                case 0xF4:
+                    idx++;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return [];
+    }
+    static const(ushort)[] decompileTracks(ushort start, const(ubyte)[] data, const(ubyte)[] romData, ref const(ubyte)[][ushort] tracks) {
+        ushort[] result;
+        size_t remaining = size_t.max;
+        foreach (track; cast(const(ushort)[])(data[0 .. $ - ($ % 2)])) {
+            if (--remaining == 0) {
+                // make jumps relative instead of absolute
+                result ~= cast(ushort)((track - start) / 2);
+                break;
+            }
+            result ~= track;
+            if (track == 0x0000) {
+                break;
+            }
+            if (track == 0x00F0) {
+                remaining = 1;
+            } else {
+                tracks.require(track, decompileTrack(romData[0x10000 - 0x4000 + track .. $]));
+            }
+        }
+        return result;
+    }
+    dest.reserve(entries);
+    foreach (songIdx, base; cast(const(ushort)[])(data[0x11F30 .. 0x11F30 + entries * 2])) {
+        SongHeader newHeader;
+        const originalHeader = (cast(const(OriginalSongHeader)[])(data[0x10000 - 0x4000 + base .. 0x10000 - 0x4000 + base + OriginalSongHeader.sizeof]))[0];
+        infof("%04X", base);
+        newHeader.noteOffset = originalHeader.noteOffset;
+        newHeader.tempo = getTempoData(originalHeader.tempo);
+        if (newHeader.tempo.length == 0) {
+            tracef("Skipping song %s, invalid header", songIdx);
+            dest ~= SongHeader.init;
+            continue;
+        }
+        if (originalHeader.toneSweepChannel != 0) {
+            newHeader.toneSweepChannel = decompileTracks(originalHeader.toneSweepChannel, data[0x10000 - 0x4000 + originalHeader.toneSweepChannel .. $], data, newHeader.squareTracks);
+        }
+        if (originalHeader.toneChannel != 0) {
+            newHeader.toneChannel = decompileTracks(originalHeader.toneChannel, data[0x10000 - 0x4000 + originalHeader.toneChannel .. $], data, newHeader.squareTracks);
+        }
+        if (originalHeader.waveChannel != 0) {
+            newHeader.waveChannel = decompileTracks(originalHeader.waveChannel, data[0x10000 - 0x4000 + originalHeader.waveChannel .. $], data, newHeader.waveTracks);
+        }
+        if (originalHeader.noiseChannel != 0) {
+            newHeader.noiseChannel = decompileTracks(originalHeader.noiseChannel, data[0x10000 - 0x4000 + originalHeader.noiseChannel .. $], data, newHeader.noiseTracks);
+        }
+        infof("%s", newHeader);
+        dest ~= newHeader;
+    }
+}
 
 struct SongHeader {
 	ubyte noteOffset;
-	ubyte[] tempo;
-	ubyte[] toneSweepChannel;
-	ubyte[] toneChannel;
-	ubyte[] waveChannel;
-	ubyte[] noiseChannel;
+	immutable(ubyte)[] tempo;
+	const(ushort)[] toneSweepChannel;
+	const(ushort)[] toneChannel;
+	const(ushort)[] waveChannel;
+	const(ushort)[] noiseChannel;
+    const(ubyte)[][ushort] squareTracks;
+    const(ubyte)[][ushort] waveTracks;
+    const(ubyte)[][ushort] noiseTracks;
 }
-
-immutable SongHeader songBabyMetroidHeader = {};
-immutable SongHeader songMetroidQueenBattleHeader = {};
-immutable SongHeader songChozoRuinsHeader = {};
-immutable SongHeader songMainCavesHeader = {};
-immutable SongHeader songSubCaves1Header = {};
-immutable SongHeader songSubCaves2Header = {};
-immutable SongHeader songSubCaves3Header = {};
-immutable SongHeader songFinalCavesHeader = {};
-immutable SongHeader songMetroidHiveHeader = {};
-immutable SongHeader songItemGetHeader = {};
-immutable SongHeader songMetroidQueenHallwayHeader = {};
-immutable SongHeader songMetroidBattleHeader = {};
-immutable SongHeader songSubCaves4Header = {};
-immutable SongHeader songEarthquakeHeader = {};
-immutable SongHeader songKilledMetroidHeader = {};
-immutable SongHeader songTitleHeader = {};
-immutable SongHeader songSamusFanfareHeader = {};
-immutable SongHeader songReachedTheGunshipHeader = {};
-immutable SongHeader songChozoRuinsCloneHeader = {};
-immutable SongHeader songMainCavesNoIntroHeader = {};
-immutable SongHeader songSubCaves1NoIntroHeader = {};
-immutable SongHeader songSubCaves2NoIntroHeader = {};
-immutable SongHeader songSubCaves3NoIntroHeader = {};
-immutable SongHeader songFinalCavesCloneHeader = {};
-immutable SongHeader songMetroidHiveCloneHeader = {};
-immutable SongHeader songItemGetCloneHeader = {};
-immutable SongHeader songMetroidQueenHallwayCloneHeader = {};
-immutable SongHeader songMetroidBattleCloneHeader = {};
-immutable SongHeader songSubCaves4NoIntroHeader = {};
-immutable SongHeader songMetroidHiveWithIntroHeader = {};
-immutable SongHeader songMissilePickupHeader = {};

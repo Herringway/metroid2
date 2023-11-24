@@ -251,15 +251,27 @@ __gshared ubyte songChannelEnableSquare2;
 __gshared ubyte songChannelEnableWave;
 __gshared ubyte songChannelEnableNoise;
 __gshared ubyte songOptionsSetFlagWorking;
-__gshared const(void)* songWavePatternDataPointer;
+__gshared const(ubyte)* songWavePatternDataPointer;
 alias songSweepWorking = songEnableWorking;
 __gshared ubyte songEnableWorking;
 __gshared ubyte songSoundLengthWorking;
 alias songEnvelopeWorking = songVolumeWorking;
 __gshared ubyte songVolumeWorking;
 __gshared ushort songFrequencyWorking;
-__gshared ubyte songPolynomialCounterWorking;
-__gshared ubyte songCounterControlWorking;
+ubyte songPolynomialCounterWorking() {
+	return songFrequencyWorking & 0xFF;
+}
+void songPolynomialCounterWorking(ubyte v) {
+	songFrequencyWorking = (songFrequencyWorking & ~0xFF) | v;
+}
+ubyte songCounterControlWorking() {
+	return songFrequencyWorking >> 8;
+}
+void songCounterControlWorking(ubyte v) {
+	songFrequencyWorking = (songFrequencyWorking & ~0xFF00) | (v << 8);
+}
+//__gshared ubyte songPolynomialCounterWorking;
+//__gshared ubyte songCounterControlWorking;
 __gshared ubyte songSweepSquare1;
 __gshared ubyte songSoundLengthSquare1;
 __gshared ubyte songEnvelopeSquare1;
@@ -287,11 +299,12 @@ __gshared const(ubyte)* songChannelInstructionPointerNoise;
 __gshared ubyte songSoundChannelEffectTimer;
 
 struct ChannelSongProcessingState {
-	const(ubyte)* sectionPointer;
-	ushort repeatCount;
-	ubyte repeatPoint;
+	const(ushort)[] sectionPointer;
+	const(ushort)[] sectionPointers;
+	const(ubyte)* repeatPoint;
+	ubyte repeatCount;
 	ubyte instructionLength;
-	// noteEnvelope
+	alias noteEnvelope = noteVolume;
 	ubyte noteVolume;
 	ubyte instructionTimer;
 	ubyte effectIndex;
