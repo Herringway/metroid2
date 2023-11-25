@@ -242,62 +242,6 @@ __gshared ubyte sfxActiveSquare2;
 __gshared ubyte sfxActiveWave;
 __gshared NoiseSFX sfxActiveNoise;
 __gshared ubyte resumeScrewAttackSoundEffectFlag;
-__gshared ubyte[0x60] songProcessingState;
-__gshared ubyte songTranspose;
-__gshared const(ubyte)[] songInstructionTimerArrayPointer;
-__gshared ubyte workingSoundChannel;
-__gshared ubyte songChannelEnableSquare1;
-__gshared ubyte songChannelEnableSquare2;
-__gshared ubyte songChannelEnableWave;
-__gshared ubyte songChannelEnableNoise;
-__gshared ubyte songOptionsSetFlagWorking;
-__gshared const(ubyte)* songWavePatternDataPointer;
-alias songSweepWorking = songEnableWorking;
-__gshared ubyte songEnableWorking;
-__gshared ubyte songSoundLengthWorking;
-alias songEnvelopeWorking = songVolumeWorking;
-__gshared ubyte songVolumeWorking;
-__gshared ushort songFrequencyWorking;
-ubyte songPolynomialCounterWorking() {
-	return songFrequencyWorking & 0xFF;
-}
-void songPolynomialCounterWorking(ubyte v) {
-	songFrequencyWorking = (songFrequencyWorking & ~0xFF) | v;
-}
-ubyte songCounterControlWorking() {
-	return songFrequencyWorking >> 8;
-}
-void songCounterControlWorking(ubyte v) {
-	songFrequencyWorking = (songFrequencyWorking & ~0xFF00) | (v << 8);
-}
-//__gshared ubyte songPolynomialCounterWorking;
-//__gshared ubyte songCounterControlWorking;
-__gshared ubyte songSweepSquare1;
-__gshared ubyte songSoundLengthSquare1;
-__gshared ubyte songEnvelopeSquare1;
-__gshared ushort songFrequencySquare1;
-
-__gshared ubyte songSoundLengthSquare2;
-__gshared ubyte songEnvelopeSquare2;
-__gshared ushort songFrequencySquare2;
-
-__gshared ubyte songEnableOptionWave;
-__gshared ubyte songSoundLengthWave;
-__gshared ubyte songVolumeWave;
-__gshared ushort songFrequencyWave;
-
-__gshared ubyte songSoundLengthNoise;
-__gshared ubyte songEnvelopeNoise;
-__gshared ubyte songPolynomialCounterNoise;
-__gshared ubyte songCounterControlNoise;
-
-__gshared const(ubyte)* songChannelInstructionPointerSquare1;
-__gshared const(ubyte)* songChannelInstructionPointerSquare2;
-__gshared const(ubyte)* songChannelInstructionPointerWave;
-__gshared const(ubyte)* songChannelInstructionPointerNoise;
-
-__gshared ubyte songSoundChannelEffectTimer;
-
 struct ChannelSongProcessingState {
 	const(ushort)[] sectionPointer;
 	const(ushort)[] sectionPointers;
@@ -309,19 +253,79 @@ struct ChannelSongProcessingState {
 	ubyte instructionTimer;
 	ubyte effectIndex;
 }
-__gshared ChannelSongProcessingState songWorkingState;
-__gshared ChannelSongProcessingState songSquare1State;
-__gshared ChannelSongProcessingState songSquare2State;
-__gshared ChannelSongProcessingState songWaveState;
-__gshared ChannelSongProcessingState songNoiseState;
+struct SongState {
+	ubyte songTranspose;
+	const(ubyte)[] songInstructionTimerArrayPointer;
+	ubyte workingSoundChannel;
+	ubyte songChannelEnableSquare1;
+	ubyte songChannelEnableSquare2;
+	ubyte songChannelEnableWave;
+	ubyte songChannelEnableNoise;
+	ubyte songOptionsSetFlagWorking;
+	const(ubyte)* songWavePatternDataPointer;
+	alias songSweepWorking = songEnableWorking;
+	ubyte songEnableWorking;
+	ubyte songSoundLengthWorking;
+	alias songEnvelopeWorking = songVolumeWorking;
+	ubyte songVolumeWorking;
+	ushort songFrequencyWorking;
+	ubyte songPolynomialCounterWorking() {
+		return songFrequencyWorking & 0xFF;
+	}
+	void songPolynomialCounterWorking(ubyte v) {
+		songFrequencyWorking = (songFrequencyWorking & ~0xFF) | v;
+	}
+	ubyte songCounterControlWorking() {
+		return songFrequencyWorking >> 8;
+	}
+	void songCounterControlWorking(ubyte v) {
+		songFrequencyWorking = (songFrequencyWorking & ~0xFF00) | (v << 8);
+	}
+	//__gshared ubyte songPolynomialCounterWorking;
+	//__gshared ubyte songCounterControlWorking;
+	ubyte songSweepSquare1;
+	ubyte songSoundLengthSquare1;
+	ubyte songEnvelopeSquare1;
+	ushort songFrequencySquare1;
 
-__gshared ubyte songFadeoutTimer;
-__gshared ubyte ramCF5D;
-__gshared ubyte ramCF5E;
-__gshared ubyte ramCF5F;
-__gshared ubyte songFrequencyTweakSquare2;
+	ubyte songSoundLengthSquare2;
+	ubyte songEnvelopeSquare2;
+	ushort songFrequencySquare2;
 
-__gshared ubyte[97] songProcessingStateBackup;
+	ubyte songEnableOptionWave;
+	ubyte songSoundLengthWave;
+	ubyte songVolumeWave;
+	ushort songFrequencyWave;
+
+	ubyte songSoundLengthNoise;
+	ubyte songEnvelopeNoise;
+	ubyte songPolynomialCounterNoise;
+	ubyte songCounterControlNoise;
+
+	const(ubyte)* songChannelInstructionPointerSquare1;
+	const(ubyte)* songChannelInstructionPointerSquare2;
+	const(ubyte)* songChannelInstructionPointerWave;
+	const(ubyte)* songChannelInstructionPointerNoise;
+
+	ubyte songSoundChannelEffectTimer;
+
+	ChannelSongProcessingState songWorkingState;
+	ChannelSongProcessingState songSquare1State;
+	ChannelSongProcessingState songSquare2State;
+	ChannelSongProcessingState songWaveState;
+	ChannelSongProcessingState songNoiseState;
+
+	ubyte songFadeoutTimer;
+	ubyte ramCF5D;
+	ubyte ramCF5E;
+	ubyte ramCF5F;
+	ubyte songFrequencyTweakSquare2;
+}
+__gshared SongState songState;
+alias SongProcessingState = songState;
+alias songProcessingStateBackup = songStateBackup;
+
+__gshared SongState songStateBackup;
 
 __gshared ushort songPlayingBackup;
 __gshared ubyte audioPauseControl;
