@@ -1476,7 +1476,6 @@ void loadSongs(ref const(SongHeader)[] dest, const(ubyte)[] data, size_t entries
     foreach (songIdx, base; cast(const(ushort)[])(data[0x11F30 .. 0x11F30 + entries * 2])) {
         SongHeader newHeader;
         const originalHeader = (cast(const(OriginalSongHeader)[])(data[0x10000 - 0x4000 + base .. 0x10000 - 0x4000 + base + OriginalSongHeader.sizeof]))[0];
-        infof("%04X", base);
         newHeader.noteOffset = originalHeader.noteOffset;
         newHeader.tempo = getTempoData(originalHeader.tempo);
         if (newHeader.tempo.length == 0) {
@@ -1496,7 +1495,6 @@ void loadSongs(ref const(SongHeader)[] dest, const(ubyte)[] data, size_t entries
         if (originalHeader.noiseChannel != 0) {
             newHeader.noiseChannel = decompileTracks(originalHeader.noiseChannel, data[0x10000 - 0x4000 + originalHeader.noiseChannel .. $], data, newHeader.noiseTracks);
         }
-        infof("%s", newHeader);
         dest ~= newHeader;
     }
 }
