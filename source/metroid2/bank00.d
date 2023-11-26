@@ -786,10 +786,9 @@ void samusHandlePose() {
 			spiderDisplacement = cameraSpeedUp;
 		}
 		static void down() {
-			bool nc;
-			nc = samusMoveVertical(1);
+			bool c = samusMoveVertical(1);
 			spiderDisplacement = cameraSpeedDown;
-			if (nc) {
+			if (!c) {
 				return;
 			}
 			if (samusOnSolidSprite) {
@@ -1320,8 +1319,8 @@ void samusHandlePose() {
 				}
 				collisionCheckSpiderSet();
 				if (!spiderContactState) {
-					assert(0);
-					// TODO goto spiderballfall;
+					samusPose = SamusPose.spiderBallFalling;
+					return;
 				}
 				const(ubyte)[] hl;
 				if (spiderRotationState & 1) {
@@ -1351,7 +1350,7 @@ void samusHandlePose() {
 				}
 				if (spiderRotationState & 1) {
 					hl = spiderDirectionTable[ccwTry2];
-				} else if (spiderRotationState & 2) {
+				} else if (!(spiderRotationState & 2)) {
 					return;
 				} else {
 					hl = spiderDirectionTable[cwTry2];
@@ -1700,7 +1699,7 @@ void collisionCheckSpiderSet() {
 	enum spiderXRight = 0x15;
 	enum spiderXMid = (spiderXLeft + spiderXRight) / 2;
 	enum spiderYTop = 0x1E;
-	enum spiderYBottom = 0x1C;
+	enum spiderYBottom = 0x2C;
 	enum spiderYMid = (spiderYTop + spiderYBottom) / 2;
 	spiderContactState = 0;
 
@@ -2070,7 +2069,7 @@ bool collisionSamusBottom() {
 }
 bool collisionCheckSpiderPoint() {
 	const index = samusGetTileIndex();
-	if (index < samusSolidityIndex) {
+	if (index >= samusSolidityIndex) {
 		if (collisionArray[index] & BlockType.acid) {
 			acidContactFlag = 0x40;
 			applyDamageAcid(acidDamageValue);
