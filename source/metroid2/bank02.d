@@ -121,6 +121,7 @@ void processEnemies() {
 
 void ingameLoadEnemySaveFlags() {
 	previousLevelBank = currentLevelBank;
+	infof("Loading spawn flag set %02X", currentLevelBank - 9);
 	enemySpawnFlagsSaved[] = saveBuf.enemySpawnFlags[currentLevelBank - 9][];
 	enemyFirstEnemy = enemyDataSlots[];
 	metroidState = 0;

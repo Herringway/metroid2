@@ -173,11 +173,11 @@ void loadEnemiesHorizontal() {
 }
 
 void loadOneEnemy(const(EnemySpawn)* enemySpawn) {
-	infof("Attempting to spawn %s", *enemySpawn);
 	enemyWRAM = &enemyDataSlots[loadEnemyGetFirstEmptySlot()];
 	enemyWRAM.status = 0;
 	enemyWRAM.y = cast(ubyte)(enemySpawn.y + 0x10 - scrollY);
 	enemyWRAM.x = cast(ubyte)(enemySpawn.x + 0x08 - scrollX);
+	infof("Attempting to spawn %s at %02X, %02X (%02X, %02X)", *enemySpawn, enemyWRAM.x, enemyWRAM.y, scrollX, scrollY);
 	enemyWRAM.spriteType = enemySpawn.id;
 	enemyWRAM.spawnNumber = enemySpawn.spawnNumber;
 	if (enemySpawnFlags[enemySpawn.spawnNumber] != 0xFF) {
