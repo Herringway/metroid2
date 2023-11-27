@@ -1408,14 +1408,19 @@ void samusHandlePose() {
 					return;
 				}
 				static void moveVertical(byte amt) {
+					static void attach() {
+						samusPose = SamusPose.spiderBallRolling;
+						samusFallArcCounter = 0;
+					}
 					if (samusMoveVertical(amt)) {
-						assert(0);
-						// TODO goto spiderFallLand
+						if (!samusOnSolidSprite) {
+							samusY = (samusY & 0xFFF8) | 4;
+						}
+						return attach();
 					}
 					collisionCheckSpiderSet();
 					if (spiderContactState) {
-						assert(0);
-						// TODO goto spiderFallAttach
+						return attach();
 					}
 					samusJumpArcCounter++;
 					if (inputPressed & Pad.right) {
@@ -1426,7 +1431,7 @@ void samusHandlePose() {
 				}
 				if (samusJumpArcCounter < samusJumpArrayBaseOffset) {
 					if (inputPressed & Pad.a) {
-						moveVertical(-2);
+						return moveVertical(-2);
 					} else {
 						samusJumpArcCounter = samusJumpArrayBaseOffset + 0x16;
 					}
