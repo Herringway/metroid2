@@ -281,8 +281,6 @@ struct SongState {
 	void songCounterControlWorking(ubyte v) {
 		songFrequencyWorking = (songFrequencyWorking & ~0xFF00) | (v << 8);
 	}
-	//__gshared ubyte songPolynomialCounterWorking;
-	//__gshared ubyte songCounterControlWorking;
 	ubyte songSweepSquare1;
 	ubyte songSoundLengthSquare1;
 	ubyte songEnvelopeSquare1;
