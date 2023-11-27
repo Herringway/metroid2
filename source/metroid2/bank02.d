@@ -193,15 +193,16 @@ bool enemyGetDamagedOrGiveDrop() {
 		 return transferCollisionResults();
 	}
 	static bool prepareDrop(ubyte v) {
-		ubyte drop;
-		if ((enemyWorking.spawnFlag == 6) || ((enemyWorking.spawnFlag & 0xF) == 0) || (enemyWorking.maxHealth < 10)) {
-			v |= 1 << 1;
+		if ((enemyWorking.spawnFlag == 6) || ((enemyWorking.spawnFlag & 0xF) == 0)) {
+			v |= 1 << 0; // small health
 		} else if ((enemyWorking.maxHealth == 0xFD) || (enemyWorking.maxHealth == 0xFE)) {
 			// nothing
 		} else if ((enemyWorking.maxHealth & 1) == 0) {
-			v |= 1 << 2;
+			v |= 1 << 2; // missile drop
+		} else if (enemyWorking.maxHealth < 10) {
+			v |= 1 << 0; // small health
 		} else {
-			v |= 1 << 1;
+			v |= 1 << 1; // large health
 		}
 		enemyWorking.explosionFlag = v;
 		enemyWorking.counter = 0;
