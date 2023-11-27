@@ -57,7 +57,7 @@ void vblank() {
 	}
 }
 
-void start() {
+void start(ushort) {
 	while (true) {
 		IF = 0;
 		IE = 0;
