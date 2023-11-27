@@ -3733,7 +3733,20 @@ GraphicsInfo graphicsInfoSpringBallBottom() {
 }
 
 void variaLoadExtraGraphics() {
-	assert(0); // TODO
+	if (samusItems & ItemFlag.springBall) {
+		loadGraphics(graphicsInfoSpringBallTop);
+		loadGraphics(graphicsInfoSpringBallBottom);
+	}
+	if ((samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) == (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
+		loadGraphics(graphicsInfoSpinSpaceScrewTop);
+		loadGraphics(graphicsInfoSpinSpaceScrewBottom);
+	} else if ((samusItems & ItemFlag.spaceJump) == ItemFlag.spaceJump) {
+		loadGraphics(graphicsInfoSpinSpaceTop);
+		loadGraphics(graphicsInfoSpinSpaceBottom);
+	} else if ((samusItems & ItemFlag.screwAttack) == ItemFlag.screwAttack) {
+		loadGraphics(graphicsInfoSpinScrewTop);
+		loadGraphics(graphicsInfoSpinScrewBottom);
+	}
 }
 void handleUnusedA() {
 	silenceAudio();
