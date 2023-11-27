@@ -987,6 +987,7 @@ void samusHandlePose() {
 							return;
 						}
 						samusFacingDirection = (samusAirDirection + 1) / 2;
+						return;
 					}
 				}
 				if ((samusAirDirection == 0) && (inputPressed & Pad.up) && (frameCounter & 3)) {
