@@ -416,32 +416,32 @@ bool deleteOffscreenEnemy() {
 bool reactivateOffscreenEnemy() {
 	if (enemyWorking.yScreen == 0xFF) {
 		if (enemyWorking.y >= 240) {
-			enemyWorking.y++;
+			enemyWorking.yScreen++;
 		}
 	} else if (enemyWorking.yScreen == 0) {
 		if ((enemyWorking.y >= 192) && (enemyWorking.y < 216)) {
-			enemyWorking.y++;
+			enemyWorking.yScreen++;
 		} else if ((enemyWorking.y >= 216) && (enemyWorking.y < 240)) {
-			enemyWorking.y--;
+			enemyWorking.yScreen--;
 		}
 	} else if (enemyWorking.yScreen == 1) {
 		if (enemyWorking.y < 192) {
-			enemyWorking.y--;
+			enemyWorking.yScreen--;
 		}
 	}
 	if (enemyWorking.xScreen == 0xFF) {
 		if (enemyWorking.x >= 240) {
-			enemyWorking.x++;
+			enemyWorking.xScreen++;
 		}
 	} else if (enemyWorking.xScreen == 0) {
 		if ((enemyWorking.x >= 192) && (enemyWorking.x < 216)) {
-			enemyWorking.x++;
+			enemyWorking.xScreen++;
 		} else if ((enemyWorking.x >= 216) && (enemyWorking.x < 240)) {
-			enemyWorking.x--;
+			enemyWorking.xScreen--;
 		}
 	} else if (enemyWorking.xScreen == 1) {
 		if (enemyWorking.x < 192) {
-			enemyWorking.x--;
+			enemyWorking.xScreen--;
 		}
 	}
 	if (enemyWorking.yScreen | enemyWorking.xScreen) {
