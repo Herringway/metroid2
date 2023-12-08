@@ -787,13 +787,13 @@ void debugDrawNumberOneDigit(ubyte digit) {
 	debugDrawNumberSprite(cast(ubyte)((digit & 0xF) + 0xA0));
 }
 void debugDrawNumberSprite(ubyte tile) {
-	auto hl = &oamBuffer[oamBufferIndex / 4];
+	auto hl = &oamBuffer[oamBufferIndex];
 	hl.y = spriteYPixel;
 	hl.x = spriteXPixel;
 	spriteXPixel += 8;
 	hl.tile = tile;
 	hl.flags = spriteAttr;
-	oamBufferIndex += 4;
+	oamBufferIndex++;
 }
 
 
@@ -811,7 +811,7 @@ void drawHUDMetroid() {
 }
 void drawSamusSprite() {
 	auto de = &samusSpriteTable[spriteID][0];
-	auto hl = &oamBuffer[oamBufferIndex / 4];
+	auto hl = &oamBuffer[oamBufferIndex];
 	while (true) {
 		if (de.y == metaSpriteEnd) {
 			break;
@@ -826,14 +826,14 @@ void drawSamusSprite() {
 		if (!samusScreenSpritePriority) {
 			hl.flags |= OAMFlags.priority;
 		}
-		oamBufferIndex += 4;
+		oamBufferIndex++;
 		de++;
 		hl++;
 	}
 }
 void clearUnusedOAMSlots() {
 	if (oamBufferIndex < maxOAMPrevFrame) {
-		for (int i = oamBufferIndex / 4; i < maxOAMPrevFrame / 4; i++) {
+		for (int i = oamBufferIndex; i < maxOAMPrevFrame; i++) {
 			oamBuffer[i].y = 0; // sprites with a y < 8 will never be rendered
 		}
 	}
@@ -1294,11 +1294,11 @@ void drawProjectiles() {
 				}
 			}
 			if ((spriteXPixel >= 8) && (spriteXPixel < 164) && (spriteYPixel >= 12) && (spriteYPixel < 148)) {
-				oamBuffer[oamBufferIndex / 4].y = spriteYPixel;
-				oamBuffer[oamBufferIndex / 4].x = spriteXPixel;
-				oamBuffer[oamBufferIndex / 4].tile = spriteID;
-				oamBuffer[oamBufferIndex / 4].flags = spriteAttr;
-				oamBufferIndex += 4;
+				oamBuffer[oamBufferIndex].y = spriteYPixel;
+				oamBuffer[oamBufferIndex].x = spriteXPixel;
+				oamBuffer[oamBufferIndex].tile = spriteID;
+				oamBuffer[oamBufferIndex].flags = spriteAttr;
+				oamBufferIndex++;
 				spriteAttr = 0;
 			} else {
 				projectileArray[projectileIndex].type = CollisionType.nothing;
@@ -1778,7 +1778,7 @@ void drawEnemies() {
 void drawEnemySprite(EnemySlot* enemy) {
 	drawEnemySpriteGetInfo(enemy);
 	auto sprite = (enemySpriteTable[drawEnemySpr] == null) ? &enSpriteBlobThrower[0] : &enemySpriteTable[drawEnemySpr][0];
-	auto dest = &oamBuffer[oamBufferIndex / 4];
+	auto dest = &oamBuffer[oamBufferIndex];
 	while (true) {
 		if (sprite.y == metaSpriteEnd) {
 			break;
@@ -1796,7 +1796,7 @@ void drawEnemySprite(EnemySlot* enemy) {
 		dest.x = cast(ubyte)(x + drawEnemyXPos);
 		dest.tile = sprite.tile;
 		dest.flags = drawEnemyAttr ^ sprite.flags;
-		oamBufferIndex += 4;
+		oamBufferIndex++;
 		sprite++;
 		dest++;
 	}
@@ -1922,7 +1922,7 @@ ushort alphaGetSpeedVector() {
 
 void drawNonGameSprite() {
 	auto de = &creditsSpritePointerTable[spriteID][0];
-	auto hl = &oamBuffer[oamBufferIndex / 4];
+	auto hl = &oamBuffer[oamBufferIndex];
 	auto b = spriteYPixel;
 	auto c = spriteXPixel;
 	while (true) {
@@ -1941,7 +1941,7 @@ void drawNonGameSprite() {
 		hl.x = cast(ubyte)(x + spriteXPixel);
 		hl.tile = de.tile;
 		hl.flags = spriteAttr ^ de.flags;
-		oamBufferIndex += 4;
+		oamBufferIndex++;
 		de++;
 		hl++;
 	}

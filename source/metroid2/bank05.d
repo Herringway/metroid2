@@ -169,7 +169,7 @@ void titleLoadGraphics() {
 	copyToVRAM(&graphicsTitleScreen[0], &gb.vram[VRAMDest.titleTiles], 0x1000);
 }
 void titleClearUnusedOAMSlots() {
-	oamBuffer[oamBufferIndex / 4 .. $] = oamBuffer[0].init;
+	oamBuffer[oamBufferIndex .. $] = oamBuffer[0].init;
 }
 
 immutable ubyte[] titleCursorTable = [2, 3, 4, 3];
