@@ -671,7 +671,7 @@ struct MapUpdate {
 }
 struct VRAMTransfer {
 	const(void)* src;
-	void* dest;
+	ushort dest;
 	ushort size;
 }
 

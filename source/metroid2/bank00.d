@@ -2469,7 +2469,7 @@ void executeDoorScript() {
 					cameraY = (cameraY.screen << 8) | 0xC0;
 					cameraX = (cameraX.screen << 8) | 0x80;
 					vramTransfer.src = &hudBaseTilemap[0];
-					vramTransfer.dest = &gb.vram[VRAMDest.statusBar];
+					vramTransfer.dest = VRAMDest.statusBar;
 					vramTransfer.size = 0x14;
 					beginGraphicsTransfer();
 					loadSpawnFlagsRequest = 0;
@@ -2490,7 +2490,7 @@ void executeDoorScript() {
 					gb.WX = 7;
 					gb.IE = gb.IE & ~(1 << 1);
 					vramTransfer.src = &hudBaseTilemap[0];
-					vramTransfer.dest = &gb.vram[VRAMDest.statusBar];
+					vramTransfer.dest = VRAMDest.statusBar;
 					vramTransfer.size = 0x14;
 					beginGraphicsTransfer();
 					break;
@@ -2569,21 +2569,21 @@ void executeDoorScript() {
 				case DoorCommand.item:
 					const itemID = (script[0] - 1) & 0xF;
 					vramTransfer.src = &graphicsItems[itemID][0];
-					vramTransfer.dest = &gb.vram[VRAMDest.item];
+					vramTransfer.dest = VRAMDest.item;
 					vramTransfer.size = 0x40;
 					beginGraphicsTransfer();
 					vramTransfer.src = &graphicsItems[11][0];
-					vramTransfer.dest = &gb.vram[VRAMDest.itemOrb];
+					vramTransfer.dest = VRAMDest.itemOrb;
 					vramTransfer.size = 0x40;
 					beginGraphicsTransfer();
 					vramTransfer.src = &graphicsItemFont[0];
-					vramTransfer.dest = &gb.vram[VRAMDest.itemFont];
+					vramTransfer.dest = VRAMDest.itemFont;
 					vramTransfer.size = 0x230;
 					beginGraphicsTransfer();
 
 					vramTransfer.src = &itemTextPointerTable[script[0] & 0xF][0];
 					script++;
-					vramTransfer.dest = &gb.vram[VRAMDest.itemText];
+					vramTransfer.dest = VRAMDest.itemText;
 					vramTransfer.size = 0x10;
 					beginGraphicsTransfer();
 					break;
@@ -2603,14 +2603,14 @@ void doorLoadGraphics(ref const(ubyte)* script) {
 		const gfxID = script++[0];
 		vramTransfer.src = enGfx(gfxID);
 		saveBuf.enGfxID = gfxID;
-		vramTransfer.dest = &gb.vram[VRAMDest.enemies];
+		vramTransfer.dest = VRAMDest.enemies;
 		vramTransfer.size = 0x400;
 		beginGraphicsTransfer();
 	} else {
 		const gfxID = script++[0];
 		vramTransfer.src = bgGfx(gfxID);
 		saveBuf.bgGfxID = gfxID;
-		vramTransfer.dest = &gb.vram[VRAMDest.bgTiles];
+		vramTransfer.dest = VRAMDest.bgTiles;
 		vramTransfer.size = 0x800;
 		beginGraphicsTransfer();
 	}
@@ -2621,7 +2621,7 @@ void doorCopyData(ref const(ubyte)* script) {
 		case DoorCommand.copyBG & 0xF:
 		case DoorCommand.copySpr & 0xF:
 			vramTransfer.src = specialData(script++[0]);
-			vramTransfer.dest = &gb.vram[*cast(const(ushort)*)(script)];
+			vramTransfer.dest = *cast(const(ushort)*)(script);
 			script += 2;
 			vramTransfer.size = *cast(const(ushort)*)(script);
 			script += 2;
@@ -2633,7 +2633,7 @@ void doorCopyData(ref const(ubyte)* script) {
 
 void loadGraphics(const GraphicsInfo gfx) {
 	vramTransfer.src = &gfx.data[0];
-	vramTransfer.dest = &gb.vram[gfx.destination];
+	vramTransfer.dest = gfx.destination;
 	vramTransfer.size = gfx.length;
 	beginGraphicsTransfer();
 }
@@ -2659,7 +2659,7 @@ void beginGraphicsTransfer() {
 
 void animateGettingVaria(const GraphicsInfo gfx) {
 	vramTransfer.src = &gfx.data[0];
-	vramTransfer.dest = &gb.vram[gfx.destination];
+	vramTransfer.dest = gfx.destination;
 	vramTransfer.size = gfx.length;
 	vramTransferFlag = 0xFF;
 	variaTransferDone = false;
