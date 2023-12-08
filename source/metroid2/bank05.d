@@ -8,7 +8,6 @@ import metroid2.data;
 import metroid2.defs;
 import metroid2.external;
 import metroid2.globals;
-import metroid2.registers;
 
 public import metroid2.doors;
 
@@ -30,10 +29,10 @@ void loadTitleScreen() {
 	vram()[VRAMDest.statusBar .. VRAMDest.statusBar + 0x14] = hudBaseTilemap[];
 	vram()[VRAMDest.itemText .. VRAMDest.itemText + 0x14] = saveTextTilemap[];
 	screen0[0 .. 0x400] = titleTileMap[];
-	WX = 7;
-	WY = 136;
+	gb.WX = 7;
+	gb.WY = 136;
 	scrollY = 0;
-	LCDC = 0b11000011;
+	gb.LCDC = 0b11000011;
 	songRequest = Song.title;
 	titleUnusedD039 = 0;
 	titleClearSelected = 0;
@@ -57,8 +56,8 @@ void titleScreenRoutine() {
 		titleStarX -= 2;
 		titleStarY += 1;
 	}
-	if ((DIV == frameCounter) && (frameCounter & 1)) {
-		titleStarY = DIV;
+	if ((gb.DIV == frameCounter) && (frameCounter & 1)) {
+		titleStarY = gb.DIV;
 		titleStarX = 0xFF;
 	}
 	spriteYPixel = titleStarY;

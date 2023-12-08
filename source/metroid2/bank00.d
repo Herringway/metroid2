@@ -15,16 +15,15 @@ import metroid2.enemies;
 import metroid2.external;
 import metroid2.globals;
 import metroid2.mapbanks;
-import metroid2.registers;
 
 import librehome.gameboy;
 
 void vblank() {
-	SCY = scrollY;
-	SCX = scrollX;
-	BGP = bgPalette;
-	OBP0 = obPalette0;
-	OBP1 = obPalette1;
+	gb.SCY = scrollY;
+	gb.SCX = scrollX;
+	gb.BGP = bgPalette;
+	gb.OBP0 = obPalette0;
+	gb.OBP1 = obPalette1;
 	if (countdownTimer > 0) {
 		countdownTimer--;
 	}
@@ -59,15 +58,15 @@ void vblank() {
 
 void start(ushort) {
 	while (true) {
-		IF = 0;
-		IE = 0;
-		SCY = 0;
-		SCX = 0;
-		STAT = 0;
-		SB = 0;
-		SC = 0;
-		LCDC = 0x80;
-		LCDC = 0x03;
+		gb.IF = 0;
+		gb.IE = 0;
+		gb.SCY = 0;
+		gb.SCX = 0;
+		gb.STAT = 0;
+		gb.SB = 0;
+		gb.SC = 0;
+		gb.LCDC = 0x80;
+		gb.LCDC = 0x03;
 		bgPalette = 0x93;
 		obPalette0 = 0x93;
 		obPalette1 = 0x43;
@@ -75,12 +74,12 @@ void start(ushort) {
 		enableSRAM();
 		// some ram initialization happened here
 		clearTilemaps();
-		IE = 1;
-		WX = 7;
-		LCDC = 0x80;
-		IF = 0;
-		WY = 0;
-		TMA = 0;
+		gb.IE = 1;
+		gb.WX = 7;
+		gb.LCDC = 0x80;
+		gb.IF = 0;
+		gb.WY = 0;
+		gb.TMA = 0;
 		enableSRAM();
 		activeSaveSlot = 0;
 		if (sram.saveLastSlot < 3) {
@@ -229,12 +228,12 @@ void unusedCopy(const(void)* src, void* dest) {
 void timerOverflowInterruptStub() {}
 
 void disableLCD() {
-	//const tmp = IE;
-	//IE &= 0xFE;
-	//while (LY != 145) {
+	//const tmp = gb.IE;
+	//gb.IE &= 0xFE;
+	//while (gb.LY != 145) {
 	//}
-	//LCDC &= 0x7F;
-	//IE = tmp;
+	//gb.LCDC &= 0x7F;
+	//gb.IE = tmp;
 }
 
 void handleLoadA() {
@@ -295,7 +294,7 @@ void handleLoadB() {
 
 	scrollY = (cast(ushort)(cameraY - 0x78)).pixel;
 	scrollX = (cast(ushort)(cameraX - 0x30)).pixel;
-	LCDC = 0xE3;
+	gb.LCDC = 0xE3;
 	unusedD011 = 0;
 	gameMode = GameMode.main;
 }
@@ -2432,13 +2431,13 @@ void executeDoorScript() {
 				case DoorCommand.loadData:
 					saveMessageCooldownTimer = 0;
 					saveContactFlag = 0;
-					WY = 0x88;
+					gb.WY = 0x88;
 					doorLoadGraphics(script);
 					break;
 				case DoorCommand.copyData:
 					saveMessageCooldownTimer = 0;
 					saveContactFlag = 0;
-					WY = 0x88;
+					gb.WY = 0x88;
 					doorCopyData(script);
 					break;
 				case DoorCommand.tileTable:
@@ -2464,7 +2463,7 @@ void executeDoorScript() {
 					break;
 				case DoorCommand.escapeQueen:
 					script++;
-					IE =  IE & ~(1 << 1);
+					gb.IE =  gb.IE & ~(1 << 1);
 					samusY = (samusY.screen << 8) | 0xD7;
 					samusX = (samusX.screen << 8) | 0x78;
 					cameraY = (cameraY.screen << 8) | 0xC0;
@@ -2487,9 +2486,9 @@ void executeDoorScript() {
 				case DoorCommand.exitQueen:
 					script++;
 					queenRoomFlag = 0;
-					WY = 0x88;
-					WX = 7;
-					IE = IE & ~(1 << 1);
+					gb.WY = 0x88;
+					gb.WX = 7;
+					gb.IE = gb.IE & ~(1 << 1);
 					vramTransfer.src = &hudBaseTilemap[0];
 					vramTransfer.dest = &(vram()[VRAMDest.statusBar]);
 					vramTransfer.size = 0x14;
@@ -2507,7 +2506,7 @@ void executeDoorScript() {
 					doorQueen(script);
 					doorExitStatus = 1;
 					queenRoomFlag = 0x11;
-					IE = IE | (1 << 1);
+					gb.IE = gb.IE | (1 << 1);
 					break;
 				case DoorCommand.ifMetLess:
 					script++;
@@ -2665,7 +2664,7 @@ void animateGettingVaria(const GraphicsInfo gfx) {
 	vramTransferFlag = 0xFF;
 	variaTransferDone = false;
 	while (!variaTransferDone) {
-		WY = 0x80;
+		gb.WY = 0x80;
 		drawSamus();
 		handleEnemiesOrQueen();
 		drawHUDMetroid();
@@ -3123,8 +3122,8 @@ void vblankDeathSequence() {
 			gameMode = GameMode.dead;
 		}
 	}
-	SCY = scrollY;
-	SCX = scrollX;
+	gb.SCY = scrollY;
+	gb.SCX = scrollX;
 	oamDMA();
 	if (queenRoomFlag == 0x11) {
 		vblankDrawQueen();
@@ -3491,10 +3490,10 @@ void handleDead() {
 	}
 	scrollY = 0;
 	scrollX = 0;
-	SCY = 0;
-	SCX = 0;
+	gb.SCY = 0;
+	gb.SCX = 0;
 	gameOverLCDCCopy = 0xC3;
-	LCDC = 0xC3;
+	gb.LCDC = 0xC3;
 	countdownTimer = 0xFF;
 	gameMode = GameMode.gameOver;
 }
@@ -3590,7 +3589,7 @@ void handleItemPickup() {
 				handleEnemiesOrQueen();
 				drawHUDMetroid();
 				clearUnusedOAMSlots();
-				WY = 0x80;
+				gb.WY = 0x80;
 				waitOneFrame();
 			}
 			samusItems |= ItemFlag.variaSuit;
@@ -3665,7 +3664,7 @@ void handleItemPickup() {
 		handleAudio();
 		clearUnusedOAMSlots();
 		if (itemCollectedCopy < ItemID.energyTank) {
-			WY = 0x80;
+			gb.WY = 0x80;
 		}
 		waitNextFrame();
 	}
@@ -3770,7 +3769,7 @@ void handleUnusedA() {
 	}
 	scrollY = 0;
 	scrollX = 0;
-	LCDC = 0xC3;
+	gb.LCDC = 0xC3;
 	countdownTimer = 416;
 	gameMode = GameMode.unusedB;
 }
@@ -3803,7 +3802,7 @@ void handleUnusedC() {
 	}
 	scrollY = 0;
 	scrollX = 0;
-	LCDC = 0xC3;
+	gb.LCDC = 0xC3;
 	countdownTimer = 255;
 	gameMode = GameMode.unusedD;
 }

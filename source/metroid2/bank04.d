@@ -3,7 +3,7 @@ module metroid2.bank04;
 import metroid2.audiodata;
 import metroid2.defs;
 import metroid2.globals;
-import metroid2.registers;
+import metroid2.external;
 
 import std.format;
 import std.logger;
@@ -352,7 +352,7 @@ void handleSong() {
 	infof("Now playing: %s", songRequest);
 	songPlaying = songRequest;
 	audioChannelOutputStereoFlags = songStereoFlags[songRequest - 1];
-	NR51 = songStereoFlags[songRequest - 1];
+	gb.NR51 = songStereoFlags[songRequest - 1];
 	loadSongHeader(songDataTable[songRequest - 1]);
 }
 
@@ -383,8 +383,8 @@ void handleSongPlaying() {
 			songState.songWorkingState.effectIndex = songState.songSquare1State.effectIndex;
 			if (songState.songWorkingState.effectIndex) {
 				handleSongSoundChannelEffect(songState.songFrequencySquare1);
-				AUD1LOW = songState.songFrequencyWorking & 0xFF;
-				AUD1HIGH = (songState.songFrequencyWorking >> 8) & 0xFF;
+				gb.AUD1LOW = songState.songFrequencyWorking & 0xFF;
+				gb.AUD1HIGH = (songState.songFrequencyWorking >> 8) & 0xFF;
 			}
 		}
 	}
@@ -400,8 +400,8 @@ void handleSongPlaying() {
 			songState.songWorkingState.effectIndex = songState.songSquare2State.effectIndex;
 			if (songState.songWorkingState.effectIndex) {
 				handleSongSoundChannelEffect(songState.songFrequencySquare2);
-				AUD2LOW = songState.songFrequencyWorking & 0xFF;
-				AUD2HIGH = (songState.songFrequencyWorking >> 8) & 0xFF;
+				gb.AUD2LOW = songState.songFrequencyWorking & 0xFF;
+				gb.AUD2HIGH = (songState.songFrequencyWorking >> 8) & 0xFF;
 			}
 		}
 	}
@@ -415,8 +415,8 @@ void handleSongPlaying() {
 		songState.songWaveState.instructionTimer--;
 		if (!sfxActiveWave) {
 			handleSongSoundChannelEffect(songState.songFrequencyWave);
-			NR33 = songState.songFrequencyWorking & 0xFF;
-			NR34 = (songState.songFrequencyWorking >> 8) & 0x7F;
+			gb.NR33 = songState.songFrequencyWorking & 0xFF;
+			gb.NR34 = (songState.songFrequencyWorking >> 8) & 0x7F;
 		}
 	}
 	songState.songOptionsSetFlagWorking = 0;
@@ -511,9 +511,9 @@ void disableChannelNoise() {
 }
 
 void initializeAudio() {
-	NR52 = 0x80;
-	NR50 = 0x77;
-	NR51 = 0xFF;
+	gb.NR52 = 0x80;
+	gb.NR50 = 0x77;
+	gb.NR51 = 0xFF;
 }
 
 void clearNonWaveSoundEffectRequests() {
@@ -525,7 +525,7 @@ void clearNonWaveSoundEffectRequests() {
 }
 
 void silenceAudio() {
-	NR51 = 0xFF;
+	gb.NR51 = 0xFF;
 	sfxRequestSquare1 = Square1SFX.nothing;
 	sfxRequestSquare2 = Square2SFX.nothing0;
 	sfxRequestFakeWave = 0;
@@ -550,38 +550,38 @@ void muteSoundChannels() {
 
 void writeToWavePatternRAM(const(ubyte)* data) {
 	foreach (idx, d; data[0 .. 16]) {
-		waveRAM[idx] = d;
+		gb.waveRAM[idx] = d;
 	}
 }
 
 void setChannelOptionSetSquare1(const(ubyte)* set) {
-	AUD1SWEEP = set[0];
-	AUD1LEN = set[1];
-	AUD1ENV = set[2];
-	AUD1LOW = set[3];
-	AUD1HIGH = set[4];
+	gb.AUD1SWEEP = set[0];
+	gb.AUD1LEN = set[1];
+	gb.AUD1ENV = set[2];
+	gb.AUD1LOW = set[3];
+	gb.AUD1HIGH = set[4];
 }
 
 void setChannelOptionSetSquare2(const(ubyte)* set) {
-	AUD2LEN = set[0];
-	AUD2ENV = set[1];
-	AUD2LOW = set[2];
-	AUD2HIGH = set[3];
+	gb.AUD2LEN = set[0];
+	gb.AUD2ENV = set[1];
+	gb.AUD2LOW = set[2];
+	gb.AUD2HIGH = set[3];
 }
 
 void SetChannelOptionSetWave(const(ubyte)* set) {
-	AUD3ENA = set[0];
-	AUD3LEN = set[1];
-	AUD3LEVEL = set[2];
-	AUD3LOW = set[3];
-	AUD3HIGH = set[4];
+	gb.AUD3ENA = set[0];
+	gb.AUD3LEN = set[1];
+	gb.AUD3LEVEL = set[2];
+	gb.AUD3LOW = set[3];
+	gb.AUD3HIGH = set[4];
 }
 
 void SetChannelOptionSetNoise(const(ubyte)* set) {
-	AUD4LEN = set[0];
-	AUD4ENV = set[1];
-	AUD4POLY = set[2];
-	AUD4GO = set[3];
+	gb.AUD4LEN = set[0];
+	gb.AUD4ENV = set[1];
+	gb.AUD4POLY = set[2];
+	gb.AUD4GO = set[3];
 }
 
 void audioPause() {
@@ -623,23 +623,23 @@ void loadSongHeader(const SongHeader header) {
 	songState.songNoiseState.sectionPointers = header.noiseChannel;
 	if (songState.songSquare1State.sectionPointer.length == 0) {
 		songState.songChannelEnableSquare1 = 0;
-		AUD1ENV = 0x08;
-		AUD1HIGH = 0x80;
+		gb.AUD1ENV = 0x08;
+		gb.AUD1HIGH = 0x80;
 	} else {
 		songState.songChannelEnableSquare1 = 1;
 		songState.songChannelInstructionPointerSquare1 = header.squareTracks[songState.songSquare1State.sectionPointer[0]].ptr;
 	}
 	if (songState.songSquare2State.sectionPointer.length == 0) {
 		songState.songChannelEnableSquare2 = 0;
-		AUD2ENV = 0x08;
-		AUD2HIGH = 0x80;
+		gb.AUD2ENV = 0x08;
+		gb.AUD2HIGH = 0x80;
 	} else {
 		songState.songChannelEnableSquare2 = 2;
 		songState.songChannelInstructionPointerSquare2 = header.squareTracks[songState.songSquare2State.sectionPointer[0]].ptr;
 	}
 	if (songState.songWaveState.sectionPointer.length == 0) {
 		songState.songChannelEnableWave = 0;
-		AUD3ENA = 0;
+		gb.AUD3ENA = 0;
 	} else {
 		songState.songChannelEnableWave = 3;
 		songState.songChannelInstructionPointerWave = header.waveTracks[songState.songWaveState.sectionPointer[0]].ptr;
@@ -672,11 +672,11 @@ void handleSongLoadNextChannelSoundSquare1() {
 	songState.songEnvelopeSquare1 = songState.songEnvelopeWorking;
 	songState.songFrequencySquare1 = songState.songFrequencyWorking;
 	if (!sfxActiveSquare1) {
-		NR10 = songState.songSweepSquare1;
-		NR11 = songState.songSoundLengthSquare1;
-		AUD1ENV = songState.songEnvelopeSquare1;
-		AUD1LOW = songState.songFrequencySquare1 & 0xFF;
-		AUD1HIGH = songState.songFrequencySquare1 >> 8;
+		gb.NR10 = songState.songSweepSquare1;
+		gb.NR11 = songState.songSoundLengthSquare1;
+		gb.AUD1ENV = songState.songEnvelopeSquare1;
+		gb.AUD1LOW = songState.songFrequencySquare1 & 0xFF;
+		gb.AUD1HIGH = songState.songFrequencySquare1 >> 8;
 	}
 }
 
@@ -695,16 +695,16 @@ void handleSongLoadNextChannelSoundSquare2() {
 	songState.songEnvelopeSquare2 = songState.songEnvelopeWorking;
 	songState.songFrequencySquare2 = songState.songFrequencyWorking;
 	if (!sfxActiveSquare2) {
-		NR21 = songState.songSoundLengthSquare2;
+		gb.NR21 = songState.songSoundLengthSquare2;
 		if (songState.songFrequencyTweakSquare2 == 1) {
 			if (songState.songFrequencySquare2 < 34560) {
 				songState.songFrequencySquare2++;
 			}
 			songState.songFrequencySquare2++;
 		}
-		AUD2ENV = songState.songEnvelopeSquare2;
-		AUD2LOW = songState.songFrequencySquare2 & 0xFF;
-		AUD2HIGH = songState.songFrequencySquare2 >> 8;
+		gb.AUD2ENV = songState.songEnvelopeSquare2;
+		gb.AUD2LOW = songState.songFrequencySquare2 & 0xFF;
+		gb.AUD2HIGH = songState.songFrequencySquare2 >> 8;
 	}
 }
 
@@ -722,12 +722,12 @@ void handleSongLoadNextChannelSoundWave() {
 	songState.songVolumeWave = songState.songVolumeWorking;
 	songState.songFrequencyWave = songState.songFrequencyWorking;
 	if (!sfxActiveWave) {
-		AUD3ENA = 0;
-		AUD3ENA = songState.songEnableOptionWave;
-		NR31 = songState.songSoundLengthWave;
-		NR32 = songState.songVolumeWave;
-		NR33 = songState.songFrequencyWave & 0xFF;
-		NR34 = songState.songFrequencyWave >> 8;
+		gb.AUD3ENA = 0;
+		gb.AUD3ENA = songState.songEnableOptionWave;
+		gb.NR31 = songState.songSoundLengthWave;
+		gb.NR32 = songState.songVolumeWave;
+		gb.NR33 = songState.songFrequencyWave & 0xFF;
+		gb.NR34 = songState.songFrequencyWave >> 8;
 	}
 }
 
@@ -741,11 +741,11 @@ void handleSongLoadNextChannelSoundNoise() {
 	}
 	songState.songNoiseState = songState.songWorkingState;
 	if (!sfxActiveNoise) {
-		NR41 = songState.songSoundLengthWorking;
-		NR42 = songState.songEnvelopeWorking;
-		AUD4POLY = songState.songPolynomialCounterWorking;
+		gb.NR41 = songState.songSoundLengthWorking;
+		gb.NR42 = songState.songEnvelopeWorking;
+		gb.AUD4POLY = songState.songPolynomialCounterWorking;
 		songState.songPolynomialCounterNoise = songState.songPolynomialCounterWorking;
-		NR44 = songState.songCounterControlWorking;
+		gb.NR44 = songState.songCounterControlWorking;
 		songState.songCounterControlNoise = songState.songCounterControlWorking;
 	}
 }
@@ -852,7 +852,7 @@ void loadNextSound(ref const(ubyte)* ptr, ubyte channel) {
 						return instr35Common();
 					default:
 						if ((songState.workingSoundChannel == 3) && !sfxActiveWave) {
-							AUDTERM = AUDTERM | 0b01000100;
+							gb.AUDTERM = gb.AUDTERM | 0b01000100;
 							songState.songEnableWorking = 0x80;
 						}
 						ubyte c = cmd;
@@ -899,7 +899,7 @@ void songInstructionSetWorkingSoundChannelOptionsWave(ref const(ubyte)* ptr) {
 		songState.songWorkingState.noteVolume = ptr[0];
 	}
 	if (!sfxActiveWave) {
-		AUD3ENA = 0;
+		gb.AUD3ENA = 0;
 		writeToWavePatternRAM(songState.songWavePatternDataPointer);
 	}
 	songState.songWorkingState.effectIndex = songState.songVolumeWorking & ~0b01100000;
@@ -991,31 +991,31 @@ void handleSongSoundChannelEffect(ushort bc) {
 
 void resetChannelOptionsSquare1() {
 	songState.songChannelEnableSquare1 = 0;
-	AUD1ENV = 8;
+	gb.AUD1ENV = 8;
 	songState.songEnvelopeSquare1 = 8;
-	AUD1HIGH = 0x80;
+	gb.AUD1HIGH = 0x80;
 	songState.songFrequencySquare1 = 0x8000 | (songState.songFrequencySquare1 & 0xFF);
 }
 
 void resetChannelOptionsSquare2() {
 	songState.songChannelEnableSquare2 = 0;
-	AUD2ENV = 8;
+	gb.AUD2ENV = 8;
 	songState.songEnvelopeSquare2 = 8;
-	AUD2HIGH = 0x80;
+	gb.AUD2HIGH = 0x80;
 	songState.songFrequencySquare2 = 0x8000 | (songState.songFrequencySquare2 & 0xFF);
 }
 
 void resetChannelOptionsWave() {
 	songState.songChannelEnableWave = 0;
-	AUD3ENA = 0;
+	gb.AUD3ENA = 0;
 	songState.songEnableOptionWave = 0;
 }
 
 void resetChannelOptionsNoise() {
 	songState.songChannelEnableNoise = 0;
-	NR42 = 8;
+	gb.NR42 = 8;
 	songState.songEnvelopeNoise = 8;
-	NR44 = 0x80;
+	gb.NR44 = 0x80;
 	songState.songCounterControlNoise = 0x80;
 }
 
@@ -1030,16 +1030,16 @@ void resetSongSoundChannelOptions() {
 	sfxActiveWave = 0;
 	sfxActiveNoise = NoiseSFX.u00;
 	songState.songFrequencyTweakSquare2 = 0;
-	NR10 = 0;
-	AUD3ENA = 0;
+	gb.NR10 = 0;
+	gb.AUD3ENA = 0;
 
-	AUD1ENV = 0x08;
-	AUD2ENV = 0x08;
-	NR42 = 0x08;
+	gb.AUD1ENV = 0x08;
+	gb.AUD2ENV = 0x08;
+	gb.NR42 = 0x08;
 
-	AUD1HIGH = 0x80;
-	AUD2HIGH = 0x80;
-	NR44 = 0x80;
+	gb.AUD1HIGH = 0x80;
+	gb.AUD2HIGH = 0x80;
+	gb.NR44 = 0x80;
 }
 
 immutable bool function()[] square1SFXInitPointers = [
@@ -1288,7 +1288,7 @@ bool square1SfxInit9() {
 
 void square1SfxPlayback9() {
 	decrementChannelSoundEffectTimerSquare1();
-	AUD1LOW = sfxVariableFrequencySquare1;
+	gb.AUD1LOW = sfxVariableFrequencySquare1;
 	sfxVariableFrequencySquare1 = sfxVariableFrequencySquare1; // that's just silly
 }
 
@@ -1300,7 +1300,7 @@ bool square1SfxInitA() {
 
 void square1SfxPlaybackA() {
 	decrementChannelSoundEffectTimerSquare1();
-	AUD1LOW = sfxVariableFrequencySquare1;
+	gb.AUD1LOW = sfxVariableFrequencySquare1;
 	sfxVariableFrequencySquare1 = sfxVariableFrequencySquare1; // this is still silly
 }
 
@@ -1312,7 +1312,7 @@ bool square1SfxInitB() {
 
 void square1SfxPlaybackB() {
 	decrementChannelSoundEffectTimerSquare1();
-	AUD1LOW = sfxVariableFrequencySquare1;
+	gb.AUD1LOW = sfxVariableFrequencySquare1;
 	sfxVariableFrequencySquare1 = sfxVariableFrequencySquare1; // silliness continues
 }
 
@@ -1513,17 +1513,17 @@ void square1SfxPlayback1A() {
 }
 
 bool square1SfxInit1B() {
-	sfxVariableFrequencySquare1 = swap(DIV) | 0b11100010;
+	sfxVariableFrequencySquare1 = swap(gb.DIV) | 0b11100010;
 	playSquare1SFX(48, &optionSetsSquare1.metroidCry[0]);
 	return true;
 }
 void square1SfxPlayback1B() {
 	if (decrementChannelSoundEffectTimerSquare1() >= 32) {
 		sfxVariableFrequencySquare1 += 6;
-		AUD1LOW = sfxVariableFrequencySquare1;
+		gb.AUD1LOW = sfxVariableFrequencySquare1;
 	} else {
 		sfxVariableFrequencySquare1--;
-		AUD1LOW = sfxVariableFrequencySquare1;
+		gb.AUD1LOW = sfxVariableFrequencySquare1;
 	}
 }
 
@@ -1614,7 +1614,7 @@ immutable void function()[] songSoundEffectPlaybackFunctionPointersSquare2 = [
 ];
 
 bool square2SfxInit3() {
-	square2VariableFrequency = swap(DIV) | 0b11100000;
+	square2VariableFrequency = swap(gb.DIV) | 0b11100000;
 	playSquare2SFX(48, &optionSetsSquare2.metroidQueenCry[0]);
 	return true;
 }
@@ -1627,17 +1627,17 @@ void square2SfxPlayback3() {
 	}
 	if (sfxTimerSquare2 < 32) {
 		square2VariableFrequency += 3;
-		AUD2LOW = square2VariableFrequency;
+		gb.AUD2LOW = square2VariableFrequency;
 	} else {
 		square2VariableFrequency--;
-		AUD2LOW = square2VariableFrequency;
+		gb.AUD2LOW = square2VariableFrequency;
 	}
 }
 alias square2SfxPlayback5 = square2SfxPlayback3;
 alias square2SfxPlayback6 = square2SfxPlayback3;
 
 bool square2SfxInit4() {
-	square2VariableFrequency = (swap(DIV) | 0b10000000) & ~0b01000000;
+	square2VariableFrequency = (swap(gb.DIV) | 0b10000000) & ~0b01000000;
 	playSquare2SFX(28, &optionSetsSquare2.babyMetroidClearingBlockSquare2[0]);
 	return true;
 }
@@ -1652,19 +1652,19 @@ void square2SfxPlayback4() {
 			break;
 		default:
 			square2VariableFrequency += 2;
-			AUD2LOW = square2VariableFrequency;
+			gb.AUD2LOW = square2VariableFrequency;
 			break;
 	}
 }
 
 bool square2SfxInit5() {
-	square2VariableFrequency = (swap(DIV) | 0b01000000) & ~0b10010100;
+	square2VariableFrequency = (swap(gb.DIV) | 0b01000000) & ~0b10010100;
 	playSquare2SFX(48, &optionSetsSquare2.babyMetroidCrySquare2[0]);
 	return true;
 }
 
 bool square2SfxInit6() {
-	square2VariableFrequency = (swap(DIV) | 0b01000000) & ~0b10000000;
+	square2VariableFrequency = (swap(gb.DIV) | 0b01000000) & ~0b10000000;
 	playSquare2SFX(48, &optionSetsSquare2.metroidQueenHurtCry[0]);
 	return true;
 }
@@ -1866,34 +1866,34 @@ void noiseSfxPlaybackB() {
 }
 
 void setPolynomialCounter27() {
-	AUD4POLY = 0x27;
+	gb.AUD4POLY = 0x27;
 }
 void setPolynomialCounter35() {
-	AUD4POLY = 0x35;
+	gb.AUD4POLY = 0x35;
 }
 void setPolynomialCounter37() {
-	AUD4POLY = 0x37;
+	gb.AUD4POLY = 0x37;
 }
 void setPolynomialCounter45() {
-	AUD4POLY = 0x45;
+	gb.AUD4POLY = 0x45;
 }
 void setPolynomialCounter47() {
-	AUD4POLY = 0x47;
+	gb.AUD4POLY = 0x47;
 }
 void setPolynomialCounter55() {
-	AUD4POLY = 0x55;
+	gb.AUD4POLY = 0x55;
 }
 void setPolynomialCounter57() {
-	AUD4POLY = 0x57;
+	gb.AUD4POLY = 0x57;
 }
 void setPolynomialCounter65() {
-	AUD4POLY = 0x65;
+	gb.AUD4POLY = 0x65;
 }
 void setPolynomialCounter66() {
-	AUD4POLY = 0x66;
+	gb.AUD4POLY = 0x66;
 }
 void setPolynomialCounter67() {
-	AUD4POLY = 0x67;
+	gb.AUD4POLY = 0x67;
 }
 
 bool noiseSfxInitC() {

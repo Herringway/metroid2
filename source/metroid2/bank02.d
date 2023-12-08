@@ -6,7 +6,7 @@ import metroid2.bank03;
 import metroid2.bank08;
 import metroid2.defs;
 import metroid2.globals;
-import metroid2.registers;
+import metroid2.external;
 
 import librehome.gameboy;
 
@@ -32,7 +32,7 @@ void enemyHandler() {
 			ingameSaveAndLoadEnemySaveFlags();
 			saveLoadSpawnFlagsRequest = 0;
 		}
-		if (LY >= 0x70) {
+		if (gb.LY >= 0x70) {
 			return;
 		}
 		if (!loadSpawnFlagsRequest) {
@@ -42,7 +42,7 @@ void enemyHandler() {
 		scrollEnemies();
 		processEnemies();
 		updateScrollHistory();
-		if (LY < 0x70) {
+		if (gb.LY < 0x70) {
 			drawEnemies();
 		}
 	}
@@ -104,7 +104,7 @@ void processEnemies() {
 				break;
 			}
 			//we don't need to restore the enemy address.
-			if (LY >= 88) {
+			if (gb.LY >= 88) {
 				enemyFirstEnemy = enemyDataSlots[i .. $];
 				enemySameEnemyFrameFlag++;
 				break;
@@ -113,7 +113,7 @@ void processEnemies() {
 	} else {
 		allEnemiesDone();
 	}
-	if (LY >= 108) {
+	if (gb.LY >= 108) {
 		return;
 	}
 	handleEnemyLoading();
@@ -1370,7 +1370,7 @@ void enemyAnimateExplosion(ubyte type) {
 		enemyDeleteSelf();
 		enemyWorking.spawnFlag = 2;
 	}
-	if (DIV & 1) {
+	if (gb.DIV & 1) {
 		return dropNothing();
 	}
 	ushort drop;
@@ -2401,14 +2401,14 @@ void enAIAlphaMetroidHurtReaction() {
 	sfxRequestNoise = NoiseSFX.u05;
 	enemyWorking.directionFlags = 0;
 	static void knockbackRandHorizontal(ref ubyte dir) {
-		if (DIV & 1) {
+		if (gb.DIV & 1) {
 			dir |= 0b0001;
 		} else {
 			dir |= 0b0100;
 		}
 	}
 	static void knockbackRandVertical(ref ubyte dir) {
-		if (DIV & 1) {
+		if (gb.DIV & 1) {
 			dir |= 0b0010;
 		} else {
 			dir |= 0b1000;

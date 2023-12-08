@@ -5,7 +5,6 @@ import metroid2.defs;
 import metroid2.enemies;
 import metroid2.external;
 import metroid2.globals;
-import metroid2.registers;
 import librehome.gameboy;
 
 import std.logger;
@@ -1671,16 +1670,16 @@ void miscInGameTasks() {
 		saveMessageCooldownTimer--;
 	}
 	if (queenRoomFlag != 0x11) {
-		if (!(LCDC & LCDCFlags.windowDisplay)) {
-			LCDC = LCDC | LCDCFlags.windowDisplay;
+		if (!(gb.LCDC & LCDCFlags.windowDisplay)) {
+			gb.LCDC = gb.LCDC | LCDCFlags.windowDisplay;
 		}
-		WY = 0x88;
+		gb.WY = 0x88;
 		if (!saveContactFlag) {
 			if (itemCollectedCopy && (itemCollectedCopy < 0xB)) {
-				WY = 0x80;
+				gb.WY = 0x80;
 			}
 		} else {
-			WY = 0x80;
+			gb.WY = 0x80;
 			if (inputRisingEdge & Pad.start) {
 				gameMode = GameMode.saveGame;
 				saveMessageCooldownTimer = 0xFF;
