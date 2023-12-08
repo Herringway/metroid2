@@ -779,9 +779,24 @@ void adjustHUDValues() {
 		}
 	}
 }
-void debugDrawNumber() {
-	assert(0); // TODO
+void debugDrawNumberTwoDigit(ubyte digits) {
+	debugDrawNumberSprite(cast(ubyte)(((digits >> 4) & 0xF) + 0xA0));
+	debugDrawNumberOneDigit(digits);
 }
+void debugDrawNumberOneDigit(ubyte digit) {
+	debugDrawNumberSprite(cast(ubyte)((digit & 0xF) + 0xA0));
+}
+void debugDrawNumberSprite(ubyte tile) {
+	auto hl = &oamBuffer[oamBufferIndex / 4];
+	hl.y = spriteYPixel;
+	hl.x = spriteXPixel;
+	spriteXPixel += 8;
+	hl.tile = tile;
+	hl.flags = spriteAttr;
+	oamBufferIndex += 4;
+}
+
+
 void drawHUDMetroid() {
 	spriteYPixel = 0x98;
 	if (queenRoomFlag != 0x11) {

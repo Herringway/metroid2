@@ -2922,7 +2922,7 @@ void handlePaused() {
 			}
 			if (inputRisingEdge & Pad.left) {
 				if (!(inputPressed & Pad.b)) {
-					debugItemIndex = (debugItemIndex - 1) & 7;
+					debugItemIndex = (debugItemIndex + 1) & 7;
 				} else if (inputPressed & Pad.a) {
 					metroidCountReal++;
 					metroidCountDisplayed++;
@@ -2953,8 +2953,8 @@ void handlePaused() {
 				}
 			}
 			spriteYPixel = 0x58;
-			spriteXPixel = cast(ubyte)((debugItemIndex << 3) + 0x69);
-			// TODO debugDrawNumberOneDigit(debugItemIndex);
+			spriteXPixel = cast(ubyte)(-(debugItemIndex << 3) + 0x68);
+			debugDrawNumberOneDigit(debugItemIndex);
 			spriteYPixel = 0x54;
 			spriteID = 0x36;
 			spriteXPixel = 0x34;
@@ -2991,12 +2991,12 @@ void handlePaused() {
 			}
 			spriteYPixel = 0x68;
 			spriteXPixel = 0x50;
-			// TODO debugDrawNumberTwoDigit(samusActiveWeapon);
+			debugDrawNumberTwoDigit(cast(ubyte)samusActiveWeapon);
 			maxOAMPrevFrame = oamBufferIndex;
-			if (inputRisingEdge & Pad.select) {
+			if (inputRisingEdge != Pad.select) {
 				return;
 			}
-			if (inputPressed & Pad.select) {
+			if (inputPressed != Pad.select) {
 				return;
 			}
 			if ((samusPose == SamusPose.standing) || (samusPose == SamusPose.morphBall)) {
