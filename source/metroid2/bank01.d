@@ -714,37 +714,42 @@ void vblankUpdateStatusBar() {
 	if (samusEnergyTanks) {
 		hudTanks[0 .. samusEnergyTanks] = 0x9C;
 		if (samusDispHealth >= 100) {
-			hudTanks[0 .. samusDispHealth / 100] = 0x9D;
+			version(original) {
+				hudTanks[0 .. samusDispHealth / 100] = 0x9D;
+			} else {
+				import std.algorithm.comparison : min;
+				hudTanks[0 .. min($, samusDispHealth / 100)] = 0x9D;
+			}
 		}
 	} else {
 		hudTanks[0] = 0xAA; // E
 	}
 	const hudBase = (queenRoomFlag == 0x11) ? VRAMDest.queenStatusBar : VRAMDest.statusBar;
-	vram()[hudBase + 0] = hudTanks[4];
-	vram()[hudBase + 1] = hudTanks[3];
-	vram()[hudBase + 2] = hudTanks[2];
-	vram()[hudBase + 3] = hudTanks[1];
-	vram()[hudBase + 4] = hudTanks[0];
-	vram()[hudBase + 5] = 0x9E;
-	vram()[hudBase + 6] = ((samusDispHealth % 100) / 10) + 0xA0;
-	vram()[hudBase + 7] = (samusDispHealth % 10) + 0xA0;
-	vram()[hudBase + 11] = ((samusDispMissiles % 1000) / 100) + 0xA0;
-	vram()[hudBase + 12] = ((samusDispMissiles % 100) / 10) + 0xA0;
-	vram()[hudBase + 13] = (samusDispMissiles % 10) + 0xA0;
+	gb.vram[hudBase + 0] = hudTanks[4];
+	gb.vram[hudBase + 1] = hudTanks[3];
+	gb.vram[hudBase + 2] = hudTanks[2];
+	gb.vram[hudBase + 3] = hudTanks[1];
+	gb.vram[hudBase + 4] = hudTanks[0];
+	gb.vram[hudBase + 5] = 0x9E;
+	gb.vram[hudBase + 6] = ((samusDispHealth % 100) / 10) + 0xA0;
+	gb.vram[hudBase + 7] = (samusDispHealth % 10) + 0xA0;
+	gb.vram[hudBase + 11] = ((samusDispMissiles % 1000) / 100) + 0xA0;
+	gb.vram[hudBase + 12] = ((samusDispMissiles % 100) / 10) + 0xA0;
+	gb.vram[hudBase + 13] = (samusDispMissiles % 10) + 0xA0;
 	if (gameMode != GameMode.paused) {
 		if (metroidCountShuffleTimer == 0) {
-			vram()[hudBase + 18] = ((metroidCountDisplayed % 100) / 10) + 0xA0;
-			vram()[hudBase + 19] = (metroidCountDisplayed % 10) + 0xA0;
+			gb.vram[hudBase + 18] = ((metroidCountDisplayed % 100) / 10) + 0xA0;
+			gb.vram[hudBase + 19] = (metroidCountDisplayed % 10) + 0xA0;
 		} else if (--metroidCountShuffleTimer < 0x80) {
-			vram()[hudBase + 18] = ((frameCounter % 100) / 10) + 0xA0;
-			vram()[hudBase + 19] = (frameCounter % 10) + 0xA0;
+			gb.vram[hudBase + 18] = ((frameCounter % 100) / 10) + 0xA0;
+			gb.vram[hudBase + 19] = (frameCounter % 10) + 0xA0;
 		}
 	} else if (metroidLCounterDisp) {
-		vram()[hudBase + 18] = ((metroidLCounterDisp % 100) / 10) + 0xA0;
-		vram()[hudBase + 19] = (metroidLCounterDisp % 10) + 0xA0;
+		gb.vram[hudBase + 18] = ((metroidLCounterDisp % 100) / 10) + 0xA0;
+		gb.vram[hudBase + 19] = (metroidLCounterDisp % 10) + 0xA0;
 	} else {
-		vram()[hudBase + 18] = 0x9E;
-		vram()[hudBase + 19] = 0x9E;
+		gb.vram[hudBase + 18] = 0x9E;
+		gb.vram[hudBase + 19] = 0x9E;
 	}
 }
 
@@ -1582,24 +1587,24 @@ alias destroyBlock = destroyBlockEmpty;
 void destroyBlockEmpty() {
 	getTilemapAddress();
 	tilemapDest &= 0xFFDE; // make sure it's top-left corner
-	waitHBlank();
-	waitHBlank();
-	vram()[tilemapDest + 0x00] = 0xFF;
-	vram()[tilemapDest + 0x01] = 0xFF;
-	vram()[tilemapDest + 0x20] = 0xFF;
-	vram()[tilemapDest + 0x21] = 0xFF;
+	gb.waitHBlank();
+	gb.waitHBlank();
+	gb.vram[tilemapDest + 0x00] = 0xFF;
+	gb.vram[tilemapDest + 0x01] = 0xFF;
+	gb.vram[tilemapDest + 0x20] = 0xFF;
+	gb.vram[tilemapDest + 0x21] = 0xFF;
 	sfxRequestNoise = NoiseSFX.u04;
 }
 void destroyBlockReform(ref ubyte timer) {
 	timer = 0;
 	getTilemapAddress();
 	tilemapDest &= 0xFFDE; // make sure it's top-left corner
-	waitHBlank();
-	waitHBlank();
-	vram()[tilemapDest + 0x00] = 0x00;
-	vram()[tilemapDest + 0x01] = 0x01;
-	vram()[tilemapDest + 0x20] = 0x02;
-	vram()[tilemapDest + 0x21] = 0x03;
+	gb.waitHBlank();
+	gb.waitHBlank();
+	gb.vram[tilemapDest + 0x00] = 0x00;
+	gb.vram[tilemapDest + 0x01] = 0x01;
+	gb.vram[tilemapDest + 0x20] = 0x02;
+	gb.vram[tilemapDest + 0x21] = 0x03;
 	if (samusInvulnerableTimer) {
 		return;
 	}
@@ -1608,22 +1613,22 @@ void destroyBlockReform(ref ubyte timer) {
 void destroyBlockFrameA() {
 	getTilemapAddress();
 	tilemapDest &= 0xFFDE; // make sure it's top-left corner
-	waitHBlank();
-	waitHBlank();
-	vram()[tilemapDest + 0x00] = 0x04;
-	vram()[tilemapDest + 0x01] = 0x05;
-	vram()[tilemapDest + 0x20] = 0x06;
-	vram()[tilemapDest + 0x21] = 0x07;
+	gb.waitHBlank();
+	gb.waitHBlank();
+	gb.vram[tilemapDest + 0x00] = 0x04;
+	gb.vram[tilemapDest + 0x01] = 0x05;
+	gb.vram[tilemapDest + 0x20] = 0x06;
+	gb.vram[tilemapDest + 0x21] = 0x07;
 }
 void destroyBlockFrameB() {
 	getTilemapAddress();
 	tilemapDest &= 0xFFDE; // make sure it's top-left corner
-	waitHBlank();
-	waitHBlank();
-	vram()[tilemapDest + 0x00] = 0x08;
-	vram()[tilemapDest + 0x01] = 0x09;
-	vram()[tilemapDest + 0x20] = 0x0A;
-	vram()[tilemapDest + 0x21] = 0x0B;
+	gb.waitHBlank();
+	gb.waitHBlank();
+	gb.vram[tilemapDest + 0x00] = 0x08;
+	gb.vram[tilemapDest + 0x01] = 0x09;
+	gb.vram[tilemapDest + 0x20] = 0x0A;
+	gb.vram[tilemapDest + 0x21] = 0x0B;
 }
 void destroyBlockHurtSamus() {
 	if (samusY.pixel + 24 - ((tileY - 16) & 0xF0) >= samusHeightTable[samusPose]) {

@@ -197,7 +197,7 @@ void waitNextFrame() {
 	vblankDoneFlag = 0;
 	unusedFlag1 = 0xC0;
 	oamBufferIndex = 0;
-	waitNextFrameExternal();
+	gb.wait();
 }
 
 void oamClearTable() {
@@ -206,8 +206,8 @@ void oamClearTable() {
 	}
 }
 void clearTilemaps() {
-	bgTilemap()[] = 0xFF;
-	windowTilemap()[] = 0xFF;
+	gb.getBGTilemap()[] = 0xFF;
+	gb.getWindowTilemap()[] = 0xFF;
 }
 // hl: src, de: dest, bc: length
 void copyToVRAM(const(void)* src, void* destination, size_t length) {
@@ -383,14 +383,14 @@ void handleEnemiesOrQueen() {
 
 void loadGameLoadGraphics() {
 	foreach (i, commonGraphics; graphicsItems[12 .. 16]) {
-		copyToVRAM(&commonGraphics[0], &(vram()[VRAMDest.commonItems + i * 0x40]), commonGraphics.length);
+		copyToVRAM(&commonGraphics[0], &gb.vram[VRAMDest.commonItems + i * 0x40], commonGraphics.length);
 	}
-	copyToVRAM(&graphicsSamusPowerSuit[0], &(vram()[VRAMDest.samus]), graphicsSamusPowerSuit.length);
-	copyToVRAM(enGfx(saveBuf.enGfxID), &(vram()[VRAMDest.enemies]), 0x400);
+	copyToVRAM(&graphicsSamusPowerSuit[0], &gb.vram[VRAMDest.samus], graphicsSamusPowerSuit.length);
+	copyToVRAM(enGfx(saveBuf.enGfxID), &gb.vram[VRAMDest.enemies], 0x400);
 	if (loadingFromFile) {
-		copyToVRAM(&graphicsItemFont[0], &(vram()[VRAMDest.itemFont]), 0x200);
+		copyToVRAM(&graphicsItemFont[0], &gb.vram[VRAMDest.itemFont], 0x200);
 	}
-	copyToVRAM(bgGfx(saveBuf.bgGfxID), &(vram()[VRAMDest.bgTiles]), 0x800);
+	copyToVRAM(bgGfx(saveBuf.bgGfxID), &gb.vram[VRAMDest.bgTiles], 0x800);
 }
 
 void queenRenderRoom() {
@@ -531,16 +531,16 @@ void vblankUpdateMap() {
 			break;
 		}
 		// top left
-		vram()[hl] = de.topLeft;
+		gb.vram[hl] = de.topLeft;
 		// top right
 		hl = (hl + 1) & 0x9BFF;
-		vram()[hl] = de.topRight;
+		gb.vram[hl] = de.topRight;
 		// bottom left
 		hl = (hl + 0x1F) & 0x9BFF;
-		vram()[hl] = de.bottomLeft;
+		gb.vram[hl] = de.bottomLeft;
 		// bottom right
 		hl = (hl + 1) & 0x9BFF;
-		vram()[hl] = de.bottomRight;
+		gb.vram[hl] = de.bottomRight;
 		de++;
 	} while(true);
 	mapUpdateBuffer[0].dest = 0;
@@ -2092,10 +2092,10 @@ ubyte samusGetTileIndex() {
 	if (gameOverLCDCCopy & 8) {
 		tilemapDest += 0x400; // use other screen tilemap
 	}
-	waitHBlank();
-	const b = vram()[tilemapDest];
-	waitHBlank();
-	const a = vram()[tilemapDest] & b;
+	gb.waitHBlank();
+	const b = gb.vram[tilemapDest];
+	gb.waitHBlank();
+	const a = gb.vram[tilemapDest] & b;
 	if (!samusInvulnerableTimer) {
 		if (collisionArray[a] & BlockType.spike) {
 			sfxRequestSquare1 = Square1SFX.standingTransition;
@@ -2375,21 +2375,21 @@ ubyte getTileIndexProjectile() {
 	if (gameOverLCDCCopy & 8) {
 		tilemapDest += 0x400;
 	}
-	waitHBlank();
-	const b = vram()[tilemapDest];
-	waitHBlank();
-	return vram()[tilemapDest] & b;
+	gb.waitHBlank();
+	const b = gb.vram[tilemapDest];
+	gb.waitHBlank();
+	return gb.vram[tilemapDest] & b;
 }
 
 
 void readInput() {
-	writeJoy(0x20);
-	ubyte tmp = ((~readJoy()) & 0xF) << 4;
-	writeJoy(0x10);
-	tmp |= ~readJoy() & 0xF;
+	gb.writeJoy(0x20);
+	ubyte tmp = ((~gb.readJoy()) & 0xF) << 4;
+	gb.writeJoy(0x10);
+	tmp |= ~gb.readJoy() & 0xF;
 	inputRisingEdge = (inputPressed ^ tmp) & tmp;
 	inputPressed = tmp;
-	writeJoy(0x30);
+	gb.writeJoy(0x30);
 }
 
 void getTilemapAddress() {
@@ -2411,7 +2411,7 @@ void unknown230C() {
 	assert(0); // not used
 }
 void oamDMA() {
-	vram()[0xFE00 .. 0xFEA0] = cast(ubyte[])(oamBuffer[]);
+	gb.vram[0xFE00 .. 0xFEA0] = cast(ubyte[])(oamBuffer[]);
 }
 void executeDoorScript() {
 	if (doorIndex) {
@@ -2469,7 +2469,7 @@ void executeDoorScript() {
 					cameraY = (cameraY.screen << 8) | 0xC0;
 					cameraX = (cameraX.screen << 8) | 0x80;
 					vramTransfer.src = &hudBaseTilemap[0];
-					vramTransfer.dest = &(vram()[VRAMDest.statusBar]);
+					vramTransfer.dest = &gb.vram[VRAMDest.statusBar];
 					vramTransfer.size = 0x14;
 					beginGraphicsTransfer();
 					loadSpawnFlagsRequest = 0;
@@ -2490,7 +2490,7 @@ void executeDoorScript() {
 					gb.WX = 7;
 					gb.IE = gb.IE & ~(1 << 1);
 					vramTransfer.src = &hudBaseTilemap[0];
-					vramTransfer.dest = &(vram()[VRAMDest.statusBar]);
+					vramTransfer.dest = &gb.vram[VRAMDest.statusBar];
 					vramTransfer.size = 0x14;
 					beginGraphicsTransfer();
 					break;
@@ -2569,21 +2569,21 @@ void executeDoorScript() {
 				case DoorCommand.item:
 					const itemID = (script[0] - 1) & 0xF;
 					vramTransfer.src = &graphicsItems[itemID][0];
-					vramTransfer.dest = &(vram()[VRAMDest.item]);
+					vramTransfer.dest = &gb.vram[VRAMDest.item];
 					vramTransfer.size = 0x40;
 					beginGraphicsTransfer();
 					vramTransfer.src = &graphicsItems[11][0];
-					vramTransfer.dest = &(vram()[VRAMDest.itemOrb]);
+					vramTransfer.dest = &gb.vram[VRAMDest.itemOrb];
 					vramTransfer.size = 0x40;
 					beginGraphicsTransfer();
 					vramTransfer.src = &graphicsItemFont[0];
-					vramTransfer.dest = &(vram()[VRAMDest.itemFont]);
+					vramTransfer.dest = &gb.vram[VRAMDest.itemFont];
 					vramTransfer.size = 0x230;
 					beginGraphicsTransfer();
 
 					vramTransfer.src = &itemTextPointerTable[script[0] & 0xF][0];
 					script++;
-					vramTransfer.dest = &(vram()[VRAMDest.itemText]);
+					vramTransfer.dest = &gb.vram[VRAMDest.itemText];
 					vramTransfer.size = 0x10;
 					beginGraphicsTransfer();
 					break;
@@ -2603,14 +2603,14 @@ void doorLoadGraphics(ref const(ubyte)* script) {
 		const gfxID = script++[0];
 		vramTransfer.src = enGfx(gfxID);
 		saveBuf.enGfxID = gfxID;
-		vramTransfer.dest = &(vram()[VRAMDest.enemies]);
+		vramTransfer.dest = &gb.vram[VRAMDest.enemies];
 		vramTransfer.size = 0x400;
 		beginGraphicsTransfer();
 	} else {
 		const gfxID = script++[0];
 		vramTransfer.src = bgGfx(gfxID);
 		saveBuf.bgGfxID = gfxID;
-		vramTransfer.dest = &(vram()[VRAMDest.bgTiles]);
+		vramTransfer.dest = &gb.vram[VRAMDest.bgTiles];
 		vramTransfer.size = 0x800;
 		beginGraphicsTransfer();
 	}
@@ -2621,7 +2621,7 @@ void doorCopyData(ref const(ubyte)* script) {
 		case DoorCommand.copyBG & 0xF:
 		case DoorCommand.copySpr & 0xF:
 			vramTransfer.src = specialData(script++[0]);
-			vramTransfer.dest = &(vram()[*cast(const(ushort)*)(script)]);
+			vramTransfer.dest = &gb.vram[*cast(const(ushort)*)(script)];
 			script += 2;
 			vramTransfer.size = *cast(const(ushort)*)(script);
 			script += 2;
@@ -2633,7 +2633,7 @@ void doorCopyData(ref const(ubyte)* script) {
 
 void loadGraphics(const GraphicsInfo gfx) {
 	vramTransfer.src = &gfx.data[0];
-	vramTransfer.dest = &(vram()[gfx.destination]);
+	vramTransfer.dest = &gb.vram[gfx.destination];
 	vramTransfer.size = gfx.length;
 	beginGraphicsTransfer();
 }
@@ -2659,7 +2659,7 @@ void beginGraphicsTransfer() {
 
 void animateGettingVaria(const GraphicsInfo gfx) {
 	vramTransfer.src = &gfx.data[0];
-	vramTransfer.dest = &(vram()[gfx.destination]);
+	vramTransfer.dest = &gb.vram[gfx.destination];
 	vramTransfer.size = gfx.length;
 	vramTransferFlag = 0xFF;
 	variaTransferDone = false;
@@ -2863,7 +2863,7 @@ void vblankVariaAnimation() {
 
 void waitOneFrame() {
 	handleAudio();
-	waitNextFrameExternal();
+	gb.wait();
 	frameCounter++;
 	vblankDoneFlag = 0;
 	unusedFlag1 = 0xC0;
@@ -3094,7 +3094,7 @@ void killSamus() {
 	waitOneFrame();
 	drawSamusIgnoreDamageFrames();
 	deathAnimTimer = 0x20;
-	deathAltAnimBase = &(vram()[VRAMDest.samus]);
+	deathAltAnimBase = &gb.vram[VRAMDest.samus];
 	deathFlag = 1;
 	gameMode = GameMode.dying;
 }
@@ -3103,7 +3103,7 @@ void prepUnusedDeathAnimation() {
 	samusTurnAnimTimer = 160;
 	samusPose = cast(SamusPose)(SamusPose.standing | 0x80);
 	deathAnimTimer = 32;
-	deathAltAnimBase = &(vram()[VRAMDest.samus]);
+	deathAltAnimBase = &gb.vram[VRAMDest.samus];
 }
 
 void vblankDeathSequence() {
@@ -3112,8 +3112,8 @@ void vblankDeathSequence() {
 		return;
 	}
 	if (!(frameCounter & 3)) { // every 4 frames
-		auto hl = &(vram()[VRAMDest.samus + deathAnimationTable[deathAnimTimer - 1]]);
-		while (hl < &(vram()[0x8800])) {
+		auto hl = &gb.vram[VRAMDest.samus + deathAnimationTable[deathAnimTimer - 1]];
+		while (hl < &gb.vram[0x8800]) {
 			*hl = 0;
 			hl += 0x20;
 		}
@@ -3479,12 +3479,12 @@ void handleDead() {
 	clearTilemaps();
 	oamBufferIndex = 0;
 	clearAllOAM();
-	vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
-	vram()[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
-	vram()[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
-	vram()[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
+	gb.vram[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
+	gb.vram[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
+	gb.vram[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
+	gb.vram[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
 	auto text = &gameOverText[0];
-	auto textDest = &(vram()[0x9800 + 8 * 32 + 6]);
+	auto textDest = &gb.vram[0x9800 + 8 * 32 + 6];
 	while (*text != 0x80) {
 		*(textDest++) = *(text++);
 	}
@@ -3755,15 +3755,15 @@ void handleUnusedA() {
 	oamBufferIndex = 0;
 	clearAllOAM();
 	version(original) {
-		vram()[0x8000 .. 0x9800] = graphicsTitleScreen[];
+		gb.vram[0x8000 .. 0x9800] = graphicsTitleScreen[];
 	} else {
-		vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
-		vram()[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
-		vram()[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
-		vram()[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
+		gb.vram[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
+		gb.vram[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
+		gb.vram[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
+		gb.vram[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
 	}
 	auto text = &gameSavedText[0];
-	auto textDest = &(vram()[0x9800 + 8 * 32 + 5]);
+	auto textDest = &gb.vram[0x9800 + 8 * 32 + 5];
 	while (*text != 0x80) {
 		*(textDest++) = *(text++);
 	}
@@ -3791,12 +3791,12 @@ void handleUnusedC() {
 	clearTilemaps();
 	oamBufferIndex = 0;
 	clearAllOAM();
-	vram()[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
-	vram()[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
-	vram()[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
-	vram()[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
+	gb.vram[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
+	gb.vram[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
+	gb.vram[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
+	gb.vram[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
 	auto text = &gameClearedText[0];
-	auto textDest = &(vram()[0x9800 + 8 * 32 + 4]);
+	auto textDest = &gb.vram[0x9800 + 8 * 32 + 4];
 	while (*text != 0x80) {
 		*(textDest++) = *(text++);
 	}
@@ -3852,11 +3852,11 @@ void loadGameSamusItemGraphics() {
 }
 
 void loadGameCopyItemToVRAM(const GraphicsInfo gfx) {
-	copyToVRAM(&gfx.data[0], &(vram()[gfx.destination]), gfx.length);
+	copyToVRAM(&gfx.data[0], &gb.vram[gfx.destination], gfx.length);
 }
 
 void unusedDecreasingVRAMTransfer(const GraphicsInfo gfx) {
-	copyToVRAM(&gfx.data[0], &(vram()[gfx.destination]), gfx.length - 1);
+	copyToVRAM(&gfx.data[0], &gb.vram[gfx.destination], gfx.length - 1);
 }
 
 void loadCreditsText() {

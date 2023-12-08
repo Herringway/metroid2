@@ -6,35 +6,11 @@ import librehome.gameboy;
 
 GameBoySimple gb;
 
-void waitNextFrameExternal() {
-	gb.wait();
-}
-void writeJoy(ubyte v) {
-	gb.writeJoy(v);
-}
-ubyte readJoy() {
-	return gb.readJoy();
-}
-
-ubyte[] vram() {
-	return gb.vram;
-}
-ref ubyte[0x400] bgTilemap() {
-	return gb.getBGTilemap();
-}
-ref ubyte[0x400] windowTilemap() {
-	return gb.getWindowTilemap();
-}
-
 void disableSRAM() {
-	gb.disableSRAM!SRAM(0x2000);
+	gb.disableSRAM!SRAM();
 }
 void enableSRAM() {
-	gb.enableSRAM!SRAM(0x2000);
-}
-
-void waitHBlank() {
-	//while (STAT & 3) {} // wait for hblank
+	gb.enableSRAM!SRAM();
 }
 
 struct SaveFileData {

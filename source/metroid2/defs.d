@@ -767,13 +767,13 @@ ubyte[] fixItemName(string input) {
 }
 
 ubyte* screen0() {
-	import metroid2.external : vram;
-	return &(vram()[0x9800]);
+	import metroid2.external : gb;
+	return &gb.vram[0x9800];
 }
 
 ubyte* screen1() {
-	import metroid2.external : vram;
-	return &(vram()[0x9C00]);
+	import metroid2.external : gb;
+	return &gb.vram[0x9C00];
 }
 
 const(ubyte)* enGfx(ubyte id) {

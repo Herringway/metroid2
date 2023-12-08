@@ -19,6 +19,7 @@ void main() {
 	gb.interruptHandler = &vblank;
 	gb.title = "Metroid II: Return of Samus";
 	gb.sourceFile = "metroid2.gb";
+	gb.saveSize = 0x2000;
 	gb.saveFile = "metroid2.sav";
 	loadData(gb.romData);
 	auto settings = gb.loadSettings!GameSettings();

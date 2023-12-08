@@ -19,15 +19,15 @@ void creditsDrawOneDigit(ubyte a) {
 	assert(0);
 }
 void creditsLoadFont() {
-	copyToVRAM(&graphicsCreditsFont[0], &(vram()[VRAMDest.creditsFont]), 0x200);
+	copyToVRAM(&graphicsCreditsFont[0], &gb.vram[VRAMDest.creditsFont], 0x200);
 }
 void vblankDrawCreditsLine() {
 	assert(0);
 }
 void loadTitleScreen() {
 	titleLoadGraphics();
-	vram()[VRAMDest.statusBar .. VRAMDest.statusBar + 0x14] = hudBaseTilemap[];
-	vram()[VRAMDest.itemText .. VRAMDest.itemText + 0x14] = saveTextTilemap[];
+	gb.vram[VRAMDest.statusBar .. VRAMDest.statusBar + 0x14] = hudBaseTilemap[];
+	gb.vram[VRAMDest.itemText .. VRAMDest.itemText + 0x14] = saveTextTilemap[];
 	screen0[0 .. 0x400] = titleTileMap[];
 	gb.WX = 7;
 	gb.WY = 136;
@@ -166,7 +166,7 @@ void titleScreenRoutine() {
 }
 
 void titleLoadGraphics() {
-	copyToVRAM(&graphicsTitleScreen[0], &(vram()[VRAMDest.titleTiles]), 0x1000);
+	copyToVRAM(&graphicsTitleScreen[0], &gb.vram[VRAMDest.titleTiles], 0x1000);
 }
 void titleClearUnusedOAMSlots() {
 	oamBuffer[oamBufferIndex / 4 .. $] = oamBuffer[0].init;
