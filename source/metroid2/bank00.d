@@ -168,10 +168,10 @@ bool handleGameMode() {
 			handleUnusedD();
 			break;
 		case GameMode.prepareCredits:
-			// TODO handlePrepareCredits();
+			handlePrepareCredits();
 			break;
 		case GameMode.credits:
-			// TODO handleCredits();
+			handleCredits();
 			break;
 	}
 	return false;

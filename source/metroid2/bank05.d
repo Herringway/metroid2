@@ -9,20 +9,46 @@ import metroid2.defs;
 import metroid2.external;
 import metroid2.globals;
 
+import librehome.gameboy;
+
 public import metroid2.doors;
 
 
-void creditsDrawTimerDigits() {
-	assert(0);
+void creditsDrawTimerDigits(ubyte a) {
+	creditsDrawOneDigit(cast(ubyte)((a / 10 & 0xF) + 0xF0));
+	creditsDrawOneDigit(cast(ubyte)(((a % 10) & 0xF) + 0xF0));
 }
 void creditsDrawOneDigit(ubyte a) {
-	assert(0);
+	auto hl = &oamBuffer[oamBufferIndex];
+	hl.y = spriteYPixel;
+	hl.x = spriteXPixel;
+	spriteXPixel += 8;
+	hl.tile = a;
+	hl.flags = spriteAttr;
+	oamBufferIndex++;
 }
 void creditsLoadFont() {
 	copyToVRAM(&graphicsCreditsFont[0], &gb.vram[VRAMDest.creditsFont], 0x200);
 }
 void vblankDrawCreditsLine() {
-	assert(0);
+	auto hl = creditsTextPointer;
+	auto de = tilemapDest;
+	enableSRAM(); // credits text buffer is in SRAM
+	if (hl[0] != 0xF1) {
+		for (int i = 20; i > 0; i--) {
+			gb.vram[de++] = cast(ubyte)((hl++)[0] - 0x21);
+		}
+	} else {
+		for (int i = 20; i > 0; i--) {
+			gb.vram[de++] = 0xFF;
+		}
+		hl++;
+	}
+	disableSRAM();
+	creditsTextPointer = hl;
+	creditsNextLineReady = 0;
+	oamDMA();
+	vblankDoneFlag = 1;
 }
 void loadTitleScreen() {
 	titleLoadGraphics();
@@ -207,4 +233,439 @@ immutable ubyte[] titleTileMap = [
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+];
+
+void handleCredits() {
+	spriteYPixel = samusY.pixel;
+	spriteXPixel = samusX.pixel;
+	creditsAnimateSamus();
+	creditsScrollHandler();
+	creditsDrawTimer();
+	creditsMoveStars();
+	creditsDrawStars();
+	titleClearUnusedOAMSlots();
+}
+
+void creditsDrawTimer() {
+	if (!creditsScrollingDone) {
+		return;
+	}
+	spriteYPixel = 136;
+	spriteXPixel = 66;
+	creditsDrawTimerDigits(gameTimeHours);
+	spriteXPixel = 86;
+	creditsDrawTimerDigits(gameTimeMinutes);
+}
+
+void creditsMoveStars() {
+	foreach (ref star; creditsStarArray) {
+		if ((frameCounter & 3) == 0) {
+			if (++star[0] == 0xA0) {
+				star[0] = 16;
+			}
+			if (--star[1] == 0xF8) {
+				star[1] = 0xA8;
+			}
+		}
+	}
+}
+
+void creditsDrawStars() {
+	foreach (idx, star; creditsStarArray) {
+		spriteYPixel = star[0];
+		spriteXPixel = star[1];
+		spriteID = cast(ubyte)(((16 - idx) & 1) + 0x1B);
+		drawNonGameSprite();
+	}
+}
+
+void creditsAnimateSamus() {
+	final switch (creditsSamusAnimState) {
+		case SamusCreditsState.standingStart:
+			creditsDrawSamus(10);
+			if (gameTimeHours >= 7) { // worst ending, no animation
+				break;
+			}
+			if (countdownTimer == 0) {
+				creditsRunAnimCounter = 0;
+				creditsRunAnimFrame = 0;
+				creditsScrollingDone = 0;
+				countdownTimer = 4608; //about 76.8 seconds
+				creditsSamusAnimState = SamusCreditsState.running;
+			}
+			break;
+		case SamusCreditsState.running:
+			if (++creditsRunAnimCounter >= 6) {
+				creditsRunAnimCounter = 0;
+				if (++creditsRunAnimFrame == 4) {
+					creditsRunAnimFrame = 0;
+				}
+			}
+			creditsDrawSamus(creditsRunAnimFrame);
+			if (gameTimeHours >= 5) { // second-worst ending, only running
+				return;
+			}
+			if (!creditsScrollingDone) {
+				return;
+			}
+			countdownTimer = 64;
+			creditsSamusAnimState = SamusCreditsState.spinRising;
+			break;
+		case SamusCreditsState.unused:
+			break;
+		case SamusCreditsState.spinRising:
+			if ((samusY.pixel & 0xF0) != 0xE0) {
+				samusY -= 3;
+			}
+			creditsDrawSamus(4 + (frameCounter & 3));
+			if (countdownTimer == 0) {
+				creditsSamusAnimState = SamusCreditsState.spinFalling;
+			}
+			break;
+		case SamusCreditsState.spinFalling:
+			samusY += 3;
+			creditsDrawSamus(4 + (frameCounter & 3));
+			if ((samusY.pixel & 0xFC) == 96) {
+				countdownTimer = 32;
+				if (gameTimeHours < 3) { // best ending, suitless samus
+					creditsSamusAnimState = SamusCreditsState.suitlessKneeling;
+				} else {
+					creditsSamusAnimState = SamusCreditsState.suitedKneeling;
+				}
+			}
+			break;
+		case SamusCreditsState.suitlessKneeling:
+			creditsDrawSamus(9);
+			if (countdownTimer == 0) {
+				countdownTimer = 48;
+				creditsSamusAnimState = SamusCreditsState.untying01;
+			}
+			break;
+		case SamusCreditsState.untying01:
+			creditsDrawSamus(11);
+			if (countdownTimer == 0) {
+				countdownTimer = 8;
+				creditsSamusAnimState = SamusCreditsState.untying02;
+			}
+			break;
+		case SamusCreditsState.untying02:
+			creditsDrawSamus(12);
+			if (countdownTimer == 0) {
+				countdownTimer = 16;
+				creditsSamusAnimState = SamusCreditsState.untying03;
+			}
+			break;
+		case SamusCreditsState.untying03:
+			creditsDrawSamus(13);
+			if (countdownTimer == 0) {
+				countdownTimer = 8;
+				creditsSamusAnimState = SamusCreditsState.untying04;
+			}
+			break;
+		case SamusCreditsState.untying04:
+			creditsDrawSamus(12);
+			if (countdownTimer == 0) {
+				countdownTimer = 8;
+				creditsSamusAnimState = SamusCreditsState.untying05;
+			}
+			break;
+		case SamusCreditsState.untying05:
+			creditsDrawSamus(11);
+			if (countdownTimer == 0) {
+				countdownTimer = 8;
+				creditsSamusAnimState = SamusCreditsState.untying06;
+			}
+			break;
+		case SamusCreditsState.untying06:
+			creditsDrawSamus(14);
+			if (countdownTimer == 0) {
+				countdownTimer = 8;
+				creditsSamusAnimState = SamusCreditsState.untying07;
+			}
+			break;
+		case SamusCreditsState.untying07:
+			creditsDrawSamus(11);
+			if (countdownTimer == 0) {
+				countdownTimer = 8;
+				creditsSamusAnimState = SamusCreditsState.untying08;
+			}
+			break;
+		case SamusCreditsState.untying08:
+			creditsDrawSamus(15);
+			if (countdownTimer == 0) {
+				countdownTimer = 8;
+				creditsSamusAnimState = SamusCreditsState.untying09;
+			}
+			break;
+		case SamusCreditsState.untying09:
+			creditsDrawSamus(11);
+			if (countdownTimer == 0) {
+				countdownTimer = 10;
+				creditsSamusAnimState = SamusCreditsState.untying10;
+			}
+			break;
+		case SamusCreditsState.untying10:
+			creditsDrawSamus(14);
+			if (countdownTimer == 0) {
+				countdownTimer = 10;
+				creditsSamusAnimState = SamusCreditsState.untying11;
+			}
+			break;
+		case SamusCreditsState.untying11:
+			creditsDrawSamus(16);
+			if (countdownTimer == 0) {
+				countdownTimer = 10;
+				creditsSamusAnimState = SamusCreditsState.untying12;
+			}
+			break;
+		case SamusCreditsState.untying12:
+			creditsDrawSamus(17);
+			if (countdownTimer == 0) {
+				countdownTimer = 32;
+				creditsSamusAnimState = SamusCreditsState.untying13;
+			}
+			break;
+		case SamusCreditsState.untying13:
+			creditsDrawSamus(18);
+			if (countdownTimer == 0) {
+				creditsSamusAnimState = SamusCreditsState.hairWaving;
+			}
+			break;
+		case SamusCreditsState.suitedKneeling:
+			creditsDrawSamus(8);
+			if (countdownTimer == 0) {
+				countdownTimer = 48;
+				creditsSamusAnimState = SamusCreditsState.suitedStandingEnd;
+			}
+			break;
+		case SamusCreditsState.suitedStandingEnd:
+			creditsDrawSamus(10);
+			break;
+		case SamusCreditsState.hairWaving:
+			creditsDrawSamus(cast(ubyte)(((frameCounter & 0x10) >> 4) + 19));
+			break;
+	}
+}
+
+immutable ubyte[] creditsPaletteFade = [0xFF, 0xFF, 0xFB, 0xEB, 0xE7, 0xA7, 0xA3, 0x93];
+
+void handlePrepareCredits() {
+	if (countdownTimer != 0) {
+		bgPalette = creditsPaletteFade[(countdownTimer & 0xF0) >> 5];
+		obPalette0 = creditsPaletteFade[(countdownTimer & 0xF0) >> 5];
+		obPalette1 = creditsPaletteFade[(countdownTimer & 0xF0) >> 5];
+		if (countdownTimer >= 14) {
+			return;
+		}
+		countdownTimer = 0;
+		sfxRequestLowHealthBeep = 0xFF;
+	}
+	gb.LCDC = 0x03;
+	bgPalette = 0x93;
+	obPalette0 = 0x93;
+	obPalette1 = 0x43;
+	clearTilemaps();
+	oamBuffer = oamBuffer.init;
+	creditsLoadFont();
+	copyToVRAM(&graphicsCreditsSprTiles[0], &gb.vram[VRAMDest.creditsSpriteTiles], 0x1000);
+	copyToVRAM(&graphicsTheEnd[0], &gb.vram[VRAMDest.theEndTiles], 0x100);
+	copyToVRAM(&graphicsCreditsNumbers[0], &gb.vram[VRAMDest.creditsNumbers], 0x100);
+	creditsTextPointer = &creditsTextBuffer[0];
+	creditsUnusedVar = 0;
+	creditsStarArray[0 .. 8] = creditsStarPositions[0 .. 8]; // only copy half...?
+	loadCreditsText();
+	scrollY = 0;
+	scrollX = 0;
+	gb.LCDC = 0xC3;
+	countdownTimer = 0xFF;
+	samusY = (samusY & 0xFF00) | 0x60;
+	samusX = (samusX & 0xFF00) | 0x88;
+	songRequest = Song.reachedTheGunship;
+	creditsSamusAnimState = SamusCreditsState.standingStart;
+	gameMode = GameMode.credits;
+}
+
+void creditsScrollHandler() {
+	auto hl = creditsTextPointer;
+	enableSRAM(); // normally the buffer is stored in SRAM
+	const chr = hl[0];
+	disableSRAM();
+	if (chr == 0xF0) {
+		creditsScrollingDone = 1;
+		return;
+	}
+	if (frameCounter & 3) { // only every 4 frames
+		return;
+	}
+	if (++scrollY & 7) {
+		return;
+	}
+	tileY = cast(ubyte)(scrollY + 0xA0);
+	tileX = 8;
+	getTilemapAddress();
+	creditsNextLineReady = 0xFF;
+}
+
+void creditsRebootGame() {
+	assert(0);
+}
+
+void creditsDrawSamus(ubyte spr) {
+	switch (spr) {
+		case 0: // running frames
+			spriteID = 8;
+			drawNonGameSprite();
+			spriteID = 11;
+			drawNonGameSprite();
+			break;
+		case 1:
+			spriteID = 9;
+			drawNonGameSprite();
+			spriteID = 12;
+			drawNonGameSprite();
+			break;
+		case 2:
+			spriteID = 10;
+			drawNonGameSprite();
+			spriteAttr = OAMFlags.xFlip;
+			spriteXPixel--;
+			spriteID = 11;
+			drawNonGameSprite();
+			spriteAttr = 0;
+			break;
+		case 3:
+			spriteID = 9;
+			drawNonGameSprite();
+			spriteAttr = OAMFlags.xFlip;
+			spriteID = 12;
+			drawNonGameSprite();
+			spriteAttr = 0;
+			break;
+		case 4: // jumping frames
+			spriteID = 31;
+			drawNonGameSprite();
+			break;
+		case 5:
+			spriteID = 32;
+			drawNonGameSprite();
+			break;
+		case 6:
+			spriteID = 33;
+			drawNonGameSprite();
+			break;
+		case 7:
+			spriteID = 34;
+			drawNonGameSprite();
+			break;
+		case 8: // suited kneeling
+			spriteID = 18;
+			drawNonGameSprite();
+			break;
+		case 9: // suitless kneeling
+			spriteID = 17;
+			drawNonGameSprite();
+			break;
+		case 10: // suited standing
+			spriteID = 7;
+			drawNonGameSprite();
+			break;
+		case 11: // suitless hair up, hand down
+			spriteID = 14;
+			drawNonGameSprite();
+			spriteID = 15;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 12: // suitless reaching for hair
+			spriteID = 14;
+			drawNonGameSprite();
+			spriteID = 19;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 13: // suitless untying hair
+			spriteID = 20;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 14: // suitless head turned left
+			spriteID = 21;
+			drawNonGameSprite();
+			spriteID = 15;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 15: // suitless head turned right
+			spriteID = 22;
+			drawNonGameSprite();
+			spriteID = 15;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 16: // suitless hair unfurl 1
+			spriteID = 23;
+			drawNonGameSprite();
+			spriteID = 15;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 17: // suitless hair unfurl 2
+			spriteID = 24;
+			drawNonGameSprite();
+			spriteID = 15;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 18: // suitless hair unfurl 3
+			spriteID = 25;
+			drawNonGameSprite();
+			spriteID = 15;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 19: // suitless hair wave 1
+			spriteID = 24;
+			drawNonGameSprite();
+			spriteID = 15;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		case 20: // suitless hair wave 2
+			spriteID = 26;
+			drawNonGameSprite();
+			spriteID = 15;
+			drawNonGameSprite();
+			spriteID = 16;
+			drawNonGameSprite();
+			break;
+		default: break;
+	}
+}
+
+immutable ubyte[2][] creditsStarPositions = [
+	[0x28, 0x90],
+	[0x18, 0x70],
+	[0x68, 0x30],
+	[0x50, 0x88],
+	[0x40, 0x18],
+	[0x18, 0x20],
+	[0x90, 0x68],
+	[0x48, 0x40],
+	[0x88, 0x18],
+	[0x80, 0x88],
+	[0x28, 0x50],
+	[0x60, 0x10],
+	[0x98, 0x38],
+	[0x58, 0x68],
+	[0x78, 0x58],
+	[0x38, 0x70],
 ];

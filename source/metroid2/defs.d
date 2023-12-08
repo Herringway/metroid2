@@ -602,6 +602,31 @@ enum ItemID {
 	missileRefill = 14,
 }
 
+enum SamusCreditsState {
+	standingStart = 0,
+	running = 1,
+	unused = 2,
+	spinRising = 3,
+	spinFalling = 4,
+	suitlessKneeling = 5,
+	untying01 = 6,
+	untying02 = 7,
+	untying03 = 8,
+	untying04 = 9,
+	untying05 = 10,
+	untying06 = 11,
+	untying07 = 12,
+	untying08 = 13,
+	untying09 = 14,
+	untying10 = 15,
+	untying11 = 16,
+	untying12 = 17,
+	untying13 = 18,
+	suitedKneeling = 19,
+	suitedStandingEnd = 20,
+	hairWaving = 21,
+}
+
 struct EnemySlot {
 	align(1):
 	ubyte status;

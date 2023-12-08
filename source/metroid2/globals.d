@@ -440,7 +440,7 @@ __gshared EnemySlot* itemOrbEnemyWRAM;
 
 __gshared ubyte samusSpinAnimationTimer;
 
-__gshared void* creditsTextPointer;
+__gshared ubyte* creditsTextPointer;
 __gshared ubyte creditsUnusedVar;
 __gshared ubyte creditsNextLineReady;
 __gshared ubyte acidDamageValue;
@@ -491,7 +491,7 @@ __gshared ubyte unusedItemOrbXPos;
 
 __gshared ubyte metroidCountShuffleTimer;
 
-__gshared ubyte creditsSamusAnimState;
+__gshared SamusCreditsState creditsSamusAnimState;
 
 __gshared ubyte gameTimeMinutes;
 __gshared ubyte gameTimeHours;
@@ -523,7 +523,7 @@ __gshared ubyte metroidLCounterDisp;
 
 __gshared ubyte wramUnknownD0A8;
 
-__gshared ubyte[0x20] creditsStarArray;
+__gshared ubyte[2][0x10] creditsStarArray;
 __gshared ubyte[0x40] doorScriptBuffer;
 
 
