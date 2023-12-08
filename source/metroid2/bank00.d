@@ -2663,7 +2663,7 @@ void animateGettingVaria(const GraphicsInfo gfx) {
 	vramTransfer.size = gfx.length;
 	vramTransferFlag = 0xFF;
 	variaTransferDone = false;
-	while (!variaTransferDone) {
+	while (vramTransfer.dest < VRAMDest.samus + 0x500) {
 		gb.WY = 0x80;
 		drawSamus();
 		handleEnemiesOrQueen();
@@ -2686,7 +2686,31 @@ void doorLoadCollision(ref const(ubyte)* script) {
 	collisionArray[] = collisionTable[col][];
 }
 void doorQueen(ref const(ubyte)* script) {
-	assert(0); // TODO
+	const bank = (script++)[0] & 0xF;
+	currentLevelBank = bank;
+	saveBuf.currentLevelBank = bank;
+	cameraY = *cast(const(ushort)*)script;
+	scrollY = cast(ubyte)(cameraY.pixel - 72);
+	script += 2;
+	cameraX = *cast(const(ushort)*)script;
+	scrollX = cast(ubyte)(cameraX.pixel - 80);
+	script += 2;
+	samusY = *cast(const(ushort)*)script;
+	script += 2;
+	samusX = *cast(const(ushort)*)script;
+	script += 2;
+	disableLCD();
+	queenRenderRoom();
+	queenInitialize();
+	samusOnScreenXPos = cast(ubyte)(samusX.pixel - cameraX.pixel + 96);
+	samusOnScreenYPos = cast(ubyte)(samusY.pixel - cameraY.pixel + 98);
+	gb.LCDC = 0xE3;
+	doorScrollDirection = 0;
+	scrollY = 0;
+	gb.SCY = 0;
+	if (bgPalette != 0x93) {
+		fadeInTimer = 0x2F;
+	}
 }
 void doorWarp(ref const(ubyte)* script) {
 	currentLevelBank = (script++)[0] & 0xF;
@@ -2848,17 +2872,40 @@ void vblankVRAMDataTransfer() {
 	auto size = vramTransfer.size;
 	auto dest = vramTransfer.dest;
 	auto src = vramTransfer.src;
-	assert(dest);
 	assert(src);
-	dest[0 .. size] = src[0 .. size];
+	gb.vram[dest .. dest + size] = cast(const(ubyte)[])src[0 .. size];
 	vramTransfer.size = 0;
 	vramTransfer.src = null;
-	vramTransfer.dest = null;
+	vramTransfer.dest = 0;
 	vramTransferFlag = 0;
 	vblankDoneFlag = 1;
 }
 void vblankVariaAnimation() {
-	assert(0); // TODO
+	if (!(frameCounter & 1)) {
+		ushort tmpDest = vramTransfer.dest;
+		ubyte* hl = &gb.vram[tmpDest];
+		const(ubyte)* de = &graphicsSamusVariaSuit[vramTransfer.dest - VRAMDest.samus];
+		for (int i = 0; i < 16; i++) { // one row at a time
+			hl[0] = de[0];
+			hl += 16;
+			de += 16;
+			tmpDest += 16;
+		}
+		hl -= 0xFF; // rewind to start of row, offset by one for next row of pixels
+		tmpDest -= 0xFF;
+		if ((tmpDest & 0xFF) == 0x10) { // finished all pixel rows
+			hl += 0xF0; // first row of pixels of next row of tiles
+			tmpDest += 0xF0;
+		}
+		vramTransfer.dest = tmpDest;
+		if (tmpDest >= VRAMDest.samus + 0x500) {
+			deathAnimTimer = 0;
+		}
+	}
+	gb.SCY = scrollY;
+	gb.SCX = scrollX;
+	oamDMA();
+	vblankDoneFlag = 1;
 }
 
 void waitOneFrame() {
@@ -3584,7 +3631,7 @@ void handleItemPickup() {
 			}
 			break;
 		case ItemID.variaSuit:
-			while (--countdownTimer) {
+			while (countdownTimer) {
 				drawSamus();
 				handleEnemiesOrQueen();
 				drawHUDMetroid();
