@@ -742,7 +742,7 @@ ubyte[] translateCreditsText(string input) {
 	foreach (char c; input) {
 		switch (c) {
 			case '\n': result ~= 0xF1; break;
-			case '-': result ~= 0x5E; break;
+			case '=': result ~= 0x5E; break;
 			case ':': result ~= 0x1B; break;
 			default: result ~= c;
 		}

@@ -3866,6 +3866,7 @@ void loadCreditsText() {
 	while (*text != 0xF0) {
 		*(dest++) = *(text++);
 	}
+	*dest = *text; // copy last byte
 	disableSRAM();
 }
 

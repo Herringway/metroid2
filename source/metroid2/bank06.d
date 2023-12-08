@@ -63,7 +63,7 @@ immutable creditsText = translateCreditsText("
 
 
 
- -- TEAM METROID -- 
+ == TEAM METROID == 
 
 
 
@@ -164,7 +164,7 @@ immutable creditsText = translateCreditsText("
 
 
 
- - SPECIAL THANKS - 
+ = SPECIAL THANKS = 
          TO         
 
   TAKEHIRO IZUSHI   
@@ -207,7 +207,7 @@ immutable creditsText = translateCreditsText("
 
 
 
-     \x21\x22\x23\x20\x24\x25\x20\x26             \x27\x28\x29\x2A\x2B\x2C\x2D\x2E       
+     \x21\x22\x23\x20\x24\x25\x20\x26            \x27\x28\x29\x2A\x2B\x2C\x2D\x2E       
 
 
 
