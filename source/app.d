@@ -21,9 +21,10 @@ void main() {
 	gb.sourceFile = "metroid2.gb";
 	gb.saveFile = "metroid2.sav";
 	loadData(gb.romData);
-	gb.loadSettings!GameSettings();
+	auto settings = gb.loadSettings!GameSettings();
 	gb.debugMenuRenderer = &debugFunction;
 	gb.run();
+	gb.saveSettings(settings);
 }
 void debugFunction(const UIState state) {
 	import metroid2.defs;
