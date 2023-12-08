@@ -8,9 +8,9 @@ import librehome.gameboy;
 
 import d_imgui.imgui_h;
 import ImGui = d_imgui;
-import imgui.hexeditor;
 
 import std.format;
+import std.functional;
 
 struct GameSettings {}
 
@@ -23,7 +23,7 @@ void main() {
 	gb.saveFile = "metroid2.sav";
 	loadData(gb.romData);
 	auto settings = gb.loadSettings!GameSettings();
-	gb.debugMenuRenderer = &debugFunction;
+	gb.debugMenuRenderer = (&debugFunction).toDelegate;
 	gb.run();
 	gb.saveSettings(settings);
 }
