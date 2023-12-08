@@ -787,6 +787,12 @@ void debugDrawNumberOneDigit(ubyte digit) {
 	debugDrawNumberSprite(cast(ubyte)((digit & 0xF) + 0xA0));
 }
 void debugDrawNumberSprite(ubyte tile) {
+	version(original) {} else {
+		// original did no bounds checking
+		if (oamBufferIndex >= oamBuffer.length) {
+			return;
+		}
+	}
 	auto hl = &oamBuffer[oamBufferIndex];
 	hl.y = spriteYPixel;
 	hl.x = spriteXPixel;
@@ -810,6 +816,12 @@ void drawHUDMetroid() {
 	drawSamusSprite();
 }
 void drawSamusSprite() {
+	version(original) {} else {
+		// original did no bounds checking
+		if (oamBufferIndex >= oamBuffer.length) {
+			return;
+		}
+	}
 	auto de = &samusSpriteTable[spriteID][0];
 	auto hl = &oamBuffer[oamBufferIndex];
 	while (true) {
@@ -1294,6 +1306,12 @@ void drawProjectiles() {
 				}
 			}
 			if ((spriteXPixel >= 8) && (spriteXPixel < 164) && (spriteYPixel >= 12) && (spriteYPixel < 148)) {
+				version(original) {} else {
+					// original did no bounds checking
+					if (oamBufferIndex >= oamBuffer.length) {
+						return;
+					}
+				}
 				oamBuffer[oamBufferIndex].y = spriteYPixel;
 				oamBuffer[oamBufferIndex].x = spriteXPixel;
 				oamBuffer[oamBufferIndex].tile = spriteID;
@@ -1776,6 +1794,12 @@ void drawEnemies() {
 	}
 }
 void drawEnemySprite(EnemySlot* enemy) {
+	version(original) {} else {
+		// original did no bounds checking
+		if (oamBufferIndex >= oamBuffer.length) {
+			return;
+		}
+	}
 	drawEnemySpriteGetInfo(enemy);
 	auto sprite = (enemySpriteTable[drawEnemySpr] == null) ? &enSpriteBlobThrower[0] : &enemySpriteTable[drawEnemySpr][0];
 	auto dest = &oamBuffer[oamBufferIndex];
@@ -1921,6 +1945,12 @@ ushort alphaGetSpeedVector() {
 }
 
 void drawNonGameSprite() {
+	version(original) {} else {
+		// original did no bounds checking
+		if (oamBufferIndex >= oamBuffer.length) {
+			return;
+		}
+	}
 	auto de = &creditsSpritePointerTable[spriteID][0];
 	auto hl = &oamBuffer[oamBufferIndex];
 	auto b = spriteYPixel;
