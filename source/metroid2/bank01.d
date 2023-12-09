@@ -851,6 +851,11 @@ void drawSamusSprite() {
 void clearUnusedOAMSlots() {
 	if (oamBufferIndex < maxOAMPrevFrame) {
 		for (int i = oamBufferIndex; i < maxOAMPrevFrame; i++) {
+			version(original) {} else {
+				if (i >= oamBuffer.length) {
+					break;
+				}
+			}
 			oamBuffer[i].y = 0; // sprites with a y < 8 will never be rendered
 		}
 	}
