@@ -1252,7 +1252,7 @@ void handleProjectiles() {
 					destroyBlock(/*0xFF*/);
 				}
 				if (beamType == CollisionType.bombs) {
-					bombBeamLayBomb();
+					bombBeamLayBomb(x, y);
 				}
 				if ((beamType == CollisionType.spazer) || (beamType == CollisionType.plasmaBeam)) {
 					continue;
@@ -1331,8 +1331,20 @@ void drawProjectiles() {
 }
 immutable ubyte[] missileSpriteTileTable = [0x00, 0x98, 0x98, 0x00, 0x99, 0x00, 0x00, 0x00, 0x99];
 immutable ubyte[] missileSpriteAttributeTable = [0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40];
-void bombBeamLayBomb() {
-	assert(0); // TODO
+void bombBeamLayBomb(ubyte x, ubyte y) {
+	int i;
+	for (i = 0; i < bombArray.length; i++) {
+		if (bombArray[i].type == 0xFF) {
+			goto foundOpen;
+		}
+	}
+	return;
+	foundOpen:
+	bombArray[i].type = BombType.bomb;
+	bombArray[i].timer = 96;
+	bombArray[i].y = cast(ubyte)(y + 4);
+	bombArray[i].x = cast(ubyte)(x + 4);
+	sfxRequestSquare1 = Square1SFX.bombLaid;
 }
 
 void drawBombs() {
