@@ -46,6 +46,7 @@ void debugFunction(const UIState state) {
 		InputEditable("Coords", samusX, samusY);
 		InputEditable("Fall counter", samusFallArcCounter);
 		InputEditable("Jump counter", samusJumpArcCounter);
+		InputEditable("Facing direction", samusFacingDirection);
 		foreach (idx, flagName; ["Bombs", "High Jump Boots", "Screw Attack", "Space Jump", "Spring Ball", "Spider Ball", "Varia Suit", "???"]) {
 			const mask = 1 << idx;
 			bool flagEnabled = !!(samusItems & mask);
