@@ -1984,7 +1984,7 @@ bool collisionSamusTop() {
 		return true;
 	}
 	tileX = cast(ubyte)(samusX.pixel + 12);
-	tileY = cast(ubyte)(samusY.pixel + samusBGHitboxTopTable[samusPose]);
+	tileY = cast(ubyte)(samusY.pixel + samusBGHitboxTopTable[samusPose & 0x7F]);
 
 	const a = samusGetTileIndex();
 
