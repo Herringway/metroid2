@@ -198,7 +198,7 @@ enum Actor {
 	energyRefill = 0x9B, // Energy refill
 	arachnusOrb = 0x9C, // Arachnus (Orb)
 	missileRefill = 0x9D, // Missile refill
-	blob1 = 0x9E, // Blob thrower projectile
+	blob = 0x9E, // Blob thrower projectile
 	blob2 = 0x9F, // Blob thrower projectile
 	metroid1 = 0xA0, // Metroid
 	alphaFace = 0xA1, // Metroid hatching
