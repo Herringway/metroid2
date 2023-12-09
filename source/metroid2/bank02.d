@@ -1718,7 +1718,7 @@ void enAISenjooShirk() {
 			return;
 		}
 		if (enemyWorking.spriteType < Actor.shirk) {
-			enemyWorking.attr ^= OAMFlags.xFlip;
+			enemyWorking.spriteAttributes ^= OAMFlags.xFlip;
 		} else {
 			enemyWorking.spriteType ^= Actor.shirk ^ Actor.shirk2;
 		}
