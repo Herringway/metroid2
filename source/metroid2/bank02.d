@@ -2383,7 +2383,25 @@ void enAIHalzyn() {
 }
 
 void enAISeptogg() {
-	assert(0); // TODO
+	enemyFlipSpriteID2BitsTwoFrame();
+	enemyGetSamusCollisionResults();
+	if ((enemyWeaponType != CollisionType.contact) || !samusOnSolidSprite) {
+		if (!enemyWorking.counter16) {
+			return;
+		}
+		enemyWorking.y--;
+		enemyWorking.counter16--;
+	} else {
+		enemyWorking.y += 3;
+		enCollisionDownFarMedium();
+		if (enBGCollisionResult & 0b0010) {
+			enemyWorking.y = enemyYPosMirror;
+		} else {
+			enemyWorking.counter16 += 3;
+		}
+		samusOnScreenYPos += 3;
+		samusY += 3;
+	}
 }
 
 void enAIFlittVanishing() {
@@ -2479,8 +2497,20 @@ void enemyFlipSpriteIDNow() {
 	enemyWorking.spriteType ^= 1;
 }
 
-void enemyFlipSpriteID2Bits() {
-	assert(0); // TODO
+void enemyFlipSpriteID2BitsFourFrame() {
+	if (enemyFrameCounter & 3) {
+		return;
+	}
+	enemyFlipSpriteID2BitsNow();
+}
+void enemyFlipSpriteID2BitsTwoFrame() {
+	if (enemyFrameCounter & 1) {
+		return;
+	}
+	enemyFlipSpriteID2BitsNow();
+}
+void enemyFlipSpriteID2BitsNow() {
+	enemyWorking.spriteType ^= 3;
 }
 
 void enemyFlipHorizontalTwoFrame() {

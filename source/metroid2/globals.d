@@ -621,8 +621,13 @@ struct EnemyWorking {
 	ubyte misc = 0xFF;
 	deprecated("use misc") alias generalVar = misc;
 	ubyte directionFlags = 0xFF;
-	ubyte counter = 0xFF;
-	ubyte state = 0xFF;
+	union {
+		struct {
+			ubyte counter = 0xFF;
+			ubyte state = 0xFF;
+		}
+		ushort counter16;
+	}
 	ubyte iceCounter = 0xFF;
 	ubyte health = 0xFF;
 	ubyte dropType = 0xFF;
