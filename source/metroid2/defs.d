@@ -627,6 +627,32 @@ enum SamusCreditsState {
 	hairWaving = 21,
 }
 
+enum QueenNeckPattern {
+	downCurveUp = 0,
+	upCurveUp = 1,
+	downCurveDown = 2,
+	upCurveDown = 3,
+	vomiting = 4,
+	dying = 5,
+	forward = 6,
+}
+
+enum ReservedEnemySlots {
+	queenBody = 0,
+	queenMouth = 1,
+	queenHeadL = 2,
+	queenHeadR = 3,
+	queenNeck = 4,
+	queenNeck2 = 5,
+	queenNeck3 = 6,
+	queenNeck4 = 7,
+	queenNeck5 = 8,
+	queenNeck6 = 9,
+	queenSpitA = 10,
+	queenSpitB = 11,
+	queenSpitC = 12,
+}
+
 struct EnemySlot {
 	align(1):
 	ubyte status;

@@ -147,8 +147,13 @@ __gshared ubyte enemiesLeftToProcess;
 __gshared ubyte samusOnSolidSprite;
 
 __gshared ubyte babyTempXPos;
-
-__gshared ubyte[4] seekSamusTemp;
+struct SeekSamus {
+	ubyte enemyY;
+	ubyte enemyX;
+	ubyte samusY;
+	ubyte samusX;
+}
+__gshared SeekSamus seekSamusTemp;
 
 __gshared ubyte saveLoadSpawnFlagsRequest;
 

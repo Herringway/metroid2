@@ -507,7 +507,7 @@ void creditsScrollHandler() {
 }
 
 void creditsRebootGame() {
-	assert(0);
+	gameMode = GameMode.boot;
 }
 
 void creditsDrawSamus(ubyte spr) {
