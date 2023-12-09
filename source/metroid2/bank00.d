@@ -985,7 +985,7 @@ void samusHandlePose() {
 						if (samusAirDirection == 0) {
 							return;
 						}
-						samusFacingDirection = (samusAirDirection + 1) / 2;
+						samusFacingDirection = cast(ubyte)(samusAirDirection + 1) / 2;
 						return;
 					}
 				}
