@@ -3141,7 +3141,7 @@ void killSamus() {
 	waitOneFrame();
 	drawSamusIgnoreDamageFrames();
 	deathAnimTimer = 0x20;
-	deathAltAnimBase = &gb.vram[VRAMDest.samus];
+	deathAltAnimBase = VRAMDest.samus;
 	deathFlag = 1;
 	gameMode = GameMode.dying;
 }
@@ -3150,7 +3150,7 @@ void prepUnusedDeathAnimation() {
 	samusTurnAnimTimer = 160;
 	samusPose = cast(SamusPose)(SamusPose.standing | 0x80);
 	deathAnimTimer = 32;
-	deathAltAnimBase = &gb.vram[VRAMDest.samus];
+	deathAltAnimBase = VRAMDest.samus;
 }
 
 void vblankDeathSequence() {
@@ -3184,7 +3184,25 @@ immutable ubyte[] deathAnimationTable = [
 ];
 
 void unusedDeathAnimation() {
-	assert(0); // TODO
+	if (!(frameCounter & 1)) {
+		ushort hl = deathAltAnimBase;
+		for (int i = 0; i < 16; i++) {
+			gb.vram[hl] = 0;
+			hl += 16;
+		}
+		hl -= 0xFF;
+		if ((hl & 0xFF) == 0x10) {
+			hl += 0xF0;
+		}
+		deathAltAnimBase = hl;
+		if (hl >= VRAMDest.samus + 0x500) {
+			deathAnimTimer = 0;
+		}
+	}
+	gb.SCY = scrollY;
+	gb.SCX = scrollX;
+	oamDMA();
+	vblankDoneFlag = 1;
 }
 
 void collisionBombEnemies() {
@@ -3935,5 +3953,23 @@ void loadScreenSpritePriorityBit() {
 	samusScreenSpritePriority = (roomTransitionIndices[((samusY.screen & 0xF) << 4) | (samusX.screen & 0xF)] >> 11) & 1;
 }
 void unusedDeathAnimationCopy() {
-	assert(0); // TODO
+	if (!(frameCounter & 1)) {
+		ushort hl = deathAltAnimBase;
+		for (int i = 0; i < 16; i++) {
+			gb.vram[hl] = 0;
+			hl += 16;
+		}
+		hl -= 0xFF;
+		if ((hl & 0xFF) == 0x10) {
+			hl += 0xF0;
+		}
+		deathAltAnimBase = hl;
+		if (hl >= VRAMDest.samus + 0x500) {
+			deathAnimTimer = 0;
+		}
+	}
+	gb.SCY = scrollY;
+	gb.SCX = scrollX;
+	oamDMA();
+	vblankDoneFlag = 1;
 }

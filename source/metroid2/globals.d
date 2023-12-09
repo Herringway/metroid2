@@ -415,7 +415,7 @@ __gshared ubyte samusSolidityIndex;
 __gshared ubyte samusScreenSpritePriority;
 __gshared ubyte currentLevelBank;
 __gshared ubyte deathAnimTimer;
-__gshared void* deathAltAnimBase;
+__gshared ushort deathAltAnimBase;
 __gshared ubyte samusSpriteCollisionProcessedFlag;
 __gshared EnSprCollision collision;
 
