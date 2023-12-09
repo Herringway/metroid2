@@ -225,7 +225,9 @@ bool enemyGetDamagedOrGiveDrop() {
 			return transferCollisionResults();
 		}
 		if (collision.weaponType != 1) {
-			enemyCheckDirectionalShields();
+			if (enemyCheckDirectionalShields()) {
+				return true;
+			}
 			if (enemyWorking.health >= 0xFE) {
 				sfxRequestSquare1 = Square1SFX.beamDink;
 				return transferCollisionResults();
@@ -248,7 +250,9 @@ bool enemyGetDamagedOrGiveDrop() {
 			} else if (enemyWorking.health == 0xFE) {
 				sfxRequestSquare1 = Square1SFX.beamDink;
 			} else {
-				enemyCheckDirectionalShields();
+				if (enemyCheckDirectionalShields()) {
+					return true;
+				}
 				enemyWorking.health--;
 				if (enemyWorking.health) {
 					enemyWorking.health--;
@@ -293,12 +297,12 @@ bool enemyGetDamagedOrGiveDrop() {
 	return true;
 }
 
-void enemyCheckDirectionalShields() {
+bool enemyCheckDirectionalShields() {
 	if (collision.weaponType == CollisionType.waveBeam) {
-		return;
+		return false;
 	}
 	if (!(enemyWorking.directionFlags & 0xF0)) {
-		return;
+		return false;
 	}
 	if (((enemyWorking.directionFlags & 0xF0) >> 4) & collision.weaponDir) {
 		sfxRequestSquare1 = Square1SFX.beamDink;
@@ -306,7 +310,9 @@ void enemyCheckDirectionalShields() {
 		enSprCollision.enemy = collision.enemy;
 		enSprCollision.weaponDir = collision.weaponDir;
 		collision = EnSprCollision.init;
+		return true;
 	}
+	return false;
 }
 
 
