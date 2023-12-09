@@ -184,15 +184,6 @@ bool enemyGetDamagedOrGiveDrop() {
 		collision = EnSprCollision.init;
 		return false;
 	}
-	if (collision.weaponType == CollisionType.nothing) {
-		return false;
-	}
-	if (enemyWRAMAddr != collision.enemy) {
-		return false;
-	}
-	if (enemyWorking.explosionFlag) {
-		 return transferCollisionResults();
-	}
 	static bool prepareDrop(ubyte v) {
 		if ((enemyWorking.spawnFlag == 6) || ((enemyWorking.spawnFlag & 0xF) == 0)) {
 			v |= 1 << 0; // small health
@@ -210,6 +201,21 @@ bool enemyGetDamagedOrGiveDrop() {
 		sfxRequestNoise = NoiseSFX.u02;
 		transferCollisionResults();
 		return true;
+	}
+	static void giveHealth(ubyte amount) {
+		samusCurHealth += amount;
+		if (samusCurHealth / 100 >= samusEnergyTanks) {
+			samusCurHealth = cast(ushort)(((samusEnergyTanks + 1) * 100) - 1);
+		}
+	}
+	if (collision.weaponType == CollisionType.nothing) {
+		return false;
+	}
+	if (enemyWRAMAddr != collision.enemy) {
+		return false;
+	}
+	if (enemyWorking.explosionFlag) {
+		 return transferCollisionResults();
 	}
 	if (!enemyWorking.dropType) {
 		if ((enemyWorking.spriteType >= Actor.metroid1) && (enemyWorking.spriteType <= Actor.metroid3)) {
@@ -266,12 +272,6 @@ bool enemyGetDamagedOrGiveDrop() {
 	}
 	if (collision.weaponType < CollisionType.screwAttack) {
 		return transferCollisionResults();
-	}
-	static void giveHealth(ubyte amount) {
-		samusCurHealth += amount;
-		if (samusCurHealth / 100 >= samusEnergyTanks) {
-			samusCurHealth = cast(ushort)(((samusEnergyTanks + 1) * 100) - 1);
-		}
 	}
 	switch (enemyWorking.dropType) {
 		case 1:
