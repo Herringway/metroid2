@@ -663,6 +663,7 @@ struct EnemySlot {
 	ubyte spriteAttributes;
 	ubyte stunCounter;
 	ubyte misc;
+	deprecated("use misc") alias generalVar = misc;
 	ubyte directionFlags;
 	ubyte counter;
 	ubyte state;

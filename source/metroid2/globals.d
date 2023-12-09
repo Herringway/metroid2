@@ -619,6 +619,7 @@ struct EnemyWorking {
 	deprecated("use spriteAttributes") alias attr = spriteAttributes;
 	ubyte stunCounter = 0xFF;
 	ubyte misc = 0xFF;
+	deprecated("use misc") alias generalVar = misc;
 	ubyte directionFlags = 0xFF;
 	ubyte counter = 0xFF;
 	ubyte state = 0xFF;
