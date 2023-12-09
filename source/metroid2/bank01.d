@@ -712,7 +712,12 @@ void vblankUpdateStatusBar() {
 	}
 	hudTanks[] = 0xAF;
 	if (samusEnergyTanks) {
-		hudTanks[0 .. samusEnergyTanks] = 0x9C;
+		version(original) {
+			hudTanks[0 .. samusEnergyTanks] = 0x9C;
+		} else {
+			import std.algorithm.comparison : min;
+			hudTanks[0 .. min($, samusEnergyTanks)] = 0x9C;
+		}
 		if (samusDispHealth >= 100) {
 			version(original) {
 				hudTanks[0 .. samusDispHealth / 100] = 0x9D;
