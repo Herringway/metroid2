@@ -800,20 +800,32 @@ void enCollisionDownNearSmall() {
 	enBGCollisionResult = 0b00100010;
 	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 3);
 	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 3);
-	metroidBabyTouchingTile = getTileIndexEnemy();
-	if (metroidBabyTouchingTile < enemySolidityIndex) {
+	if (getTileIndexEnemy() < enemySolidityIndex) {
 		return;
 	}
 	enemyTestPointXPos += 6;
-	metroidBabyTouchingTile = getTileIndexEnemy();
-	if (metroidBabyTouchingTile < enemySolidityIndex) {
+	if (getTileIndexEnemy() < enemySolidityIndex) {
 		return;
 	}
 	enBGCollisionResult &= ~0b00000010;
 }
 
 void enCollisionDownNearMedium() {
-	assert(0); // TODO
+	enBGCollisionResult = 0b00100010;
+	enemyTestPointYPos = cast(ubyte)(enemyWorking.y + 3);
+	enemyTestPointXPos = cast(ubyte)(enemyWorking.x - 7);
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enemyTestPointXPos += 7;
+	if (getTileIndexEnemy() < enemySolidityIndex) {
+		return;
+	}
+	enBGCollisionResult &= ~0b00000010;
 }
 
 void enCollisionDownMidMedium() {
