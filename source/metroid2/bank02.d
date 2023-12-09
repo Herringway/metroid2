@@ -1705,8 +1705,89 @@ void enAIDrivelSpit() {
 	assert(0); // TODO
 }
 
+enum SenjooShirkState {
+	downLeft,
+	downRight,
+	upRight,
+	upLeft,
+}
+
 void enAISenjooShirk() {
-	assert(0); // TODO
+	static void animate() {
+		if (enemyFrameCounter & 1) {
+			return;
+		}
+		if (enemyWorking.spriteType < Actor.shirk) {
+			enemyWorking.attr ^= OAMFlags.xFlip;
+		} else {
+			enemyWorking.spriteType ^= Actor.shirk ^ Actor.shirk2;
+		}
+	}
+	animate();
+	auto distance = cast(byte)(enemyWorking.x - samusOnScreenXPos);
+	if (distance < 0) {
+		distance = cast(byte)-distance;
+	}
+	if (distance < 80) {
+		final switch (cast(SenjooShirkState)enemyWorking.state) {
+			case SenjooShirkState.downLeft:
+				if (enemyWorking.counter == 16) {
+					enemyWorking.counter = 0;
+					enemyWorking.state = SenjooShirkState.downRight;
+					break;
+				}
+				enemyWorking.counter++;
+				enemyWorking.y += 2;
+				enemyWorking.x -= 2;
+				break;
+			case SenjooShirkState.downRight:
+				if (enemyWorking.counter == 16) {
+					enemyWorking.counter = 0;
+					enemyWorking.state = SenjooShirkState.upRight;
+					break;
+				}
+				enemyWorking.counter++;
+				enemyWorking.y += 2;
+				enemyWorking.x += 2;
+				break;
+			case SenjooShirkState.upRight:
+				if (enemyWorking.counter == 16) {
+					enemyWorking.counter = 0;
+					enemyWorking.state = SenjooShirkState.upLeft;
+					break;
+				}
+				enemyWorking.counter++;
+				enemyWorking.y -= 2;
+				enemyWorking.x += 2;
+				break;
+			case SenjooShirkState.upLeft:
+				if (enemyWorking.counter == 16) {
+					enemyWorking.counter = 0;
+					enemyWorking.state = SenjooShirkState.downLeft;
+					break;
+				}
+				enemyWorking.counter++;
+				enemyWorking.y -= 2;
+				enemyWorking.x -= 2;
+				break;
+		}
+	} else {
+		if (!(enemyFrameCounter & 1)) {
+			if (enemyWorking.misc != 12) {
+				if (enemyWorking.misc < 8) {
+					enemyWorking.misc++;
+					enemyWorking.y += 2;
+				} else {
+					enemyWorking.misc++;
+					enemyWorking.y -= 4;
+				}
+			} else {
+				if (!(enemyFrameCounter & 3)) {
+					enemyWorking.misc = 0;
+				}
+			}
+		}
+	}
 }
 
 void enAIGullugg() {
