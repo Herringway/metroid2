@@ -71,7 +71,7 @@ void enemyHandler() {
 		case 2:
 			return metroidJustDied();
 		default:
-			if (started) {
+			if (!started) {
 				return handleEnemies();
 			}
 			return restoreMusic();
