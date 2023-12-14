@@ -1503,7 +1503,7 @@ void enAIRockIcicle() {
 			enemyWorking.misc += 4;
 			enCollisionDownNearSmall();
 			if (!(enBGCollisionResult & 2)) {
-				if (enemyWorking.y < 160) {
+				if (enemyWorking.y < gb.width) {
 					return;
 				}
 			}
@@ -3321,21 +3321,21 @@ void enemyKeepOnscreen() {
 	}
 	if (enemyWorking.x < 24) {
 		enemyWorking.x = 24;
-	} else if (enemyWorking.x >= 144) {
-		enemyWorking.x = 144;
+	} else if (enemyWorking.x >= gb.width - 16) {
+		enemyWorking.x = gb.width - 16;
 	}
 }
 
 void babyKeepOnscreen() {
 	if (enemyWorking.y < 24) {
 		enemyWorking.y = 24;
-	} else if (enemyWorking.y >= 144) {
-		enemyWorking.y = 144;
+	} else if (enemyWorking.y >= gb.height) {
+		enemyWorking.y = gb.height;
 	}
 	if (enemyWorking.x < 24) {
 		enemyWorking.x = 24;
-	} else if (enemyWorking.x >= 144) {
-		enemyWorking.x = 144;
+	} else if (enemyWorking.x >= gb.width - 16) {
+		enemyWorking.x = gb.width - 16;
 	}
 }
 

@@ -2,9 +2,6 @@ module metroid2.defs;
 
 public import librehome.gameboy : Pad;
 
-enum screenWidth = 160;
-enum screenHeight = 144;
-
 enum samusJumpArrayBaseOffset = 0x40;
 enum samusUnmorphJumpTime = 0x10;
 
@@ -120,11 +117,13 @@ enum Actor {
 	yumee1 = 0x38, // Yumee
 	yumee2 = 0x39, // Yumee
 	yumee3 = 0x3A, // Yumee
+	yumee4 = 0x3B, // Yumee
 	yumeeSpawner = 0x3C, // Yumee spawner?
 	yumeeSpawner2 = 0x3D, // Yumee spawner?
 	octroll1 = 0x3E, // Octroll
 	octroll = 0x40, // Octroll
 	autrack = 0x41, // Autrack
+	autrack2 = 0x42, // Autrack
 	autrack3 = 0x43, // Autrack
 	autrack4 = 0x44, // Autrack
 	autrackLaser = 0x45, // Autrack projectile
@@ -134,29 +133,36 @@ enum Actor {
 	wallfire2 = 0x4B, // Wallfire
 	wallfireDead = 0x4C, // Wallfire
 	wallfireShot1 = 0x4D, // Wallfire projectile
+	wallfireShot2 = 0x4E, // Wallfire projectile
 	wallfireShot3 = 0x4F, // Wallfire projectile
 	wallfireShot4 = 0x50, // Wallfire projectile
 	gunzoo = 0x51, // Gunzoo
+	gunzoo2 = 0x52, // Gunzoo
 	gunzoo3 = 0x53, // Gunzoo
-	gunzooDiagshot1 = 0x54, // Gunzoo diagonal projectile
-	gunzooDiagshot2 = 0x55, // Gunzoo diagonal projectile
-	gunzooDiagshot3 = 0x56, // Gunzoo diagonal projectile
+	gunzooDiagShot1 = 0x54, // Gunzoo diagonal projectile
+	gunzooDiagShot2 = 0x55, // Gunzoo diagonal projectile
+	gunzooDiagShot3 = 0x56, // Gunzoo diagonal projectile
 	gunzooHShot1 = 0x57, // Gunzoo horizontal projectile
+	gunzooHShot2 = 0x58, // Gunzoo horizontal projectile
 	gunzooHShot3 = 0x59, // Gunzoo horizontal projectile
+	gunzooHShot4 = 0x5A, // Gunzoo horizontal projectile
 	gunzooHShot5 = 0x5B, // Gunzoo horizontal projectile
 	autom = 0x5C, // Autom
 	autom2 = 0x5D, // Autom
 	automShot1 = 0x5E, // Autom projectile
+	automShot2 = 0x5F, // Autom projectile
 	automShot3 = 0x60, // Autom projectile
+	automShot4 = 0x61, // Autom projectile
 	shirk = 0x63, // Shirk
 	shirk2 = 0x64, // Shirk
 	septogg = 0x65, // Septogg
 	moto = 0x68, // Moto
+	moto2 = 0x69, // Moto
 	halzyn = 0x6A, // Halzyn
 	ramulken = 0x6B, // Ramulken
 	metroidStinger = 0x6D, // Metroid music sting trigger
 	proboscumFlipped = 0x6E, // (uses same spritemap as 72h proboscum)
-	proboscum1 = 0x72, // Proboscum
+	proboscum = 0x72, // Proboscum
 	proboscum2 = 0x73, // Proboscum
 	proboscum3 = 0x74, // Proboscum
 	missileBlock = 0x75, // Missile block
@@ -164,7 +170,7 @@ enum Actor {
 	arachnusUpright1 = 0x78, // Arachnus
 	arachnusUpright2 = 0x79, // Arachnus
 	arachnusUpright3 = 0x7A, // Arachnus
-	arachnusFireball1 = 0x7B, // Arachnus projectile
+	arachnusFireball = 0x7B, // Arachnus projectile
 	arachnusFireball2 = 0x7C, // Arachnus projectile
 	plasmaBeamOrb = 0x80, // Plasma beam
 	plasmaBeam = 0x81, // Plasma beam (orbless)
@@ -232,6 +238,9 @@ enum Actor {
 	flittVanishing = 0xD0, // Flitt
 	flittMoving = 0xD1, // Flitt
 	gravitt = 0xD3, // Gravitt
+	gravitt2 = 0xD4, // Gravitt
+	gravitt3 = 0xD5, // Gravitt
+	gravitt4 = 0xD6, // Gravitt
 	gravitt5 = 0xD7, // Gravitt
 	gullugg = 0xD8, // Gullugg
 	gullugg2 = 0xD9, // Gullugg

@@ -422,11 +422,11 @@ void prepMapUpdate() {
 				return;
 			}
 			mapUpdateUnusedVar = 0xFF;
-			mapSourceXPixel = ((cameraX - 0x80) & 0xFFF).pixel;
-			mapSourceXScreen = ((cameraX - 0x80) & 0xFFF).screen;
+			mapSourceXPixel = ((cameraX - 128) & 0xFFF).pixel;
+			mapSourceXScreen = ((cameraX - 128) & 0xFFF).screen;
 
-			mapSourceYPixel = ((cameraY + 0x78) & 0xFFF).pixel;
-			mapSourceYScreen = ((cameraY + 0x78) & 0xFFF).screen;
+			mapSourceYPixel = ((cameraY + 120) & 0xFFF).pixel;
+			mapSourceYScreen = ((cameraY + 120) & 0xFFF).screen;
 			cameraScrollDirection &= ~(1 << 7);
 			prepMapUpdateRow();
 			break;
@@ -435,11 +435,11 @@ void prepMapUpdate() {
 				return;
 			}
 			mapUpdateUnusedVar = 0xFF;
-			mapSourceXPixel = ((cameraX - 0x80) & 0xFFF).pixel;
-			mapSourceXScreen = ((cameraX - 0x80) & 0xFFF).screen;
+			mapSourceXPixel = ((cameraX - 128) & 0xFFF).pixel;
+			mapSourceXScreen = ((cameraX - 128) & 0xFFF).screen;
 
-			mapSourceYPixel = ((cameraY - 0x78) & 0xFFF).pixel;
-			mapSourceYScreen = ((cameraY - 0x78) & 0xFFF).screen;
+			mapSourceYPixel = ((cameraY - 120) & 0xFFF).pixel;
+			mapSourceYScreen = ((cameraY - 120) & 0xFFF).screen;
 			cameraScrollDirection &= ~(1 << 5);
 			prepMapUpdateColumn();
 			break;
@@ -448,11 +448,11 @@ void prepMapUpdate() {
 				return;
 			}
 			mapUpdateUnusedVar = 0xFF;
-			mapSourceXPixel = ((cameraX + 0x70) & 0xFFF).pixel;
-			mapSourceXScreen = ((cameraX + 0x70) & 0xFFF).screen;
+			mapSourceXPixel = ((cameraX + 112) & 0xFFF).pixel;
+			mapSourceXScreen = ((cameraX + 112) & 0xFFF).screen;
 
-			mapSourceYPixel = ((cameraY - 0x78) & 0xFFF).pixel;
-			mapSourceYScreen = ((cameraY - 0x78) & 0xFFF).screen;
+			mapSourceYPixel = ((cameraY - 120) & 0xFFF).pixel;
+			mapSourceYScreen = ((cameraY - 120) & 0xFFF).screen;
 			cameraScrollDirection &= ~(1 << 4);
 			prepMapUpdateColumn();
 			break;
@@ -460,18 +460,18 @@ void prepMapUpdate() {
 	}
 }
 void prepMapUpdateForceRow() {
-	mapSourceXPixel = ((cameraX - 0x80) & 0xFFF).pixel;
-	mapSourceXScreen = ((cameraX - 0x80) & 0xFFF).screen;
+	mapSourceXPixel = ((cameraX - 128) & 0xFFF).pixel;
+	mapSourceXScreen = ((cameraX - 128) & 0xFFF).screen;
 
-	mapSourceYPixel = cast(ubyte)((cameraY - 0x78) & 0xFFF).pixel;
-	mapSourceYScreen = cast(ubyte)((cameraY - 0x78) & 0xFFF).screen;
+	mapSourceYPixel = cast(ubyte)((cameraY - 120) & 0xFFF).pixel;
+	mapSourceYScreen = cast(ubyte)((cameraY - 120) & 0xFFF).screen;
 	cameraScrollDirection &= ~(1 << 6);
 	prepMapUpdateRow();
 }
 
 void prepMapUpdateRow() {
 	const(ubyte)[] bc = mapUpdateGetSrcAndDest();
-	mapUpdate.size = 0x10;
+	mapUpdate.size = 16;
 	do {
 		mapUpdateWriteToBuffer(bc);
 		mapUpdate.destAddr += 2;
@@ -490,7 +490,7 @@ void prepMapUpdateRow() {
 void prepMapUpdateColumn() {
 	cameraScrollDirection &= ~((1 << 5) | (1 << 4));
 	const(ubyte)[] bc = mapUpdateGetSrcAndDest();
-	mapUpdate.size = 0x10;
+	mapUpdate.size = 16;
 	do {
 		mapUpdateWriteToBuffer(bc);
 		mapUpdate.destAddr += 0x40;
@@ -524,23 +524,23 @@ void mapUpdateWriteToBuffer(const(ubyte)[] bc) {
 }
 
 void vblankUpdateMap() {
-	auto de = cast(MapUpdateBufferEntry*)&mapUpdateBuffer[0];
+	auto de = &mapUpdateBuffer[0];
 	do {
-		ushort hl = de.dest;
-		if ((hl & 0xFF00) == 0) {
+		if ((de.dest & 0xFF00) == 0) {
 			break;
 		}
+		ushort hl = de.dest & ~0x9800;
 		// top left
-		gb.vram[hl] = de.topLeft;
+		gb.bgScreen[hl] = de.topLeft;
 		// top right
-		hl = (hl + 1) & 0x9BFF;
-		gb.vram[hl] = de.topRight;
+		hl = (hl + 1) & 0x7FF;
+		gb.bgScreen[hl] = de.topRight;
 		// bottom left
-		hl = (hl + 0x1F) & 0x9BFF;
-		gb.vram[hl] = de.bottomLeft;
+		hl = (hl + 0x1F) & 0x7FF;
+		gb.bgScreen[hl] = de.bottomLeft;
 		// bottom right
-		hl = (hl + 1) & 0x9BFF;
-		gb.vram[hl] = de.bottomRight;
+		hl = (hl + 1) & 0x7FF;
+		gb.bgScreen[hl] = de.bottomRight;
 		de++;
 	} while(true);
 	mapUpdateBuffer[0].dest = 0;
@@ -554,13 +554,13 @@ void handleCamera() {
 	const tmp = scrollData[(cameraY.screen << 4) | cameraX.screen];
 	// righrward
 	if (tmp & 1) { // right blocked
-		if (cameraX.pixel == 176) {
-			if (samusOnScreenXPos >= 161) {
+		if (cameraX.pixel == gb.width + 16) {
+			if (samusOnScreenXPos >= gb.width + 1) {
 				doorScrollDirection = 1;
 				loadDoorIndex();
 			}
 			goto rightDone;
-		} else if (cameraX.pixel >= 176) {
+		} else if (cameraX.pixel >= gb.width + 16) {
 			cameraX = (cameraX - 1) & 0xFFF;
 			goto rightDone;
 		}
@@ -603,20 +603,20 @@ void handleCamera() {
 	cameraSpeedLeft = 0;
 
 	// downward
-	auto tmp2 = cast(ubyte)(samusY.pixel - cameraY.pixel + 0x60);
+	auto tmp2 = cast(ubyte)(samusY.pixel - cameraY.pixel + 96);
 	if (samusY.pixel == samusPrevYPixel) {
 		goto exit;
 	} else if (!(cast(ubyte)(samusY.pixel - samusPrevYPixel) & 0x80)) {
 		cameraSpeedDown = cast(ubyte)(samusY.pixel - samusPrevYPixel);
 		cameraScrollDirection |= ScrollDirection.down;
 		if (tmp & 8) {
-			if (((queenRoomFlag == 0x11) && (cameraY.pixel == 160)) || (cameraY.pixel == 192)) {
+			if (((queenRoomFlag == 0x11) && (cameraY.pixel == gb.height + 16)) || (cameraY.pixel == 192)) {
 				if (samusOnScreenYPos < 120) {
 					goto exit;
 				}
 				doorScrollDirection = 8;
 				loadDoorIndex();
-			} else if (((queenRoomFlag == 0x11) && (cameraY.pixel >= 160)) || (cameraY.pixel >= 192)) {
+			} else if (((queenRoomFlag == 0x11) && (cameraY.pixel >= gb.height + 16)) || (cameraY.pixel >= 192)) {
 				cameraY = (cameraY -1) & 0xFFF;
 				goto exit;
 			} else {
@@ -2411,7 +2411,7 @@ void unknown230C() {
 	assert(0); // not used
 }
 void oamDMA() {
-	gb.vram[0xFE00 .. 0xFEA0] = cast(ubyte[])(oamBuffer[]);
+	gb.oam[] = cast(ubyte[])(oamBuffer[]);
 }
 void executeDoorScript() {
 	if (doorIndex) {
@@ -2758,10 +2758,10 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpX = (cameraX - 0x60) & 0xFFF;
+		const tmpX = (cameraX - 96) & 0xFFF;
 		mapSourceXPixel = tmpX.pixel;
 		mapSourceXScreen = tmpX.screen;
-		const tmpY = (cameraY - 0x74) & 0xFFF;
+		const tmpY = (cameraY - 116) & 0xFFF;
 		mapSourceYPixel = tmpY.pixel;
 		mapSourceYScreen = tmpY.screen;
 		prepMapUpdateColumn();
@@ -2770,7 +2770,7 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpX2 = (cameraX - 0x70) & 0xFFF;
+		const tmpX2 = (cameraX - 112) & 0xFFF;
 		mapSourceXPixel = tmpX2.pixel;
 		mapSourceXScreen = tmpX2.screen;
 		prepMapUpdateColumn();
@@ -2779,7 +2779,7 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpX3 = (cameraX - 0x80) & 0xFFF;
+		const tmpX3 = (cameraX - 128) & 0xFFF;
 		mapSourceXPixel = tmpX3.pixel;
 		mapSourceXScreen = tmpX3.screen;
 		prepMapUpdateColumn();
@@ -2788,10 +2788,10 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpX = (cameraX - 0x80) & 0xFFF;
+		const tmpX = (cameraX - 128) & 0xFFF;
 		mapSourceXPixel = tmpX.pixel;
 		mapSourceXScreen = tmpX.screen;
-		const tmpY = (cameraY + 0x78) & 0xFFF;
+		const tmpY = (cameraY + 120) & 0xFFF;
 		mapSourceYPixel = tmpY.pixel;
 		mapSourceYScreen = tmpY.screen;
 		prepMapUpdateRow();
@@ -2800,7 +2800,7 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpY2 = (cameraY + 0x68) & 0xFFF;
+		const tmpY2 = (cameraY + 104) & 0xFFF;
 		mapSourceYPixel = tmpY2.pixel;
 		mapSourceYScreen = tmpY2.screen;
 		prepMapUpdateRow();
@@ -2809,7 +2809,7 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpY3 = (cameraY + 0x58) & 0xFFF;
+		const tmpY3 = (cameraY + 88) & 0xFFF;
 		mapSourceYPixel = tmpY3.pixel;
 		mapSourceYScreen = tmpY3.screen;
 		prepMapUpdateRow();
@@ -2818,7 +2818,7 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpY4 = (cameraY + 0x48) & 0xFFF;
+		const tmpY4 = (cameraY + 72) & 0xFFF;
 		mapSourceYPixel = tmpY4.pixel;
 		mapSourceYScreen = tmpY4.screen;
 		prepMapUpdateRow();
@@ -2827,10 +2827,10 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpX = (cameraX - 0x80) & 0xFFF;
+		const tmpX = (cameraX - 128) & 0xFFF;
 		mapSourceXPixel = tmpX.pixel;
 		mapSourceXScreen = tmpX.screen;
-		const tmpY = (cameraY - 0x78) & 0xFFF;
+		const tmpY = (cameraY - 120) & 0xFFF;
 		mapSourceYPixel = tmpY.pixel;
 		mapSourceYScreen = tmpY.screen;
 		prepMapUpdateRow();
@@ -2839,7 +2839,7 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpY2 = (cameraY - 0x68) & 0xFFF;
+		const tmpY2 = (cameraY - 104) & 0xFFF;
 		mapSourceYPixel = tmpY2.pixel;
 		mapSourceYScreen = tmpY2.screen;
 		prepMapUpdateRow();
@@ -2848,7 +2848,7 @@ void doorWarpRerender() {
 		switchMapBank(currentLevelBank);
 		mapUpdate.buffer = &mapUpdateBuffer[0];
 		mapUpdateUnusedVar = 0xFF;
-		const tmpY3 = (cameraY - 0x58) & 0xFFF;
+		const tmpY3 = (cameraY - 88) & 0xFFF;
 		mapSourceYPixel = tmpY3.pixel;
 		mapSourceYScreen = tmpY3.screen;
 		prepMapUpdateRow();

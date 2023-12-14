@@ -27,11 +27,17 @@ __gshared ubyte blobThrowerBlobUnknownVar;
 
 __gshared Actor tempSpriteType;
 
-__gshared ubyte arachnusJumpCounter;
-__gshared ubyte arachnusActionTimer;
-__gshared ubyte arachnusUnknownVar;
-__gshared ubyte arachnusJumpStatus;
-__gshared ubyte arachnusHealth;
+struct ArachnusState {
+	ubyte jumpCounter;
+	ubyte actionTimer;
+	ubyte unknownVar;
+	ubyte jumpStatus;
+	ubyte health;
+	ubyte unk06;
+	ubyte unk07;
+}
+
+__gshared ArachnusState arachnus;
 
 __gshared ubyte queenBodyY;
 __gshared ubyte queenBodyXScroll;
