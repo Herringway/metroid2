@@ -3076,7 +3076,7 @@ void hurtSamus() {
 	}
 	applyDamageEnemySpike(samusDamageValue);
 	samusInvulnerableTimer = 51;
-	samusPose = samusDamagePoseTransitionTable[samusPose];
+	samusPose = samusDamagePoseTransitionTable[samusPose & 0x7F];
 	samusAirDirection = samusDamageBoostDirection;
 	if (queenRoomFlag == 0x11) {
 		samusAirDirection = 1;
