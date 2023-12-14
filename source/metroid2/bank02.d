@@ -1292,11 +1292,12 @@ void enAIBlobThrower() {
 		}
 	}
 }
-void getFacingDirection() {
+bool getFacingDirection() {
 	blobThrowerFacingDirection = 0;
 	if (enemyWorking.x >= samusOnScreenXPos) {
 		blobThrowerFacingDirection = 1;
 	}
+	return !!blobThrowerFacingDirection;
 }
 immutable OAMEntry[] enAIBlobThrowerSprite = [
     OAMEntry(-8, 0x00, 0xDD, 0x20),
@@ -1318,8 +1319,213 @@ immutable OAMEntry[] enAIBlobThrowerSprite = [
 ];
 immutable Rectangle enAIBlobThrowerHitbox = Rectangle(-4, 0x18, -8, 0x08);
 
+enum ArachnusState {
+	initial,
+	initialBounce1,
+	initialBounce2,
+	standing1,
+	standing2,
+	attacking,
+	jumping,
+	unused,
+}
+
 void enAIArachnus() {
-	assert(0); // TODO
+	static immutable ubyte[] fullJumpSpeedTable = [
+	//high
+		0xFF, 0xFE, 0xFE, 0xFE, 0xFF, 0xFF, 0xFE, 0xFF, 0xFE, 0xFE, 0xFE, 0xFF, 0xFF, 0xFF, 0x00, 0x00,
+		0x00, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+		0x01, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+		0x00, 0x80,
+	//mid
+		0xFC, 0xFD, 0xFD, 0xFD, 0xFE, 0xFE, 0xFD, 0xFE, 0xFE, 0xFE, 0xFE, 0xFF, 0xFE, 0xFF, 0xFE, 0xFF,
+		0xFF, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x02, 0x02, 0x02, 0x03,
+		0x02, 0x02, 0x03, 0x03, 0x03, 0x04, 0x00, 0x80,
+	//low
+		0xFD, 0xFE, 0xFE, 0xFE, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x01, 0x00, 0x01,
+		0x01, 0x00, 0x01, 0x01, 0x02, 0x02, 0x02, 0x03, 0x81,
+	];
+	static const(ubyte)[] jumpSpeedTableHigh() {
+		return fullJumpSpeedTable;
+	}
+	static const(ubyte)[] jumpSpeedTableMid() {
+		return fullJumpSpeedTable[50 .. $];
+	}
+	static const(ubyte)[] jumpSpeedTableLow() {
+		return fullJumpSpeedTable[90 .. $];
+	}
+	static void fireballAI() {
+		if (enemyWorking.misc == 0) {
+			enemyWorking.x -= 3;
+		} else {
+			enemyWorking.x += 3;
+		}
+		if (!(frameCounter & 6)) {
+			enemyWorking.spriteType ^= Actor.arachnusFireball ^ Actor.arachnusFireball2;
+		}
+	}
+	static immutable fireballHeader = EnemyHeader(Actor.arachnusFireball, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, &fireballAI);
+	static bool jump(const(ubyte)[] speedTable) {
+		ubyte b = speedTable[arachnus.jumpCounter];
+		if (b == 0x80) {
+			b = 3;
+			arachnus.jumpStatus = 0x80;
+		} else if (b == 0x81) {
+			b = 3;
+			arachnus.jumpStatus = 0x81;
+		} else {
+			arachnus.jumpCounter++;
+			arachnus.jumpStatus = 0;
+		}
+		enemyWorking.y += b;
+		enCollisionDownMidMedium();
+		if (!(enBGCollisionResult & 0b0010)) {
+			return false;
+		}
+		if ((arachnus.jumpStatus != 0) && (arachnus.jumpStatus != 0x81)) {
+			arachnus.jumpCounter++;
+			return false;
+		} else {
+			return true;
+		}
+	}
+	static void flipSpriteID() {
+		if (frameCounter & 6) {
+			return;
+		}
+		enemyWorking.spriteType ^= 1;
+	}
+	static void jumpAndAnimate(const(ubyte)[] speedTable) {
+		if (!jump(speedTable)) {
+			flipSpriteID();
+		} else {
+			arachnus.actionTimer = 4;
+			enemyWorking.misc = ArachnusState.standing1;
+		}
+	}
+	static void faceSamus() {
+		if (getFacingDirection()) {
+			enemyWorking.spriteAttributes = 0;
+		} else {
+			enemyWorking.spriteAttributes = OAMFlags.xFlip;
+		}
+	}
+	static void shootFireball() {
+		const slot = loadEnemyGetFirstEmptySlot();
+		enemyDataSlots[slot].status = 0;
+		enemyDataSlots[slot].y = cast(ubyte)(enemyWorking.y + 0xFD);
+		if (enemyWorking.spriteAttributes == 0) {
+			enemyDataSlots[slot].x = cast(ubyte)(enemyWorking.x - 24);
+		} else {
+			enemyDataSlots[slot].x = cast(ubyte)(enemyWorking.x + 24);
+		}
+		enemyCreateLinkForChildObject();
+		enemySpawnObjectLongHeader(&fireballHeader, &enemyDataSlots[slot]);
+		enemyDataSlots[slot].misc = enemyWorking.spriteAttributes;
+		enemyWorking.spawnFlag = 3;
+	}
+	final switch (cast(ArachnusState)enemyWorking.misc) {
+		case ArachnusState.initial:
+			arachnus = arachnus.init;
+			arachnus.health = 6;
+			enemyWorking.health = 0xFF;
+			enemyGetSamusCollisionResults();
+			// do nothing until hit with a weapon
+			if (enemyWeaponType == CollisionType.nothing) {
+				return;
+			}
+			if (enemyWeaponType >= CollisionType.bombExplosion) {
+				return;
+			}
+			enemyWorking.spriteType = Actor.arachnusRoll1;
+			arachnus.unknownVar = 5;
+			arachnus.jumpCounter = 0;
+			arachnus.actionTimer = 32;
+			enemyWorking.misc = ArachnusState.initialBounce1;
+			break;
+		case ArachnusState.initialBounce1:
+			if (jump(jumpSpeedTableHigh)) {
+				arachnus.unknownVar = 5;
+				arachnus.jumpCounter = 0;
+				arachnus.actionTimer = 32;
+				enemyWorking.misc = ArachnusState.initialBounce2;
+			}
+			enemyWorking.x++;
+			flipSpriteID();
+			break;
+		case ArachnusState.initialBounce2:
+			jumpAndAnimate(jumpSpeedTableLow);
+			break;
+		case ArachnusState.standing1:
+			if (arachnus.actionTimer != 0) {
+				arachnus.actionTimer--;
+				flipSpriteID();
+			} else {
+				faceSamus();
+				enemyWorking.y -= 8;
+				enemyWorking.spriteType = Actor.arachnusUpright1;
+				arachnus.actionTimer = 4;
+				enemyWorking.misc = ArachnusState.standing2;
+			}
+			break;
+		case ArachnusState.standing2:
+			if (arachnus.actionTimer != 0) {
+				arachnus.actionTimer--;
+			} else {
+				enemyWorking.spriteType = Actor.arachnusUpright3;
+				arachnus.actionTimer = 4;
+				enemyWorking.misc = ArachnusState.attacking;
+			}
+			break;
+		case ArachnusState.attacking:
+			enemyGetSamusCollisionResults();
+			if ((enemyWeaponType != CollisionType.nothing) && (enemyWeaponType == CollisionType.bombExplosion)) {
+				sfxRequestNoise = NoiseSFX.u05;
+				enemyWorking.stunCounter = 17;
+				if (--arachnus.health == 0) {
+					sfxRequestNoise = NoiseSFX.u0D;
+					enemyWorking.health = 0xFF;
+					enemyWorking.spriteType = Actor.springBall;
+					enemyWorking.ai = &enAIItemOrb;
+				}
+			} else if (!(inputPressed & Pad.b)) {
+				faceSamus();
+				if (arachnus.actionTimer != 0) {
+					arachnus.actionTimer--;
+				} else {
+					enemyWorking.spriteType = Actor.arachnusUpright3;
+					if (enemyWorking.spawnFlag == 1) {
+						shootFireball();
+						enemyWorking.spriteType = Actor.arachnusUpright2;
+						arachnus.actionTimer = 16;
+					}
+				}
+			} else {
+				enemyWorking.y -= 8;
+				enemyWorking.spriteType = Actor.arachnusRoll1;
+				arachnus.jumpCounter = 0;
+				arachnus.actionTimer = 32;
+				enemyWorking.misc = ArachnusState.jumping;
+			}
+			break;
+		case ArachnusState.jumping:
+			if (enemyWorking.spriteAttributes != 0) {
+				enCollisionRightMidMedium();
+				if (!(enBGCollisionResult & 0b0001)) {
+					enemyWorking.x++;
+				}
+				jumpAndAnimate(jumpSpeedTableMid);
+			} else {
+				enCollisionLeftMidMedium();
+				if (!(enBGCollisionResult & 0b0100)) {
+					enemyWorking.x--;
+				}
+				jumpAndAnimate(jumpSpeedTableMid);
+			}
+			break;
+		case ArachnusState.unused:
+			break;
+	}
 }
 
 void enAIBlobProjectile() {
@@ -1905,8 +2111,104 @@ void skreekProjectileCode() {
 	}
 }
 
+enum SkreekState {
+	idle,
+	jumping,
+	waitingForProjectile,
+	falling,
+}
+
 void enAISkreek() {
-	assert(0); // TODO
+	immutable ubyte[] jumpSpeedTable = [
+		0x00, 0x05, 0x05, 0x05, 0x04, 0x05, 0x03, 0x03, 0x02, 0x03, 0x03, 0x03, 0x02, 0x03, 0x03, 0x02,
+		0x02, 0x03, 0x02, 0x02, 0x00, 0x01, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00,
+		0x00,
+	];
+	immutable projectileHeader = ShortEnemyHeader(0, 0, 0, 0x10, 0, 0, 0xFF, 0x07, &enAISkreek);
+	static void animate() {
+		if (enemyWorking.spawnFlag == 3) {
+			return;
+		}
+		if (enemyFrameCounter & 3) {
+			return;
+		}
+		if (enemyWorking.spriteType != Actor.skreek3) {
+			enemyWorking.spriteType++;
+		} else {
+			enemyWorking.spriteType = Actor.skreek;
+		}
+	}
+	if ((enemyWorking.spawnFlag & 0xF) == 0) { // I'm a projectile
+		if (--enemyWorking.counter != 0) {
+			if (!(enemyWorking.spriteAttributes & OAMFlags.xFlip)) {
+				enemyWorking.x -= 2;
+			} else {
+				enemyWorking.x += 2;
+			}
+		} else {
+			enemyDeleteSelf();
+			enemyWorking.spawnFlag = 0xFF;
+		}
+	} else {
+		animate();
+		final switch (cast(SkreekState)enemyWorking.counter) {
+			case SkreekState.idle:
+				if (++enemyWorking.state != 16) {
+					return;
+				}
+				enemyWorking.state = 0;
+				ubyte attr = 0;
+				byte distance = cast(byte)(enemyWorking.x - samusOnScreenXPos);
+				if (distance < 0) {
+					distance = cast(byte)-distance;
+					attr = OAMFlags.xFlip;
+				}
+				if (distance >= 48) {
+					return;
+				}
+				enemyWorking.spriteAttributes = attr;
+				enemyWorking.counter = SkreekState.jumping;
+				break;
+			case SkreekState.jumping:
+				if (enemyWorking.state != 33) {
+					enemyWorking.y -= jumpSpeedTable[enemyWorking.state];
+					enemyWorking.state++;
+				} else {
+					enemyWorking.counter = SkreekState.waitingForProjectile;
+					const slot = loadEnemyGetFirstEmptySlot();
+					enemyDataSlots[slot].status = 0;
+					enemyDataSlots[slot].y = enemyWorking.y;
+					if (!(enemyWorking.spriteAttributes & OAMFlags.xFlip)) {
+						enemyDataSlots[slot].x = cast(ubyte)(enemyWorking.x - 4);
+					} else {
+						enemyDataSlots[slot].x = cast(ubyte)(enemyWorking.x + 4);
+					}
+					enemyDataSlots[slot].spriteType = Actor.skreekSpit;
+					enemyDataSlots[slot].baseSpriteAttributes = 0x80;
+					enemyDataSlots[slot].spriteAttributes = enemyWorking.spriteAttributes;
+					enemyCreateLinkForChildObject();
+					enemySpawnObjectShortHeader(&projectileHeader, &enemyDataSlots[slot]);
+					enemyWorking.spawnFlag = 3;
+					enemyWorking.spriteType = Actor.skreek4;
+					sfxRequestNoise = NoiseSFX.u12;
+				}
+				break;
+			case SkreekState.waitingForProjectile:
+				if (enemyWorking.spawnFlag == 3) {
+					return;
+				}
+				enemyWorking.spriteType = Actor.skreek;
+				enemyWorking.counter = SkreekState.falling;
+				break;
+			case SkreekState.falling:
+				if (--enemyWorking.state != 0) {
+					enemyWorking.y += jumpSpeedTable[enemyWorking.state];
+				} else {
+					enemyWorking.counter = SkreekState.idle;
+				}
+				break;
+		}
+	}
 }
 
 void enAISmallBug() {
@@ -2003,7 +2305,35 @@ void enAIDrivel() {
 }
 
 void enAIDrivelSpit() {
-	assert(0); // TODO
+	if (enemyWorking.spriteType == Actor.drivelSpit3) {
+		enemyWorking.y++;
+		enemyAccelForwards(enemyWorking.y);
+		enCollisionDownNearSmall();
+		if (!(enBGCollisionResult & 0b0010)) {
+			return;
+		}
+		enemyWorking.spriteType = Actor.drivelSpit4;
+		sfxRequestNoise = NoiseSFX.u11;
+	} else if (enemyWorking.spriteType > Actor.drivelSpit3) {
+		if (enemyFrameCounter & 3) {
+			return;
+		}
+		if (++enemyWorking.spriteType < Actor.drivelSpit6 + 1) {
+			return;
+		}
+		if (enemyDataSlots[enemyWorking.spawnFlag >> 4].spawnFlag == 3) {
+			enemyDataSlots[enemyWorking.spawnFlag >> 4].spawnFlag = 1;
+			enemySpawnFlags[enemyDataSlots[enemyWorking.spawnFlag >> 4].spawnNumber] = 1;
+		}
+		enemyDeleteSelf();
+		sfxRequestNoise = NoiseSFX.u03;
+		enemyWorking.spawnFlag = 0xFF;
+	} else {
+		if (enemyFrameCounter & 3) {
+			return;
+		}
+		enemyWorking.spriteType++;
+	}
 }
 
 enum SenjooShirkState {
@@ -2497,7 +2827,7 @@ void enAIHopper() {
 		case HopperState.falling:
 			if (enemyWorking.counter == 16) { // fall speed maxed out
 				enCollisionDownMidMedium();
-				if (enBGCollisionResult & 2) { // found ground, start jumping again
+				if (enBGCollisionResult & 0b0010) { // found ground, start jumping again
 					enemyWorking.counter = 0;
 					enemyWorking.state = HopperState.jumping;
 					if (++enemyWorking.misc == 3) {
@@ -2511,7 +2841,7 @@ void enAIHopper() {
 			}
 			enemyWorking.y += jumpYSpeedTable[$ - 1 - enemyWorking.counter];
 			enCollisionDownMidMedium();
-			if (enBGCollisionResult & 2) { // found ground, start jumping again
+			if (enBGCollisionResult & 0b0010) { // found ground, start jumping again
 				enemyWorking.counter = 0;
 				enemyWorking.state = HopperState.jumping;
 				if (++enemyWorking.misc == 3) {
@@ -2623,28 +2953,453 @@ void enAIWallfire() {
 	sfxRequestNoise = NoiseSFX.u02;
 }
 
+enum GunzooState {
+	shootMove,
+	shootTimer,
+	move
+}
+
 void enAIGunzoo() {
-	assert(0); // TODO
+	static immutable upperCannonShotHeader = EnemyHeader(Actor.gunzooHShot1, 0, 0, 0, 0, 0, 0, 0, 0, 0xFE, 1, &enAIGunzoo);
+	static immutable lowerCannonShotHeader = EnemyHeader(Actor.gunzooHShot1, 0, 0, 0, 0, 0, 0, 0, 0, 0xFE, 2, &enAIGunzoo);
+	static immutable diagonalShotHeader = EnemyHeader(Actor.gunzooDiagShot1, 0, 0, 0, 0, 0, 0, 0, 0, 0xFE, 3, &enAIGunzoo);
+	if (enemyWorking.spawnFlag != 6) {
+		if (enemyWorking.spriteType >= Actor.gunzooHShot1) {
+			if (enemyWorking.spriteType == Actor.gunzooHShot5) {
+				enemyDeleteSelf();
+				enemyWorking.spawnFlag = 0xFF;
+			} else if (enemyWorking.spriteType < Actor.gunzooHShot3) {
+				enemyWorking.x -= 3;
+				enCollisionLeftNearSmall();
+				if (enBGCollisionResult & 0b0100) {
+					enemyWorking.spriteType = Actor.gunzooHShot3;
+					sfxRequestNoise = NoiseSFX.u03;
+				}
+			} else {
+				enemyWorking.spriteType++;
+			}
+		} else if (enemyWorking.spriteType == Actor.gunzooDiagShot2) {
+			enemyWorking.spriteType = Actor.gunzooDiagShot3;
+			enemyWorking.y -= 8;
+		} else if (enemyWorking.spriteType == Actor.gunzooDiagShot3) {
+			enemyDeleteSelf();
+			enemyWorking.spawnFlag = 0xFF;
+		} else {
+			enemyWorking.y += 2;
+			enemyWorking.x -= 2;
+			enCollisionDownNearSmall();
+			if (enBGCollisionResult & 0b0010) {
+				enemyWorking.spriteType = Actor.gunzooDiagShot3;
+				enemyWorking.y -= 4;
+				sfxRequestNoise = NoiseSFX.u03;
+			}
+		}
+		return;
+	} else if (!(enemyWorking.directionFlags & 0b0001)) {
+		if ((enemyWorking.state != GunzooState.shootMove) && ((gb.DIV & 0x1F) == 0)) {
+			const slot = loadEnemyGetFirstEmptySlot();
+			enemyDataSlots[slot].status = 0;
+			enemyDataSlots[slot].y = cast(ubyte)(enemyWorking.y + 8);
+			enemyDataSlots[slot].x = cast(ubyte)(enemyWorking.x - 8);
+			enemyTempSpawnFlag = 6;
+			enemySpawnObjectLongHeader(&diagonalShotHeader, &enemyDataSlots[slot]);
+			enemyWorking.state = GunzooState.shootTimer;
+			sfxRequestNoise = NoiseSFX.u12;
+		} else if (enemyWorking.directionFlags & 0b0010) {
+			if (--enemyWorking.counter == 0) {
+				if (enemyWorking.state != GunzooState.shootMove) {
+					enemyWorking.counter = 0;
+					enemyWorking.state = GunzooState.shootMove;
+					enemyWorking.directionFlags = 1;
+				} else {
+					enemyWorking.directionFlags ^= 2;
+				}
+			}
+			enemyWorking.x -= 2;
+		} else {
+			if (++enemyWorking.counter == 32) {
+				enemyWorking.directionFlags ^= 2;
+			} else {
+				enemyWorking.x += 2;
+			}
+		}
+		return;
+	} else {
+		if (enemyWorking.spriteType != Actor.gunzoo) {
+			if (!(enemyFrameCounter & 7)) {
+				enemyWorking.spriteType = Actor.gunzoo;
+			}
+			return;
+		}
+		final switch (cast(GunzooState)enemyWorking.state) {
+			case GunzooState.shootMove:
+				if ((gb.DIV & 0x1F) 	== 0) {
+					const slot = loadEnemyGetFirstEmptySlot();
+					enemyDataSlots[slot].status = 0;
+					enemyDataSlots[slot].y = cast(ubyte)(enemyWorking.y - 8);
+					enemyDataSlots[slot].x = cast(ubyte)(enemyWorking.x - 16);
+					enemyTempSpawnFlag = 6;
+					enemySpawnObjectLongHeader(&upperCannonShotHeader, &enemyDataSlots[slot]);
+					enemyWorking.spriteType++;
+					enemyWorking.state = GunzooState.shootTimer;
+					sfxRequestNoise = NoiseSFX.u12;
+					return;
+				}
+				goto case GunzooState.move;
+			case GunzooState.shootTimer:
+				if (enemyFrameCounter & 0x1F) {
+					goto case GunzooState.move;
+				}
+				const slot = loadEnemyGetFirstEmptySlot();
+				enemyDataSlots[slot].status = 0;
+				enemyDataSlots[slot].y = enemyWorking.y;
+				enemyDataSlots[slot].x = cast(ubyte)(enemyWorking.x - 16);
+				enemyTempSpawnFlag = 6;
+				enemySpawnObjectLongHeader(&lowerCannonShotHeader, &enemyDataSlots[slot]);
+				enemyWorking.spriteType = Actor.gunzoo3;
+				enemyWorking.state = GunzooState.move;
+				sfxRequestNoise = NoiseSFX.u12;
+				break;
+			case GunzooState.move:
+				if (enemyWorking.directionFlags & 0b0010) {
+					if (--enemyWorking.counter == 0) {
+						if (enemyWorking.state == GunzooState.move) {
+							enemyWorking.spriteType = Actor.gunzoo;
+							enemyWorking.directionFlags = 0;
+							enemyWorking.counter = 0;
+							enemyWorking.state = GunzooState.shootMove;
+						} else {
+							enemyWorking.directionFlags ^= 2;
+						}
+						return;
+					}
+					return;
+				}
+				if (++enemyWorking.counter == 32) {
+					enemyWorking.directionFlags ^= 2;
+					return;
+				}
+				enemyWorking.y -= 2;
+				break;
+		}
+	}
 }
 
 void enAIAutom() {
-	assert(0); // TODO
+	immutable flamethrowerHeader = EnemyHeader(Actor.automShot1, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF, 0, &enAIAutom);
+	if (enemyWorking.spawnFlag == 3) { // flames are active, do nothing else
+		return;
+	}
+	if ((enemyWorking.spawnFlag & 0xF) == 0) { // flames are active, and we are flames
+		sfxRequestSquare2 = Square2SFX.u7;
+		if (enemyWorking.spriteType < Actor.automShot3) {
+			enemyWorking.spriteType++;
+			enemyWorking.y += 8;
+		} else if (enemyWorking.spriteType == Actor.automShot3) {
+			enemyWorking.spriteType++;
+		} else if (enemyWorking.spriteType > Actor.automShot3) {
+			enemyFlipSpriteID2BitsFourFrame();
+			if (++enemyWorking.counter == 32) {
+				enemyDeleteSelf();
+				enemyWorking.spawnFlag = 0xFF;
+			}
+		}
+		return;
+	}
+	if ((gb.DIV & 0x1F) == 0) { // start shooting at random
+		const slot = loadEnemyGetFirstEmptySlot();
+		enemyDataSlots[slot].status = 0;
+		enemyDataSlots[slot].y = cast(ubyte)(enemyWorking.y + 16);
+		enemyDataSlots[slot].x = cast(ubyte)(enemyWorking.x + 1);
+		enemyCreateLinkForChildObject();
+		enemySpawnObjectLongHeader(&flamethrowerHeader, &enemyDataSlots[slot]);
+		enemyWorking.spriteType = Actor.autom2;
+		enemyWorking.spawnFlag = 3;
+	} else {
+		enemyWorking.spriteType = Actor.autom;
+		if (enemyWorking.state == 0) {
+			if (++enemyWorking.counter == 32) {
+				enemyWorking.state ^= 1;
+			} else {
+				enemyWorking.x += 3;
+			}
+		} else {
+			if (--enemyWorking.counter == 0) {
+				enemyWorking.state ^= 1;
+			} else {
+				enemyWorking.x -= 3;
+			}
+		}
+	}
+}
+
+enum ProboscumState {
+	retracted,
+	retractedDiagonal,
+	extended,
+	extendedDiagonal,
 }
 
 void enAIProboscum() {
-	assert(0); // TODO
+	if (enemyWorking.spriteType == Actor.proboscumFlipped) {
+		enemyWorking.spriteType = Actor.proboscum;
+	}
+	final switch (cast(ProboscumState)enemyWorking.state) {
+		case ProboscumState.retracted:
+		case ProboscumState.extended:
+			if (++enemyWorking.counter == 64) {
+				enemyWorking.counter = 0;
+				enemyWorking.spriteType = Actor.proboscum2;
+				enemyWorking.state++;
+			}
+			break;
+		case ProboscumState.retractedDiagonal:
+			if (++enemyWorking.counter == 2) {
+				enemyWorking.counter = 0;
+				enemyWorking.spriteType = Actor.proboscum3;
+				enemyWorking.state = ProboscumState.extended;
+			}
+			break;
+		case ProboscumState.extendedDiagonal:
+			if (++enemyWorking.counter == 2) {
+				enemyWorking.counter = 0;
+				enemyWorking.spriteType = Actor.proboscum;
+				enemyWorking.state = ProboscumState.retracted;
+			}
+			break;
+	}
+}
+
+enum MissileBlockState {
+	idle,
+	rising,
+	falling,
+	exploding,
 }
 
 void enAIMissileBlock() {
-	assert(0); // TODO
+	static void animate() {
+		if (enemyFrameCounter & 3) {
+			return;
+		}
+		if (enemyWorking.directionFlags) {
+			if (enemyWorking.spriteAttributes == 0) {
+				enemyWorking.spriteAttributes = OAMFlags.xFlip;
+			} else if (!(enemyWorking.spriteAttributes & OAMFlags.xFlip)) {
+				enemyWorking.spriteAttributes = OAMFlags.xFlip | OAMFlags.yFlip;
+			} else if (!(enemyWorking.spriteAttributes & OAMFlags.yFlip)) {
+				enemyWorking.spriteAttributes = 0;
+			} else {
+				enemyWorking.spriteAttributes = OAMFlags.yFlip;
+			}
+		} else {
+			if (enemyWorking.spriteAttributes == 0) {
+				enemyWorking.spriteAttributes = OAMFlags.yFlip;
+			} else if (!(enemyWorking.spriteAttributes & OAMFlags.xFlip)) {
+				enemyWorking.spriteAttributes = 0;
+			} else if (!(enemyWorking.spriteAttributes & OAMFlags.yFlip)) {
+				enemyWorking.spriteAttributes = OAMFlags.xFlip | OAMFlags.yFlip;
+			} else {
+				enemyWorking.spriteAttributes = OAMFlags.xFlip;
+			}
+		}
+	}
+	enemyGetSamusCollisionResults();
+	final switch (cast(MissileBlockState)enemyWorking.state) {
+		case MissileBlockState.idle:
+			if (enemyWeaponType >= CollisionType.contact) {
+				return;
+			}
+			sfxRequestSquare1 = Square1SFX.beamDink;
+			if (enemyWeaponType != CollisionType.missiles) {
+				return;
+			}
+			sfxRequestSquare1 = Square1SFX.clear;
+			sfxRequestNoise = NoiseSFX.u08;
+			if (!(enemyWeaponDir & 0b0001)) {
+				enemyWorking.directionFlags = 2;
+			}
+			enemyWorking.state = MissileBlockState.rising;
+			enemyWorking.misc = 1;
+			goto case;
+		case MissileBlockState.rising:
+			if (enemyWorking.counter == 10) {
+				enemyWorking.counter = 0;
+				enemyWorking.state = MissileBlockState.falling;
+				goto case;
+			} else {
+				enAIHalzynMoveVertical();
+				if (enemyWorking.directionFlags) {
+					enAIHalzynMoveLeft();
+				} else {
+					enAIHalzynMoveRight();
+				}
+			}
+			break;
+		case MissileBlockState.falling:
+			enemyWorking.y += 4;
+			enemyAccelForwards(enemyWorking.y);
+			if (enemyWorking.directionFlags) {
+				enemyWorking.x--;
+			} else {
+				enemyWorking.x++;
+			}
+			break;
+		case MissileBlockState.exploding:
+			if (enemyWorking.spriteType == Actor.screwExplosionEnd) {
+				enemyDeleteSelf();
+				enemyWorking.spawnFlag = 2;
+			}
+			enemyWorking.spriteType++;
+			return;
+	}
+	animate();
+	enCollisionDownMidMedium();
+	if (!(enBGCollisionResult & 0b0010)) {
+		return;
+	}
+	enemyWorking.state = MissileBlockState.exploding;
+	enemyWorking.spriteType = Actor.screwExplosionStart;
 }
 
 void enAIMoto() {
-	assert(0); // TODO
+	static void animate() {
+		if (enemyFrameCounter & 1) {
+			return;
+		}
+		if (enemyWorking.spriteType == Actor.moto) {
+			if (enemyWorking.counter) {
+				enemyWorking.spriteType = Actor.moto2;
+			} else {
+				enemyWorking.spriteType = Actor.moto;
+			}
+		} else {
+			enemyWorking.spriteType = Actor.moto;
+			enemyWorking.counter ^= 1;
+		}
+	}
+	animate();
+	if (enemyFrameCounter & 1) {
+		return;
+	}
+	if ((enemyWorking.directionFlags & 0xF) == 0) {
+		enemyWorking.x += 2;
+	} else {
+		enemyWorking.x -= 2;
+	}
+	enCollisionDownOnePoint();
+	if (enBGCollisionResult & 0b0010) {
+		return;
+	}
+	enemyWorking.spriteAttributes ^= OAMFlags.xFlip;
+	enemyWorking.directionFlags ^= 0b00110010; // shield and direction
 }
 
 void enAIHalzyn() {
-	assert(0); // TODO
+	enemyFlipHorizontalFourFrame();
+	enAIHalzynMoveVertical();
+	if ((enemyWorking.directionFlags & 0xF) != 0) {
+		enAIHalzynMoveLeft();
+		enCollisionLeftFarMedium();
+		if (!(enBGCollisionResult & 0b0100)) { // don't turn around if we haven't hit anything
+			return;
+		}
+		enemyWorking.directionFlags &= 0xF0; // turn around, but preserve shields
+	} else {
+		enAIHalzynMoveRight();
+		enCollisionRightFarMedium();
+		if (!(enBGCollisionResult & 0b0001)) { // don't turn around if we haven't hit anything
+			return;
+		}
+		enemyWorking.directionFlags &= 0xF0; // turn around, but preserve shields
+		enemyWorking.directionFlags += 2;
+	}
+}
+
+enum HalzynMovementState {
+	state0,
+	state1,
+	state2,
+	state3,
+}
+
+void halzynMoveBack(ubyte a, ref ubyte pos) {
+	pos -= a;
+	if (enemyWorking.misc & 1) {
+		pos -= a;
+	}
+}
+
+void halzynMoveAhead(ubyte a, ref ubyte pos) {
+	pos += a;
+	if (enemyWorking.misc & 1) {
+		pos += a;
+	}
+}
+
+immutable ubyte[] concaveSpeedTable = [0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x01, 0x00];
+immutable ubyte[] convexSpeedTable = [0x00, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01];
+
+void enAIHalzynMoveVertical() {
+	if (enemyWorking.counter == 10) {
+		enemyWorking.counter = 0;
+		if (enemyWorking.state != HalzynMovementState.state3) {
+			enemyWorking.state++;
+		} else {
+			enemyWorking.state = HalzynMovementState.state0;
+			enemyWorking.misc ^= 1;
+		}
+	}
+	final switch (cast(HalzynMovementState)enemyWorking.state) {
+		case HalzynMovementState.state0:
+			halzynMoveBack(concaveSpeedTable[enemyWorking.counter], enemyWorking.y);
+			break;
+		case HalzynMovementState.state1:
+			halzynMoveAhead(convexSpeedTable[enemyWorking.counter], enemyWorking.y);
+			break;
+		case HalzynMovementState.state2:
+			halzynMoveAhead(concaveSpeedTable[enemyWorking.counter], enemyWorking.y);
+			break;
+		case HalzynMovementState.state3:
+			halzynMoveBack(convexSpeedTable[enemyWorking.counter], enemyWorking.y);
+			break;
+	}
+}
+
+void enAIHalzynMoveLeft() {
+	const counter = enemyWorking.counter++;
+	final switch (cast(HalzynMovementState)enemyWorking.state) {
+		case HalzynMovementState.state0:
+			halzynMoveBack(convexSpeedTable[counter], enemyWorking.x);
+			break;
+		case HalzynMovementState.state1:
+			halzynMoveBack(concaveSpeedTable[counter], enemyWorking.x);
+			break;
+		case HalzynMovementState.state2:
+			halzynMoveBack(convexSpeedTable[counter], enemyWorking.x);
+			break;
+		case HalzynMovementState.state3:
+			halzynMoveBack(concaveSpeedTable[counter], enemyWorking.x);
+			break;
+	}
+}
+
+void enAIHalzynMoveRight() {
+	const counter = enemyWorking.counter++;
+	final switch (cast(HalzynMovementState)enemyWorking.state) {
+		case HalzynMovementState.state0:
+			halzynMoveAhead(convexSpeedTable[counter], enemyWorking.x);
+			break;
+		case HalzynMovementState.state1:
+			halzynMoveAhead(concaveSpeedTable[counter], enemyWorking.x);
+			break;
+		case HalzynMovementState.state2:
+			halzynMoveAhead(convexSpeedTable[counter], enemyWorking.x);
+			break;
+		case HalzynMovementState.state3:
+			halzynMoveAhead(concaveSpeedTable[counter], enemyWorking.x);
+			break;
+	}
 }
 
 void enAISeptogg() {
@@ -2669,16 +3424,151 @@ void enAISeptogg() {
 	}
 }
 
+enum VanishingFlittState {
+	state0,
+	state1,
+	state2,
+	state3,
+}
+
 void enAIFlittVanishing() {
-	assert(0); // TODO
+	final switch (cast(VanishingFlittState)enemyWorking.state) {
+		case VanishingFlittState.state0:
+			if (++enemyWorking.counter == 56) {
+				enemyWorking.counter = 0;
+				enemyWorking.state = VanishingFlittState.state1;
+				enemyWorking.spriteType = Actor.flittMoving;
+			}
+			break;
+		case VanishingFlittState.state1:
+			if (++enemyWorking.counter == 14) {
+				enemyWorking.counter = 0;
+				enemyWorking.state = VanishingFlittState.state2;
+				enemyWorking.spriteType = Actor.flittInvisible;
+			}
+			break;
+		case VanishingFlittState.state2:
+			if (++enemyWorking.counter == 12) {
+				enemyWorking.counter = 0;
+				enemyWorking.state = VanishingFlittState.state3;
+				enemyWorking.spriteType = Actor.flittMoving;
+			}
+			break;
+		case VanishingFlittState.state3:
+			if (++enemyWorking.counter == 13) {
+				enemyWorking.counter = 0;
+				enemyWorking.state = VanishingFlittState.state0;
+				enemyWorking.spriteType = Actor.flittVanishing;
+			}
+			break;
+	}
 }
 
 void enAIFlittMoving() {
-	assert(0); // TODO
+	enemyFlipSpriteIDFourFrame();
+	enemyGetSamusCollisionResults();
+	if (enemyWorking.directionFlags == 0) {
+		if (++enemyWorking.counter != 96) {
+			enemyWorking.x++;
+			if (enemyWeaponType == CollisionType.contact) {
+				samusOnScreenXPos++;
+				cameraSpeedRight++;
+				samusX++;
+			}
+		} else {
+			enemyWorking.directionFlags = 2;
+		}
+	} else {
+		if (--enemyWorking.counter != 0) {
+			enemyWorking.x--;
+			if (enemyWeaponType == CollisionType.contact) {
+				samusOnScreenXPos--;
+				cameraSpeedLeft++;
+				samusX--;
+			}
+		} else {
+			enemyWorking.directionFlags = 0;
+		}
+	}
+}
+
+enum GravittState {
+	idle,
+	unburrow,
+	crawl,
+	crawl2,
+	burrow,
+	wait,
 }
 
 void enAIGravitt() {
-	assert(0); // TODO
+	static void animate() {
+		if (enemyFrameCounter & 1) {
+			return;
+		}
+		if (++enemyWorking.spriteType > Actor.gravitt5) {
+			enemyWorking.spriteType = Actor.gravitt2;
+		}
+	}
+	final switch (cast(GravittState)enemyWorking.state) {
+		case GravittState.idle:
+			auto distance = cast(byte)(samusOnScreenXPos - enemyWorking.x);
+			bool faceRight;
+			if (distance < 0) {
+				distance = cast(byte)-distance;
+				faceRight = true;
+			}
+			if (distance >= 56) {
+				return;
+			}
+			enemyWorking.spriteType++;
+			enemyWorking.y -= 2;
+			enemyWorking.state = GravittState.unburrow;
+			if (!faceRight) {
+				enemyWorking.directionFlags = 0b10000000;
+			} else {
+				enemyWorking.directionFlags = 0b10000010;
+			}
+			break;
+		case GravittState.unburrow:
+			if (++enemyWorking.counter != 6) {
+				enemyWorking.y -= 2;
+			} else {
+				enemyWorking.counter = 0;
+				enemyWorking.state = GravittState.crawl;
+			}
+			break;
+		case GravittState.crawl:
+		case GravittState.crawl2:
+			animate();
+			if (++enemyWorking.counter != 24) {
+				if (enemyWorking.directionFlags & 0b0010) {
+					enemyWorking.x -= 2;
+				} else {
+					enemyWorking.x += 2;
+				}
+			} else {
+				enemyWorking.counter = 0;
+				enemyWorking.directionFlags ^= 2;
+				enemyWorking.state++;
+			}
+			break;
+		case GravittState.burrow:
+			if (++enemyWorking.counter != 7) {
+				enemyWorking.y += 2;
+			} else {
+				enemyWorking.counter = 0;
+				enemyWorking.state = GravittState.wait;
+				enemyWorking.spriteType = Actor.gravitt;
+			}
+			break;
+		case GravittState.wait:
+			if (++enemyWorking.counter == 48) {
+				enemyWorking.counter = 0;
+				enemyWorking.state = GravittState.idle;
+			}
+			break;
+	}
 }
 
 void enAIMissileDoor() {
@@ -2753,7 +3643,9 @@ void unknownProc6AE1(ref ubyte pos) {
 }
 
 void enemyCreateLinkForChildObject() {
-	enemyTempSpawnFlag = cast(ubyte)((enemyWRAMAddr - &enemyDataSlots[0]) << 4);
+	const parent = enemyWRAMAddr - &enemyDataSlots[0];
+	tracef("Creating link to parent %s", parent);
+	enemyTempSpawnFlag = cast(ubyte)(parent << 4);
 }
 
 void enemyFlipSpriteIDFourFrame() {
@@ -3280,27 +4172,348 @@ void enAIZetaMetroidOscillateNarrow() {
 	}
 }
 
+void enAIZetaMetroidOscillateWide() {
+	if (!(enemyFrameCounter & 3)) {
+		return;
+	}
+	if ((enemyFrameCounter & 3) == 2) {
+		enemyWorking.x -= 3;
+	} else if ((enemyFrameCounter & 3) == 1) {
+		enemyWorking.x += 3;
+	}
+}
+
 void enAIOmegaMetroid() {
 	assert(0); // TODO
 }
 
+enum MetroidLatchState {
+	unlatched,
+	unlatching,
+	latched,
+}
+
 void enAINormalMetroid() {
-	assert(0); // TODO
+	static void animate() {
+		if (enemyFrameCounter & 3) {
+			return;
+		}
+		enemyWorking.spriteType ^= Actor.metroid1 ^ Actor.metroid;
+	}
+	static void freeze() {
+		sfxRequestSquare1 = Square1SFX.u1A;
+		enemyWorking.stunCounter = 16;
+		enemyWorking.iceCounter = 68;
+		enemyWorking.status = 0;
+	}
+	enemyGetSamusCollisionResults();
+	if (enemyWorking.misc == 0) { //unlatched
+		if (larvaHurtAnimCounter) {
+			if (--larvaHurtAnimCounter != 0) {
+				return;
+			}
+			enemyWorking.spriteType = Actor.metroid;
+		}
+		if (enemyWorking.iceCounter == 0) {
+			animate();
+			switch (enemyWeaponType) {
+				case CollisionType.nothing:
+					if (enemyWorking.directionFlags != 0xFF) {
+						metroidScrewKnockback();
+						if (metroidScrewKnockbackDone != 0) {
+							metroidScrewKnockbackDone = 0;
+							enemyWorking.directionFlags = 0xFF;
+							enemyWorking.counter = 16;
+							enemyWorking.state = 16;
+						}
+					} else {
+						enemySeekSamus(1, 30, 2);
+						metroidCorrectPosition();
+					}
+					break;
+				case CollisionType.contact:
+					if (larvaBombState != 2) {
+						if (larvaBombState != 1) {
+							larvaBombState = 1;
+						}
+						larvaLatchState = MetroidLatchState.latched;
+					} else {
+						larvaLatchState = MetroidLatchState.unlatching;
+					}
+					enemyWorking.misc = 1;
+					enemyWorking.counter = 0;
+					break;
+				case CollisionType.screwAttack:
+				case CollisionType.bombExplosion:
+					enemyWorking.counter = 0;
+					metroidScrewReaction();
+					sfxRequestSquare1 = Square1SFX.u1A;
+					break;
+				case CollisionType.iceBeam:
+					freeze();
+					break;
+				default:
+					sfxRequestSquare1 = Square1SFX.beamDink;
+					break;
+			}
+		} else {
+			enemyAnimateIceCall();
+			if (enemyWorking.iceCounter == 0) {
+				enemyWorking.counter = 16;
+				enemyWorking.state = 16;
+				enemyWorking.spriteType = Actor.metroid;
+				enemyWorking.health = 5;
+			} else {
+				if (enemyWeaponType < CollisionType.contact) {
+					if (enemyWeaponType == CollisionType.missiles) {
+						if (--enemyWorking.health == 0) {
+							enemyWorking.counter = 0;
+							larvaBombState = 0;
+							larvaLatchState = MetroidLatchState.unlatched;
+							enemyWorking.spawnFlag = 2;
+							enemyWorking.explosionFlag = 16;
+							sfxRequestNoise = NoiseSFX.u0D;
+							metroidCountReal--;
+							metroidCountDisplayed--;
+							metroidCountShuffleTimer = 192;
+							earthquakeCheck();
+						} else {
+							larvaHurtAnimCounter = 3;
+							enemyWorking.spriteType = Actor.metroid3;
+							sfxRequestNoise = NoiseSFX.u05;
+						}
+					} else if (enemyWeaponType == CollisionType.iceBeam) {
+						freeze();
+					} else {
+						sfxRequestSquare1 = Square1SFX.beamDink;
+					}
+				}
+			}
+		}
+	} else { //latched
+		animate();
+		final switch (cast(MetroidLatchState)larvaLatchState) {
+			case MetroidLatchState.unlatched:
+				larvaBombState = 0;
+				enemyWorking.misc = 0;
+				larvaLatchState = MetroidLatchState.unlatched;
+				enemyWorking.counter = 16;
+				enemyWorking.state = 16;
+				break;
+			case MetroidLatchState.unlatching:
+				if (++enemyWorking.counter == 24) {
+					goto case MetroidLatchState.unlatched;
+				}
+				larvaBombState = 2;
+				if (enemyWorking.y - 3 >= 16) {
+					enemyWorking.y -= 3;
+					enCollisionUpFarWide();
+					if (enBGCollisionResult & 0b1000) {
+						enemyWorking.y = enemyYPosMirror;
+					}
+				}
+				if (enemyWorking.x - 3 >= 16) {
+					enemyWorking.x -= 3;
+					enCollisionLeftFarWide();
+					if (enBGCollisionResult & 0b0100) {
+						enemyWorking.x = enemyXPosMirror;
+					}
+				}
+				break;
+			case MetroidLatchState.latched:
+				enemyWorking.y = samusOnScreenYPos;
+				enemyWorking.x = samusOnScreenXPos;
+				if (enemyWeaponType == CollisionType.bombExplosion) {
+					larvaLatchState = MetroidLatchState.unlatching;
+				}
+				break;
+		}
+	}
+}
+
+enum BabyMetroidState {
+	egg,
+	hatching2,
+	active,
+	hatching,
 }
 
 void enAIBabyMetroid() {
-	assert(0); // TODO
+	static void animateFlash() {
+		if (enemyFrameCounter & 3) {
+			return;
+		}
+		enemyWorking.stunCounter ^= 0x10;
+	}
+	static void animateEggWiggle() {
+		if (enemyFrameCounter & 1) {
+			return;
+		}
+		if (enemyWorking.counter != 1) {
+			if (++enemyWorking.spriteType != Actor.egg3) {
+				return;
+			}
+		} else {
+			if (--enemyWorking.spriteType == Actor.egg1) {
+				return;
+			}
+		}
+		enemyWorking.counter ^= 1;
+	}
+	final switch (cast(BabyMetroidState)metroidState) {
+		case BabyMetroidState.egg:
+			if (enemyWorking.spawnFlag != 4) {
+				animateFlash();
+				auto distance = cast(byte)(samusOnScreenXPos - enemyWorking.x);
+				if (distance < 0) {
+					distance = cast(byte)-distance;
+				}
+				if (distance >= 24) {
+					return;
+				}
+				distance = cast(byte)(samusOnScreenYPos - enemyWorking.y);
+				if (distance < 0) {
+					distance = cast(byte)-distance;
+				}
+				if (distance >= 16) {
+					return;;
+				}
+				cutsceneActive = 1;
+				animateEggWiggle();
+				if (++enemyWorking.state != 48) {
+					return;
+				}
+				enemyWorking.state = 0;
+				enemyWorking.counter = 0;
+				enemyWorking.stunCounter = 0;
+				metroidState = BabyMetroidState.hatching;
+				metroidFightActive++; // YOU WANNA GO???
+				enemyWorking.spawnFlag = 4;
+				sfxRequestNoise = NoiseSFX.u16;
+			} else {
+				enemyWorking.spriteType = Actor.baby1;
+				auto distance = cast(byte)(samusOnScreenXPos - enemyWorking.x);
+				if (distance < 0) {
+					distance = cast(byte)-distance;
+				}
+				if (distance >= 96) {
+					return;
+				}
+				metroidFightActive = 1;
+				metroidState = BabyMetroidState.active;
+				sfxRequestNoise = NoiseSFX.u16;
+			}
+			break;
+		case BabyMetroidState.hatching2:
+			enAIZetaMetroidOscillateWide();
+			enemyWorking.y--;
+			if (++enemyWorking.counter == 12) {
+				enemyWorking.counter = 16;
+				enemyWorking.state = 16;
+				metroidState = BabyMetroidState.active;
+				cutsceneActive = 0;
+			}
+			break;
+		case BabyMetroidState.active:
+			enemyFlipSpriteIDFourFrame();
+			enemySeekSamus(2, 32, 0);
+			babyCheckBlocks();
+			babyKeepOnscreen();
+			break;
+		case BabyMetroidState.hatching:
+			if (++enemyWorking.counter & 1) {
+				enemyWorking.spriteType = cast(Actor)(Actor.screwExplosionStart + (enemyWorking.counter >> 1));
+			} else {
+				if (enemyWorking.counter == 12) {
+					enemyWorking.counter = 0;
+					metroidState = BabyMetroidState.hatching2;
+				}
+				enemyWorking.spriteType = Actor.baby1;
+			}
+			break;
+	}
 }
 
 void metroidCorrectPosition() {
-	assert(0); // TODO
+	if (enemyWorking.counter >= 16) {
+		enCollisionDownFarWide();
+		if (enBGCollisionResult & 0b0010) {
+			enemyWorking.y = enemyYPosMirror;
+		}
+	} else {
+		if (enemyWorking.y < 16) {
+			enemyWorking.y = enemyYPosMirror;
+		}
+		enCollisionUpFarWide();
+		if (enBGCollisionResult & 0b1000) {
+			enemyWorking.y = enemyYPosMirror;
+		}
+	}
+	if (enemyWorking.state >= 16) {
+		enCollisionRightFarWide();
+		if (enBGCollisionResult & 0b0001) {
+			enemyWorking.x = enemyXPosMirror;
+		}
+	} else {
+		if (enemyWorking.x < 16) {
+			enemyWorking.x = enemyXPosMirror;
+		}
+		enCollisionLeftFarWide();
+		if (enBGCollisionResult & 0b0100) {
+			enemyWorking.x = enemyXPosMirror;
+		}
+	}
 }
 
 void babyCheckBlocks() {
-	assert(0); // TODO
+	babyTempXPos = enemyWorking.x;
+	enemyWorking.x = enemyXPosMirror;
+	if (enemyWorking.counter >= 16) {
+		enCollisionDownMidMedium();
+		if (enBGCollisionResult & 0b0010) {
+			if (metroidBabyTouchingTile == 100) {
+				babyClearBlock();
+			}
+			enemyWorking.y = enemyYPosMirror;
+		}
+	} else {
+		if (enemyWorking.y < 16) {
+			enemyWorking.y = enemyYPosMirror;
+		} else {
+			enCollisionUpMidMedium();
+			if (enBGCollisionResult & 0b1000) {
+				if (metroidBabyTouchingTile == 100) {
+					babyClearBlock();
+				}
+				enemyWorking.y = enemyYPosMirror;
+			}
+		}
+	}
+	enemyWorking.x = babyTempXPos;
+	if (enemyWorking.state >= 16) {
+		enCollisionRightMidMedium();
+		if (enBGCollisionResult & 0b0001) {
+			if (metroidBabyTouchingTile == 100) {
+				babyClearBlock();
+			}
+			enemyWorking.x = enemyXPosMirror;
+		}
+	} else {
+		if (enemyWorking.x < 16) {
+			enemyWorking.x = enemyXPosMirror;
+		} else {
+			enCollisionLeftMidMedium();
+			if (enBGCollisionResult & 0b0100) {
+				if (metroidBabyTouchingTile == 100) {
+					babyClearBlock();
+				}
+				enemyWorking.x = enemyXPosMirror;
+			}
+		}
+	}
 }
 
-void babyClearBlocks() {
+void babyClearBlock() {
 	destroyBlock();
 	sfxRequestNoise = NoiseSFX.u16;
 }
