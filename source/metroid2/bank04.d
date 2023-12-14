@@ -423,7 +423,7 @@ void handleSongPlaying() {
 	if (songState.songChannelEnableNoise) {
 		songState.workingSoundChannel = 4;
 		songState.songWorkingState.instructionTimer = songState.songNoiseState.instructionTimer;
-		if (songState.songWaveState.instructionTimer == 1) {
+		if (songState.songNoiseState.instructionTimer == 1) {
 			handleSongLoadNextChannelSoundNoise();
 		}
 		songState.songNoiseState.instructionTimer--;
@@ -542,10 +542,18 @@ void silenceAudio() {
 	sfxPlayingWave = 0;
 	audioPauseSoundEffectTimer = 0;
 	audioPauseControl = 0;
+	muteSoundChannels();
 }
 
 void muteSoundChannels() {
-	assert(0); // TODO
+	gb.AUD1ENV = 8;
+	gb.AUD2ENV = 8;
+	gb.NR42 = 8;
+	gb.AUD1HIGH = 0x80;
+	gb.AUD2HIGH = 0x80;
+	gb.NR44 = 0x80;
+	gb.NR10 = 0;
+	gb.AUD3ENA = 0;
 }
 
 void writeToWavePatternRAM(const(ubyte)* data) {
@@ -780,12 +788,11 @@ void loadNextSound(ref const(ubyte)* ptr, ubyte channel) {
 			default: break;
 		}
 	}
-	songState.workingSoundChannel = channel;
-	static void nextInstructionList(ref const(ubyte)* ptr) {
+	static bool nextInstructionList(ref const(ubyte)* ptr) {
 		songState.songWorkingState.sectionPointer = songState.songWorkingState.sectionPointer[1 .. $];
 		if (songState.songWorkingState.sectionPointer[0] == 0) {
 			songState.workingSoundChannel = 0;
-			return;
+			return true;
 		}
 		if (songState.songWorkingState.sectionPointer[0] == 0x00F0) {
 			songInstructionGoto();
@@ -806,9 +813,13 @@ void loadNextSound(ref const(ubyte)* ptr, ubyte channel) {
 				break;
 			default: assert(0);
 		}
+		return false;
 	}
+	songState.workingSoundChannel = channel;
 	if (ptr[0] == 0) {
-		nextInstructionList(ptr);
+		if (nextInstructionList(ptr)) {
+			return;
+		}
 	}
 	while (true) {
 		infof("%02X", ptr[0]);
@@ -818,7 +829,11 @@ void loadNextSound(ref const(ubyte)* ptr, ubyte channel) {
 			case 0xF3: songInstructionSetMusicNoteOffset(ptr); continue;
 			case 0xF4: songInstructionMarkRepeatPoint(ptr); continue;
 			case 0xF5: songInstructionRepeat(ptr); continue;
-			case 0x00: nextInstructionList(ptr); continue;
+			case 0x00:
+				if (nextInstructionList(ptr)) {
+					return;
+				}
+				continue;
 			case 0xF6: return silenceAudio();
 			case 0x9F: .. case 0xF0:
 				songState.songWorkingState.instructionTimer = songState.songInstructionTimerArrayPointer[ptr[0] & 0b01011111];
@@ -886,6 +901,7 @@ void songInstructionSetWorkingSoundChannelOptions(ref const(ubyte)* ptr) {
 	if (songState.songWorkingState.effectIndex == 0) {
 		songState.songWorkingState.effectIndex = 0; // ?
 	}
+	ptr++;
 }
 
 void songInstructionSetWorkingSoundChannelOptionsWave(ref const(ubyte)* ptr) {
