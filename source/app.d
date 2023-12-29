@@ -15,6 +15,8 @@ import std.functional;
 struct GameSettings {}
 
 void main() {
+	import std.logger;
+	(cast(Logger)sharedLog).logLevel = LogLevel.trace;
 	gb.entryPoint = &start;
 	gb.interruptHandler = &vblank;
 	gb.title = "Metroid II: Return of Samus";
