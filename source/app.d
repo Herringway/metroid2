@@ -131,8 +131,71 @@ void debugFunction(const UIState state) {
 		if (ImGui.TreeNode("Metroid state")) {
 			InputEditable("Metroid fight active", metroidFightActive);
 			InputEditable("Metroid state", metroidState);
+			InputEditable("Gamma stun", gammaStunCounter);
 			ImGui.TreePop();
 		}
+		if (ImGui.TreeNode("Metroid queen state")) {
+			InputEditable("Body coords", queenBodyXScroll, queenBodyY);
+			InputEditable("Body height", queenBodyHeight);
+			InputEditable("Walk wait timer", queenWalkWaitTimer);
+			InputEditable("Walk counter", queenWalkCounter);
+			InputEditable("Head coords", queenHeadX, queenHeadY);
+			InputEditable("Head bottom Y", queenHeadBottomY);
+			InputEditable("Interrupt list", queenInterruptListID);
+			InputEditable("Neck movement sum", queenNeckXMovementSum, queenNeckYMovementSum);
+			InputEditable("Neck drawing state", queenNeckDrawingState);
+			InputEditable("Camera delta", queenCameraDeltaX, queenCameraDeltaY);
+			InputEditable("Walk control", queenWalkControl);
+			InputEditable("Neck selection", queenNeckSelectionFlag);
+			InputEditable("Walk status", queenWalkStatus);
+			InputEditable("Neck control", queenNeckControl);
+			InputEditable("Neck status", queenNeckStatus);
+			InputEditable("Walk speed", queenWalkSpeed);
+			InputEditable("State", queenState);
+			InputEditable("Camera", queenCameraX, queenCameraY);
+			InputEditable("Foot frame", queenFootFrame);
+			InputEditable("Foot anim counter", queenFootAnimCounter);
+			InputEditable("Head frame next", queenHeadFrameNext);
+			InputEditable("Head frame", queenHeadFrame);
+			InputEditable("Neck pattern", queenNeckPatternID);
+			InputEditable("Delay timer", queenDelayTimer);
+			InputEditable("Stun timer", queenStunTimer);
+			InputEditable("Stomach bombed", queenStomachBombedFlag);
+			InputEditable("Body palette", queenBodyPalette);
+			InputEditable("Health", queenHealth);
+			InputEditable("Death array index", queenDeathArrayIndex);
+			InputEditable("Death anim counter", queenDeathAnimCounter);
+			InputEditable("Death bitmask", queenDeathBitmask);
+			InputEditable("Projectiles active", queenProjectilesActive);
+			InputEditable("Projectile temp direction", queenProjectileTempDirection);
+			InputEditable("Projectile chase timer", queenProjectileChaseTimer);
+			InputEditable("Low health", queenLowHealthFlag);
+			InputEditable("Flash timer", queenFlashTimer);
+			InputEditable("Midhealth", queenMidHealthFlag);
+			InputEditable("Head dest", queenHeadDest);
+			ImGui.TreePop();
+		}
+		if (ImGui.TreeNode("Arachnus state")) {
+			InputEditable("Jump counter", arachnus.jumpCounter);
+			InputEditable("Action timer", arachnus.actionTimer);
+			InputEditable("Unknown", arachnus.unknownVar);
+			InputEditable("Jump status", arachnus.jumpStatus);
+			InputEditable("Health", arachnus.health);
+			InputEditable("Unknown (6)", arachnus.unk06);
+			InputEditable("Unknown (7)", arachnus.unk07);
+			ImGui.TreePop();
+		}
+		if (ImGui.TreeNode("Blob thrower state")) {
+			InputEditable("Action timer", blobThrowerActionTimer);
+			InputEditable("Wait timer", blobThrowerWaitTimer);
+			InputEditable("State", blobThrowerState);
+			InputEditable("Direction", blobThrowerFacingDirection);
+			InputEditable("Unknown", blobThrowerBlobUnknownVar);
+			ImGui.TreePop();
+		}
+		ImGui.TreePop();
+	}
+	if (ImGui.TreeNode("Map State")) {
 		ImGui.TreePop();
 	}
 	if (ImGui.TreeNode("Misc State")) {
