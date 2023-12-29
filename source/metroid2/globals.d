@@ -168,7 +168,7 @@ __gshared ubyte scrollEnemiesNumEnemiesLeft;
 __gshared ubyte enemyTestPointYPos;
 __gshared ubyte enemyTestPointXPos;
 
-__gshared ubyte omegaTempSpriteType;
+__gshared Actor omegaTempSpriteType;
 __gshared EnemySlot* enemyWRAM;
 
 __gshared EnemySlot[] enemyFirstEnemy;
@@ -202,11 +202,12 @@ struct EnSprCollision {
 __gshared EnSprCollision enSprCollision;
 
 __gshared ubyte gammaStunCounter;
+__gshared ubyte zetaStunCounter;
 __gshared CollisionType enemyWeaponType;
 __gshared ubyte enemyWeaponDir;
 
 __gshared ubyte omegaWaitCounter;
-__gshared ubyte omegaSamusPrevHealth;
+__gshared ushort omegaSamusPrevHealth;
 
 __gshared ubyte metroidScrewKnockbackDone;
 __gshared ubyte larvaHurtAnimCounter;

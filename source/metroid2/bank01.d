@@ -1966,6 +1966,122 @@ ushort alphaGetSpeedVector() {
 	}
 }
 
+ushort gammaGetSpeedVector() {
+	switch (enemyWorking.state) {
+		case 0:
+			return 0x0004;
+		case 1:
+			return 0x0084;
+		case 2:
+			return 0x0400;
+		case 3:
+			return 0x8400;
+		case 4:
+			return 0x0104;
+		case 5:
+			return 0x0204;
+		case 6:
+			return 0x0303;
+		case 7:
+			return 0x0402;
+		case 8:
+			return 0x0401;
+		case 9:
+			return 0x0184;
+		case 10:
+			return 0x0284;
+		case 11:
+			return 0x0383;
+		case 12:
+			return 0x0482;
+		case 13:
+			return 0x0481;
+		case 14:
+			return 0x8104;
+		case 15:
+			return 0x8204;
+		case 16:
+			return 0x8303;
+		case 17:
+			return 0x8402;
+		case 18:
+			return 0x8401;
+		case 19:
+			return 0x8184;
+		case 20:
+			return 0x8284;
+		case 21:
+			return 0x8383;
+		case 22:
+			return 0x8482;
+		case 23:
+			return 0x8481;
+		default: assert(0);
+	}
+}
+
+void gammaGetAngle() {
+	metroidGetDistanceAndDirection();
+	gammaGetAngleFromTable();
+}
+
+void gammaGetAngleFromTable() {
+	static immutable ubyte[] angleTable = [
+		0x00, 0x01, 0x02, 0x03,
+		0x00, 0x04, 0x05, 0x06, 0x07, 0x08, 0x02,
+		0x01, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x02,
+		0x00, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x03,
+		0x01, 0x13, 0x14, 0x15, 0x16, 0x17, 0x03,
+	];
+	if (metroidSamusXDir == 0) {
+		if (metroidSamusYDir != 1) {
+			metroidAngleTableIndex = 3;
+		} else {
+			metroidAngleTableIndex = 2;
+		}
+	} else if (metroidSamusYDir == 0) {
+		if (metroidSamusXDir != 1) {
+			metroidAngleTableIndex = 1;
+		} else {
+			metroidAngleTableIndex = 0;
+		}
+	} else {
+		if (metroidSamusYDir != 0xFF) {
+			if (metroidSamusXDir != 0xFF) {
+				metroidAngleTableIndex = 4;
+			} else {
+				metroidAngleTableIndex = 11;
+			}
+		} else {
+			if (metroidSamusXDir != 0xFF) {
+				metroidAngleTableIndex = 18;
+			} else {
+				metroidAngleTableIndex = 25;
+			}
+		}
+		metroidGetSlopeToSamus();
+		gammaConvertSlopeToAngleIndex();
+	}
+	enemyWorking.state = angleTable[metroidAngleTableIndex];
+}
+void gammaConvertSlopeToAngleIndex() {
+	if (metroidSlopeToSamus < 12) {
+		metroidAngleTableIndex += 0;
+	} else if (metroidSlopeToSamus < 38) {
+		metroidAngleTableIndex += 1;
+	} else if (metroidSlopeToSamus < 75) {
+		metroidAngleTableIndex += 2;
+	} else if (metroidSlopeToSamus < 150) {
+		metroidAngleTableIndex += 3;
+	} else if (metroidSlopeToSamus < 300) {
+		metroidAngleTableIndex += 4;
+	} else if (metroidSlopeToSamus < 800) {
+		metroidAngleTableIndex += 5;
+	} else if (metroidSlopeToSamus >= 800) {
+		metroidAngleTableIndex += 6;
+	}
+}
+
 void drawNonGameSprite() {
 	version(original) {} else {
 		// original did no bounds checking
