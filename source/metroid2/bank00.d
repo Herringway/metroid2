@@ -2098,6 +2098,7 @@ ubyte samusGetTileIndex() {
 	const a = gb.vram[tilemapDest] & b;
 	if (!samusInvulnerableTimer) {
 		if (collisionArray[a] & BlockType.spike) {
+			debug(damagetrace) tracef("Samus (%s, %s) took %s damage from spikes", samusX, samusY, spikeDamageValue);
 			sfxRequestSquare1 = Square1SFX.standingTransition;
 			samusHurtFlag = 1;
 			samusDamageBoostDirection = 0;
@@ -3401,6 +3402,7 @@ bool collisionSamusOneEnemy(EnemySlot* enemy, ubyte samusX, ubyte samusY) {
 		collision.weaponType = CollisionType.contact;
 		return false;
 	}
+	tracef("Samus (%s, %s) took %s enemy damage", samusX, samusY, enemyDamageTable[collisionEnSprite]);
 	samusDamageValue = enemyDamageTable[collisionEnSprite];
 	samusHurtFlag = 1;
 	collision.enemy = enemy;
@@ -3504,6 +3506,7 @@ bool collisionSamusOneEnemyVertical(EnemySlot* enemy, ubyte samusX, ubyte samusY
 		collision.weaponType = CollisionType.contact;
 		return false;
 	}
+	tracef("Samus (%s, %s) took %s enemy damage from %s", samusX, samusY, enemyDamageTable[collisionEnSprite], collisionEnSprite);
 	samusDamageValue = enemyDamageTable[collisionEnSprite];
 	samusHurtFlag = 1;
 	collision.enemy = enemy;
