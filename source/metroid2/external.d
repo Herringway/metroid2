@@ -7,10 +7,10 @@ import librehome.gameboy;
 GameBoySimple gb;
 
 void disableSRAM() {
-	gb.disableSRAM!SRAM();
+	gb.disableSRAM();
 }
 void enableSRAM() {
-	gb.enableSRAM!SRAM();
+	gb.enableSRAM();
 }
 
 struct SaveFileData {
@@ -52,5 +52,5 @@ struct SRAM {
 }
 
 ref SRAM sram() {
-	return gb.sram!SRAM();
+	return gb.sram!SRAM(0);
 }

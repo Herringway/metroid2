@@ -21,11 +21,11 @@ void main() {
 	gb.interruptHandler = &vblank;
 	gb.title = "Metroid II: Return of Samus";
 	gb.sourceFile = "metroid2.gb";
-	gb.saveSize = 0x2000;
-	gb.saveFile = "metroid2.sav";
+	gb.gameID = "metroid2";
 	loadData(gb.romData);
 	auto settings = gb.loadSettings!GameSettings();
 	gb.debugMenuRenderer = (&debugFunction).toDelegate;
+	gb.initialize();
 	gb.run();
 	gb.saveSettings(settings);
 }
