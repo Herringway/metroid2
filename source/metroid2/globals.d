@@ -15,7 +15,7 @@ __gshared ushort tilemapDest;
 __gshared ubyte gameOverLCDCCopy;
 __gshared ubyte unknownC227;
 
-__gshared ubyte[0x60] oamScratchpad;
+__gshared OAMEntry[24] oamScratchpad;
 __gshared OAMEntry[16] enSpriteBlobThrower;
 __gshared Rectangle hitboxC360;
 
@@ -52,7 +52,7 @@ __gshared ubyte queenHeadBottomY;
 __gshared ubyte queenInterruptListID;
 __gshared ubyte queenNeckXMovementSum;
 __gshared ubyte queenNeckYMovementSum;
-__gshared ubyte* queenOAMScratchpad;
+__gshared OAMEntry* queenOAMScratchpad;
 __gshared ubyte queenNeckDrawingState;
 __gshared ubyte queenCameraDeltaX;
 __gshared ubyte queenCameraDeltaY;

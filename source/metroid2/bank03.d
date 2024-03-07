@@ -2,7 +2,10 @@ module metroid2.bank03;
 
 import metroid2.defs;
 import metroid2.enemies;
+import metroid2.external;
 import metroid2.globals;
+
+import librehome.gameboy;
 
 import std.logger;
 
@@ -360,7 +363,48 @@ immutable ubyte[][] queenNeckPatterns = [
 ];
 
 void queenInitialize() {
-	assert(0); // TODO
+	oamScratchpad[] = OAMEntry.init;
+	queenBodyY = 103;
+	queenBodyHeight = 55;
+	gb.STAT = 0x44;
+	queenBodyXScroll = 92;
+	queenCameraX = scrollX;
+	gb.WX = 3;
+	queenHeadX = 3;
+	queenCameraY = scrollY;
+	gb.WY = 0x70;
+	queenHeadY = 0x70;
+	queenInterruptListID = 0;
+	queenInterruptList = null;
+	queenNeckYMovementSum = 9;
+	queenNeckXMovementSum = 9;
+	queenOAMScratchpad = &oamScratchpad[0];
+	for (int i = 0; i < 12; i++) {
+		oamScratchpad[i + 12].y = cast(ubyte)(120 + 8 * i);
+		oamScratchpad[i + 12].x = 162;
+		oamScratchpad[i + 12].tile = 176;
+		oamScratchpad[i + 12].flags = 0;
+	}
+	queenAdjustWallSpriteToHead();
+	queenNextState = &queenStateList[0];
+	queenState = 23;
+
+	enemyDataSlots[0 .. 13] = EnemySlot.init;
+	queenHealth = 150;
+
+	queenSetActorPositions();
+
+	enemyDataSlots[ReservedEnemySlots.queenBody].spriteType = Actor.queenBody;
+	enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType = Actor.queenMouthClosed;
+	enemyDataSlots[ReservedEnemySlots.queenHeadL].spriteType = Actor.queenHeadLeft;
+	enemyDataSlots[ReservedEnemySlots.queenHeadR].spriteType = Actor.queenHeadRight;
+	foreach(i; ReservedEnemySlots.queenNeck .. ReservedEnemySlots.queenNeck6 + 1) {
+		enemyDataSlots[i].spriteType = Actor.queenNeck;
+	}
+	queenDeactivateActorsNeck();
+	queenHeadFrameNext = 1;
+	queenHeadFrame = 1;
+	queenDelayTimer = 140;
 }
 
 void queenDeactivateActorsNeck() {
@@ -436,6 +480,17 @@ void queenLoadNeckBasePointer() {
 void queenSetNeckBasePointer() {
 	assert(0); // TODO
 }
+
+/**
+ *
+ * 0 - walk forward
+ * 2 - thrust head forward
+ * 4 - retract head
+ * 6 - walk back
+ * 20 - spit blobs
+ * 0xFF - repeat
+ */
+immutable ubyte[] queenStateList = [0, 2, 4, 2, 4, 6, 20, 0xFF];
 
 void queenHandleState() {
 	assert(0); // TODO
