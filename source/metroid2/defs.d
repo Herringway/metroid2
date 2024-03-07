@@ -27,7 +27,7 @@ enum ScrollDirection {
 	down = 1 << 7,
 }
 
-enum VRAMDest {
+enum VRAMDest : ushort {
 	creditsSpriteTiles = 0x8000,
 
 	samus = 0x8000,
@@ -57,6 +57,10 @@ enum VRAMDest {
 
 	statusBar = 0x9C00,
 	itemText = 0x9C20,
+	queenHeadRow1 = 0x9C00,
+	queenHeadRow2 = 0x9C20,
+	queenHeadRow3 = 0x9C40,
+	queenHeadRow4 = 0x9C60,
 }
 
 enum Actor {
@@ -564,22 +568,13 @@ enum DoorCommand : ubyte {
 	end = 0xFF,
 }
 
-enum SpecialDoorCopySrc {
+enum SpecialDoorCopySrc : ubyte {
 	queenSpr,
 	commonItems,
 	queenHeadRow1,
 	queenHeadRow2,
 	queenHeadRow3,
 	queenHeadRow4,
-}
-
-enum SpecialDoorCopyDest {
-	enemySpr,
-	commonItems,
-	screen1,
-	screen1r2,
-	screen1r3,
-	screen1r4,
 }
 
 enum CollisionType {

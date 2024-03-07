@@ -1968,13 +1968,13 @@ immutable ubyte[] door314 = doorScript(
     END_DOOR,
 );
 immutable ubyte[] door315 = doorScript(
-    IF_MET_LESS(01, 413),
+    IF_MET_LESS(1, 413),
     FADEOUT,
     LOAD_BG(BGTileSet.queenBG),
     COLLISION(0x2),
     SOLIDITY(0x2),
     TILETABLE(0x3),
-    COPY_SPR(SpecialDoorCopySrc.queenSpr, SpecialDoorCopyDest.enemySpr, 0x0500),
+    COPY_SPR(SpecialDoorCopySrc.queenSpr, VRAMDest.enemies, 0x0500),
     WARP(0xF, 0xEF),
     END_DOOR,
 );
@@ -2297,7 +2297,7 @@ immutable ubyte[] door384 = doorScript(
     LOAD_BG(BGTileSet.finalLab),
     COLLISION(0x7),
     SOLIDITY(0x7),
-    COPY_DATA(SpecialDoorCopySrc.commonItems, SpecialDoorCopyDest.commonItems, 0x0100),
+    COPY_DATA(SpecialDoorCopySrc.commonItems, VRAMDest.commonItems, 0x0100),
     ITEM(0x2),
     TILETABLE(0x0),
     SONG(Song.finalCaves),
@@ -2470,16 +2470,16 @@ immutable ubyte[] door413 = doorScript(
     COLLISION(0x2),
     SOLIDITY(0x2),
     TILETABLE(0x3),
-    COPY_SPR(SpecialDoorCopySrc.queenSpr, SpecialDoorCopyDest.enemySpr, 0x0500),
-    COPY_DATA(SpecialDoorCopySrc.queenHeadRow1, SpecialDoorCopyDest.screen1, 0x0020),
-    COPY_DATA(SpecialDoorCopySrc.queenHeadRow2, SpecialDoorCopyDest.screen1r2, 0x0020),
-    COPY_DATA(SpecialDoorCopySrc.queenHeadRow3, SpecialDoorCopyDest.screen1r3, 0x0020),
-    COPY_DATA(SpecialDoorCopySrc.queenHeadRow4, SpecialDoorCopyDest.screen1r4, 0x0020),
+    COPY_SPR(SpecialDoorCopySrc.queenSpr, VRAMDest.enemies, 0x0500),
+    COPY_DATA(SpecialDoorCopySrc.queenHeadRow1, VRAMDest.queenHeadRow1, 0x0020),
+    COPY_DATA(SpecialDoorCopySrc.queenHeadRow2, VRAMDest.queenHeadRow2, 0x0020),
+    COPY_DATA(SpecialDoorCopySrc.queenHeadRow3, VRAMDest.queenHeadRow3, 0x0020),
+    COPY_DATA(SpecialDoorCopySrc.queenHeadRow4, VRAMDest.queenHeadRow4, 0x0020),
     ENTER_QUEEN(0xF, 0x0F48, 0x0EAE, 0x0F02, 0x0EDE),
     END_DOOR,
 );
 immutable ubyte[] door414 = doorScript(
-    COPY_DATA(SpecialDoorCopySrc.commonItems, SpecialDoorCopyDest.commonItems, 0x0100),
+    COPY_DATA(SpecialDoorCopySrc.commonItems, VRAMDest.commonItems, 0x0100),
     IF_MET_LESS(0, 415),
     FADEOUT,
     LOAD_BG(BGTileSet.finalLab),
@@ -2860,7 +2860,7 @@ immutable ubyte[] door489 = doorScript(
     COLLISION(0x2),
     SOLIDITY(0x2),
     TILETABLE(0x3),
-    COPY_SPR(SpecialDoorCopySrc.queenSpr, SpecialDoorCopyDest.enemySpr, 0x0500),
+    COPY_SPR(SpecialDoorCopySrc.queenSpr, VRAMDest.enemies, ushort(0x0500)),
     END_DOOR,
 );
 immutable ubyte[] door490 = door489;
@@ -2871,7 +2871,7 @@ immutable ubyte[] door492 = doorScript(
     LOAD_SPR(EnemyTileSet.surfaceSPR),
     COLLISION(0x4),
     SOLIDITY(0x4),
-    COPY_DATA(SpecialDoorCopySrc.commonItems, SpecialDoorCopyDest.commonItems, 0x0100),
+    COPY_DATA(SpecialDoorCopySrc.commonItems, VRAMDest.commonItems, 0x0100),
     TILETABLE(0x5),
     END_DOOR,
 );
@@ -2901,16 +2901,16 @@ immutable ubyte[] door509 = doorScript();
 immutable ubyte[] door510 = doorScript();
 immutable ubyte[] door511 = doorScript();
 
-ubyte[] COPY_DATA(ubyte src, ubyte dest, ushort length) {
-	return [DoorCommand.copyData, src, dest, length & 0xFF, length >> 8];
+ubyte[] COPY_DATA(ubyte src, ushort dest, ushort length) {
+	return [DoorCommand.copyData, src, dest & 0xFF, dest >> 8, length & 0xFF, length >> 8];
 }
 
-ubyte[] COPY_BG(ubyte src, ubyte dest, ushort length) {
-	return [DoorCommand.copyBG, src, dest, length & 0xFF, length >> 8];
+ubyte[] COPY_BG(ubyte src, ushort dest, ushort length) {
+	return [DoorCommand.copyBG, src, dest & 0xFF, dest >> 8, length & 0xFF, length >> 8];
 }
 
-ubyte[] COPY_SPR(ubyte src, ubyte dest, ushort length) {
-	return [DoorCommand.copySpr, src, dest, length & 0xFF, length >> 8];
+ubyte[] COPY_SPR(ubyte src, ushort dest, ushort length) {
+	return [DoorCommand.copySpr, src, dest & 0xFF, dest >> 8, length & 0xFF, length >> 8];
 }
 
 ubyte[] TILETABLE(ubyte t) {
