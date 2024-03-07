@@ -2539,7 +2539,6 @@ void executeDoorScript() {
 						if ((script[0] & 0xF) != 0xA) {
 							songRequest = cast(Song)script[0];
 							currentRoomSong = cast(Song)script[0];
-							script++;
 							if (currentRoomSong == Song.metroidQueenHallway) {
 								soundPlayQueenRoar = 0xFF;
 								songRequestAfterEarthquake = Song.nothing;
@@ -2566,6 +2565,7 @@ void executeDoorScript() {
 							soundPlayQueenRoar = 0xFF;
 						}
 					}
+					script++;
 					break;
 				case DoorCommand.item:
 					const itemID = (script[0] - 1) & 0xF;
