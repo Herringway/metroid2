@@ -280,6 +280,11 @@ void enemySeekSamus(ubyte b, ubyte d, ubyte e) {
 			enemyWorking.state -= b;
 		}
 	}
+	version(original) {} else {
+		import std.algorithm.comparison : clamp;
+		enemyWorking.counter = clamp(enemyWorking.counter, ubyte(0), cast(ubyte)(speedTable.length - 1));
+		enemyWorking.state = clamp(enemyWorking.state, ubyte(0), cast(ubyte)(speedTable.length - 1));
+	}
 	enemyWorking.y += speedTable[enemyWorking.counter];
 	enemyWorking.x += speedTable[enemyWorking.state];
 }
