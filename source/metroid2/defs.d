@@ -871,15 +871,15 @@ const(ubyte)* bgGfx(ubyte id) {
 		default: return null;
 	}
 }
-const(ubyte)* specialData(ubyte id) {
+const(ubyte)[] specialData(ubyte id) {
 	import metroid2.data;
 	final switch (cast(SpecialDoorCopySrc)id) {
-		case SpecialDoorCopySrc.queenSpr: return &graphicsQueenSPR[0];
-		case SpecialDoorCopySrc.commonItems: return &graphicsItems[12][0];
-		case SpecialDoorCopySrc.queenHeadRow1: return &bgQueenHead[0];
-		case SpecialDoorCopySrc.queenHeadRow2: return &bgQueenHead[0x20];
-		case SpecialDoorCopySrc.queenHeadRow3: return &bgQueenHead[0x40];
-		case SpecialDoorCopySrc.queenHeadRow4: return &bgQueenHead[0x60];
+		case SpecialDoorCopySrc.queenSpr: return graphicsQueenSPR;
+		case SpecialDoorCopySrc.commonItems: return graphicsItems[12];
+		case SpecialDoorCopySrc.queenHeadRow1: return bgQueenHead[0 .. 0x20];
+		case SpecialDoorCopySrc.queenHeadRow2: return bgQueenHead[0x20 .. 0x40];
+		case SpecialDoorCopySrc.queenHeadRow3: return bgQueenHead[0x40 .. 0x60];
+		case SpecialDoorCopySrc.queenHeadRow4: return bgQueenHead[0x60 .. 0x80];
 	}
 }
 

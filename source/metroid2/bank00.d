@@ -2621,14 +2621,22 @@ void doorCopyData(ref const(ubyte)* script) {
 	switch ((script++)[0] & 0xF) {
 		case DoorCommand.copyBG & 0xF:
 		case DoorCommand.copySpr & 0xF:
-			vramTransfer.src = specialData(script++[0]);
+			vramTransfer.src = &specialData(script++[0])[0];
 			vramTransfer.dest = *cast(const(ushort)*)(script);
 			script += 2;
 			vramTransfer.size = *cast(const(ushort)*)(script);
 			script += 2;
 			beginGraphicsTransfer();
 			break;
-		default: return loadGraphics(*cast(const(GraphicsInfo)*)script);
+		default:
+			GraphicsInfo gfx;
+			gfx.data = specialData(script++[0]);
+			gfx.destination = *cast(const(ushort)*)(script);
+			script += 2;
+			gfx.length = *cast(const(ushort)*)(script);
+			script += 2;
+			loadGraphics(gfx);
+			break;
 	}
 }
 
@@ -2646,6 +2654,7 @@ void convertCameraToScroll() {
 }
 
 void beginGraphicsTransfer() {
+	assert(vramTransfer.src);
 	vramTransferFlag = 0xFF;
 	while (vramTransferFlag) {
 		if (variaAnimationFlag) {
