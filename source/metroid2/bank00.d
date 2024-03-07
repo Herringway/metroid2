@@ -2428,6 +2428,7 @@ void executeDoorScript() {
 				script++;
 				break;
 			}
+			tracef("executing door command %02X", script[0]);
 			switch (cast(DoorCommand)(script[0] & 0xF0)) {
 				case DoorCommand.loadData:
 					saveMessageCooldownTimer = 0;

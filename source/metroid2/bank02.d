@@ -5006,7 +5006,7 @@ void enAIOmegaMetroid() {
 		}
 	}
 	enemyGetSamusCollisionResults();
-	if (enemyWorking.spawnFlag == 6) {
+	if (enemyWorking.spawnFlag == 6) { // I am a fireball
 		if (metroidFightActive == 2) {
 			enemyDeleteSelf();
 			enemyWorking.spawnFlag = 0xFF;
