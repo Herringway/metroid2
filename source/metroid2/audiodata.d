@@ -1418,7 +1418,7 @@ immutable ubyte[] songStereoFlags = [
 
 const(SongHeader)[] songDataTable;
 
-void loadSongs(ref const(SongHeader)[] dest, const(ubyte)[] data, size_t entries) {
+void decompileSong(out SongHeader dest, const(ubyte)[] data, size_t base) @safe {
     import metroid2.bank04;
     static struct OriginalSongHeader {
         align(1):
@@ -1472,36 +1472,30 @@ void loadSongs(ref const(SongHeader)[] dest, const(ubyte)[] data, size_t entries
         }
         return result;
     }
-    dest.reserve(entries);
-    foreach (songIdx, base; cast(const(ushort)[])(data[0x11F30 .. 0x11F30 + entries * 2])) {
-        SongHeader newHeader;
-        const originalHeader = (cast(const(OriginalSongHeader)[])(data[0x10000 - 0x4000 + base .. 0x10000 - 0x4000 + base + OriginalSongHeader.sizeof]))[0];
-        newHeader.noteOffset = originalHeader.noteOffset;
-        newHeader.tempo = getTempoData(originalHeader.tempo);
-        if (newHeader.tempo.length == 0) {
-            tracef("Skipping song %s, invalid header", songIdx);
-            dest ~= SongHeader.init;
-            continue;
-        }
-        if (originalHeader.toneSweepChannel != 0) {
-            newHeader.toneSweepChannel = decompileTracks(originalHeader.toneSweepChannel, data[0x10000 - 0x4000 + originalHeader.toneSweepChannel .. $], data, newHeader.squareTracks);
-        }
-        if (originalHeader.toneChannel != 0) {
-            newHeader.toneChannel = decompileTracks(originalHeader.toneChannel, data[0x10000 - 0x4000 + originalHeader.toneChannel .. $], data, newHeader.squareTracks);
-        }
-        if (originalHeader.waveChannel != 0) {
-            newHeader.waveChannel = decompileTracks(originalHeader.waveChannel, data[0x10000 - 0x4000 + originalHeader.waveChannel .. $], data, newHeader.waveTracks);
-        }
-        if (originalHeader.noiseChannel != 0) {
-            newHeader.noiseChannel = decompileTracks(originalHeader.noiseChannel, data[0x10000 - 0x4000 + originalHeader.noiseChannel .. $], data, newHeader.noiseTracks);
-        }
-        dest ~= newHeader;
+    const originalHeader = (cast(const(OriginalSongHeader)[])(data[0x10000 - 0x4000 + base .. 0x10000 - 0x4000 + base + OriginalSongHeader.sizeof]))[0];
+    dest.noteOffset = originalHeader.noteOffset;
+    dest.tempo = getTempoData(originalHeader.tempo);
+    if (dest.tempo.length == 0) {
+        dest = SongHeader.init;
+        return;
+    }
+    if (originalHeader.toneSweepChannel != 0) {
+        dest.toneSweepChannel = decompileTracks(originalHeader.toneSweepChannel, data[0x10000 - 0x4000 + originalHeader.toneSweepChannel .. $], data, dest.squareTracks);
+    }
+    if (originalHeader.toneChannel != 0) {
+        dest.toneChannel = decompileTracks(originalHeader.toneChannel, data[0x10000 - 0x4000 + originalHeader.toneChannel .. $], data, dest.squareTracks);
+    }
+    if (originalHeader.waveChannel != 0) {
+        dest.waveChannel = decompileTracks(originalHeader.waveChannel, data[0x10000 - 0x4000 + originalHeader.waveChannel .. $], data, dest.waveTracks);
+    }
+    if (originalHeader.noiseChannel != 0) {
+        dest.noiseChannel = decompileTracks(originalHeader.noiseChannel, data[0x10000 - 0x4000 + originalHeader.noiseChannel .. $], data, dest.noiseTracks);
     }
 }
 
 struct SongHeader {
 	ubyte noteOffset;
-	immutable(ubyte)[] tempo;
+	const(ubyte)[] tempo;
 	const(ushort)[] toneSweepChannel;
 	const(ushort)[] toneChannel;
 	const(ushort)[] waveChannel;

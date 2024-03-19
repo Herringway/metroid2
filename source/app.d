@@ -22,10 +22,13 @@ void main() {
 	gb.title = "Metroid II: Return of Samus";
 	gb.sourceFile = "metroid2.gb";
 	gb.gameID = "metroid2";
-	loadData(gb.romData);
 	auto settings = gb.loadSettings!GameSettings();
 	gb.debugMenuRenderer = (&debugFunction).toDelegate;
 	gb.initialize();
+	if (!gb.assetsExist) {
+		gb.extractAssets!loadableDataModules(&extractExtraAssets);
+	}
+	gb.loadAssets!loadableDataModules(&loadExtraData);
 	gb.run();
 	gb.saveSettings(settings);
 }

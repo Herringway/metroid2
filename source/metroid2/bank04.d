@@ -2088,7 +2088,7 @@ void playNoiseSweepSFX(ubyte a, const(ubyte)* set) {
 	SetChannelOptionSetNoise(set);
 }
 
-immutable(ubyte)[] getTempoData(ushort originalAddress) {
+immutable(ubyte)[] getTempoData(ushort originalAddress) @safe {
     enum OriginalTempoOffset {
         table448 = 0x409E,
         table224 = 0x40AB,
