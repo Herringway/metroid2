@@ -724,7 +724,7 @@ void loadDoorIndex() {
 	if (debugFlag == 0) {
 		return;
 	}
-	if (inputPressed & (Pad.start | Pad.select | Pad.b | Pad.a) == (Pad.start | Pad.a)) {
+	if ((inputPressed & (Pad.start | Pad.select | Pad.b | Pad.a)) == (Pad.start | Pad.a)) {
 		doorIndex = 0x019D;
 	}
 }
@@ -3905,10 +3905,10 @@ void loadGameSamusItemGraphics() {
 	if ((samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) == (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
 		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceScrewTop);
 		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceScrewBottom);
-	} else if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack) == ItemFlag.spaceJump) {
+	} else if ((samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) == ItemFlag.spaceJump) {
 		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceTop);
 		loadGameCopyItemToVRAM(graphicsInfoSpinSpaceBottom);
-	} else if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack) == ItemFlag.screwAttack) {
+	} else if ((samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) == ItemFlag.screwAttack) {
 		loadGameCopyItemToVRAM(graphicsInfoSpinScrewTop);
 		loadGameCopyItemToVRAM(graphicsInfoSpinScrewBottom);
 	}
