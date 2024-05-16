@@ -9,7 +9,7 @@ import metroid2.defs;
 import metroid2.external;
 import metroid2.globals;
 
-import librehome.gameboy;
+import replatform64.gameboy;
 
 public import metroid2.doors;
 

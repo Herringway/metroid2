@@ -1,6 +1,6 @@
 module metroid2.globals;
 
-import librehome.gameboy;
+import replatform64.gameboy;
 
 import metroid2.defs;
 import metroid2.external;

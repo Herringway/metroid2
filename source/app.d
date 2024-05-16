@@ -3,8 +3,8 @@ import metroid2.bank03;
 import metroid2.data;
 import metroid2.external;
 
-import librehome;
-import librehome.gameboy;
+import replatform64;
+import replatform64.gameboy;
 
 import d_imgui.imgui_h;
 import ImGui = d_imgui;
@@ -18,7 +18,7 @@ void main() {
 	import std.logger;
 	(cast(Logger)sharedLog).logLevel = LogLevel.trace;
 	gb.entryPoint = &start;
-	gb.interruptHandler = &vblank;
+	gb.interruptHandlerVBlank = &vblank;
 	gb.title = "Metroid II: Return of Samus";
 	gb.sourceFile = "metroid2.gb";
 	gb.gameID = "metroid2";
@@ -33,7 +33,7 @@ void debugFunction(const UIState state) {
 	import metroid2.defs;
 	import metroid2.globals;
 
-	ImGui.SetNextWindowSize(ImGui.ImVec2(400 * state.scaleFactor, state.height));
+	ImGui.SetNextWindowSize(ImGui.ImVec2(400 * state.scaleFactor, state.window.height));
 	ImGui.SetNextWindowPos(ImGui.ImVec2(0, 0));
 	ImGui.Begin("Debugging", null, ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoSavedSettings);
 	ImGui.InvisibleButton("padding", ImGui.ImVec2(1, ImGui.GetCursorPos().y));

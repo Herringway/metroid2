@@ -5,7 +5,7 @@
 	"description": "metroid II",
 	"license": "proprietary",
 	"dependencies": {
-		"librehome:gameboy": "*"
+		"replatform64:gameboy": "*"
 	},
 	"name": "metroid2"
 }

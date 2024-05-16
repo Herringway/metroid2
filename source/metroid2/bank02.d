@@ -8,7 +8,7 @@ import metroid2.defs;
 import metroid2.globals;
 import metroid2.external;
 
-import librehome.gameboy;
+import replatform64.gameboy;
 
 import std.logger;
 
@@ -1709,7 +1709,7 @@ void enAIRockIcicle() {
 			enemyWorking.misc += 4;
 			enCollisionDownNearSmall();
 			if (!(enBGCollisionResult & 2)) {
-				if (enemyWorking.y < gb.width) {
+				if (enemyWorking.y < PPU.width) {
 					return;
 				}
 			}
@@ -4582,7 +4582,7 @@ void enAIZetaMetroid() {
 			} else {
 				enemyWorking.stunCounter = 16;
 				enemyAccelForwards(enemyWorking.y);
-				if (enemyWorking.y < gb.height) {
+				if (enemyWorking.y < PPU.height) {
 					return;
 				}
 				enemyDeleteSelf();
@@ -4636,7 +4636,7 @@ void enAIZetaMetroid() {
 	enemyGetSamusCollisionResults();
 	if (enemyWorking.spawnFlag == 6) {
 		if (metroidState != 6) {
-			if (enemyWorking.y + 3 < gb.height) {
+			if (enemyWorking.y + 3 < PPU.height) {
 				enemyWorking.y += 3;
 				if (!(enemyWorking.spriteAttributes & OAMFlags.xFlip)) {
 					enemyWorking.x--;
@@ -5431,21 +5431,21 @@ void enemyKeepOnscreen() {
 	}
 	if (enemyWorking.x < 24) {
 		enemyWorking.x = 24;
-	} else if (enemyWorking.x >= gb.width - 16) {
-		enemyWorking.x = gb.width - 16;
+	} else if (enemyWorking.x >= PPU.width - 16) {
+		enemyWorking.x = PPU.width - 16;
 	}
 }
 
 void babyKeepOnscreen() {
 	if (enemyWorking.y < 24) {
 		enemyWorking.y = 24;
-	} else if (enemyWorking.y >= gb.height) {
-		enemyWorking.y = gb.height;
+	} else if (enemyWorking.y >= PPU.height) {
+		enemyWorking.y = PPU.height;
 	}
 	if (enemyWorking.x < 24) {
 		enemyWorking.x = 24;
-	} else if (enemyWorking.x >= gb.width - 16) {
-		enemyWorking.x = gb.width - 16;
+	} else if (enemyWorking.x >= PPU.width - 16) {
+		enemyWorking.x = PPU.width - 16;
 	}
 }
 

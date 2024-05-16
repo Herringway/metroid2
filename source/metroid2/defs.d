@@ -1,6 +1,6 @@
 module metroid2.defs;
 
-public import librehome.gameboy : Pad;
+public import replatform64.gameboy : Pad;
 
 enum samusJumpArrayBaseOffset = 0x40;
 enum samusUnmorphJumpTime = 0x10;

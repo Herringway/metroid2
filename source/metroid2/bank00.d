@@ -16,7 +16,7 @@ import metroid2.external;
 import metroid2.globals;
 import metroid2.mapbanks;
 
-import librehome.gameboy;
+import replatform64.gameboy;
 
 void vblank() {
 	gb.SCY = scrollY;
@@ -554,13 +554,13 @@ void handleCamera() {
 	const tmp = scrollData[(cameraY.screen << 4) | cameraX.screen];
 	// righrward
 	if (tmp & 1) { // right blocked
-		if (cameraX.pixel == gb.width + 16) {
-			if (samusOnScreenXPos >= gb.width + 1) {
+		if (cameraX.pixel == PPU.width + 16) {
+			if (samusOnScreenXPos >= PPU.width + 1) {
 				doorScrollDirection = 1;
 				loadDoorIndex();
 			}
 			goto rightDone;
-		} else if (cameraX.pixel >= gb.width + 16) {
+		} else if (cameraX.pixel >= PPU.width + 16) {
 			cameraX = (cameraX - 1) & 0xFFF;
 			goto rightDone;
 		}
@@ -610,13 +610,13 @@ void handleCamera() {
 		cameraSpeedDown = cast(ubyte)(samusY.pixel - samusPrevYPixel);
 		cameraScrollDirection |= ScrollDirection.down;
 		if (tmp & 8) {
-			if (((queenRoomFlag == 0x11) && (cameraY.pixel == gb.height + 16)) || (cameraY.pixel == 192)) {
+			if (((queenRoomFlag == 0x11) && (cameraY.pixel == PPU.height + 16)) || (cameraY.pixel == 192)) {
 				if (samusOnScreenYPos < 120) {
 					goto exit;
 				}
 				doorScrollDirection = 8;
 				loadDoorIndex();
-			} else if (((queenRoomFlag == 0x11) && (cameraY.pixel >= gb.height + 16)) || (cameraY.pixel >= 192)) {
+			} else if (((queenRoomFlag == 0x11) && (cameraY.pixel >= PPU.height + 16)) || (cameraY.pixel >= 192)) {
 				cameraY = (cameraY -1) & 0xFFF;
 				goto exit;
 			} else {

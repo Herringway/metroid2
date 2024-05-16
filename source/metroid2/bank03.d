@@ -5,7 +5,7 @@ import metroid2.enemies;
 import metroid2.external;
 import metroid2.globals;
 
-import librehome.gameboy;
+import replatform64.gameboy;
 
 import std.logger;
 
