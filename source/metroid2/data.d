@@ -2,15 +2,16 @@ module metroid2.data;
 
 import metroid2.audiodata;
 import metroid2.external;
-import librehome.assets;
-import librehome.planet;
+import replatform64.backend.common;
+import replatform64.assets;
+import replatform64.planet;
 import std.concurrency;
 import std.conv;
 
 alias loadableDataModules = metroid2.data;
 
 
-void loadExtraData(const PlanetArchive archive, const scope PlanetArchive.Entry entry) {
+void loadExtraData(const PlanetArchive archive, const scope PlanetArchive.Entry entry, scope PlatformBackend) {
 	switch(entry.name) {
 		case "song":
 			songDataTable ~= readSongFile(archive.getData(entry).dup);

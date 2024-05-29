@@ -36,10 +36,6 @@ void debugFunction(const UIState state) {
 	import metroid2.defs;
 	import metroid2.globals;
 
-	ImGui.SetNextWindowSize(ImGui.ImVec2(400 * state.scaleFactor, state.window.height));
-	ImGui.SetNextWindowPos(ImGui.ImVec2(0, 0));
-	ImGui.Begin("Debugging", null, ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoSavedSettings);
-	ImGui.InvisibleButton("padding", ImGui.ImVec2(1, ImGui.GetCursorPos().y));
 	if (ImGui.TreeNode("Samus")) {
 		InputEditable("Pose", samusPose);
 		InputEditable("Health", samusCurHealth);
@@ -241,5 +237,4 @@ void debugFunction(const UIState state) {
 		InputEditable("Playing", sfxPlayingNoise);
 		ImGui.TreePop();
 	}
-	ImGui.End();
 }
