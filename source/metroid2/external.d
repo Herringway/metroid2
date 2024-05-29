@@ -6,6 +6,17 @@ import replatform64.gameboy;
 
 GameBoySimple gb;
 
+version(unittest) {
+	shared static this() {
+		import metroid2.bank00 : vblank;
+		import metroid2.bank03 : lcdcInterruptHandler;
+		import librehome.backend.common : Backend;
+		gb.interruptHandlerSTAT = &lcdcInterruptHandler;
+		gb.interruptHandlerVBlank = &vblank;
+		gb.initialize(Backend.none);
+	}
+}
+
 void disableSRAM() {
 	gb.disableSRAM();
 }

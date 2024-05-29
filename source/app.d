@@ -140,13 +140,13 @@ void debugFunction(const UIState state) {
 			ImGui.TreePop();
 		}
 		if (ImGui.TreeNode("Metroid queen state")) {
-			InputEditable("Body coords", queenBodyXScroll, queenBodyY);
+			InputEditable("Body coords", queenBodyX, queenBodyY);
 			InputEditable("Body height", queenBodyHeight);
 			InputEditable("Walk wait timer", queenWalkWaitTimer);
 			InputEditable("Walk counter", queenWalkCounter);
 			InputEditable("Head coords", queenHeadX, queenHeadY);
 			InputEditable("Head bottom Y", queenHeadBottomY);
-			InputEditable("Interrupt list", queenInterruptListID);
+			//InputEditable("Interrupt list", queenInterruptListID);
 			InputEditable("Neck movement sum", queenNeckXMovementSum, queenNeckYMovementSum);
 			InputEditable("Neck drawing state", queenNeckDrawingState);
 			InputEditable("Camera delta", queenCameraDeltaX, queenCameraDeltaY);

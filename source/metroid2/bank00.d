@@ -2668,6 +2668,15 @@ void beginGraphicsTransfer() {
 	}
 }
 
+unittest {
+	static immutable ubyte[4] test = [1,2, 3, 4];
+	vramTransfer.src = &test[0];
+	vramTransfer.dest = 0x0000;
+	vramTransfer.size = test.length;
+	beginGraphicsTransfer();
+	assert(gb.vram[0 .. 4] == test);
+}
+
 void animateGettingVaria(const GraphicsInfo gfx) {
 	vramTransfer.src = &gfx.data[0];
 	vramTransfer.dest = gfx.destination;

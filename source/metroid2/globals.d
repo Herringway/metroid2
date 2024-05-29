@@ -15,7 +15,7 @@ __gshared ushort tilemapDest;
 __gshared ubyte gameOverLCDCCopy;
 __gshared ubyte unknownC227;
 
-__gshared OAMEntry[24] oamScratchpad;
+__gshared OAMEntry[26] oamScratchpad;
 __gshared OAMEntry[16] enSpriteBlobThrower;
 __gshared Rectangle hitboxC360;
 
@@ -40,16 +40,16 @@ struct ArachnusState {
 __gshared ArachnusState arachnus;
 
 __gshared ubyte queenBodyY;
-__gshared ubyte queenBodyXScroll;
+__gshared ubyte queenBodyX;
 __gshared ubyte queenBodyHeight;
 __gshared ubyte queenWalkWaitTimer;
 __gshared ubyte queenWalkCounter;
 __gshared const(ubyte)* queenNeckPattern;
 __gshared ubyte queenHeadX;
 __gshared ubyte queenHeadY;
-__gshared const(ubyte)* queenInterruptList;
+__gshared InterruptCommand* queenInterruptList;
 __gshared ubyte queenHeadBottomY;
-__gshared ubyte queenInterruptListID;
+__gshared InterruptCommand[4] queenInterruptListBuffer;
 __gshared ubyte queenNeckXMovementSum;
 __gshared ubyte queenNeckYMovementSum;
 __gshared OAMEntry* queenOAMScratchpad;
@@ -80,11 +80,14 @@ __gshared ubyte queenHealth;
 __gshared ubyte queenDeathArrayIndex;
 __gshared ubyte queenDeathAnimCounter;
 __gshared ubyte[8] queenDeathArray;
-__gshared ubyte* queenDeathChr;
+__gshared ushort queenDeathChr;
 __gshared ubyte queenDeathBitmask;
 __gshared ubyte queenProjectilesActive;
 __gshared ubyte queenProjectileTempDirection;
 __gshared ubyte queenProjectileChaseTimer;
+__gshared ubyte[2][3] queenSamusTargetPoints;
+__gshared void* queenDeleteBody;
+__gshared ubyte queenProjectileChaseCounter;
 __gshared ubyte queenLowHealthFlag;
 __gshared ubyte queenFlashTimer;
 __gshared ubyte queenMidHealthFlag;

@@ -52,6 +52,8 @@ enum VRAMDest : ushort {
 	bgTiles = 0x9000,
 	creditsFont = 0x9200,
 
+	queenDeathFirstTile = 0x8B10,
+	queenDeathLastTile = 0x9570,
 	queenFeet = 0x9A00,
 	queenStatusBar = 0x9BE0,
 
@@ -662,6 +664,44 @@ enum ReservedEnemySlots {
 	queenSpitC = 12,
 }
 
+enum QueenOAM {
+	start = 2,
+	neck = start,
+	spit = neck + 5,
+	wall = spit + 7,
+	wallBody = wall,
+	wallHead = wallBody + 7
+}
+
+enum QueenState {
+	preparingForwardWalk = 0,
+	forwardWalk = 1,
+	preparingNeckExtension = 2,
+	extendingNeck = 3,
+	preparingNeckRetraction = 4,
+	retractingNeck = 5,
+	preparingBackwardWalk = 6,
+	backwardWalk = 7,
+	stomachBombed = 8,
+	preparingSamusVomit = 9,
+	vomittingSamus = 10,
+	doneVomittingSamus = 11,
+	pickNextState = 12,
+	preparingEatSamus = 13,
+	retractNeckEating = 14,
+	samusEaten = 15,
+	vomittingOutMouth = 16,
+	preparingDeath = 17,
+	disintegrating = 18,
+	deleteBody = 19,
+	preparingProjectiles = 20,
+	projectilesActive = 21,
+	deathDone = 22,
+	introA = 23,
+	introB = 24,
+	nothing = 25,
+}
+
 struct EnemySlot {
 	align(1):
 	ubyte status;
@@ -780,6 +820,11 @@ struct EnemyData {
 	ubyte iceCounter;
 	ubyte health;
 	void function() ai;
+}
+
+struct InterruptCommand {
+	ubyte scanline;
+	ubyte command;
 }
 
 ubyte rr(ubyte value, bool carry) @safe pure {

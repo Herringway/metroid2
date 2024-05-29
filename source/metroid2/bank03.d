@@ -367,23 +367,23 @@ void queenInitialize() {
 	queenBodyY = 103;
 	queenBodyHeight = 55;
 	gb.STAT = 0x44;
-	queenBodyXScroll = 92;
+	queenBodyX = 92;
 	queenCameraX = scrollX;
 	gb.WX = 3;
 	queenHeadX = 3;
 	queenCameraY = scrollY;
 	gb.WY = 0x70;
 	queenHeadY = 0x70;
-	queenInterruptListID = 0;
+	queenInterruptListBuffer[] = InterruptCommand(0xFF);
 	queenInterruptList = null;
 	queenNeckYMovementSum = 9;
 	queenNeckXMovementSum = 9;
 	queenOAMScratchpad = &oamScratchpad[0];
 	for (int i = 0; i < 12; i++) {
-		oamScratchpad[i + 12].y = cast(ubyte)(120 + 8 * i);
-		oamScratchpad[i + 12].x = 162;
-		oamScratchpad[i + 12].tile = 176;
-		oamScratchpad[i + 12].flags = 0;
+		oamScratchpad[i + QueenOAM.wall].y = cast(ubyte)(120 + 8 * i);
+		oamScratchpad[i + QueenOAM.wall].x = 162;
+		oamScratchpad[i + QueenOAM.wall].tile = 176;
+		oamScratchpad[i + QueenOAM.wall].flags = 0;
 	}
 	queenAdjustWallSpriteToHead();
 	queenNextState = &queenStateList[0];
@@ -418,55 +418,474 @@ void queenDeactivateActorsArbitrary(EnemySlot* slot, ubyte count) {
 }
 
 void queenAdjustWallSpriteToHead() {
-	assert(0); // TODO
+	ubyte y = cast(ubyte)(queenHeadY + 16);
+	for (int i = 0; i < 5; i++) {
+		oamScratchpad[i + QueenOAM.wallHead].y = y;
+		y += 8;
+	}
 }
 
 void queenHandler() {
-	assert(0); // TODO
+	if (deathFlag) {
+		queenFootFrame = 0;
+		queenHeadFrameNext = 0;
+		queenDeathBitmask = 0;
+		queenWriteOAM();
+		return;
+	}
+	if (!(frameCounter & 3) && queenBodyPalette) {
+		queenBodyPalette ^= 0x90;
+		for (int i = 0; i < 12; i++) {
+			oamScratchpad[QueenOAM.start].flags ^= 0x10; // make queen flash
+		}
+	}
+	if (queenHealth && (queenHealth < 100)) {
+		queenMidHealthFlag = 1;
+		if (queenHealth < 50) {
+			queenLowHealthFlag = 1;
+		}
+	}
+	queenHandleState();
+	queenWalk();
+	queenMoveNeck();
+	queenDrawNeck();
+	queenGetCameraDelta();
+	queenAdjustBodyForCamera();
+	queenAdjustSpritesForCamera();
+	queenSetActorPositions();
+	queenAdjustWallSpriteToHead();
+	queenWriteOAM();
+	queenHeadCollision();
 }
 
 void queenHeadCollision() {
-	assert(0); // TODO
+	if (queenFlashTimer) {
+		if (--queenFlashTimer == 0) {
+			queenBodyPalette = 0;
+			queenSetDefaultNeckAttributes();
+		}
+	}
+	const weaponTypeTmp = collision.weaponType;
+	collision.weaponType = CollisionType.nothing;
+
+	if ((weaponTypeTmp == CollisionType.nothing) || (weaponTypeTmp != CollisionType.missiles)) {
+		return;
+	}
+	if ((collision.enemy == &enemyDataSlots[ReservedEnemySlots.queenMouth]) && (enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType == Actor.queenMouthOpen)) {
+		return;
+	} else if ((collision.enemy == &enemyDataSlots[ReservedEnemySlots.queenHeadL]) || (collision.enemy == &enemyDataSlots[ReservedEnemySlots.queenHeadL])) {
+		return;
+	}
+	queenMissileHurt();
+	queenFlashTimer = 8;
+	if (queenBodyPalette) {
+		return;
+	}
+	queenBodyPalette = 0x93;
+	if (queenLowHealthFlag) {
+		sfxRequestNoise = NoiseSFX.u0A;
+	} else {
+		sfxRequestNoise = NoiseSFX.u09;
+	}
 }
 
 void queenSetActorPositions() {
-	assert(0); // TODO
+	enemyDataSlots[ReservedEnemySlots.queenBody].y = cast(ubyte)(queenBodyY + 24);
+	enemyDataSlots[ReservedEnemySlots.queenBody].x = cast(ubyte)(-queenBodyX + 48);
+
+	enemyDataSlots[ReservedEnemySlots.queenHeadL].y = cast(ubyte)(queenHeadY + 16);
+	enemyDataSlots[ReservedEnemySlots.queenHeadL].x = queenHeadX;
+
+	enemyDataSlots[ReservedEnemySlots.queenHeadR].y = cast(ubyte)(queenHeadY + 16);
+	enemyDataSlots[ReservedEnemySlots.queenHeadR].x = cast(ubyte)(queenHeadX + 32);
+
+	ubyte xMod = 18;
+	ubyte yMod = 14;
+	if (enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType == Actor.queenMouthStunned) {
+		xMod = 21;
+		yMod = 18;
+	}
+
+	enemyDataSlots[ReservedEnemySlots.queenMouth].x = cast(ubyte)(queenHeadX + xMod);
+	enemyDataSlots[ReservedEnemySlots.queenMouth].y = cast(ubyte)(queenHeadY + yMod);
+
+	queenDeactivateActorsNeck();
+	if (queenHealth == 0) {
+		return;
+	}
+	if (queenStomachBombedFlag) {
+		if (queenProjectilesActive) {
+			return;
+		}
+		if (queenOAMScratchpad is null) {
+			return;
+		}
+		enemyDataSlots[ReservedEnemySlots.queenNeck3].spriteType = Actor.queenNeck;
+		auto currentOAMSlot = queenOAMScratchpad;
+		for (int i = ReservedEnemySlots.queenNeck; i <= ReservedEnemySlots.queenNeck6; i++) {
+			enemyDataSlots[i].x = currentOAMSlot.x;
+			enemyDataSlots[i].y = currentOAMSlot.y;
+			enemyDataSlots[i].status = 0;
+			currentOAMSlot -= 2;
+		}
+	} else {
+		enemyDataSlots[ReservedEnemySlots.queenNeck].status = 0;
+		enemyDataSlots[ReservedEnemySlots.queenNeck].y = oamScratchpad[QueenOAM.neck].y;
+		enemyDataSlots[ReservedEnemySlots.queenNeck].x = oamScratchpad[QueenOAM.neck].x;
+		enemyDataSlots[ReservedEnemySlots.queenNeck].spriteType = Actor.queenBentNeck;
+	}
 }
+
+immutable ubyte[][3] queenHeadFrames = [
+	[
+		0xBB, 0xB1, 0xB2, 0xB3, 0xB4, 0xFF,
+		0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xFF,
+		0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5,
+		0xFF, 0xFF, 0xE2, 0xE3, 0xE4, 0xE5,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+	], [
+		0xBB, 0xB1, 0xF5, 0xB8, 0xB9, 0xBA,
+		0xC0, 0xC1, 0xC7, 0xC8, 0xC9, 0xCA,
+		0xD0, 0xE6, 0xD7, 0xD8, 0xFF, 0xFF,
+		0xFF, 0xF6, 0xE7, 0xE8, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xF7, 0xF8, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+	], [
+		0xFF, 0xBC, 0xBD, 0xBE, 0xFF, 0xFF,
+		0xFF, 0xCB, 0xCC, 0xCD, 0xFF, 0xFF,
+		0xDA, 0xDB, 0xDC, 0xDD, 0xFF, 0xFF,
+		0xEA, 0xEB, 0xEC, 0xED, 0xDE, 0xFF,
+		0xFA, 0xFB, 0xFC, 0xFD, 0xEE, 0xD9,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+	]
+];
 
 void queenDrawHead() {
-	assert(0); // TODO
+	static void resumeB(ushort destination, const(ubyte)* tiles) {
+		for (int i = 3; i > 0; i--) {
+			for (int j = 6; j > 0; j--) {
+				gb.vram[destination++] = (tiles++)[0];
+			}
+			destination += 26;
+		}
+		if (queenHeadFrameNext == 0xFF) {
+			queenHeadFrameNext = 0;
+		} else {
+			queenHeadDest = destination & 0xFF;
+			queenHeadSrc = tiles;
+			queenHeadFrameNext = 0xFF;
+		}
+	}
+	static void resumeA() {
+		resumeB(VRAMDest.queenHeadRow1 + queenHeadDest, queenHeadSrc);
+	}
+	if (queenHeadFrameNext == 0) {
+		return;
+	}
+	if (queenHeadFrameNext == 0xFF) {
+		resumeA();
+	}
+	const(ubyte)* tiles = &queenHeadFrames[0][0];
+	if (queenHeadFrameNext != 1) {
+		tiles = &queenHeadFrames[1][0];
+		if (queenHeadFrameNext != 2) {
+			tiles = &queenHeadFrames[2][0];
+		}
+	}
+	resumeB(VRAMDest.queenHeadRow1, tiles);
 }
 
-void queenDrawFeed() {
-	assert(0); // TODO
+void queenDrawFeet() {
+	if (queenFootFrame == 0) {
+		return queenDrawHead();
+	}
+	if (queenFootAnimCounter != 0) {
+		queenFootAnimCounter--;
+		return queenDrawHead();
+	}
+	queenFootAnimCounter = 1;
+	auto tilemaps = (queenFootFrame & 0x80) ? queenRearFootPointers : queenFrontFootPointers;
+	auto offsets = (queenFootFrame & 0x80) ? queenRearFootOffsets : queenFrontFootOffsets;
+	ubyte tilesToUpdate = (queenFootFrame & 0x80) ? 16 : 12;
+	immutable(ubyte)* offset = &offsets[0];
+	immutable(ubyte)* tile = &tilemaps[(queenFootFrame & 0x7F) - 1][0];
+	while (tilesToUpdate--) {
+		gb.vram[VRAMDest.queenFeet + (offset++)[0]] = (tile++)[0];
+	}
+	ubyte a = queenFootFrame;
+	if (a & 0x80) {
+		a++;
+	}
+	a ^= 0x80;
+	a &= 0x83;
+	if (a == 0) {
+		a++;
+	}
+	queenFootFrame = a;
 }
+
+immutable ubyte[][3] queenRearFootPointers = [
+	[
+		0x21, 0x22, 0x23, 0x24,
+		0x30, 0x31, 0x32, 0x33,
+		0x40, 0x41, 0x42, 0x44,
+		0x50, 0x51, 0x52, 0x53,
+	], [
+		0x2C, 0x2D, 0x2E, 0x2F,
+		0x3B, 0x3C, 0x3D, 0x3E,
+		0x4B, 0x4C, 0x4D, 0x4F,
+		0x7F, 0xF2, 0xEF, 0xDF,
+	], [
+		0x2C, 0x2D, 0x2E, 0x2F,
+		0x3B, 0x3C, 0x3D, 0x3E,
+		0x4B, 0x4C, 0x4D, 0x4F,
+		0x10, 0x11, 0x12, 0xDF,
+	]
+];
+immutable ubyte[][3] queenFrontFootPointers = [
+	[
+		0x28, 0x29, 0x2A,
+		0x38, 0x39, 0x3A,
+		0x48, 0x49, 0x4A,
+		0xFE, 0xF9, 0xF4,
+	], [
+		0x1B, 0x1C, 0x1D,
+		0x03, 0x04, 0x05,
+		0x0E, 0x0F, 0x1F,
+		0xFF, 0xFF, 0xFF,
+	], [
+		0x1B, 0x1C, 0x1D,
+		0x03, 0x04, 0x05,
+		0x0E, 0x0F, 0x1F,
+		0x00, 0x01, 0x02,
+	]
+];
+
+immutable ubyte[] queenRearFootOffsets = [
+	0x01, 0x02, 0x03, 0x04,
+	0x20, 0x21, 0x22, 0x23,
+	0x40, 0x41, 0x42, 0x44,
+	0x60, 0x61, 0x62, 0x63,
+];
+immutable ubyte[] queenFrontFootOffsets = [
+	0x08, 0x09, 0x0A,
+	0x28, 0x29, 0x2A,
+	0x48, 0x49, 0x4A,
+	0x68, 0x69, 0x6A,
+];
 
 void queenWriteOAM() {
 	assert(0); // TODO
 }
 
 void queenGetCameraDelta() {
-	assert(0); // TODO
+	const tmpY = queenCameraY;
+	const a = (scrollY >= 248) ? 0 : scrollY;
+	queenCameraY = a;
+	queenCameraDeltaY = cast(ubyte)(a - tmpY);
+
+	const tmpX = queenCameraX;
+	queenCameraX = scrollX;
+	queenCameraDeltaX = cast(ubyte)(scrollX - tmpX);
 }
 
 void queenAdjustBodyForCamera() {
-	assert(0); // TODO
+	queenBodyX += queenCameraDeltaX;
+	queenHeadX -= queenCameraDeltaX;
+
+	queenHeadY -= queenCameraDeltaY;
+	const c = (scrollY >= 248) ? 0 : scrollY;
+	if (103 >= c) {
+		queenBodyY = cast(ubyte)(103 - c);
+		queenBodyHeight = 55;
+	} else {
+		queenBodyHeight = cast(ubyte)(103 - c + 55);
+		queenBodyY = 0;
+	}
 }
 
 void queenAdjustSpritesForCamera() {
-	assert(0); // TODO
+	const b = queenCameraDeltaX;
+	const c = queenCameraDeltaY;
+	if (queenOAMScratchpad != null) {
+		auto scratchpad = &queenOAMScratchpad[queenStomachBombedFlag ? 0 : 1];
+		while (scratchpad >= &oamScratchpad[1]) {
+			scratchpad[0].x -=b;
+			scratchpad[0].y -=c;
+			scratchpad--;
+		}
+		for (ubyte d = 3; d != 0; d--) {
+			queenSingleCameraAdjustment(&enemyDataSlots[ReservedEnemySlots.queenSpitA + 3 - d], b, c);
+		}
+		for (ubyte d = 3; d != 0; d--) {
+			queenSingleCameraAdjustment(&queenSamusTargetPoints[3 - d], b, c);
+		}
+	}
+	for (ubyte d = 12; d != 0; d--) {
+		oamScratchpad[QueenOAM.wall + 12 - d].y -= c;
+		oamScratchpad[QueenOAM.wall + 12 - d].x -= b;
+	}
+	queenAdjustWallSpriteToHead();
 }
 
-void queenSingleCameraAdjustment() {
-	assert(0); // TODO
+void queenSingleCameraAdjustment(EnemySlot* hl, ubyte b, ubyte c) {
+	hl.y -= c;
+	hl.x -= b;
+}
+
+void queenSingleCameraAdjustment(ubyte[2]* hl, ubyte b, ubyte c) {
+	(*hl)[0] -= c;
+	(*hl)[1] -= b;
 }
 
 void queenDrawNeck() {
-	assert(0); // TODO
+	auto oamScratch = queenOAMScratchpad;
+	if (!queenNeckDrawingState) {
+		return;
+	}
+	if (queenNeckDrawingState != 1) {
+		if ((queenNeckXMovementSum < 8) && (queenNeckYMovementSum < 12)) {
+			return;
+		}
+		queenNeckXMovementSum = 7;
+		queenNeckYMovementSum = 7;
+		oamScratch[0].y = 0xFF;
+		oamScratch[1].y = 0xFF;
+		oamScratch -= 2;
+		queenOAMScratchpad = oamScratch;
+		return;
+	}
+	if ((queenNeckXMovementSum < 8) && (queenNeckYMovementSum < 12)) {
+		return;
+	}
+	queenNeckXMovementSum = 0;
+	queenNeckYMovementSum = 0;
+	if (oamScratch is &oamScratchpad[10]) {
+		return;
+	}
+	const b = (queenHeadFrame == 3) ? 39 : 21;
+	oamScratch[0].y = cast(ubyte)(queenHeadY + b);
+	oamScratch[0].x = queenHeadX - 0;
+	oamScratch[0].tile = 0xB5;
+	oamScratch[0].flags = OAMFlags.priority;
+	oamScratch[1].y = cast(ubyte)(queenHeadY + b + 8);
+	oamScratch[1].x = queenHeadX;
+	oamScratch[1].tile = 0xC5;
+	oamScratch[1].flags = OAMFlags.priority;
+	oamScratch += 2;
+	queenOAMScratchpad = oamScratch;
 }
 
 void queenMoveNeck() {
-	assert(0); // TODO
+	if (queenNeckControl == 0) {
+		return;
+	}
+	if (queenNeckControl == 3) {
+		queenHeadX += queenWalkSpeed;
+		return;
+	}
+	if (queenNeckControl == 1) {
+		auto neckPattern = queenNeckPattern;
+		if (!(frameCounter & 1)) {
+			return;
+		}
+		if (neckPattern[0] != 0x81) {
+			ubyte a = swap(neckPattern[0] & 0xF0);
+			if (a & 0x8) {
+				a |= 0xF0;
+				a = cast(ubyte)-a;
+			} else {
+				a = cast(ubyte)-a;
+			}
+			queenHeadY += a;
+			if (a & 0x80) {
+				a = cast(ubyte)-a;
+			}
+			queenNeckYMovementSum += a;
+			queenHeadX -= neckPattern[0] & 0xF;
+			queenNeckXMovementSum -= neckPattern[0] & 0xF;
+			neckPattern--;
+		} else {
+			queenNeckControl = 0;
+			queenNeckDrawingState = 0;
+			queenNeckStatus = 0x82;
+			queenEatingState = 0;
+			enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType = Actor.queenMouthClosed;
+			queenOAMScratchpad = &oamScratchpad[0];
+			queenNeckXMovementSum = 9;
+			queenNeckYMovementSum = 9;
+			queenLoadNeckBasePointer();
+		}
+		queenNeckPattern = neckPattern;
+		return;
+	}
+	if (queenEatingState == 16) {
+		if (enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType != Actor.queenMouthOpen) {
+			if (queenStunTimer) {
+				if (--queenStunTimer == 88) {
+					queenBodyPalette = 0;
+					queenSetDefaultNeckAttributes();
+				}
+			} else {
+				queenStunTimer = 96;
+				queenBodyPalette = 0x93;
+				sfxRequestNoise = NoiseSFX.u0A;
+				enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType = Actor.queenMouthOpen;
+			}
+			return;
+		}
+	}
+	if (queenEatingState == 1) {
+		return;
+	}
+	if (queenEatingState != 2) {
+		auto neckPattern = queenNeckPattern;
+		while (true) {
+			if (neckPattern[0] == 0x80) {
+				queenNeckControl = 0;
+				queenNeckDrawingState = 0;
+				queenNeckStatus = 0x81;
+				neckPattern--;
+				break;
+			}
+			ubyte a = neckPattern[0] & 0xF0;
+			if (a & 0x80) {
+				a |= 0xF;
+			}
+			a = swap(a);
+			if (a + queenHeadY >= 208) {
+				if (!queenStomachBombedFlag) {
+					queenState = QueenState.preparingNeckRetraction;
+					queenWalkStatus = 0;
+					queenNeckStatus = 0;
+				} else {
+					queenState = QueenState.vomittingSamus;
+				}
+				break;
+			}
+			queenHeadY += a;
+			a = swap(neckPattern[0] & 0xF0);
+			if (neckPattern[0] & 0x8) { //check if it was negative, MSB shifted over
+				a |= 0xF0;
+				a = cast(ubyte)-a;
+			}
+			queenNeckYMovementSum += a;
+			queenHeadX += neckPattern[0] & 0xF;
+			queenNeckXMovementSum += neckPattern[0] & 0xF;
+			neckPattern++;
+			if (!queenLowHealthFlag) {
+				break;
+			}
+			queenLowHealthFlag = 0;
+			queenDrawNeck();
+		}
+		queenNeckPattern = neckPattern;
+		return;
+	}
+	queenBodyPalette = 0;
+	queenSetDefaultNeckAttributes();
+	queenState = QueenState.preparingEatSamus;
 }
 
 void queenMissileHurt() {
@@ -482,18 +901,108 @@ void queenSetNeckBasePointer() {
 }
 
 /**
- *
- * 0 - walk forward
- * 2 - thrust head forward
- * 4 - retract head
- * 6 - walk back
- * 20 - spit blobs
  * 0xFF - repeat
  */
-immutable ubyte[] queenStateList = [0, 2, 4, 2, 4, 6, 20, 0xFF];
+immutable ubyte[] queenStateList = [
+	QueenState.preparingForwardWalk,
+	QueenState.preparingNeckExtension,
+	QueenState.preparingNeckRetraction,
+	QueenState.preparingNeckExtension,
+	QueenState.preparingNeckRetraction,
+	QueenState.preparingBackwardWalk,
+	QueenState.preparingProjectiles,
+	0xFF
+];
 
 void queenHandleState() {
-	assert(0); // TODO
+	final switch (cast(QueenState)queenState) {
+		case QueenState.preparingForwardWalk:
+			queenWalkCounter = 0;
+			queenNeckDrawingState = 0;
+			queenWalkControl = 1;
+			queenNeckControl = 3;
+			queenFootFrame = 2;
+			queenState = QueenState.forwardWalk;
+			break;
+		case QueenState.forwardWalk:
+			if (queenWalkStatus != 0x81) {
+				return;
+			}
+			queenFootFrame = 0;
+			goto case QueenState.pickNextState;
+		case QueenState.preparingNeckExtension:
+			assert(0, "NYI"); //TODO
+		case QueenState.extendingNeck:
+			assert(0, "NYI"); //TODO
+		case QueenState.preparingNeckRetraction:
+			assert(0, "NYI"); //TODO
+		case QueenState.retractingNeck:
+			assert(0, "NYI"); //TODO
+		case QueenState.preparingBackwardWalk:
+			assert(0, "NYI"); //TODO
+		case QueenState.backwardWalk:
+			assert(0, "NYI"); //TODO
+		case QueenState.stomachBombed:
+			assert(0, "NYI"); //TODO
+		case QueenState.preparingSamusVomit:
+			assert(0, "NYI"); //TODO
+		case QueenState.vomittingSamus:
+			assert(0, "NYI"); //TODO
+		case QueenState.doneVomittingSamus:
+			assert(0, "NYI"); //TODO
+		case QueenState.pickNextState:
+			auto nextState = queenNextState;
+			while (true) {
+				if (nextState[0] != 0xFF) {
+					queenState = (nextState++)[0];
+					queenNextState = nextState;
+					break;
+				} else {
+					nextState = &queenStateList[0];
+				}
+			}
+			break;
+		case QueenState.preparingEatSamus:
+			assert(0, "NYI"); //TODO
+		case QueenState.retractNeckEating:
+			assert(0, "NYI"); //TODO
+		case QueenState.samusEaten:
+			assert(0, "NYI"); //TODO
+		case QueenState.vomittingOutMouth:
+			assert(0, "NYI"); //TODO
+		case QueenState.preparingDeath:
+			assert(0, "NYI"); //TODO
+		case QueenState.disintegrating:
+			assert(0, "NYI"); //TODO
+		case QueenState.deleteBody:
+			assert(0, "NYI"); //TODO
+		case QueenState.preparingProjectiles:
+			assert(0, "NYI"); //TODO
+		case QueenState.projectilesActive:
+			assert(0, "NYI"); //TODO
+		case QueenState.deathDone:
+			assert(0, "NYI"); //TODO
+		case QueenState.introA:
+			if (queenDelayTimer) {
+				queenDelayTimer--;
+			} else {
+				queenHeadFrameNext = 2;
+				queenState = QueenState.introB;
+				sfxRequestNoise = queenLowHealthFlag ? NoiseSFX.u0A : NoiseSFX.u09;
+				queenDelayTimer = 50;
+			}
+			break;
+		case QueenState.introB:
+			if (queenDelayTimer) {
+				queenDelayTimer--;
+			} else {
+				queenHeadFrameNext = 1;
+				queenState = QueenState.pickNextState;
+			}
+			break;
+		case QueenState.nothing:
+			assert(0, "NYI"); //TODO
+	}
 }
 
 void queenGetSamusTargets() {
@@ -545,17 +1054,135 @@ void queenKillFromStomach() {
 }
 
 void queenDisintegrate() {
-	assert(0); // TODO
+	if (!queenDeathBitmask) {
+		return;
+	}
+	auto chr = queenDeathChr;
+	for (int i = 26; i > 0; i--) {
+		gb.vram[chr] &= queenDeathBitmask;
+		chr += 8;
+		if (chr == VRAMDest.queenDeathLastTile) {
+			queenDeathBitmask = 0;
+			return;
+		}
+	}
+	queenDeathChr = chr;
 }
 
 void queenWalk() {
-	assert(0); // TODO
+	queenWalkSpeed = 0;
+	if (!queenWalkControl) {
+		return;
+	}
+	if (queenWalkWaitTimer) {
+		queenWalkWaitTimer--;
+	} else {
+		const speed = queenWalkSpeedTable[queenWalkCounter];
+		if (queenWalkControl == 1) {
+			if (speed == 0x81) {
+				queenWalkStatus = 0x81;
+				queenWalkControl = 0;
+			} else {
+				queenWalkSpeed = cast(ubyte)-speed;
+				queenBodyX += speed;
+			}
+		} else {
+			if (speed == 0x82) {
+				queenWalkStatus = 0x82;
+				queenWalkControl = 0;
+				queenWalkCounter = 0;
+			} else {
+				queenWalkSpeed = cast(ubyte)-speed;
+				queenBodyX += speed;
+			}
+		}
+	}
 }
 
+immutable ubyte[] queenWalkSpeedTable = [
+	0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE,
+	0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0x81, 0x01, 0x01, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+	0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+	0x01, 0x01, 0x01, 0x01, 0x01, 0x82,
+];
+
 void lcdcInterruptHandler() {
-	assert(0); // TODO
+	auto interrupts = queenInterruptList;
+	loop: while (interrupts.scanline != 0xFF) {
+		switch (interrupts.command & 0x7F) {
+			default:
+				gb.LCDC = gb.LCDC & ~0b00010000;
+				gb.SCX = 0;
+				gb.SCY = 112;
+				break loop;
+			case 1:
+				gb.SCX = queenBodyX;
+				if (queenBodyPalette) {
+					gb.BGP = queenBodyPalette;
+				}
+				break;
+			case 2:
+				gb.SCX = scrollX;
+				gb.BGP = 0x93;
+				break;
+			case 3:
+				gb.LCDC = gb.LCDC & ~0b00010000;
+				break;
+		}
+		if (interrupts.command & 0x80) {
+			gb.LYC = interrupts[1].scanline;
+			break;
+		}
+		interrupts++;
+	}
+	queenInterruptList = interrupts;
 }
 
 void vblankDrawQueen() {
-	assert(0); // TODO
+	queenDrawFeet();
+	queenDisintegrate();
+	gb.SCX = scrollX;
+	gb.SCY = scrollY;
+	if (queenHeadX == 166) {
+		gb.WX = 167;
+	} else {
+		gb.WX = queenHeadX;
+	}
+	gb.WY = queenHeadY;
+	if (queenHeadY + 38 > 144) {
+		queenHeadBottomY = 143;
+	} else {
+		queenHeadBottomY = cast(ubyte)(queenHeadY + 38);
+	}
+	ubyte bodyBottomY = cast(ubyte)(queenBodyHeight + queenBodyY);
+	if (bodyBottomY > 144) {
+		bodyBottomY = 143;
+	}
+	InterruptCommand* interrupt = &queenInterruptListBuffer[0];
+	if (queenBodyY >= queenHeadBottomY) {
+		(interrupt++)[0] = InterruptCommand(queenHeadBottomY, (queenBodyY == queenHeadBottomY) ? 0x03 : 0x83);
+		(interrupt++)[0] = InterruptCommand(queenBodyY, 1);
+		(interrupt++)[0] = InterruptCommand(bodyBottomY, 2);
+	} else if (queenHeadBottomY >= bodyBottomY) {
+		(interrupt++)[0] = InterruptCommand(queenBodyY, 1);
+		(interrupt++)[0] = InterruptCommand(bodyBottomY, (queenHeadBottomY == bodyBottomY) ? 0x02 : 0x82);
+		(interrupt++)[0] = InterruptCommand(queenHeadBottomY, 3);
+	} else {
+		(interrupt++)[0] = InterruptCommand(queenBodyY, 1);
+		(interrupt++)[0] = InterruptCommand(queenHeadBottomY, 3);
+		(interrupt++)[0] = InterruptCommand(bodyBottomY, 2);
+	}
+	interrupt = &queenInterruptListBuffer[0];
+	for (int i = 3; i != 0; i--) {
+		if (interrupt.scanline >= 135) {
+			break;
+		}
+		interrupt++;
+	}
+	(interrupt++)[0] = InterruptCommand(135, 4);
+	(interrupt++)[0] = InterruptCommand(0xFF);
+	gb.LYC = queenInterruptListBuffer[0].scanline;
+	queenInterruptList = &queenInterruptListBuffer[0];
+	gb.LCDC = gb.LCDC | 0b00010000;
 }
