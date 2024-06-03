@@ -762,25 +762,25 @@ void adjustHUDValues() {
 	// BCD adjustment for health was here
 	if (samusDispHealth > samusCurHealth) {
 		samusDispHealth--;
-		if (sfxPlayingSquare1 && ((frameCounter & 3) == 0)) {
-			sfxRequestSquare1 = Square1SFX.samusHealthChange;
+		if (audio.sfxPlayingSquare1 && ((frameCounter & 3) == 0)) {
+			audio.sfxRequestSquare1 = Square1SFX.samusHealthChange;
 		}
 	} else if (samusDispHealth < samusCurHealth) {
 		samusDispHealth++;
-		if (sfxPlayingSquare1 && ((frameCounter & 3) == 0)) {
-			sfxRequestSquare1 = Square1SFX.samusHealthChange;
+		if (audio.sfxPlayingSquare1 && ((frameCounter & 3) == 0)) {
+			audio.sfxRequestSquare1 = Square1SFX.samusHealthChange;
 		}
 	}
 	// BCD adjustment for missiles was here
 	if (samusDispMissiles > samusCurMissiles) {
 		samusDispMissiles--;
-		if (sfxPlayingSquare1 && ((frameCounter & 3) == 0)) {
-			sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
+		if (audio.sfxPlayingSquare1 && ((frameCounter & 3) == 0)) {
+			audio.sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
 		}
 	} else if (samusDispMissiles < samusCurMissiles) {
 		samusDispMissiles++;
-		if (sfxPlayingSquare1 && ((frameCounter & 3) == 0)) {
-			sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
+		if (audio.sfxPlayingSquare1 && ((frameCounter & 3) == 0)) {
+			audio.sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
 		}
 	}
 }
@@ -1024,8 +1024,8 @@ void drawSamusRun() {
 	if (samusAnimationTimer >= 0x30) {
 		samusAnimationTimer = 0;
 	}
-	if (((samusAnimationTimer & 7) == 0) && (sfxRequestNoise == 0)) {
-		sfxRequestNoise = NoiseSFX.u10;
+	if (((samusAnimationTimer & 7) == 0) && (audio.sfxRequestNoise == 0)) {
+		audio.sfxRequestNoise = NoiseSFX.u10;
 	}
 	immutable(ubyte[])[] table;
 	if (inputPressed & Pad.up) {
@@ -1349,7 +1349,7 @@ void bombBeamLayBomb(ubyte x, ubyte y) {
 	bombArray[i].timer = 96;
 	bombArray[i].y = cast(ubyte)(y + 4);
 	bombArray[i].x = cast(ubyte)(x + 4);
-	sfxRequestSquare1 = Square1SFX.bombLaid;
+	audio.sfxRequestSquare1 = Square1SFX.bombLaid;
 }
 
 void drawBombs() {
@@ -1373,7 +1373,7 @@ void drawBombs() {
 					spriteID = cast(ubyte)(49 + bombArray[projectileIndex].timer / 2);
 					drawSamusSprite();
 					collisionBombEnemies();
-					sfxRequestNoise = NoiseSFX.u0C;
+					audio.sfxRequestNoise = NoiseSFX.u0C;
 				} else {
 					spriteID = cast(ubyte)(49 + bombArray[projectileIndex].timer / 2);
 					drawSamusSprite();
@@ -1611,7 +1611,7 @@ void destroyRespawningBlock() {
 	respawningBlockArray[slot].timer = 1;
 	respawningBlockArray[slot].y = tileY;
 	respawningBlockArray[slot].x = tileX;
-	sfxRequestNoise = NoiseSFX.u04;
+	audio.sfxRequestNoise = NoiseSFX.u04;
 }
 void handleRespawningBlocks() {
 	for (uint i = 0; i < respawningBlockArray.length; i++) {
@@ -1648,7 +1648,7 @@ void destroyBlockEmpty() {
 	gb.vram[tilemapDest + 0x01] = 0xFF;
 	gb.vram[tilemapDest + 0x20] = 0xFF;
 	gb.vram[tilemapDest + 0x21] = 0xFF;
-	sfxRequestNoise = NoiseSFX.u04;
+	audio.sfxRequestNoise = NoiseSFX.u04;
 }
 void destroyBlockReform(ref ubyte timer) {
 	timer = 0;
@@ -1762,7 +1762,7 @@ void miscInGameTasks() {
 	}
 	if ((frameCounter == 0) && nextEarthquakeTimer && --nextEarthquakeTimer) {
 		earthquakeTimer = 0xFF;
-		songInterruptionRequest = Song2.earthquake;
+		audio.songInterruptionRequest = Song2.earthquake;
 		if (metroidCountReal == 1) {
 			earthquakeTimer = 0x60;
 		}
@@ -1771,17 +1771,17 @@ void miscInGameTasks() {
 		if (samusCurHealth < 50) {
 			if (samusCurHealth != samusPrevHealth) {
 				samusPrevHealth = samusCurHealth;
-				sfxRequestLowHealthBeep = ((samusCurHealth % 100) / 10) + 1;
+				audio.sfxRequestLowHealthBeep = ((samusCurHealth % 100) / 10) + 1;
 			}
-		} else if (!sfxRequestLowHealthBeep) {
-			sfxRequestLowHealthBeep = 0xFF;
+		} else if (!audio.sfxRequestLowHealthBeep) {
+			audio.sfxRequestLowHealthBeep = 0xFF;
 		}
 	}
 	if (fadeInTimer) {
 		fadeIn();
 	}
 	if (soundPlayQueenRoar && ((frameCounter & 0x7F) == 0)) {
-		sfxRequestNoise = NoiseSFX.u17;
+		audio.sfxRequestNoise = NoiseSFX.u17;
 	}
 }
 
@@ -2539,17 +2539,17 @@ void earthquakeAdjustScroll() {
 	if (--earthquakeTimer) {
 		return;
 	}
-	songInterruptionRequest = Song2.nothing;
+	audio.songInterruptionRequest = Song2.nothing;
 	if (queenRoomFlag < 0x10) {
 		if (songRequestAfterEarthquake) {
-			songRequest = songRequestAfterEarthquake;
+			audio.songRequest = songRequestAfterEarthquake;
 			currentRoomSong = songRequestAfterEarthquake;
 			songRequestAfterEarthquake = Song.nothing;
 		} else {
-			songInterruptionRequest = Song2.endRequest;
+			audio.songInterruptionRequest = Song2.endRequest;
 		}
 	} else {
-		songRequest = Song.babyMetroid; // THE BABY
+		audio.songRequest = Song.babyMetroid; // THE BABY
 	}
 }
 
@@ -2626,7 +2626,7 @@ void handleSaveGame() {
 	sram.saves[activeSaveSlot].data.metroidCountDisplayed = metroidCountDisplayed;
 	disableSRAM();
 	saveEnemyFlagsToSRAM();
-	sfxRequestSquare1 = Square1SFX.saved;
-	sfxRequestSquare1 = Square1SFX.saved;
+	audio.sfxRequestSquare1 = Square1SFX.saved;
+	audio.sfxRequestSquare1 = Square1SFX.saved;
 	gameMode = GameMode.main;
 }

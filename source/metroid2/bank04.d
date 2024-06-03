@@ -140,14 +140,14 @@ immutable ubyte[16][5] songSoundChannelEffectTable = [
 
 void handleAudio() {
 	debug(audio) {
-		if (audioPauseControl == 1) {
+		if (audio.audioPauseControl == 1) {
 			assert(0);
-		} else if (audioPauseControl == 2) {
-			audioPauseSoundEffectTimer = 0;
-			sfxRequestSquare1 = Square1SFX.unpaused;
+		} else if (audio.audioPauseControl == 2) {
+			audio.audioPauseSoundEffectTimer = 0;
+			audio.sfxRequestSquare1 = Square1SFX.unpaused;
 		}
-		if (audioPauseSoundEffectTimer) {
-			switch (--audioPauseSoundEffectTimer) {
+		if (audio.audioPauseSoundEffectTimer) {
+			switch (--audio.audioPauseSoundEffectTimer) {
 				case 0x3F: handleAudioPausedSquare1SFX(&frame3F[0]); break;
 				case 0x3D: handleAudioPausedNoiseSFX(&frame3D[0]); break;
 				case 0x3A: handleAudioPausedSquare1SFX(&frame3A[0]); break;
@@ -157,7 +157,7 @@ void handleAudio() {
 				case 0x24: handleAudioPausedSquare1SFX(&frame24[0]); break;
 				case 0x10: clearNonWaveSoundEffectRequests(); break;
 				default:
-					audioPauseSoundEffectTimer++;
+					audio.audioPauseSoundEffectTimer++;
 					clearNonWaveSoundEffectRequests();
 					break;
 			}
@@ -169,7 +169,7 @@ void handleAudio() {
 }
 
 void handleAudioHandleSongInterruptionRequest() {
-		switch (songInterruptionRequest) {
+		switch (audio.songInterruptionRequest) {
 			case Song2.nothing:
 				handleAudioHandleSongInterruptionPlaying();
 				return;
@@ -197,10 +197,10 @@ void handleAudioHandleSongInterruptionRequest() {
 }
 
 void handleAudioHandleSongInterruptionPlaying() {
-	if (!songInterruptionPlaying) {
+	if (!audio.songInterruptionPlaying) {
 		handleSongAndSoundEffects();
-	} else if (songInterruptionPlaying == Song2.endPlaying) {
-	} else if (songInterruptionPlaying == Song2.fadeOut) {
+	} else if (audio.songInterruptionPlaying == Song2.endPlaying) {
+	} else if (audio.songInterruptionPlaying == Song2.fadeOut) {
 	} else {
 		handleSongAndSoundEffects();
 	}
@@ -212,33 +212,33 @@ void handleSongAndSoundEffects() {
 	handleChannelSoundEffectSquare1();
 	handleChannelSoundEffectSquare2();
 	handleChannelSoundEffectWave();
-	songRequest = Song.nothing;
-	sfxRequestNoise = NoiseSFX.u00;
-	sfxRequestSquare1 = Square1SFX.nothing;
-	sfxRequestSquare2 = Square2SFX.nothing0;
-	sfxRequestFakeWave = 0;
-	songInterruptionRequest = Song2.nothing;
-	sfxRequestLowHealthBeep = 0;
-	audioPauseControl = 0;
+	audio.songRequest = Song.nothing;
+	audio.sfxRequestNoise = NoiseSFX.u00;
+	audio.sfxRequestSquare1 = Square1SFX.nothing;
+	audio.sfxRequestSquare2 = Square2SFX.nothing0;
+	audio.sfxRequestFakeWave = 0;
+	audio.songInterruptionRequest = Song2.nothing;
+	audio.sfxRequestLowHealthBeep = 0;
+	audio.audioPauseControl = 0;
 }
 
 void clearSongInterruption() {
-	songInterruptionRequest = Song2.nothing;
-	songInterruptionPlaying = Song2.nothing;
+	audio.songInterruptionRequest = Song2.nothing;
+	audio.songInterruptionPlaying = Song2.nothing;
 }
 void playSongInterruptionItemGet(Song2 a) {
-	songInterruptionPlaying = a;
-	songRequest = Song.itemGet;
+	audio.songInterruptionPlaying = a;
+	audio.songRequest = Song.itemGet;
 	playSongInterruption();
 }
 void playSongInterruptionMissilePickup(Song2 a) {
-	songInterruptionPlaying = a;
-	songRequest = Song.missilePickup;
+	audio.songInterruptionPlaying = a;
+	audio.songRequest = Song.missilePickup;
 	playSongInterruption();
 }
 void playSongInterruptionEarthquake(Song2 a) {
-	songInterruptionPlaying = a;
-	songRequest = cast(Song)a;
+	audio.songInterruptionPlaying = a;
+	audio.songRequest = cast(Song)a;
 	playSongInterruption();
 }
 void playSongInterruption() {
@@ -262,98 +262,98 @@ void handleAudioHandleFadingOutMusic() {
 }
 
 void handleChannelSoundEffectSquare1() {
-	if ((sfxRequestSquare1 != Square1SFX.nothing) && (sfxRequestSquare1 < Square1SFX.unpaused + 1)) {
-		if (sfxRequestSquare1 == Square1SFX.clear) {
+	if ((audio.sfxRequestSquare1 != Square1SFX.nothing) && (audio.sfxRequestSquare1 < Square1SFX.unpaused + 1)) {
+		if (audio.sfxRequestSquare1 == Square1SFX.clear) {
 			clearChannelSoundEffectSquare1();
 			return;
 		}
-		if ((sfxPlayingSquare1 != Square1SFX.pickedUpMissileDrop) || (sfxPlayingSquare1 != Square1SFX.samusHealthChange)) {
-			if (square1SFXInitPointers[sfxRequestSquare1]()) {
+		if ((audio.sfxPlayingSquare1 != Square1SFX.pickedUpMissileDrop) || (audio.sfxPlayingSquare1 != Square1SFX.samusHealthChange)) {
+			if (square1SFXInitPointers[audio.sfxRequestSquare1]()) {
 				return;
 			}
 		}
 	}
-	if (sfxPlayingSquare1 == Square1SFX.nothing) {
+	if (audio.sfxPlayingSquare1 == Square1SFX.nothing) {
 		return;
 	}
-	if (sfxPlayingSquare1 < Square1SFX.unpaused + 1) {
-		square1SFXPlaybackPointers[sfxPlayingSquare1]();
+	if (audio.sfxPlayingSquare1 < Square1SFX.unpaused + 1) {
+		square1SFXPlaybackPointers[audio.sfxPlayingSquare1]();
 		return;
 	}
-	sfxPlayingSquare1 = Square1SFX.nothing;
+	audio.sfxPlayingSquare1 = Square1SFX.nothing;
 }
 
 void handleChannelSoundEffectSquare2() {
-	if ((sfxRequestSquare2 != Square2SFX.nothing0) && (sfxRequestSquare2 < Square2SFX.u7 + 1)) {
-		if (sfxRequestSquare2 == Square2SFX.invalid) {
+	if ((audio.sfxRequestSquare2 != Square2SFX.nothing0) && (audio.sfxRequestSquare2 < Square2SFX.u7 + 1)) {
+		if (audio.sfxRequestSquare2 == Square2SFX.invalid) {
 			clearChannelSoundEffectSquare2();
 			return;
 		}
-		if (songSoundEffectInitialisationFunctionPointersSquare2[sfxRequestSquare2]()) {
+		if (songSoundEffectInitialisationFunctionPointersSquare2[audio.sfxRequestSquare2]()) {
 			return;
 		}
 	}
-	if (sfxPlayingSquare2 == Square2SFX.nothing0) {
+	if (audio.sfxPlayingSquare2 == Square2SFX.nothing0) {
 		return;
 	}
-	if (sfxPlayingSquare2 < Square2SFX.u7 + 1) {
-		songSoundEffectPlaybackFunctionPointersSquare2[sfxPlayingSquare2]();
+	if (audio.sfxPlayingSquare2 < Square2SFX.u7 + 1) {
+		songSoundEffectPlaybackFunctionPointersSquare2[audio.sfxPlayingSquare2]();
 		return;
 	}
-	sfxPlayingSquare2 = Square2SFX.nothing0;
+	audio.sfxPlayingSquare2 = Square2SFX.nothing0;
 }
 
 void handleChannelSoundEffectNoise() {
-	if ((sfxRequestNoise != NoiseSFX.u00) && (sfxRequestNoise < NoiseSFX.u1A + 1)) {
-		if (sfxRequestNoise == NoiseSFX.uFF) {
+	if ((audio.sfxRequestNoise != NoiseSFX.u00) && (audio.sfxRequestNoise < NoiseSFX.u1A + 1)) {
+		if (audio.sfxRequestNoise == NoiseSFX.uFF) {
 			clearChannelSoundEffectNoise();
 			return;
 		}
-		if (songPlaying == Song.earthquake) {
+		if (audio.songPlaying == Song.earthquake) {
 			return;
 		}
-		if ((sfxPlayingNoise != NoiseSFX.u0D) && (sfxPlayingNoise != NoiseSFX.u0E) && (sfxPlayingNoise != NoiseSFX.u0F)) {
-			if (songSoundEffectInitializationFunctionPointersNoise[sfxRequestNoise]()) {
+		if ((audio.sfxPlayingNoise != NoiseSFX.u0D) && (audio.sfxPlayingNoise != NoiseSFX.u0E) && (audio.sfxPlayingNoise != NoiseSFX.u0F)) {
+			if (songSoundEffectInitializationFunctionPointersNoise[audio.sfxRequestNoise]()) {
 				return;
 			}
 		}
 	}
-	if (sfxPlayingNoise == NoiseSFX.u00) {
+	if (audio.sfxPlayingNoise == NoiseSFX.u00) {
 		return;
 	}
-	if (sfxPlayingNoise < NoiseSFX.u1A + 1) {
-		songSoundEffectPlaybackFunctionPointersNoise[sfxPlayingNoise]();
+	if (audio.sfxPlayingNoise < NoiseSFX.u1A + 1) {
+		songSoundEffectPlaybackFunctionPointersNoise[audio.sfxPlayingNoise]();
 		return;
 	}
 	//playing = 0; // nonsense
 }
 
 void handleChannelSoundEffectWave() {
-	if ((sfxRequestWave == 0) || (sfxRequestWave == 0xFF) || (sfxRequestWave >= 6)) {
+	if ((audio.sfxRequestWave == 0) || (audio.sfxRequestWave == 0xFF) || (audio.sfxRequestWave >= 6)) {
 		return;
 	}
 	assert(0); // TODO
 }
 
 void handleSong() {
-	if (songRequest == Song.nothing) {
+	if (audio.songRequest == Song.nothing) {
 		handleSongPlaying();
 		return;
-	} else if (songRequest == Song.invalid) {
+	} else if (audio.songRequest == Song.invalid) {
 		disableSoundChannels();
 		return;
-	} else if (songRequest == Song.killedMetroid) {
+	} else if (audio.songRequest == Song.killedMetroid) {
 		clearChannelSoundEffectSquare1();
 		clearChannelSoundEffectNoise();
-	} else if (songRequest > Song.missilePickup) {
+	} else if (audio.songRequest > Song.missilePickup) {
 		handleSongPlaying();
 		return;
 	}
-	infof("Now playing: %s", songRequest);
-	songPlaying = songRequest;
-	audioChannelOutputStereoFlags = songStereoFlags[songRequest - 1];
-	gb.NR51 = songStereoFlags[songRequest - 1];
-	loadSongHeader(songDataTable[songRequest - 1]);
+	infof("Now playing: %s", audio.songRequest);
+	audio.songPlaying = audio.songRequest;
+	audio.audioChannelOutputStereoFlags = songStereoFlags[audio.songRequest - 1];
+	gb.NR51 = songStereoFlags[audio.songRequest - 1];
+	loadSongHeader(songDataTable[audio.songRequest - 1]);
 }
 
 void disableSoundChannels() {
@@ -361,119 +361,119 @@ void disableSoundChannels() {
 }
 
 void clearSongPlaying() {
-	songPlaying = Song.nothing;
+	audio.songPlaying = Song.nothing;
 }
 
 void handleSongPlaying() {
-	if (!songPlaying) {
+	if (!audio.songPlaying) {
 		return;
 	}
-	if (songPlaying > Song.missilePickup) {
+	if (audio.songPlaying > Song.missilePickup) {
 		return clearSongPlaying();
 	}
-	songState.songOptionsSetFlagWorking = 0;
-	if (songState.songChannelEnableSquare1) {
-		songState.workingSoundChannel = 1;
-		songState.songWorkingState.instructionTimer = songState.songSquare1State.instructionTimer;
-		if (songState.songSquare1State.instructionTimer == 1) {
+	audio.songState.songOptionsSetFlagWorking = 0;
+	if (audio.songState.songChannelEnableSquare1) {
+		audio.songState.workingSoundChannel = 1;
+		audio.songState.songWorkingState.instructionTimer = audio.songState.songSquare1State.instructionTimer;
+		if (audio.songState.songSquare1State.instructionTimer == 1) {
 			handleSongLoadNextChannelSoundSquare1();
 		}
-		songState.songSquare1State.instructionTimer--;
-		if (!sfxActiveSquare1) {
-			songState.songWorkingState.effectIndex = songState.songSquare1State.effectIndex;
-			if (songState.songWorkingState.effectIndex) {
-				handleSongSoundChannelEffect(songState.songFrequencySquare1);
-				gb.AUD1LOW = songState.songFrequencyWorking & 0xFF;
-				gb.AUD1HIGH = (songState.songFrequencyWorking >> 8) & 0xFF;
+		audio.songState.songSquare1State.instructionTimer--;
+		if (!audio.sfxActiveSquare1) {
+			audio.songState.songWorkingState.effectIndex = audio.songState.songSquare1State.effectIndex;
+			if (audio.songState.songWorkingState.effectIndex) {
+				handleSongSoundChannelEffect(audio.songState.songFrequencySquare1);
+				gb.AUD1LOW = audio.songState.songFrequencyWorking & 0xFF;
+				gb.AUD1HIGH = (audio.songState.songFrequencyWorking >> 8) & 0xFF;
 			}
 		}
 	}
-	songState.songOptionsSetFlagWorking = 0;
-	if (songState.songChannelEnableSquare2) {
-		songState.workingSoundChannel = 2;
-		songState.songWorkingState.instructionTimer = songState.songSquare2State.instructionTimer;
-		if (songState.songSquare2State.instructionTimer == 1) {
+	audio.songState.songOptionsSetFlagWorking = 0;
+	if (audio.songState.songChannelEnableSquare2) {
+		audio.songState.workingSoundChannel = 2;
+		audio.songState.songWorkingState.instructionTimer = audio.songState.songSquare2State.instructionTimer;
+		if (audio.songState.songSquare2State.instructionTimer == 1) {
 			handleSongLoadNextChannelSoundSquare2();
 		}
-		songState.songSquare2State.instructionTimer--;
-		if (!sfxActiveSquare2) {
-			songState.songWorkingState.effectIndex = songState.songSquare2State.effectIndex;
-			if (songState.songWorkingState.effectIndex) {
-				handleSongSoundChannelEffect(songState.songFrequencySquare2);
-				gb.AUD2LOW = songState.songFrequencyWorking & 0xFF;
-				gb.AUD2HIGH = (songState.songFrequencyWorking >> 8) & 0xFF;
+		audio.songState.songSquare2State.instructionTimer--;
+		if (!audio.sfxActiveSquare2) {
+			audio.songState.songWorkingState.effectIndex = audio.songState.songSquare2State.effectIndex;
+			if (audio.songState.songWorkingState.effectIndex) {
+				handleSongSoundChannelEffect(audio.songState.songFrequencySquare2);
+				gb.AUD2LOW = audio.songState.songFrequencyWorking & 0xFF;
+				gb.AUD2HIGH = (audio.songState.songFrequencyWorking >> 8) & 0xFF;
 			}
 		}
 	}
-	songState.songOptionsSetFlagWorking = 0;
-	if (songState.songChannelEnableWave) {
-		songState.workingSoundChannel = 3;
-		songState.songWorkingState.instructionTimer = songState.songWaveState.instructionTimer;
-		if (songState.songWaveState.instructionTimer == 1) {
+	audio.songState.songOptionsSetFlagWorking = 0;
+	if (audio.songState.songChannelEnableWave) {
+		audio.songState.workingSoundChannel = 3;
+		audio.songState.songWorkingState.instructionTimer = audio.songState.songWaveState.instructionTimer;
+		if (audio.songState.songWaveState.instructionTimer == 1) {
 			handleSongLoadNextChannelSoundWave();
 		}
-		songState.songWaveState.instructionTimer--;
-		if (!sfxActiveWave) {
-			handleSongSoundChannelEffect(songState.songFrequencyWave);
-			gb.NR33 = songState.songFrequencyWorking & 0xFF;
-			gb.NR34 = (songState.songFrequencyWorking >> 8) & 0x7F;
+		audio.songState.songWaveState.instructionTimer--;
+		if (!audio.sfxActiveWave) {
+			handleSongSoundChannelEffect(audio.songState.songFrequencyWave);
+			gb.NR33 = audio.songState.songFrequencyWorking & 0xFF;
+			gb.NR34 = (audio.songState.songFrequencyWorking >> 8) & 0x7F;
 		}
 	}
-	songState.songOptionsSetFlagWorking = 0;
-	if (songState.songChannelEnableNoise) {
-		songState.workingSoundChannel = 4;
-		songState.songWorkingState.instructionTimer = songState.songNoiseState.instructionTimer;
-		if (songState.songNoiseState.instructionTimer == 1) {
+	audio.songState.songOptionsSetFlagWorking = 0;
+	if (audio.songState.songChannelEnableNoise) {
+		audio.songState.workingSoundChannel = 4;
+		audio.songState.songWorkingState.instructionTimer = audio.songState.songNoiseState.instructionTimer;
+		if (audio.songState.songNoiseState.instructionTimer == 1) {
 			handleSongLoadNextChannelSoundNoise();
 		}
-		songState.songNoiseState.instructionTimer--;
+		audio.songState.songNoiseState.instructionTimer--;
 		return;
 	}
-	if (songState.songChannelEnableSquare1) {
+	if (audio.songState.songChannelEnableSquare1) {
 		return;
 	}
-	if (songState.songChannelEnableSquare2) {
+	if (audio.songState.songChannelEnableSquare2) {
 		return;
 	}
-	if (songState.songChannelEnableWave) {
+	if (audio.songState.songChannelEnableWave) {
 		return;
 	}
-	if (songState.songChannelEnableNoise) {
+	if (audio.songState.songChannelEnableNoise) {
 		return;
 	}
-	songPlaying = Song.nothing;
-	songInterruptionPlaying = Song2.nothing;
+	audio.songPlaying = Song.nothing;
+	audio.songInterruptionPlaying = Song2.nothing;
 }
 
 ubyte decrementChannelSoundEffectTimerSquare1() {
-	if (sfxTimerSquare1) {
-		sfxTimerSquare1--;
-		return sfxTimerSquare1;
+	if (audio.sfxTimerSquare1) {
+		audio.sfxTimerSquare1--;
+		return audio.sfxTimerSquare1;
 	} else {
 		return clearChannelSoundEffectSquare1();
 	}
 }
 
 ubyte decrementChannelSoundEffectTimerSquare2() {
-	if (sfxTimerSquare2) {
-		sfxTimerSquare2--;
-		return sfxTimerSquare2;
+	if (audio.sfxTimerSquare2) {
+		audio.sfxTimerSquare2--;
+		return audio.sfxTimerSquare2;
 	} else {
 		return clearChannelSoundEffectSquare2();
 	}
 }
 ubyte decrementChannelSoundEffectTimerNoise() {
-	if (sfxTimerNoise) {
-		sfxTimerNoise--;
-		return sfxTimerNoise;
+	if (audio.sfxTimerNoise) {
+		audio.sfxTimerNoise--;
+		return audio.sfxTimerNoise;
 	} else {
 		return clearChannelSoundEffectNoise();
 	}
 }
 
 ubyte clearChannelSoundEffectSquare1() {
-	sfxPlayingSquare1 = Square1SFX.nothing;
-	sfxActiveSquare1 = Square1SFX.nothing;
+	audio.sfxPlayingSquare1 = Square1SFX.nothing;
+	audio.sfxActiveSquare1 = Square1SFX.nothing;
 	return 0;
 }
 
@@ -482,8 +482,8 @@ void disableChannelSquare1() {
 }
 
 ubyte clearChannelSoundEffectSquare2() {
-	sfxPlayingSquare2 = Square2SFX.nothing0;
-	sfxActiveSquare2 = Square2SFX.nothing0;
+	audio.sfxPlayingSquare2 = Square2SFX.nothing0;
+	audio.sfxActiveSquare2 = Square2SFX.nothing0;
 	return 0;
 }
 
@@ -492,7 +492,7 @@ void disableChannelSquare2() {
 }
 
 ubyte clearChannelSoundEffectWave() {
-	sfxActiveWave = 0;
+	audio.sfxActiveWave = 0;
 	return 0;
 }
 
@@ -501,8 +501,8 @@ void disableChannelWave() {
 }
 
 ubyte clearChannelSoundEffectNoise() {
-	sfxPlayingNoise = NoiseSFX.u00;
-	sfxActiveNoise = NoiseSFX.u00;
+	audio.sfxPlayingNoise = NoiseSFX.u00;
+	audio.sfxActiveNoise = NoiseSFX.u00;
 	return 0;
 }
 
@@ -514,34 +514,35 @@ void initializeAudio() {
 	gb.NR52 = 0x80;
 	gb.NR50 = 0x77;
 	gb.NR51 = 0xFF;
+	audio = audio.init;
 }
 
 void clearNonWaveSoundEffectRequests() {
-	sfxRequestSquare1 = Square1SFX.nothing;
-	sfxRequestSquare2 = Square2SFX.nothing0;
-	sfxRequestFakeWave = 0;
-	sfxRequestNoise = NoiseSFX.u00;
-	audioPauseControl = 0;
+	audio.sfxRequestSquare1 = Square1SFX.nothing;
+	audio.sfxRequestSquare2 = Square2SFX.nothing0;
+	audio.sfxRequestFakeWave = 0;
+	audio.sfxRequestNoise = NoiseSFX.u00;
+	audio.audioPauseControl = 0;
 }
 
 void silenceAudio() {
 	gb.NR51 = 0xFF;
-	sfxRequestSquare1 = Square1SFX.nothing;
-	sfxRequestSquare2 = Square2SFX.nothing0;
-	sfxRequestFakeWave = 0;
-	sfxRequestNoise = NoiseSFX.u00;
-	sfxPlayingSquare1 = Square1SFX.nothing;
-	sfxPlayingSquare2 = Square2SFX.nothing0;
-	sfxPlayingFakeWave = 0;
-	sfxPlayingNoise = NoiseSFX.u00;
-	songRequest = Song.invalid;
-	songPlaying = Song.invalid;
-	songInterruptionRequest = Song2.nothing;
-	songInterruptionPlaying = Song2.nothing;
-	sfxRequestWave = 0;
-	sfxPlayingWave = 0;
-	audioPauseSoundEffectTimer = 0;
-	audioPauseControl = 0;
+	audio.sfxRequestSquare1 = Square1SFX.nothing;
+	audio.sfxRequestSquare2 = Square2SFX.nothing0;
+	audio.sfxRequestFakeWave = 0;
+	audio.sfxRequestNoise = NoiseSFX.u00;
+	audio.sfxPlayingSquare1 = Square1SFX.nothing;
+	audio.sfxPlayingSquare2 = Square2SFX.nothing0;
+	audio.sfxPlayingFakeWave = 0;
+	audio.sfxPlayingNoise = NoiseSFX.u00;
+	audio.songRequest = Song.invalid;
+	audio.songPlaying = Song.invalid;
+	audio.songInterruptionRequest = Song2.nothing;
+	audio.songInterruptionPlaying = Song2.nothing;
+	audio.sfxRequestWave = 0;
+	audio.sfxPlayingWave = 0;
+	audio.audioPauseSoundEffectTimer = 0;
+	audio.audioPauseControl = 0;
 	muteSoundChannels();
 }
 
@@ -617,205 +618,206 @@ void handleAudioPaused() {
 void loadSongHeader(const SongHeader header) {
 	resetSongSoundChannelOptions();
 	if (header.noteOffset & 1) {
-		songState.songFrequencyTweakSquare2 = 1;
+		audio.songState.songFrequencyTweakSquare2 = 1;
 	}
-	songState.songTranspose = header.noteOffset & 0xFE;
-	songState.songInstructionTimerArrayPointer = header.tempo;
-	songState.songSquare1State.sectionPointer = header.toneSweepChannel;
-	songState.songSquare2State.sectionPointer = header.toneChannel;
-	songState.songWaveState.sectionPointer = header.waveChannel;
-	songState.songNoiseState.sectionPointer = header.noiseChannel;
-	songState.songSquare1State.sectionPointers = header.toneSweepChannel;
-	songState.songSquare2State.sectionPointers = header.toneChannel;
-	songState.songWaveState.sectionPointers = header.waveChannel;
-	songState.songNoiseState.sectionPointers = header.noiseChannel;
-	if (songState.songSquare1State.sectionPointer.length == 0) {
-		songState.songChannelEnableSquare1 = 0;
+	audio.songState.songTranspose = header.noteOffset & 0xFE;
+	audio.songState.songInstructionTimerArrayPointer = header.tempo;
+	audio.songState.songSquare1State.sectionPointer = header.toneSweepChannel;
+	audio.songState.songSquare2State.sectionPointer = header.toneChannel;
+	audio.songState.songWaveState.sectionPointer = header.waveChannel;
+	audio.songState.songNoiseState.sectionPointer = header.noiseChannel;
+	audio.songState.songSquare1State.sectionPointers = header.toneSweepChannel;
+	audio.songState.songSquare2State.sectionPointers = header.toneChannel;
+	audio.songState.songWaveState.sectionPointers = header.waveChannel;
+	audio.songState.songNoiseState.sectionPointers = header.noiseChannel;
+	if (audio.songState.songSquare1State.sectionPointer.length == 0) {
+		audio.songState.songChannelEnableSquare1 = 0;
 		gb.AUD1ENV = 0x08;
 		gb.AUD1HIGH = 0x80;
 	} else {
-		songState.songChannelEnableSquare1 = 1;
-		songState.songChannelInstructionPointerSquare1 = header.squareTracks[songState.songSquare1State.sectionPointer[0]].ptr;
+		audio.songState.songChannelEnableSquare1 = 1;
+		audio.songState.songChannelInstructionPointerSquare1 = header.squareTracks[audio.songState.songSquare1State.sectionPointer[0]].ptr;
 	}
-	if (songState.songSquare2State.sectionPointer.length == 0) {
-		songState.songChannelEnableSquare2 = 0;
+	if (audio.songState.songSquare2State.sectionPointer.length == 0) {
+		audio.songState.songChannelEnableSquare2 = 0;
 		gb.AUD2ENV = 0x08;
 		gb.AUD2HIGH = 0x80;
 	} else {
-		songState.songChannelEnableSquare2 = 2;
-		songState.songChannelInstructionPointerSquare2 = header.squareTracks[songState.songSquare2State.sectionPointer[0]].ptr;
+		audio.songState.songChannelEnableSquare2 = 2;
+		audio.songState.songChannelInstructionPointerSquare2 = header.squareTracks[audio.songState.songSquare2State.sectionPointer[0]].ptr;
 	}
-	if (songState.songWaveState.sectionPointer.length == 0) {
-		songState.songChannelEnableWave = 0;
+	if (audio.songState.songWaveState.sectionPointer.length == 0) {
+		audio.songState.songChannelEnableWave = 0;
 		gb.AUD3ENA = 0;
 	} else {
-		songState.songChannelEnableWave = 3;
-		songState.songChannelInstructionPointerWave = header.waveTracks[songState.songWaveState.sectionPointer[0]].ptr;
+		audio.songState.songChannelEnableWave = 3;
+		audio.songState.songChannelInstructionPointerWave = header.waveTracks[audio.songState.songWaveState.sectionPointer[0]].ptr;
 	}
-	if (songState.songNoiseState.sectionPointer.length == 0) {
-		songState.songChannelEnableNoise = 0;
+	if (audio.songState.songNoiseState.sectionPointer.length == 0) {
+		audio.songState.songChannelEnableNoise = 0;
 	} else {
-		songState.songChannelEnableNoise = 4;
-		songState.songChannelInstructionPointerNoise = header.noiseTracks[songState.songNoiseState.sectionPointer[0]].ptr;
+		audio.songState.songChannelEnableNoise = 4;
+		audio.songState.songChannelInstructionPointerNoise = header.noiseTracks[audio.songState.songNoiseState.sectionPointer[0]].ptr;
 	}
-	songState.songSquare1State.instructionTimer = 1;
-	songState.songSquare2State.instructionTimer = 1;
-	songState.songWaveState.instructionTimer = 1;
-	songState.songNoiseState.instructionTimer = 1;
+	audio.songState.songSquare1State.instructionTimer = 1;
+	audio.songState.songSquare2State.instructionTimer = 1;
+	audio.songState.songWaveState.instructionTimer = 1;
+	audio.songState.songNoiseState.instructionTimer = 1;
 }
 
 void handleSongLoadNextChannelSoundSquare1() {
-	songState.songWorkingState = songState.songSquare1State;
-	loadNextSound(songState.songChannelInstructionPointerSquare1, 1);
-	songState.songChannelEnableSquare1 = songState.workingSoundChannel;
-	if (songState.songChannelEnableSquare1 == 0) {
+	audio.songState.songWorkingState = audio.songState.songSquare1State;
+	loadNextSound(audio.songState.songChannelInstructionPointerSquare1, 1);
+	audio.songState.songChannelEnableSquare1 = audio.songState.workingSoundChannel;
+	if (audio.songState.songChannelEnableSquare1 == 0) {
 		resetChannelOptionsSquare1();
 		return;
 	}
-	songState.songSquare1State = songState.songWorkingState;
-	if (songState.songOptionsSetFlagWorking == 1) {
-		songState.songSweepSquare1 = songState.songSweepWorking;
-		songState.songSoundLengthSquare1 = songState.songSoundLengthWorking;
+	audio.songState.songSquare1State = audio.songState.songWorkingState;
+	if (audio.songState.songOptionsSetFlagWorking == 1) {
+		audio.songState.songSweepSquare1 = audio.songState.songSweepWorking;
+		audio.songState.songSoundLengthSquare1 = audio.songState.songSoundLengthWorking;
 	}
-	songState.songEnvelopeSquare1 = songState.songEnvelopeWorking;
-	songState.songFrequencySquare1 = songState.songFrequencyWorking;
-	if (!sfxActiveSquare1) {
-		gb.NR10 = songState.songSweepSquare1;
-		gb.NR11 = songState.songSoundLengthSquare1;
-		gb.AUD1ENV = songState.songEnvelopeSquare1;
-		gb.AUD1LOW = songState.songFrequencySquare1 & 0xFF;
-		gb.AUD1HIGH = songState.songFrequencySquare1 >> 8;
+	audio.songState.songEnvelopeSquare1 = audio.songState.songEnvelopeWorking;
+	audio.songState.songFrequencySquare1 = audio.songState.songFrequencyWorking;
+	if (!audio.sfxActiveSquare1) {
+		gb.NR10 = audio.songState.songSweepSquare1;
+		gb.NR11 = audio.songState.songSoundLengthSquare1;
+		gb.AUD1ENV = audio.songState.songEnvelopeSquare1;
+		gb.AUD1LOW = audio.songState.songFrequencySquare1 & 0xFF;
+		gb.AUD1HIGH = audio.songState.songFrequencySquare1 >> 8;
 	}
 }
 
 void handleSongLoadNextChannelSoundSquare2() {
-	songState.songWorkingState = songState.songSquare2State;
-	loadNextSound(songState.songChannelInstructionPointerSquare2, 2);
-	songState.songChannelEnableSquare2 = songState.workingSoundChannel;
-	if (songState.songChannelEnableSquare2 == 0) {
+	audio.songState.songWorkingState = audio.songState.songSquare2State;
+	loadNextSound(audio.songState.songChannelInstructionPointerSquare2, 2);
+	audio.songState.songChannelEnableSquare2 = audio.songState.workingSoundChannel;
+	if (audio.songState.songChannelEnableSquare2 == 0) {
 		resetChannelOptionsSquare2();
 		return;
 	}
-	songState.songSquare2State = songState.songWorkingState;
-	if (songState.songOptionsSetFlagWorking == 2) {
-		songState.songSoundLengthSquare2 = songState.songSoundLengthWorking;
+	audio.songState.songSquare2State = audio.songState.songWorkingState;
+	if (audio.songState.songOptionsSetFlagWorking == 2) {
+		audio.songState.songSoundLengthSquare2 = audio.songState.songSoundLengthWorking;
 	}
-	songState.songEnvelopeSquare2 = songState.songEnvelopeWorking;
-	songState.songFrequencySquare2 = songState.songFrequencyWorking;
-	if (!sfxActiveSquare2) {
-		gb.NR21 = songState.songSoundLengthSquare2;
-		if (songState.songFrequencyTweakSquare2 == 1) {
-			if (songState.songFrequencySquare2 < 34560) {
-				songState.songFrequencySquare2++;
+	audio.songState.songEnvelopeSquare2 = audio.songState.songEnvelopeWorking;
+	audio.songState.songFrequencySquare2 = audio.songState.songFrequencyWorking;
+	if (!audio.sfxActiveSquare2) {
+		gb.NR21 = audio.songState.songSoundLengthSquare2;
+		if (audio.songState.songFrequencyTweakSquare2 == 1) {
+			if (audio.songState.songFrequencySquare2 < 34560) {
+				audio.songState.songFrequencySquare2++;
 			}
-			songState.songFrequencySquare2++;
+			audio.songState.songFrequencySquare2++;
 		}
-		gb.AUD2ENV = songState.songEnvelopeSquare2;
-		gb.AUD2LOW = songState.songFrequencySquare2 & 0xFF;
-		gb.AUD2HIGH = songState.songFrequencySquare2 >> 8;
+		gb.AUD2ENV = audio.songState.songEnvelopeSquare2;
+		gb.AUD2LOW = audio.songState.songFrequencySquare2 & 0xFF;
+		gb.AUD2HIGH = audio.songState.songFrequencySquare2 >> 8;
 	}
 }
 
 void handleSongLoadNextChannelSoundWave() {
-	songState.songWorkingState = songState.songWaveState;
-	loadNextSound(songState.songChannelInstructionPointerWave, 3);
-	songState.songChannelEnableWave = songState.workingSoundChannel;
-	if (songState.songChannelEnableWave == 0) {
+	infof("wav");
+	audio.songState.songWorkingState = audio.songState.songWaveState;
+	loadNextSound(audio.songState.songChannelInstructionPointerWave, 3);
+	audio.songState.songChannelEnableWave = audio.songState.workingSoundChannel;
+	if (audio.songState.songChannelEnableWave == 0) {
 		resetChannelOptionsWave();
 		return;
 	}
-	songState.songWaveState = songState.songWaveState;
-	songState.songEnableOptionWave = songState.songEnableWorking;
-	songState.songSoundLengthWave = songState.songSoundLengthWorking;
-	songState.songVolumeWave = songState.songVolumeWorking;
-	songState.songFrequencyWave = songState.songFrequencyWorking;
-	if (!sfxActiveWave) {
+	audio.songState.songWaveState = audio.songState.songWaveState;
+	audio.songState.songEnableOptionWave = audio.songState.songEnableWorking;
+	audio.songState.songSoundLengthWave = audio.songState.songSoundLengthWorking;
+	audio.songState.songVolumeWave = audio.songState.songVolumeWorking;
+	audio.songState.songFrequencyWave = audio.songState.songFrequencyWorking;
+	if (!audio.sfxActiveWave) {
 		gb.AUD3ENA = 0;
-		gb.AUD3ENA = songState.songEnableOptionWave;
-		gb.NR31 = songState.songSoundLengthWave;
-		gb.NR32 = songState.songVolumeWave;
-		gb.NR33 = songState.songFrequencyWave & 0xFF;
-		gb.NR34 = songState.songFrequencyWave >> 8;
+		gb.AUD3ENA = audio.songState.songEnableOptionWave;
+		gb.NR31 = audio.songState.songSoundLengthWave;
+		gb.NR32 = audio.songState.songVolumeWave;
+		gb.NR33 = audio.songState.songFrequencyWave & 0xFF;
+		gb.NR34 = audio.songState.songFrequencyWave >> 8;
 	}
 }
 
 void handleSongLoadNextChannelSoundNoise() {
-	songState.songWorkingState = songState.songNoiseState;
-	loadNextSound(songState.songChannelInstructionPointerNoise, 4);
-	songState.songChannelEnableNoise = songState.workingSoundChannel;
-	if (songState.songChannelEnableNoise == 0) {
+	audio.songState.songWorkingState = audio.songState.songNoiseState;
+	loadNextSound(audio.songState.songChannelInstructionPointerNoise, 4);
+	audio.songState.songChannelEnableNoise = audio.songState.workingSoundChannel;
+	if (audio.songState.songChannelEnableNoise == 0) {
 		resetChannelOptionsNoise();
 		return;
 	}
-	songState.songNoiseState = songState.songWorkingState;
-	if (!sfxActiveNoise) {
-		gb.NR41 = songState.songSoundLengthWorking;
-		gb.NR42 = songState.songEnvelopeWorking;
-		gb.AUD4POLY = songState.songPolynomialCounterWorking;
-		songState.songPolynomialCounterNoise = songState.songPolynomialCounterWorking;
-		gb.NR44 = songState.songCounterControlWorking;
-		songState.songCounterControlNoise = songState.songCounterControlWorking;
+	audio.songState.songNoiseState = audio.songState.songWorkingState;
+	if (!audio.sfxActiveNoise) {
+		gb.NR41 = audio.songState.songSoundLengthWorking;
+		gb.NR42 = audio.songState.songEnvelopeWorking;
+		gb.AUD4POLY = audio.songState.songPolynomialCounterWorking;
+		audio.songState.songPolynomialCounterNoise = audio.songState.songPolynomialCounterWorking;
+		gb.NR44 = audio.songState.songCounterControlWorking;
+		audio.songState.songCounterControlNoise = audio.songState.songCounterControlWorking;
 	}
 }
 
 void loadNextSound(ref const(ubyte)* ptr, ubyte channel) {
 	static void mute() {
-		if (songState.workingSoundChannel != 3) {
-			songState.songEnvelopeWorking = 8;
-			songState.songCounterControlWorking = 0x80;
+		if (audio.songState.workingSoundChannel != 3) {
+			audio.songState.songEnvelopeWorking = 8;
+			audio.songState.songCounterControlWorking = 0x80;
 		} else {
-			songState.songEnableWorking = 0;
-			songState.songVolumeWorking = 0;
+			audio.songState.songEnableWorking = 0;
+			audio.songState.songVolumeWorking = 0;
 		}
 	}
 	static void instr35Common() {
-		if (songInterruptionPlaying == Song2.fadeOut) {
-			songState.songEnvelopeWorking = Song2.fadeOut;
+		if (audio.songInterruptionPlaying == Song2.fadeOut) {
+			audio.songState.songEnvelopeWorking = Song2.fadeOut;
 		}
-		switch (songState.workingSoundChannel) {
+		switch (audio.songState.workingSoundChannel) {
 			case 1:
-				songState.songFrequencyWorking = songState.songFrequencySquare1;
+				audio.songState.songFrequencyWorking = audio.songState.songFrequencySquare1;
 				break;
 			case 2:
-				songState.songFrequencyWorking = songState.songFrequencySquare2;
+				audio.songState.songFrequencyWorking = audio.songState.songFrequencySquare2;
 				break;
 			case 3:
-				if (!sfxActiveWave) {
-					songState.songEnableWorking = 0x80;
-					songState.songFrequencyWorking = songState.songFrequencyWave;
+				if (!audio.sfxActiveWave) {
+					audio.songState.songEnableWorking = 0x80;
+					audio.songState.songFrequencyWorking = audio.songState.songFrequencyWave;
 				}
 				break;
 			default: break;
 		}
 	}
 	static bool nextInstructionList(ref const(ubyte)* ptr) {
-		songState.songWorkingState.sectionPointer = songState.songWorkingState.sectionPointer[1 .. $];
-		if (songState.songWorkingState.sectionPointer[0] == 0) {
-			songState.workingSoundChannel = 0;
+		audio.songState.songWorkingState.sectionPointer = audio.songState.songWorkingState.sectionPointer[1 .. $];
+		if (audio.songState.songWorkingState.sectionPointer[0] == 0) {
+			audio.songState.workingSoundChannel = 0;
 			return true;
 		}
-		if (songState.songWorkingState.sectionPointer[0] == 0x00F0) {
+		if (audio.songState.songWorkingState.sectionPointer[0] == 0x00F0) {
 			songInstructionGoto();
 		}
-		switch (songState.workingSoundChannel) {
+		switch (audio.songState.workingSoundChannel) {
 			case 1:
 			case 2:
-				assert(songState.songWorkingState.sectionPointer[0] in songDataTable[songPlaying - 1].squareTracks, format!"Missing pattern %04X"(songState.songWorkingState.sectionPointer[0]));
-				ptr = songDataTable[songPlaying - 1].squareTracks[songState.songWorkingState.sectionPointer[0]].ptr;
+				assert(audio.songState.songWorkingState.sectionPointer[0] in songDataTable[audio.songPlaying - 1].squareTracks, format!"Missing pattern %04X"(audio.songState.songWorkingState.sectionPointer[0]));
+				ptr = songDataTable[audio.songPlaying - 1].squareTracks[audio.songState.songWorkingState.sectionPointer[0]].ptr;
 				break;
 			case 3:
-				assert(songState.songWorkingState.sectionPointer[0] in songDataTable[songPlaying - 1].waveTracks, format!"Missing pattern %04X"(songState.songWorkingState.sectionPointer[0]));
-				ptr = songDataTable[songPlaying - 1].waveTracks[songState.songWorkingState.sectionPointer[0]].ptr;
+				assert(audio.songState.songWorkingState.sectionPointer[0] in songDataTable[audio.songPlaying - 1].waveTracks, format!"Missing pattern %04X"(audio.songState.songWorkingState.sectionPointer[0]));
+				ptr = songDataTable[audio.songPlaying - 1].waveTracks[audio.songState.songWorkingState.sectionPointer[0]].ptr;
 				break;
 			case 4:
-				assert(songState.songWorkingState.sectionPointer[0] in songDataTable[songPlaying - 1].noiseTracks, format!"Missing pattern %04X"(songState.songWorkingState.sectionPointer[0]));
-				ptr = songDataTable[songPlaying - 1].noiseTracks[songState.songWorkingState.sectionPointer[0]].ptr;
+				assert(audio.songState.songWorkingState.sectionPointer[0] in songDataTable[audio.songPlaying - 1].noiseTracks, format!"Missing pattern %04X"(audio.songState.songWorkingState.sectionPointer[0]));
+				ptr = songDataTable[audio.songPlaying - 1].noiseTracks[audio.songState.songWorkingState.sectionPointer[0]].ptr;
 				break;
 			default: assert(0);
 		}
 		return false;
 	}
-	songState.workingSoundChannel = channel;
+	audio.songState.workingSoundChannel = channel;
 	if (ptr[0] == 0) {
 		if (nextInstructionList(ptr)) {
 			return;
@@ -836,21 +838,21 @@ void loadNextSound(ref const(ubyte)* ptr, ubyte channel) {
 				continue;
 			case 0xF6: return silenceAudio();
 			case 0x9F: .. case 0xF0:
-				songState.songWorkingState.instructionTimer = songState.songInstructionTimerArrayPointer[ptr[0] & 0b01011111];
-				songState.songWorkingState.instructionLength = songState.songInstructionTimerArrayPointer[ptr[0] & 0b01011111];
+				audio.songState.songWorkingState.instructionTimer = audio.songState.songInstructionTimerArrayPointer[ptr[0] & 0b01011111];
+				audio.songState.songWorkingState.instructionLength = audio.songState.songInstructionTimerArrayPointer[ptr[0] & 0b01011111];
 				ptr++;
 				continue;
 			default:
-				songState.songWorkingState.instructionTimer = songState.songWorkingState.instructionLength;
-				if (songState.workingSoundChannel == 4) {
+				audio.songState.songWorkingState.instructionTimer = audio.songState.songWorkingState.instructionLength;
+				if (audio.songState.workingSoundChannel == 4) {
 					const a = (ptr++)[0];
 					if (a == 1) {
 						mute();
 					} else {
-						songState.songSoundLengthWorking = songNoiseChannelOptionSets[a / 4][0];
-						songState.songEnvelopeWorking = songNoiseChannelOptionSets[a / 4][1];
-						songState.songPolynomialCounterWorking = songNoiseChannelOptionSets[a / 4][2];
-						songState.songCounterControlWorking = songNoiseChannelOptionSets[a / 4][3];
+						audio.songState.songSoundLengthWorking = songNoiseChannelOptionSets[a / 4][0];
+						audio.songState.songEnvelopeWorking = songNoiseChannelOptionSets[a / 4][1];
+						audio.songState.songPolynomialCounterWorking = songNoiseChannelOptionSets[a / 4][2];
+						audio.songState.songCounterControlWorking = songNoiseChannelOptionSets[a / 4][3];
 					}
 					return;
 				}
@@ -860,22 +862,22 @@ void loadNextSound(ref const(ubyte)* ptr, ubyte channel) {
 						mute();
 						return;
 					case 3:
-						songState.songEnvelopeWorking = 0x66;
+						audio.songState.songEnvelopeWorking = 0x66;
 						return instr35Common();
 					case 5:
-						songState.songEnvelopeWorking = 0x46;
+						audio.songState.songEnvelopeWorking = 0x46;
 						return instr35Common();
 					default:
-						if ((songState.workingSoundChannel == 3) && !sfxActiveWave) {
+						if ((audio.songState.workingSoundChannel == 3) && !audio.sfxActiveWave) {
 							gb.AUDTERM = gb.AUDTERM | 0b01000100;
-							songState.songEnableWorking = 0x80;
+							audio.songState.songEnableWorking = 0x80;
 						}
 						ubyte c = cmd;
-						if (songState.workingSoundChannel != 4) {
-							c += songState.songTranspose;
+						if (audio.songState.workingSoundChannel != 4) {
+							c += audio.songState.songTranspose;
 						}
-						songState.songEnvelopeWorking = songState.songWorkingState.noteEnvelope;
-						songState.songFrequencyWorking = musicNotes[c / 2];
+						audio.songState.songEnvelopeWorking = audio.songState.songWorkingState.noteEnvelope;
+						audio.songState.songFrequencyWorking = musicNotes[c / 2];
 						return;
 				}
 		}
@@ -884,70 +886,70 @@ void loadNextSound(ref const(ubyte)* ptr, ubyte channel) {
 
 void songInstructionSetWorkingSoundChannelOptions(ref const(ubyte)* ptr) {
 	ptr++;
-	songState.songOptionsSetFlagWorking = songState.workingSoundChannel;
-	if (songState.workingSoundChannel == 3) {
+	audio.songState.songOptionsSetFlagWorking = audio.songState.workingSoundChannel;
+	if (audio.songState.workingSoundChannel == 3) {
 		songInstructionSetWorkingSoundChannelOptionsWave(ptr);
 	} else {
-		if (songInterruptionPlaying == Song2.fadeOut) {
-			songState.songEnvelopeWorking = (ptr++)[0];
+		if (audio.songInterruptionPlaying == Song2.fadeOut) {
+			audio.songState.songEnvelopeWorking = (ptr++)[0];
 		} else {
-			songState.songEnvelopeWorking = (ptr++)[0];
-			songState.songWorkingState.noteEnvelope = songState.songEnvelopeWorking;
+			audio.songState.songEnvelopeWorking = (ptr++)[0];
+			audio.songState.songWorkingState.noteEnvelope = audio.songState.songEnvelopeWorking;
 		}
-		songState.songSweepWorking = (ptr++)[0];
-		songState.songSoundLengthWorking = (ptr++)[0];
-		songState.songWorkingState.effectIndex = songState.songSoundLengthWorking & ~0b11000000;
+		audio.songState.songSweepWorking = (ptr++)[0];
+		audio.songState.songSoundLengthWorking = (ptr++)[0];
+		audio.songState.songWorkingState.effectIndex = audio.songState.songSoundLengthWorking & ~0b11000000;
 	}
-	if (songState.songWorkingState.effectIndex == 0) {
-		songState.songWorkingState.effectIndex = 0; // ?
+	if (audio.songState.songWorkingState.effectIndex == 0) {
+		audio.songState.songWorkingState.effectIndex = 0; // ?
 	}
 	ptr++;
 }
 
 void songInstructionSetWorkingSoundChannelOptionsWave(ref const(ubyte)* ptr) {
-	ramCFE3 = *cast(const(ushort)*)ptr;
+	audio.ramCFE3 = *cast(const(ushort)*)ptr;
 	ptr += 2;
-	songState.songWavePatternDataPointer = &[0x4113 : wavePatterns[0], 0x4123: wavePatterns[1], 0x416B: wavePatterns[3], 0x417B: wavePatterns[4], 0x418B: wavePatterns[5], 0x419B: wavePatterns[6], 0x41AB: wavePatterns[7]][ramCFE3][0];
-	if (songInterruptionPlaying == Song2.fadeOut) {
-		songState.songVolumeWorking = ptr[0];
+	audio.songState.songWavePatternDataPointer = &[0x4113 : wavePatterns[0], 0x4123: wavePatterns[1], 0x416B: wavePatterns[3], 0x417B: wavePatterns[4], 0x418B: wavePatterns[5], 0x419B: wavePatterns[6], 0x41AB: wavePatterns[7]][audio.ramCFE3][0];
+	if (audio.songInterruptionPlaying == Song2.fadeOut) {
+		audio.songState.songVolumeWorking = ptr[0];
 	} else {
-		songState.songVolumeWorking = ptr[0];
-		songState.songWorkingState.noteVolume = ptr[0];
+		audio.songState.songVolumeWorking = ptr[0];
+		audio.songState.songWorkingState.noteVolume = ptr[0];
 	}
-	if (!sfxActiveWave) {
+	if (!audio.sfxActiveWave) {
 		gb.AUD3ENA = 0;
-		writeToWavePatternRAM(songState.songWavePatternDataPointer);
+		writeToWavePatternRAM(audio.songState.songWavePatternDataPointer);
 	}
-	songState.songWorkingState.effectIndex = songState.songVolumeWorking & ~0b01100000;
+	audio.songState.songWorkingState.effectIndex = audio.songState.songVolumeWorking & ~0b01100000;
 }
 
 void songInstructionSetInstructionTimerArrayPointer(ref const(ubyte)* ptr) {
 	ptr++;
-	songState.songInstructionTimerArrayPointer = getTempoData(*cast(const(ushort)*)ptr);
+	audio.songState.songInstructionTimerArrayPointer = getTempoData(*cast(const(ushort)*)ptr);
 	ptr += 2;
 }
 
 void songInstructionSetMusicNoteOffset(ref const(ubyte)* ptr) {
 	ptr++;
-	songState.songTranspose = (ptr++)[0];
+	audio.songState.songTranspose = (ptr++)[0];
 }
 
 void songInstructionGoto() {
-	const next = songState.songWorkingState.sectionPointer[1];
-	songState.songWorkingState.sectionPointer = songState.songWorkingState.sectionPointers[next .. $];
+	const next = audio.songState.songWorkingState.sectionPointer[1];
+	audio.songState.songWorkingState.sectionPointer = audio.songState.songWorkingState.sectionPointers[next .. $];
 }
 
 void songInstructionMarkRepeatPoint(ref const(ubyte)* ptr) {
 	ptr++;
-	songState.songWorkingState.repeatCount = (ptr++)[0];
-	songState.songWorkingState.repeatPoint = ptr;
+	audio.songState.songWorkingState.repeatCount = (ptr++)[0];
+	audio.songState.songWorkingState.repeatPoint = ptr;
 }
 
 void songInstructionRepeat(ref const(ubyte)* ptr) {
-	if (--songState.songWorkingState.repeatCount == 0) {
+	if (--audio.songState.songWorkingState.repeatCount == 0) {
 		ptr++;
 	} else {
-		ptr = songState.songWorkingState.repeatPoint;
+		ptr = audio.songState.songWorkingState.repeatPoint;
 	}
 }
 
@@ -957,23 +959,23 @@ void copyChannelSongProcessingState() {
 
 void handleSongSoundChannelEffect(ushort bc) {
 	static void common(const(ubyte)[] hl, ushort bc) {
-		if (songState.songSoundChannelEffectTimer == 0) {
-			songState.songSoundChannelEffectTimer = 16;
-			songState.songFrequencyWorking = 0;
+		if (audio.songState.songSoundChannelEffectTimer == 0) {
+			audio.songState.songSoundChannelEffectTimer = 16;
+			audio.songState.songFrequencyWorking = 0;
 		} else {
-			songState.songFrequencyWorking = cast(ushort)(hl[--songState.songSoundChannelEffectTimer] + bc);
+			audio.songState.songFrequencyWorking = cast(ushort)(hl[--audio.songState.songSoundChannelEffectTimer] + bc);
 		}
 	}
 	static void setFrequency() {
-		if (songState.workingSoundChannel == 1) {
-			songState.songFrequencySquare1 = songState.songFrequencyWorking;
-		} else if (songState.workingSoundChannel == 2) {
-			songState.songFrequencySquare2 = songState.songFrequencyWorking;
-		} else if (songState.workingSoundChannel == 3) {
-			songState.songFrequencyWave = songState.songFrequencyWorking & 0x7FFF;
+		if (audio.songState.workingSoundChannel == 1) {
+			audio.songState.songFrequencySquare1 = audio.songState.songFrequencyWorking;
+		} else if (audio.songState.workingSoundChannel == 2) {
+			audio.songState.songFrequencySquare2 = audio.songState.songFrequencyWorking;
+		} else if (audio.songState.workingSoundChannel == 3) {
+			audio.songState.songFrequencyWave = audio.songState.songFrequencyWorking & 0x7FFF;
 		}
 	}
-	switch (songState.songWorkingState.effectIndex) {
+	switch (audio.songState.songWorkingState.effectIndex) {
 		case 2:
 			common(songSoundChannelEffectTable[0], bc);
 			break;
@@ -984,15 +986,15 @@ void handleSongSoundChannelEffect(ushort bc) {
 			common(songSoundChannelEffectTable[2], bc);
 			break;
 		case 6:
-			songState.songFrequencyWorking = bc & 0x3FFF;
+			audio.songState.songFrequencyWorking = bc & 0x3FFF;
 			setFrequency();
 			break;
 		case 7:
-			songState.songFrequencyWorking = (bc + 4) & 0x3FFF;
+			audio.songState.songFrequencyWorking = (bc + 4) & 0x3FFF;
 			setFrequency();
 			break;
 		case 8:
-			songState.songFrequencyWorking = (bc - 3) & 0x3FFF;
+			audio.songState.songFrequencyWorking = (bc - 3) & 0x3FFF;
 			setFrequency();
 			break;
 		case 9:
@@ -1006,46 +1008,46 @@ void handleSongSoundChannelEffect(ushort bc) {
 }
 
 void resetChannelOptionsSquare1() {
-	songState.songChannelEnableSquare1 = 0;
+	audio.songState.songChannelEnableSquare1 = 0;
 	gb.AUD1ENV = 8;
-	songState.songEnvelopeSquare1 = 8;
+	audio.songState.songEnvelopeSquare1 = 8;
 	gb.AUD1HIGH = 0x80;
-	songState.songFrequencySquare1 = 0x8000 | (songState.songFrequencySquare1 & 0xFF);
+	audio.songState.songFrequencySquare1 = 0x8000 | (audio.songState.songFrequencySquare1 & 0xFF);
 }
 
 void resetChannelOptionsSquare2() {
-	songState.songChannelEnableSquare2 = 0;
+	audio.songState.songChannelEnableSquare2 = 0;
 	gb.AUD2ENV = 8;
-	songState.songEnvelopeSquare2 = 8;
+	audio.songState.songEnvelopeSquare2 = 8;
 	gb.AUD2HIGH = 0x80;
-	songState.songFrequencySquare2 = 0x8000 | (songState.songFrequencySquare2 & 0xFF);
+	audio.songState.songFrequencySquare2 = 0x8000 | (audio.songState.songFrequencySquare2 & 0xFF);
 }
 
 void resetChannelOptionsWave() {
-	songState.songChannelEnableWave = 0;
+	audio.songState.songChannelEnableWave = 0;
 	gb.AUD3ENA = 0;
-	songState.songEnableOptionWave = 0;
+	audio.songState.songEnableOptionWave = 0;
 }
 
 void resetChannelOptionsNoise() {
-	songState.songChannelEnableNoise = 0;
+	audio.songState.songChannelEnableNoise = 0;
 	gb.NR42 = 8;
-	songState.songEnvelopeNoise = 8;
+	audio.songState.songEnvelopeNoise = 8;
 	gb.NR44 = 0x80;
-	songState.songCounterControlNoise = 0x80;
+	audio.songState.songCounterControlNoise = 0x80;
 }
 
 void resetSongSoundChannelOptions() {
-	songState.songWorkingState = ChannelSongProcessingState.init;
-	songState.songSquare1State = ChannelSongProcessingState.init;
-	songState.songSquare2State = ChannelSongProcessingState.init;
-	songState.songWaveState = ChannelSongProcessingState.init;
-	songState.songNoiseState = ChannelSongProcessingState.init;
-	sfxActiveSquare1 = 0;
-	sfxActiveSquare2 = 0;
-	sfxActiveWave = 0;
-	sfxActiveNoise = NoiseSFX.u00;
-	songState.songFrequencyTweakSquare2 = 0;
+	audio.songState.songWorkingState = ChannelSongProcessingState.init;
+	audio.songState.songSquare1State = ChannelSongProcessingState.init;
+	audio.songState.songSquare2State = ChannelSongProcessingState.init;
+	audio.songState.songWaveState = ChannelSongProcessingState.init;
+	audio.songState.songNoiseState = ChannelSongProcessingState.init;
+	audio.sfxActiveSquare1 = 0;
+	audio.sfxActiveSquare2 = 0;
+	audio.sfxActiveWave = 0;
+	audio.sfxActiveNoise = NoiseSFX.u00;
+	audio.songState.songFrequencyTweakSquare2 = 0;
 	gb.NR10 = 0;
 	gb.AUD3ENA = 0;
 
@@ -1127,10 +1129,10 @@ immutable void function()[] square1SFXPlaybackPointers = [
 ];
 
 bool square1SfxInit1() {
-	if ((sfxPlayingSquare1 == Square1SFX.shootingWaveBeam) || ((sfxPlayingSquare1 >= Square1SFX.shootingBeam) && (sfxPlayingSquare1 <= Square1SFX.shootingSpazerBeam))) {
+	if ((audio.sfxPlayingSquare1 == Square1SFX.shootingWaveBeam) || ((audio.sfxPlayingSquare1 >= Square1SFX.shootingBeam) && (audio.sfxPlayingSquare1 <= Square1SFX.shootingSpazerBeam))) {
 		return false;
 	}
-	if (songPlaying == Song.chozoRuins) {
+	if (audio.songPlaying == Song.chozoRuins) {
 		playSquare1SFX(11, &optionSetsSquare1.jumping0[0]);
 		return true;
 	}
@@ -1139,7 +1141,7 @@ bool square1SfxInit1() {
 }
 
 void square1SfxPlayback1() {
-	if (songPlaying == Song.chozoRuins) {
+	if (audio.songPlaying == Song.chozoRuins) {
 		if (decrementChannelSoundEffectTimerSquare1() == 9) {
 			setChannelOptionSetSquare1(&optionSetsSquare1.jumping1[0]);
 		}
@@ -1156,10 +1158,10 @@ void square1SfxPlayback1() {
 }
 
 bool square1SfxInit2() {
-	if ((sfxPlayingSquare1 == Square1SFX.shootingWaveBeam) || ((sfxPlayingSquare1 >= Square1SFX.shootingBeam) && (sfxPlayingSquare1 <= Square1SFX.shootingSpazerBeam))) {
+	if ((audio.sfxPlayingSquare1 == Square1SFX.shootingWaveBeam) || ((audio.sfxPlayingSquare1 >= Square1SFX.shootingBeam) && (audio.sfxPlayingSquare1 <= Square1SFX.shootingSpazerBeam))) {
 		return false;
 	}
-	if (songPlaying == Song.chozoRuins) {
+	if (audio.songPlaying == Song.chozoRuins) {
 		playSquare1SFX(9, &optionSetsSquare1.hijumping0[0]);
 		return true;
 	}
@@ -1168,7 +1170,7 @@ bool square1SfxInit2() {
 }
 
 void square1SfxPlayback2() {
-	if (songPlaying == Song.chozoRuins) {
+	if (audio.songPlaying == Song.chozoRuins) {
 		if (decrementChannelSoundEffectTimerSquare1() == 8) {
 			setChannelOptionSetSquare1(&optionSetsSquare1.hijumping1[0]);
 		}
@@ -1191,10 +1193,10 @@ bool square1SfxInit3() {
 }
 
 void square1SfxPlayback3() {
-	if (sfxTimerSquare1 == 0) {
-		sfxTimerSquare1 = 16;
+	if (audio.sfxTimerSquare1 == 0) {
+		audio.sfxTimerSquare1 = 16;
 	}
-	switch (--sfxTimerSquare1) {
+	switch (--audio.sfxTimerSquare1) {
 		case 59: setChannelOptionSetSquare1(&optionSetsSquare1.screwAttacking1[0]); break;
 		case 55: setChannelOptionSetSquare1(&optionSetsSquare1.screwAttacking2[0]); break;
 		case 51: setChannelOptionSetSquare1(&optionSetsSquare1.screwAttacking3[0]); break;
@@ -1216,7 +1218,7 @@ void square1SfxPlayback3() {
 }
 
 bool square1SfxInit4() {
-	if (sfxPlayingSquare1 <= Square1SFX.screwAttacking) {
+	if (audio.sfxPlayingSquare1 <= Square1SFX.screwAttacking) {
 		return false;
 	}
 	playSquare1SFX(10, &optionSetsSquare1.standingTransition0[0]);
@@ -1297,39 +1299,39 @@ void square1SfxPlayback8() {
 }
 
 bool square1SfxInit9() {
-	sfxVariableFrequencySquare1 = 0xD0;
+	audio.sfxVariableFrequencySquare1 = 0xD0;
 	playSquare1SFX(20, &optionSetsSquare1.shootingIceBeam[0]);
 	return true;
 }
 
 void square1SfxPlayback9() {
 	decrementChannelSoundEffectTimerSquare1();
-	gb.AUD1LOW = sfxVariableFrequencySquare1;
-	sfxVariableFrequencySquare1 = sfxVariableFrequencySquare1; // that's just silly
+	gb.AUD1LOW = audio.sfxVariableFrequencySquare1;
+	audio.sfxVariableFrequencySquare1 = audio.sfxVariableFrequencySquare1; // that's just silly
 }
 
 bool square1SfxInitA() {
-	sfxVariableFrequencySquare1 = 0xD0;
+	audio.sfxVariableFrequencySquare1 = 0xD0;
 	playSquare1SFX(20, &optionSetsSquare1.shootingPlasmaBeam[0]);
 	return true;
 }
 
 void square1SfxPlaybackA() {
 	decrementChannelSoundEffectTimerSquare1();
-	gb.AUD1LOW = sfxVariableFrequencySquare1;
-	sfxVariableFrequencySquare1 = sfxVariableFrequencySquare1; // this is still silly
+	gb.AUD1LOW = audio.sfxVariableFrequencySquare1;
+	audio.sfxVariableFrequencySquare1 = audio.sfxVariableFrequencySquare1; // this is still silly
 }
 
 bool square1SfxInitB() {
-	sfxVariableFrequencySquare1 = 0xD0;
+	audio.sfxVariableFrequencySquare1 = 0xD0;
 	playSquare1SFX(20, &optionSetsSquare1.shootingSpazerBeam[0]);
 	return true;
 }
 
 void square1SfxPlaybackB() {
 	decrementChannelSoundEffectTimerSquare1();
-	gb.AUD1LOW = sfxVariableFrequencySquare1;
-	sfxVariableFrequencySquare1 = sfxVariableFrequencySquare1; // silliness continues
+	gb.AUD1LOW = audio.sfxVariableFrequencySquare1;
+	audio.sfxVariableFrequencySquare1 = audio.sfxVariableFrequencySquare1; // silliness continues
 }
 
 bool square1SfxInitC() {
@@ -1476,21 +1478,21 @@ void square1SfxPlayback17() {
 }
 
 bool square1SfxInit18() {
-	if (!samusHealthChangedOptionSetIndex) {
-		samusHealthChangedOptionSetIndex = 2;
+	if (!audio.samusHealthChangedOptionSetIndex) {
+		audio.samusHealthChangedOptionSetIndex = 2;
 	}
-	switch (samusHealthChangedOptionSetIndex) {
+	switch (audio.samusHealthChangedOptionSetIndex) {
 		case 1:
-			samusHealthChangedOptionSetIndex--;
+			audio.samusHealthChangedOptionSetIndex--;
 			playSquare1SFX(2, &optionSetsSquare1.samusHealthChanged0[0]);
 			break;
 		case 2:
-			samusHealthChangedOptionSetIndex--;
+			audio.samusHealthChangedOptionSetIndex--;
 			playSquare1SFX(2, &optionSetsSquare1.samusHealthChanged1[0]);
 			break;
 		case 0:
 		default:
-			samusHealthChangedOptionSetIndex = 2;
+			audio.samusHealthChangedOptionSetIndex = 2;
 			break;
 	}
 	return true;
@@ -1529,17 +1531,17 @@ void square1SfxPlayback1A() {
 }
 
 bool square1SfxInit1B() {
-	sfxVariableFrequencySquare1 = swap(gb.DIV) | 0b11100010;
+	audio.sfxVariableFrequencySquare1 = swap(gb.DIV) | 0b11100010;
 	playSquare1SFX(48, &optionSetsSquare1.metroidCry[0]);
 	return true;
 }
 void square1SfxPlayback1B() {
 	if (decrementChannelSoundEffectTimerSquare1() >= 32) {
-		sfxVariableFrequencySquare1 += 6;
-		gb.AUD1LOW = sfxVariableFrequencySquare1;
+		audio.sfxVariableFrequencySquare1 += 6;
+		gb.AUD1LOW = audio.sfxVariableFrequencySquare1;
 	} else {
-		sfxVariableFrequencySquare1--;
-		gb.AUD1LOW = sfxVariableFrequencySquare1;
+		audio.sfxVariableFrequencySquare1--;
+		gb.AUD1LOW = audio.sfxVariableFrequencySquare1;
 	}
 }
 
@@ -1588,22 +1590,22 @@ void square1SfxPlayback1E() {
 }
 
 void rememberIfScrewAttackingSfxIsPlaying() {
-	if (sfxPlayingSquare1 == Square1SFX.screwAttacking) {
-		resumeScrewAttackSoundEffectFlag = cast(ubyte)sfxPlayingSquare1;
+	if (audio.sfxPlayingSquare1 == Square1SFX.screwAttacking) {
+		audio.resumeScrewAttackSoundEffectFlag = cast(ubyte)audio.sfxPlayingSquare1;
 	}
 }
 void maybeResumeScrewAttackingSFX() {
-	if ((resumeScrewAttackSoundEffectFlag == 0) || (samusPose != SamusPose.spinJumping) || (samusItems & ItemFlag.screwAttack)) {
+	if ((audio.resumeScrewAttackSoundEffectFlag == 0) || (samusPose != SamusPose.spinJumping) || (samusItems & ItemFlag.screwAttack)) {
 		return;
 	}
-	sfxPlayingSquare1 = Square1SFX.screwAttacking;
-	resumeScrewAttackSoundEffectFlag = 0;
+	audio.sfxPlayingSquare1 = Square1SFX.screwAttacking;
+	audio.resumeScrewAttackSoundEffectFlag = 0;
 }
 
 void playSquare1SFX(ubyte a, const(ubyte)* set) {
-	sfxTimerSquare1 = a;
-	sfxPlayingSquare1 = sfxRequestSquare1;
-	sfxActiveSquare1 = cast(ubyte)sfxRequestSquare1;
+	audio.sfxTimerSquare1 = a;
+	audio.sfxPlayingSquare1 = audio.sfxRequestSquare1;
+	audio.sfxActiveSquare1 = cast(ubyte)audio.sfxRequestSquare1;
 	setChannelOptionSetSquare1(set);
 }
 
@@ -1630,30 +1632,30 @@ immutable void function()[] songSoundEffectPlaybackFunctionPointersSquare2 = [
 ];
 
 bool square2SfxInit3() {
-	square2VariableFrequency = swap(gb.DIV) | 0b11100000;
+	audio.square2VariableFrequency = swap(gb.DIV) | 0b11100000;
 	playSquare2SFX(48, &optionSetsSquare2.metroidQueenCry[0]);
 	return true;
 }
 
 void square2SfxPlayback3() {
 	if (decrementChannelSoundEffectTimerSquare2() & 1) {
-		square2VariableFrequency |= 0b00010000;
+		audio.square2VariableFrequency |= 0b00010000;
 	} else {
-		square2VariableFrequency &= ~0b00010000;
+		audio.square2VariableFrequency &= ~0b00010000;
 	}
-	if (sfxTimerSquare2 < 32) {
-		square2VariableFrequency += 3;
-		gb.AUD2LOW = square2VariableFrequency;
+	if (audio.sfxTimerSquare2 < 32) {
+		audio.square2VariableFrequency += 3;
+		gb.AUD2LOW = audio.square2VariableFrequency;
 	} else {
-		square2VariableFrequency--;
-		gb.AUD2LOW = square2VariableFrequency;
+		audio.square2VariableFrequency--;
+		gb.AUD2LOW = audio.square2VariableFrequency;
 	}
 }
 alias square2SfxPlayback5 = square2SfxPlayback3;
 alias square2SfxPlayback6 = square2SfxPlayback3;
 
 bool square2SfxInit4() {
-	square2VariableFrequency = (swap(gb.DIV) | 0b10000000) & ~0b01000000;
+	audio.square2VariableFrequency = (swap(gb.DIV) | 0b10000000) & ~0b01000000;
 	playSquare2SFX(28, &optionSetsSquare2.babyMetroidClearingBlockSquare2[0]);
 	return true;
 }
@@ -1661,26 +1663,26 @@ bool square2SfxInit4() {
 void square2SfxPlayback4() {
 	switch (decrementChannelSoundEffectTimerSquare2()) {
 		case 19:
-			square2VariableFrequency = 160;
+			audio.square2VariableFrequency = 160;
 			break;
 		case 12:
-			square2VariableFrequency = 144;
+			audio.square2VariableFrequency = 144;
 			break;
 		default:
-			square2VariableFrequency += 2;
-			gb.AUD2LOW = square2VariableFrequency;
+			audio.square2VariableFrequency += 2;
+			gb.AUD2LOW = audio.square2VariableFrequency;
 			break;
 	}
 }
 
 bool square2SfxInit5() {
-	square2VariableFrequency = (swap(gb.DIV) | 0b01000000) & ~0b10010100;
+	audio.square2VariableFrequency = (swap(gb.DIV) | 0b01000000) & ~0b10010100;
 	playSquare2SFX(48, &optionSetsSquare2.babyMetroidCrySquare2[0]);
 	return true;
 }
 
 bool square2SfxInit6() {
-	square2VariableFrequency = (swap(gb.DIV) | 0b01000000) & ~0b10000000;
+	audio.square2VariableFrequency = (swap(gb.DIV) | 0b01000000) & ~0b10000000;
 	playSquare2SFX(48, &optionSetsSquare2.metroidQueenHurtCry[0]);
 	return true;
 }
@@ -1691,9 +1693,9 @@ bool square2SfxInit7() {
 }
 
 void playSquare2SFX(ubyte a, const(ubyte)* set) {
-	sfxTimerSquare2 = a;
-	sfxPlayingSquare2 = sfxRequestSquare2;
-	sfxActiveSquare2 = cast(ubyte)sfxRequestSquare2;
+	audio.sfxTimerSquare2 = a;
+	audio.sfxPlayingSquare2 = audio.sfxRequestSquare2;
+	audio.sfxActiveSquare2 = cast(ubyte)audio.sfxRequestSquare2;
 	setChannelOptionSetSquare2(set);
 }
 
@@ -1784,7 +1786,7 @@ bool noiseSfxInit4() {
 }
 
 bool noiseSfxInit5() {
-	sfxRequestSquare1 = Square1SFX.metroidCry;
+	audio.sfxRequestSquare1 = Square1SFX.metroidCry;
 	playNoiseSweepSFX(64, &optionSetsNoise.metroidHurt0[0]);
 	return true;
 }
@@ -1834,7 +1836,7 @@ void noiseSfxPlayback8() {
 }
 
 bool noiseSfxInit9() {
-	sfxRequestSquare2 = Square2SFX.metroidQueenCry;
+	audio.sfxRequestSquare2 = Square2SFX.metroidQueenCry;
 	playNoiseSweepSFX(64, &optionSetsNoise.metroidQueenCry0[0]);
 	return true;
 }
@@ -1846,7 +1848,7 @@ void noiseSfxPlayback9() {
 }
 
 bool noiseSfxInitA() {
-	sfxRequestSquare2 = Square2SFX.metroidQueenHurtCry;
+	audio.sfxRequestSquare2 = Square2SFX.metroidQueenHurtCry;
 	playNoiseSweepSFX(64, &optionSetsNoise.metroidQueenHurtCry0[0]);
 	return true;
 }
@@ -1986,7 +1988,7 @@ void noiseSfxPlaybackF() {
 }
 
 bool noiseSfxInit10() {
-	if ((sfxPlayingNoise != NoiseSFX.u00) || (songState.songChannelEnableNoise != 0)) {
+	if ((audio.sfxPlayingNoise != NoiseSFX.u00) || (audio.songState.songChannelEnableNoise != 0)) {
 		return false;
 	}
 	playNoiseSweepSFX(2, &optionSetsNoise.footsteps0[0]);
@@ -2048,13 +2050,13 @@ void noiseSfxPlayback15() {
 }
 
 bool noiseSfxInit16() {
-	sfxRequestSquare2 = Square2SFX.babyMetroidClearingBlock;
+	audio.sfxRequestSquare2 = Square2SFX.babyMetroidClearingBlock;
 	playNoiseSweepSFX(8, &optionSetsNoise.babyMetroidClearingBlock[0]);
 	return true;
 }
 
 bool noiseSfxInit17() {
-	sfxRequestSquare2 = Square2SFX.babyMetroidCry;
+	audio.sfxRequestSquare2 = Square2SFX.babyMetroidCry;
 	playNoiseSweepSFX(64, &optionSetsNoise.babyMetroidCry[0]);
 	return true;
 }
@@ -2082,9 +2084,9 @@ bool noiseSfxInit1A() {
 }
 
 void playNoiseSweepSFX(ubyte a, const(ubyte)* set) {
-	sfxTimerNoise = a;
-	sfxPlayingNoise = sfxRequestNoise;
-	sfxActiveNoise = sfxRequestNoise;
+	audio.sfxTimerNoise = a;
+	audio.sfxPlayingNoise = audio.sfxRequestNoise;
+	audio.sfxActiveNoise = audio.sfxRequestNoise;
 	SetChannelOptionSetNoise(set);
 }
 

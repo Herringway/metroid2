@@ -48,7 +48,7 @@ void enemyHandler() {
 	}
 	static void restoreMusic() {
 		if (metroidCountReal) {
-			songRequest = cast(Song)(currentRoomSong + Song.noIntroStart);
+			audio.songRequest = cast(Song)(currentRoomSong + Song.noIntroStart);
 		}
 		metroidPostDeathTimer = 0;
 		metroidState = 0;
@@ -198,7 +198,7 @@ bool enemyGetDamagedOrGiveDrop() {
 		}
 		enemyWorking.explosionFlag = v;
 		enemyWorking.counter = 0;
-		sfxRequestNoise = NoiseSFX.u02;
+		audio.sfxRequestNoise = NoiseSFX.u02;
 		transferCollisionResults();
 		return true;
 	}
@@ -225,7 +225,7 @@ bool enemyGetDamagedOrGiveDrop() {
 			if (enemyWorking.health != 0xFF) {
 				return prepareDrop(0x20);
 			}
-			sfxRequestSquare1 = Square1SFX.beamDink;
+			audio.sfxRequestSquare1 = Square1SFX.beamDink;
 			 return transferCollisionResults();
 		} else if (collision.weaponType > CollisionType.screwAttack) {
 			return transferCollisionResults();
@@ -235,7 +235,7 @@ bool enemyGetDamagedOrGiveDrop() {
 				return true;
 			}
 			if (enemyWorking.health >= 0xFE) {
-				sfxRequestSquare1 = Square1SFX.beamDink;
+				audio.sfxRequestSquare1 = Square1SFX.beamDink;
 				return transferCollisionResults();
 			}
 			const overkill = enemyWorking.health < weaponDamageTable[collision.weaponType];
@@ -243,7 +243,7 @@ bool enemyGetDamagedOrGiveDrop() {
 			if ((enemyWorking.health == 0) || overkill) {
 				return prepareDrop(0x10);
 			}
-			sfxRequestNoise = NoiseSFX.u01;
+			audio.sfxRequestNoise = NoiseSFX.u01;
 			transferCollisionResults();
 			enemyWorking.stunCounter = 17;
 			return true;
@@ -251,10 +251,10 @@ bool enemyGetDamagedOrGiveDrop() {
 			if (enemyWorking.health == 0) {
 				return prepareDrop(0x10);
 			} else if (enemyWorking.health == 0xFF) {
-				sfxRequestSquare1 = Square1SFX.beamDink;
+				audio.sfxRequestSquare1 = Square1SFX.beamDink;
 				return transferCollisionResults();
 			} else if (enemyWorking.health == 0xFE) {
-				sfxRequestSquare1 = Square1SFX.beamDink;
+				audio.sfxRequestSquare1 = Square1SFX.beamDink;
 			} else {
 				if (enemyCheckDirectionalShields()) {
 					return true;
@@ -263,7 +263,7 @@ bool enemyGetDamagedOrGiveDrop() {
 				if (enemyWorking.health) {
 					enemyWorking.health--;
 				}
-				sfxRequestNoise = NoiseSFX.u01;
+				audio.sfxRequestNoise = NoiseSFX.u01;
 			}
 			enemyWorking.stunCounter = 0x10;
 			enemyWorking.iceCounter = 0x1;
@@ -275,15 +275,15 @@ bool enemyGetDamagedOrGiveDrop() {
 	}
 	switch (enemyWorking.dropType) {
 		case 1:
-			sfxRequestSquare1 = Square1SFX.pickedUpSmallEnergyDrop;
+			audio.sfxRequestSquare1 = Square1SFX.pickedUpSmallEnergyDrop;
 			giveHealth(5);
 			break;
 		case 2:
-			sfxRequestSquare1 = Square1SFX.pickedUpLargeEnergyDrop;
+			audio.sfxRequestSquare1 = Square1SFX.pickedUpLargeEnergyDrop;
 			giveHealth(20);
 			break;
 		default:
-			sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
+			audio.sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
 			samusCurMissiles += 5;
 			if (samusCurMissiles > samusMaxMissiles) {
 				samusCurMissiles = samusMaxMissiles;
@@ -305,7 +305,7 @@ bool enemyCheckDirectionalShields() {
 		return false;
 	}
 	if (((enemyWorking.directionFlags & 0xF0) >> 4) & collision.weaponDir) {
-		sfxRequestSquare1 = Square1SFX.beamDink;
+		audio.sfxRequestSquare1 = Square1SFX.beamDink;
 		enSprCollision.weaponType = collision.weaponType;
 		enSprCollision.enemy = collision.enemy;
 		enSprCollision.weaponDir = collision.weaponDir;
@@ -1136,8 +1136,8 @@ void enAIItemOrb() {
 		if ((enemyWeaponType == CollisionType.bombExplosion) || (enemyWeaponType == CollisionType.screwAttack) || (enemyWeaponType == CollisionType.contact)) {
 			return;
 		}
-		sfxRequestSquare1 = Square1SFX.nothing;
-		sfxRequestNoise = NoiseSFX.u02;
+		audio.sfxRequestSquare1 = Square1SFX.nothing;
+		audio.sfxRequestNoise = NoiseSFX.u02;
 		enemyWorking.spriteType++;
 		return;
 	} else {
@@ -1145,7 +1145,7 @@ void enAIItemOrb() {
 			if (enemyWeaponType != CollisionType.screwAttack) {
 				return;
 			}
-			sfxRequestSquare1 = Square1SFX.clear;
+			audio.sfxRequestSquare1 = Square1SFX.clear;
 		}
 		if (itemCollectionFlag != 0) {
 			itemCollected = 0;
@@ -1480,10 +1480,10 @@ void enAIArachnus() {
 		case ArachnusState.attacking:
 			enemyGetSamusCollisionResults();
 			if ((enemyWeaponType != CollisionType.nothing) && (enemyWeaponType == CollisionType.bombExplosion)) {
-				sfxRequestNoise = NoiseSFX.u05;
+				audio.sfxRequestNoise = NoiseSFX.u05;
 				enemyWorking.stunCounter = 17;
 				if (--arachnus.health == 0) {
-					sfxRequestNoise = NoiseSFX.u0D;
+					audio.sfxRequestNoise = NoiseSFX.u0D;
 					enemyWorking.health = 0xFF;
 					enemyWorking.spriteType = Actor.springBall;
 					enemyWorking.ai = &enAIItemOrb;
@@ -1713,7 +1713,7 @@ void enAIRockIcicle() {
 					return;
 				}
 			}
-			sfxRequestNoise = NoiseSFX.u11;
+			audio.sfxRequestNoise = NoiseSFX.u11;
 			enemyWorking.y -= enemyWorking.misc;
 			enemyWorking.misc = 0;
 			enemyWorking.state = RockIcicleState.state0;
@@ -1762,7 +1762,7 @@ void enemyAnimateIceCall() {
 			enemyWorking.stunCounter = 0;
 			enemyWorking.status = 0;
 		} else {
-			sfxRequestNoise = NoiseSFX.u02;
+			audio.sfxRequestNoise = NoiseSFX.u02;
 			enemyDeleteSelf();
 			enemyWorking.spawnFlag = 2;
 		}
@@ -2190,7 +2190,7 @@ void enAISkreek() {
 					enemySpawnObjectShortHeader(&projectileHeader, &enemyDataSlots[slot]);
 					enemyWorking.spawnFlag = 3;
 					enemyWorking.spriteType = Actor.skreek4;
-					sfxRequestNoise = NoiseSFX.u12;
+					audio.sfxRequestNoise = NoiseSFX.u12;
 				}
 				break;
 			case SkreekState.waitingForProjectile:
@@ -2313,7 +2313,7 @@ void enAIDrivelSpit() {
 			return;
 		}
 		enemyWorking.spriteType = Actor.drivelSpit4;
-		sfxRequestNoise = NoiseSFX.u11;
+		audio.sfxRequestNoise = NoiseSFX.u11;
 	} else if (enemyWorking.spriteType > Actor.drivelSpit3) {
 		if (enemyFrameCounter & 3) {
 			return;
@@ -2326,7 +2326,7 @@ void enAIDrivelSpit() {
 			enemySpawnFlags[enemyDataSlots[enemyWorking.spawnFlag >> 4].spawnNumber] = 1;
 		}
 		enemyDeleteSelf();
-		sfxRequestNoise = NoiseSFX.u03;
+		audio.sfxRequestNoise = NoiseSFX.u03;
 		enemyWorking.spawnFlag = 0xFF;
 	} else {
 		if (enemyFrameCounter & 3) {
@@ -2628,7 +2628,7 @@ void enAIPipeBug() {
 		enemyWorking.counter = 0;
 		if (enemyWorking.misc >= 10) {
 			enemyDeleteSelf();
-			sfxRequestSquare1 = Square1SFX.u14;
+			audio.sfxRequestSquare1 = Square1SFX.u14;
 			enemyWorking.spawnFlag = 2;
 		}
 		enemyWorking.misc++;
@@ -2767,7 +2767,7 @@ void enAIAutrack() {
 		}
 		enemyWorking.directionFlags ^= 10;
 		if (enemyWorking.directionFlags == 8) {
-			sfxRequestNoise = NoiseSFX.u18;
+			audio.sfxRequestNoise = NoiseSFX.u18;
 		}
 	}
 	if (enemyWorking.spriteType == Actor.autrackFlipped) {
@@ -2799,7 +2799,7 @@ void enAIAutrack() {
 				enemyTempSpawnFlag = 6;
 				enemySpawnObjectShortHeader(&laserHeader, &enemyDataSlots[slot]);
 				enemyWorking.spriteType = Actor.autrack4;
-				sfxRequestNoise = NoiseSFX.u13;
+				audio.sfxRequestNoise = NoiseSFX.u13;
 				action();
 			} else {
 				enemyWorking.spriteType++;
@@ -2872,7 +2872,7 @@ void enAIHopper() {
 					enemyWorking.x -= jumpXSpeedTable[enemyWorking.counter];
 				}
 				if ((++enemyWorking.counter == 5) && (++enemyWorking.spriteType == Actor.autoad2)) {
-					sfxRequestNoise = NoiseSFX.u1A;
+					audio.sfxRequestNoise = NoiseSFX.u1A;
 				}
 			} else {
 				enemyWorking.counter = 0;
@@ -2902,7 +2902,7 @@ void enAIWallfire() {
 		enemyFlipSpriteIDTwoFrame();
 		static void startExploding() {
 			enemyWorking.spriteType = Actor.wallfireShot3;
-			sfxRequestNoise = NoiseSFX.u03;
+			audio.sfxRequestNoise = NoiseSFX.u03;
 		}
 		if (!(enemyWorking.spriteAttributes & OAMFlags.xFlip)) {
 			enemyWorking.x += 4;
@@ -2945,12 +2945,12 @@ void enAIWallfire() {
 		enemyTempSpawnFlag = 6;
 		enemySpawnObjectShortHeader(&fireballHeader, &enemyDataSlots[newSlot]);
 		enemyWorking.spriteType = Actor.wallfire2;
-		sfxRequestNoise = NoiseSFX.u12;
+		audio.sfxRequestNoise = NoiseSFX.u12;
 		return;
 	}
 	enemyWorking.spriteType = Actor.wallfireDead;
-	sfxRequestSquare1 = Square1SFX.clear;
-	sfxRequestNoise = NoiseSFX.u02;
+	audio.sfxRequestSquare1 = Square1SFX.clear;
+	audio.sfxRequestNoise = NoiseSFX.u02;
 }
 
 enum GunzooState {
@@ -2973,7 +2973,7 @@ void enAIGunzoo() {
 				enCollisionLeftNearSmall();
 				if (enBGCollisionResult & 0b0100) {
 					enemyWorking.spriteType = Actor.gunzooHShot3;
-					sfxRequestNoise = NoiseSFX.u03;
+					audio.sfxRequestNoise = NoiseSFX.u03;
 				}
 			} else {
 				enemyWorking.spriteType++;
@@ -2991,7 +2991,7 @@ void enAIGunzoo() {
 			if (enBGCollisionResult & 0b0010) {
 				enemyWorking.spriteType = Actor.gunzooDiagShot3;
 				enemyWorking.y -= 4;
-				sfxRequestNoise = NoiseSFX.u03;
+				audio.sfxRequestNoise = NoiseSFX.u03;
 			}
 		}
 		return;
@@ -3004,7 +3004,7 @@ void enAIGunzoo() {
 			enemyTempSpawnFlag = 6;
 			enemySpawnObjectLongHeader(&diagonalShotHeader, &enemyDataSlots[slot]);
 			enemyWorking.state = GunzooState.shootTimer;
-			sfxRequestNoise = NoiseSFX.u12;
+			audio.sfxRequestNoise = NoiseSFX.u12;
 		} else if (enemyWorking.directionFlags & 0b0010) {
 			if (--enemyWorking.counter == 0) {
 				if (enemyWorking.state != GunzooState.shootMove) {
@@ -3042,7 +3042,7 @@ void enAIGunzoo() {
 					enemySpawnObjectLongHeader(&upperCannonShotHeader, &enemyDataSlots[slot]);
 					enemyWorking.spriteType++;
 					enemyWorking.state = GunzooState.shootTimer;
-					sfxRequestNoise = NoiseSFX.u12;
+					audio.sfxRequestNoise = NoiseSFX.u12;
 					return;
 				}
 				goto case GunzooState.move;
@@ -3058,7 +3058,7 @@ void enAIGunzoo() {
 				enemySpawnObjectLongHeader(&lowerCannonShotHeader, &enemyDataSlots[slot]);
 				enemyWorking.spriteType = Actor.gunzoo3;
 				enemyWorking.state = GunzooState.move;
-				sfxRequestNoise = NoiseSFX.u12;
+				audio.sfxRequestNoise = NoiseSFX.u12;
 				break;
 			case GunzooState.move:
 				if (enemyWorking.directionFlags & 0b0010) {
@@ -3091,7 +3091,7 @@ void enAIAutom() {
 		return;
 	}
 	if ((enemyWorking.spawnFlag & 0xF) == 0) { // flames are active, and we are flames
-		sfxRequestSquare2 = Square2SFX.u7;
+		audio.sfxRequestSquare2 = Square2SFX.u7;
 		if (enemyWorking.spriteType < Actor.automShot3) {
 			enemyWorking.spriteType++;
 			enemyWorking.y += 8;
@@ -3210,12 +3210,12 @@ void enAIMissileBlock() {
 			if (enemyWeaponType >= CollisionType.contact) {
 				return;
 			}
-			sfxRequestSquare1 = Square1SFX.beamDink;
+			audio.sfxRequestSquare1 = Square1SFX.beamDink;
 			if (enemyWeaponType != CollisionType.missiles) {
 				return;
 			}
-			sfxRequestSquare1 = Square1SFX.clear;
-			sfxRequestNoise = NoiseSFX.u08;
+			audio.sfxRequestSquare1 = Square1SFX.clear;
+			audio.sfxRequestNoise = NoiseSFX.u08;
 			if (!(enemyWeaponDir & 0b0001)) {
 				enemyWorking.directionFlags = 2;
 			}
@@ -3585,12 +3585,12 @@ void enAIMissileDoor() {
 	if (enemyWeaponType >= CollisionType.contact) {
 		return;
 	}
-	sfxRequestSquare1 = Square1SFX.beamDink;
+	audio.sfxRequestSquare1 = Square1SFX.beamDink;
 	if (enemyWeaponType != CollisionType.missiles) {
 		return;
 	}
-	sfxRequestSquare1 = Square1SFX.clear;
-	sfxRequestNoise = NoiseSFX.u08;
+	audio.sfxRequestSquare1 = Square1SFX.clear;
+	audio.sfxRequestNoise = NoiseSFX.u08;
 	enemyWorking.stunCounter = 19;
 	if (++enemyWorking.counter != 5) {
 		return;
@@ -3598,7 +3598,7 @@ void enAIMissileDoor() {
 	enemyWorking.counter = 0;
 	enemyWorking.stunCounter = 0;
 	enemyWorking.spriteType = Actor.screwExplosionStart;
-	sfxRequestSquare1 = Square1SFX.u10;
+	audio.sfxRequestSquare1 = Square1SFX.u10;
 	if (enemyWeaponDir & 2) {
 		enemyWorking.x += 24;
 	} else {
@@ -3717,7 +3717,7 @@ void enAIMetroidStinger() {
 		if (enemyWorking.counter == 1) { // stuff only happens on frame 0
 			metroidCountDisplayed += 8;
 			metroidCountShuffleTimer = 202;
-			songRequest = Song.metroidHiveWithIntro;
+			audio.songRequest = Song.metroidHiveWithIntro;
 			cutsceneActive = 1;
 		}
 	} else { // after 138 frames, clean up
@@ -3736,7 +3736,7 @@ void enAIHatchingAlpha() {
 			if (enemyWeaponType >= CollisionType.screwAttack) {
 				return;
 			}
-			sfxRequestSquare1 = Square1SFX.beamDink;
+			audio.sfxRequestSquare1 = Square1SFX.beamDink;
 			return;
 		} else {
 			enemyWorking.status = 0;
@@ -3775,10 +3775,10 @@ void enAIHatchingAlpha() {
 		}
 		cutsceneActive = 1;
 		metroidFightActive = 1;
-		if (songPlaying == Song.metroidBattle) {
+		if (audio.songPlaying == Song.metroidBattle) {
 			return;
 		}
-		songRequest = Song.metroidBattle;
+		audio.songRequest = Song.metroidBattle;
 	} else {
 		if (enemyFrameCounter & 3) {
 			return;
@@ -3812,10 +3812,10 @@ void enAIAlphaMetroidCheckIfInRange() {
 	alphaStunCounter = 0;
 	metroidFightActive = 1;
 	metroidState = 2;
-	if (songPlaying == Song.metroidBattle) {
+	if (audio.songPlaying == Song.metroidBattle) {
 		return;
 	}
-	songRequest = Song.metroidBattle;
+	audio.songRequest = Song.metroidBattle;
 	enAIAlphaMetroidStandardAction();
 }
 
@@ -3827,7 +3827,7 @@ void enAIAlphaMetroidCheckIfHurt() {
 	} else if (enemyWeaponType == CollisionType.missiles) {
 		enAIAlphaMetroidHurtReaction();
 	} else {
-		sfxRequestSquare1 = Square1SFX.beamDink;
+		audio.sfxRequestSquare1 = Square1SFX.beamDink;
 	}
 }
 void enAIAlphaMetroidStandardAction() {
@@ -3863,7 +3863,7 @@ void enAIAlphaMetroidStandardAction() {
 
 void enAIAlphaMetroidScrewReaction() {
 	metroidScrewReaction();
-	sfxRequestSquare1 = Square1SFX.u1A;
+	audio.sfxRequestSquare1 = Square1SFX.u1A;
 }
 
 void enAIAlphaMetroidHurtReaction() {
@@ -3872,7 +3872,7 @@ void enAIAlphaMetroidHurtReaction() {
 		return;
 	}
 	alphaStunCounter = 8;
-	sfxRequestNoise = NoiseSFX.u05;
+	audio.sfxRequestNoise = NoiseSFX.u05;
 	enemyWorking.directionFlags = 0;
 	static void knockbackRandHorizontal(ref ubyte dir) {
 		if (gb.DIV & 1) {
@@ -3915,8 +3915,8 @@ void enAIAlphaMetroidDeath() {
 	enemyWorking.state = 0;
 	metroidState = 0x80;
 	enemyWorking.spriteType = Actor.screwExplosionStart;
-	sfxRequestNoise = NoiseSFX.u0D;
-	songRequest = Song.killedMetroid;
+	audio.sfxRequestNoise = NoiseSFX.u0D;
+	audio.songRequest = Song.killedMetroid;
 	metroidFightActive = 2;
 	enemyWorking.spawnFlag = 2;
 	metroidCountReal--;
@@ -4147,7 +4147,7 @@ void enAIGammaMetroid() {
 				if (enemyWeaponType >= CollisionType.screwAttack) {
 					return;
 				}
-				sfxRequestSquare1 = Square1SFX.beamDink;
+				audio.sfxRequestSquare1 = Square1SFX.beamDink;
 			} else {
 				switch (enemyWeaponType) {
 					case CollisionType.nothing:
@@ -4191,12 +4191,12 @@ void enAIGammaMetroid() {
 							enemySpawnObjectShortHeader(&projectileHeader, &enemyDataSlots[slot]);
 							enemyWorking.spawnFlag = 5;
 							enemyWorking.counter = 0;
-							sfxRequestNoise = NoiseSFX.u14;
+							audio.sfxRequestNoise = NoiseSFX.u14;
 						}
 						break;
 					case CollisionType.screwAttack:
 						metroidScrewReaction();
-						sfxRequestSquare1 = Square1SFX.u1A;
+						audio.sfxRequestSquare1 = Square1SFX.u1A;
 						break;
 					case CollisionType.missiles:
 						if (--enemyWorking.health == 0) {
@@ -4204,8 +4204,8 @@ void enAIGammaMetroid() {
 							enemyWorking.state = 0;
 							metroidState = 0x80;
 							enemyWorking.spriteType = Actor.screwExplosionStart;
-							sfxRequestNoise = NoiseSFX.u0D;
-							songRequest = Song.killedMetroid;
+							audio.sfxRequestNoise = NoiseSFX.u0D;
+							audio.songRequest = Song.killedMetroid;
 							metroidFightActive = 2;
 							enemyWorking.spawnFlag = 2;
 							metroidCountReal--;
@@ -4214,7 +4214,7 @@ void enAIGammaMetroid() {
 							earthquakeCheck();
 						} else {
 							gammaStunCounter = 8;
-							sfxRequestNoise = NoiseSFX.u05;
+							audio.sfxRequestNoise = NoiseSFX.u05;
 							enemyWorking.directionFlags = 0;
 							static void knockbackRandHorizontal() {
 								if (gb.DIV & 1) {
@@ -4274,7 +4274,7 @@ void enAIGammaMetroid() {
 						}
 						break;
 					default:
-						sfxRequestSquare1 = Square1SFX.beamDink;
+						audio.sfxRequestSquare1 = Square1SFX.beamDink;
 						break;
 				}
 			}
@@ -4290,8 +4290,8 @@ void enAIGammaMetroid() {
 			gammaStunCounter = 0;
 			metroidState++;
 			metroidFightActive = 1;
-			if (songPlaying != Song.metroidBattle) {
-				songRequest = Song.metroidBattle;
+			if (audio.songPlaying != Song.metroidBattle) {
+				audio.songRequest = Song.metroidBattle;
 			}
 		} else if ((enemyWorking.spawnFlag & 0xF) == 0) {
 			despawn();
@@ -4305,7 +4305,7 @@ void enAIGammaMetroid() {
 					return;
 				}
 				cutsceneActive = 1;
-				songRequest = Song.metroidBattle;
+				audio.songRequest = Song.metroidBattle;
 				metroidFightActive = 1;
 			}
 			if (enemyFrameCounter & 3) {
@@ -4333,7 +4333,7 @@ void enAIGammaMetroid() {
 		metroidMissileKnockback();
 		enemyToggleVisibility();
 		if (enemyWeaponType >= CollisionType.screwAttack) {
-			sfxRequestSquare1 = Square1SFX.beamDink;
+			audio.sfxRequestSquare1 = Square1SFX.beamDink;
 		}
 	}
 }
@@ -4482,7 +4482,7 @@ void enAIZetaMetroid() {
 			enemyDataSlots[slot].spriteAttributes = enemyWorking.spriteAttributes;
 			enemyTempSpawnFlag = 6;
 			enemySpawnObjectShortHeader(&fireballHeader, &enemyDataSlots[slot]);
-			sfxRequestNoise = NoiseSFX.u15;
+			audio.sfxRequestNoise = NoiseSFX.u15;
 			enemyWorking.spawnFlag = 5;
 			metroidState = 4;
 			enemyWorking.counter = 0;
@@ -4506,18 +4506,18 @@ void enAIZetaMetroid() {
 					break;
 				case CollisionType.screwAttack:
 					metroidScrewReaction();
-					sfxRequestSquare1 = Square1SFX.u1A;
+					audio.sfxRequestSquare1 = Square1SFX.u1A;
 					break;
 				case CollisionType.missiles:
 					if (enemyWeaponDir & 0b0100) {
-						sfxRequestSquare1 = Square1SFX.beamDink;
+						audio.sfxRequestSquare1 = Square1SFX.beamDink;
 					} else if (--enemyWorking.health == 0) {
 						enemyWorking.counter = 0;
 						enemyWorking.state = 0;
 						metroidState = 0x80;
 						enemyWorking.spriteType = Actor.screwExplosionStart;
-						sfxRequestNoise = NoiseSFX.u0D;
-						songRequest = Song.killedMetroid;
+						audio.sfxRequestNoise = NoiseSFX.u0D;
+						audio.songRequest = Song.killedMetroid;
 						metroidFightActive = 2;
 						enemyWorking.spawnFlag = 2;
 						metroidCountReal--;
@@ -4527,7 +4527,7 @@ void enAIZetaMetroid() {
 					} else {
 						enemyWorking.spriteType = Actor.zeta8;
 						zetaStunCounter = 8;
-						sfxRequestNoise = NoiseSFX.u05;
+						audio.sfxRequestNoise = NoiseSFX.u05;
 						enemyWorking.directionFlags = 0;
 						if (enemyWeaponDir & 0b0001) {
 							enemyWorking.directionFlags |= 0b0001;
@@ -4551,7 +4551,7 @@ void enAIZetaMetroid() {
 					}
 					break;
 				default:
-					sfxRequestSquare1 = Square1SFX.beamDink;
+					audio.sfxRequestSquare1 = Square1SFX.beamDink;
 					break;
 			}
 		} else if (enemyWorking.spawnFlag == 4) {
@@ -4565,8 +4565,8 @@ void enAIZetaMetroid() {
 			zetaStunCounter = 0;
 			metroidFightActive = 1;
 			metroidState = 3;
-			if (songPlaying != Song.metroidBattle) {
-				songRequest = Song.metroidBattle;
+			if (audio.songPlaying != Song.metroidBattle) {
+				audio.songRequest = Song.metroidBattle;
 			}
 			standardAction();
 		} else if (metroidState == 2) {
@@ -4628,7 +4628,7 @@ void enAIZetaMetroid() {
 			}
 			if (distance < 80) {
 				cutsceneActive = 1;
-				songRequest = Song.metroidBattle;
+				audio.songRequest = Song.metroidBattle;
 				metroidFightActive = 1;
 			}
 		}
@@ -4667,7 +4667,7 @@ void enAIZetaMetroid() {
 			}
 			enemyWorking.spriteType++;
 			if (enemyWeaponType < CollisionType.screwAttack) {
-				sfxRequestSquare1 = Square1SFX.beamDink;
+				audio.sfxRequestSquare1 = Square1SFX.beamDink;
 			}
 		}
 	}
@@ -4750,7 +4750,7 @@ void enAIOmegaMetroid() {
 		enemyWorking.counter = 16;
 		enemyWorking.state = 16;
 		enemyWorking.spriteType = Actor.omega5;
-		sfxRequestSquare1 = Square1SFX.u2D;
+		audio.sfxRequestSquare1 = Square1SFX.u2D;
 		metroidState = 5;
 	}
 	static void animateTail() {
@@ -4774,8 +4774,8 @@ void enAIOmegaMetroid() {
 		omegaChaseTimerIndex = 0;
 		metroidState = 0x80;
 		enemyWorking.spriteType = Actor.screwExplosionStart;
-		sfxRequestNoise = NoiseSFX.u0E;
-		songRequest = Song.killedMetroid;
+		audio.sfxRequestNoise = NoiseSFX.u0E;
+		audio.songRequest = Song.killedMetroid;
 		metroidFightActive = 2;
 		enemyWorking.spawnFlag = 2;
 		metroidCountReal--;
@@ -4828,8 +4828,8 @@ void enAIOmegaMetroid() {
 					metroidState = 1;
 					metroidFightActive = 1;
 					enemyWorking.directionFlags = 0xFF;
-					if (songPlaying != Song.metroidBattle) {
-						songRequest = Song.metroidBattle;
+					if (audio.songPlaying != Song.metroidBattle) {
+						audio.songRequest = Song.metroidBattle;
 					}
 				}
 			} else {
@@ -4840,7 +4840,7 @@ void enAIOmegaMetroid() {
 					}
 					if (distance < 80) {
 						cutsceneActive = 1;
-						songRequest = Song.metroidBattle;
+						audio.songRequest = Song.metroidBattle;
 						metroidFightActive = 1;
 					}
 				}
@@ -4928,7 +4928,7 @@ void enAIOmegaMetroid() {
 									metroidState = 2;
 									enemyWorking.spawnFlag = 5;
 									enemyWorking.spriteType = Actor.omega3;
-									sfxRequestNoise = NoiseSFX.u15;
+									audio.sfxRequestNoise = NoiseSFX.u15;
 								}
 								break;
 							case 2:
@@ -4969,7 +4969,7 @@ void enAIOmegaMetroid() {
 					break;
 				case CollisionType.screwAttack:
 					metroidScrewReaction();
-					sfxRequestSquare1 = Square1SFX.u1A;
+					audio.sfxRequestSquare1 = Square1SFX.u1A;
 					break;
 				case CollisionType.missiles:
 					if (!(enemyWeaponDir & 0b0011)) { // can't hit from above or below
@@ -4990,7 +4990,7 @@ void enAIOmegaMetroid() {
 					}
 					omegaTempSpriteType = enemyWorking.spriteType;
 					enemyWorking.spriteType = Actor.omega6;
-					sfxRequestNoise = NoiseSFX.u09;
+					audio.sfxRequestNoise = NoiseSFX.u09;
 					if (enemyWeaponDir & 0b0001) {
 						enemyWorking.x += 5;
 					} else {
@@ -5000,7 +5000,7 @@ void enAIOmegaMetroid() {
 					}
 					break;
 				default:
-					sfxRequestSquare1 = Square1SFX.beamDink;
+					audio.sfxRequestSquare1 = Square1SFX.beamDink;
 					break;
 			}
 		}
@@ -5080,7 +5080,7 @@ void enAIOmegaMetroid() {
 	}
 	enemyFlipSpriteIDNow();
 	if (enemyWeaponType < CollisionType.screwAttack) {
-		sfxRequestSquare1 = Square1SFX.beamDink;
+		audio.sfxRequestSquare1 = Square1SFX.beamDink;
 	}
 }
 
@@ -5098,7 +5098,7 @@ void enAINormalMetroid() {
 		enemyWorking.spriteType ^= Actor.metroid1 ^ Actor.metroid;
 	}
 	static void freeze() {
-		sfxRequestSquare1 = Square1SFX.u1A;
+		audio.sfxRequestSquare1 = Square1SFX.u1A;
 		enemyWorking.stunCounter = 16;
 		enemyWorking.iceCounter = 68;
 		enemyWorking.status = 0;
@@ -5144,13 +5144,13 @@ void enAINormalMetroid() {
 				case CollisionType.bombExplosion:
 					enemyWorking.counter = 0;
 					metroidScrewReaction();
-					sfxRequestSquare1 = Square1SFX.u1A;
+					audio.sfxRequestSquare1 = Square1SFX.u1A;
 					break;
 				case CollisionType.iceBeam:
 					freeze();
 					break;
 				default:
-					sfxRequestSquare1 = Square1SFX.beamDink;
+					audio.sfxRequestSquare1 = Square1SFX.beamDink;
 					break;
 			}
 		} else {
@@ -5169,7 +5169,7 @@ void enAINormalMetroid() {
 							larvaLatchState = MetroidLatchState.unlatched;
 							enemyWorking.spawnFlag = 2;
 							enemyWorking.explosionFlag = 16;
-							sfxRequestNoise = NoiseSFX.u0D;
+							audio.sfxRequestNoise = NoiseSFX.u0D;
 							metroidCountReal--;
 							metroidCountDisplayed--;
 							metroidCountShuffleTimer = 192;
@@ -5177,12 +5177,12 @@ void enAINormalMetroid() {
 						} else {
 							larvaHurtAnimCounter = 3;
 							enemyWorking.spriteType = Actor.metroid3;
-							sfxRequestNoise = NoiseSFX.u05;
+							audio.sfxRequestNoise = NoiseSFX.u05;
 						}
 					} else if (enemyWeaponType == CollisionType.iceBeam) {
 						freeze();
 					} else {
-						sfxRequestSquare1 = Square1SFX.beamDink;
+						audio.sfxRequestSquare1 = Square1SFX.beamDink;
 					}
 				}
 			}
@@ -5286,7 +5286,7 @@ void enAIBabyMetroid() {
 				metroidState = BabyMetroidState.hatching;
 				metroidFightActive++; // YOU WANNA GO???
 				enemyWorking.spawnFlag = 4;
-				sfxRequestNoise = NoiseSFX.u16;
+				audio.sfxRequestNoise = NoiseSFX.u16;
 			} else {
 				enemyWorking.spriteType = Actor.baby1;
 				auto distance = cast(byte)(samusOnScreenXPos - enemyWorking.x);
@@ -5298,7 +5298,7 @@ void enAIBabyMetroid() {
 				}
 				metroidFightActive = 1;
 				metroidState = BabyMetroidState.active;
-				sfxRequestNoise = NoiseSFX.u16;
+				audio.sfxRequestNoise = NoiseSFX.u16;
 			}
 			break;
 		case BabyMetroidState.hatching2:
@@ -5412,7 +5412,7 @@ void babyCheckBlocks() {
 
 void babyClearBlock() {
 	destroyBlock();
-	sfxRequestNoise = NoiseSFX.u16;
+	audio.sfxRequestNoise = NoiseSFX.u16;
 }
 
 void enemyGetSamusCollisionResults() {

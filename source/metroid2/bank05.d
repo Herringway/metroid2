@@ -59,7 +59,7 @@ void loadTitleScreen() {
 	gb.WY = 136;
 	scrollY = 0;
 	gb.LCDC = 0b11000011;
-	songRequest = Song.title;
+	audio.songRequest = Song.title;
 	titleUnusedD039 = 0;
 	titleClearSelected = 0;
 	if (loadingFromFile) {
@@ -112,18 +112,18 @@ void titleScreenRoutine() {
 	}
 	titleClearUnusedOAMSlots();
 	if (inputRisingEdge == Pad.select) {
-		sfxRequestSquare1 = Square1SFX.select;
+		audio.sfxRequestSquare1 = Square1SFX.select;
 		titleShowClearOption ^= 0xFF;
 	}
 	if ((inputRisingEdge == Pad.right) && (inputPressed == Pad.right)) {
-		sfxRequestSquare1 = Square1SFX.select;
+		audio.sfxRequestSquare1 = Square1SFX.select;
 		activeSaveSlot++;
 		if (activeSaveSlot == 3) {
 			activeSaveSlot = 0;
 		}
 	}
 	if ((inputRisingEdge == Pad.left) && (inputPressed == Pad.left)) {
-		sfxRequestSquare1 = Square1SFX.select;
+		audio.sfxRequestSquare1 = Square1SFX.select;
 		activeSaveSlot--;
 		if (activeSaveSlot == 0xFF) {
 			activeSaveSlot = 2;
@@ -133,7 +133,7 @@ void titleScreenRoutine() {
 	if (titleShowClearOption && (inputPressed & Pad.down)) {
 		titleClearSelected = 1;
 		if (inputRisingEdge & Pad.down) {
-			sfxRequestSquare1 = Square1SFX.select;
+			audio.sfxRequestSquare1 = Square1SFX.select;
 		}
 	}
 	if (!(inputRisingEdge & Pad.start)) {
@@ -142,7 +142,7 @@ void titleScreenRoutine() {
 	debugFlag = 0;
 	bgPalette = 0x93;
 	if (titleClearSelected) {
-		sfxRequestNoise = NoiseSFX.u0F;
+		audio.sfxRequestNoise = NoiseSFX.u0F;
 		enableSRAM();
 		sram.saves[activeSaveSlot].magic[0 .. 2] = 0;
 		disableSRAM();
@@ -150,8 +150,8 @@ void titleScreenRoutine() {
 		infof("Save file %s cleared", activeSaveSlot);
 		return;
 	}
-	sfxRequestSquare1 = Square1SFX.select;
-	songRequest = Song.samusFanfare;
+	audio.sfxRequestSquare1 = Square1SFX.select;
+	audio.songRequest = Song.samusFanfare;
 	loadingFromFile = 0;
 	version(none) { // this only worked accidentally
 		//ld hl, saveFile_magicNumber
@@ -458,7 +458,7 @@ void handlePrepareCredits() {
 			return;
 		}
 		countdownTimer = 0;
-		sfxRequestLowHealthBeep = 0xFF;
+		audio.sfxRequestLowHealthBeep = 0xFF;
 	}
 	gb.LCDC = 0x03;
 	bgPalette = 0x93;
@@ -480,7 +480,7 @@ void handlePrepareCredits() {
 	countdownTimer = 0xFF;
 	samusY = (samusY & 0xFF00) | 0x60;
 	samusX = (samusX & 0xFF00) | 0x88;
-	songRequest = Song.reachedTheGunship;
+	audio.songRequest = Song.reachedTheGunship;
 	creditsSamusAnimState = SamusCreditsState.standingStart;
 	gameMode = GameMode.credits;
 }

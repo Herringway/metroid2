@@ -232,31 +232,56 @@ ref ubyte[0x40] enemySpawnFlagsSaved() {
 }
 
 __gshared EnemySlot[16] enemyDataSlots;
+struct AudioState {
+	Square1SFX sfxRequestSquare1;
+	Square1SFX sfxPlayingSquare1;
+	ubyte sfxTimerSquare1;
 
-__gshared Square1SFX sfxRequestSquare1;
-__gshared Square1SFX sfxPlayingSquare1;
-__gshared ubyte sfxTimerSquare1;
+	ubyte samusHealthChangedOptionSetIndex;
 
-__gshared ubyte samusHealthChangedOptionSetIndex;
+	Square2SFX sfxRequestSquare2;
+	Square2SFX sfxPlayingSquare2;
+	ubyte sfxTimerSquare2;
+	ubyte square2VariableFrequency;
+	ubyte sfxRequestFakeWave;
+	ubyte sfxPlayingFakeWave;
+	NoiseSFX sfxRequestNoise;
+	NoiseSFX sfxPlayingNoise;
+	ubyte sfxTimerNoise;
+	Song songRequest;
+	Song songPlaying;
+	Song2 songInterruptionRequest;
+	Song2 songInterruptionPlaying;
+	ubyte sfxActiveSquare1;
+	ubyte sfxActiveSquare2;
+	ubyte sfxActiveWave;
+	NoiseSFX sfxActiveNoise;
+	ubyte resumeScrewAttackSoundEffectFlag;
+	SongState songState;
+	alias SongProcessingState = songState;
+	alias songProcessingStateBackup = songStateBackup;
 
-__gshared Square2SFX sfxRequestSquare2;
-__gshared Square2SFX sfxPlayingSquare2;
-__gshared ubyte sfxTimerSquare2;
-__gshared ubyte square2VariableFrequency;
-__gshared ubyte sfxRequestFakeWave;
-__gshared ubyte sfxPlayingFakeWave;
-__gshared NoiseSFX sfxRequestNoise;
-__gshared NoiseSFX sfxPlayingNoise;
-__gshared ubyte sfxTimerNoise;
-__gshared Song songRequest;
-__gshared Song songPlaying;
-__gshared Song2 songInterruptionRequest;
-__gshared Song2 songInterruptionPlaying;
-__gshared ubyte sfxActiveSquare1;
-__gshared ubyte sfxActiveSquare2;
-__gshared ubyte sfxActiveWave;
-__gshared NoiseSFX sfxActiveNoise;
-__gshared ubyte resumeScrewAttackSoundEffectFlag;
+	SongState songStateBackup;
+
+	ushort songPlayingBackup;
+	ubyte audioPauseControl;
+	ubyte audioPauseSoundEffectTimer;
+	ubyte songSweepBackupSquare1;
+	ubyte sfxVariableFrequencySquare1;
+	ushort ramCFE3;
+	ubyte sfxRequestLowHealthBeep;
+	ubyte sfxRequestWave;
+	ubyte sfxPlayingLowHealthBeep;
+	ubyte sfxPlayingWave;
+	ubyte sfxPlayingBackupLowHealthBeep;
+	ubyte sfxTimerWave;
+	ubyte sfxLengthWave;
+	ubyte ramCFEB;
+	ubyte audioChannelOutputStereoFlags;
+	ubyte audioChannelOutputStereoFlagsBackup;
+	ubyte loudLowHealthBeepTimer;
+}
+__gshared AudioState audio;
 struct ChannelSongProcessingState {
 	const(ushort)[] sectionPointer;
 	const(ushort)[] sectionPointers;
@@ -334,29 +359,6 @@ struct SongState {
 	ubyte ramCF5F;
 	ubyte songFrequencyTweakSquare2;
 }
-__gshared SongState songState;
-alias SongProcessingState = songState;
-alias songProcessingStateBackup = songStateBackup;
-
-__gshared SongState songStateBackup;
-
-__gshared ushort songPlayingBackup;
-__gshared ubyte audioPauseControl;
-__gshared ubyte audioPauseSoundEffectTimer;
-__gshared ubyte songSweepBackupSquare1;
-__gshared ubyte sfxVariableFrequencySquare1;
-__gshared ushort ramCFE3;
-__gshared ubyte sfxRequestLowHealthBeep;
-__gshared ubyte sfxRequestWave;
-__gshared ubyte sfxPlayingLowHealthBeep;
-__gshared ubyte sfxPlayingWave;
-__gshared ubyte sfxPlayingBackupLowHealthBeep;
-__gshared ubyte sfxTimerWave;
-__gshared ubyte sfxLengthWave;
-__gshared ubyte ramCFEB;
-__gshared ubyte audioChannelOutputStereoFlags;
-__gshared ubyte audioChannelOutputStereoFlagsBackup;
-__gshared ubyte loudLowHealthBeepTimer;
 
 struct TempMetaTile {
 	ubyte topLeft;

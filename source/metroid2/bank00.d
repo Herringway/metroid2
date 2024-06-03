@@ -747,7 +747,7 @@ void loadGameSamusData() {
 	samusDispMissiles = saveBuf.samusCurMissiles;
 	samusPose = SamusPose.facingScreen;
 	countdownTimer = 0x0140;
-	songRequest = Song.samusFanfare;
+	audio.songRequest = Song.samusFanfare;
 }
 
 void samusHandlePose() {
@@ -812,10 +812,10 @@ void samusHandlePose() {
 							return;
 						}
 						samusJumpArcCounter = samusJumpArrayBaseOffset - 0x1F;
-						sfxRequestSquare1 = Square1SFX.hiJumping;
+						audio.sfxRequestSquare1 = Square1SFX.hiJumping;
 						if (!(samusItems & ItemFlag.hiJump)) {
 							samusJumpArcCounter = samusJumpArrayBaseOffset - 0x0F;
-							sfxRequestSquare1 = Square1SFX.jumping;
+							audio.sfxRequestSquare1 = Square1SFX.jumping;
 						}
 						if (waterContactFlag) {
 							samusJumpArcCounter += 16;
@@ -823,7 +823,7 @@ void samusHandlePose() {
 						samusPose = SamusPose.startingToSpinJump;
 						samusJumpStartCounter = 0;
 						if (samusItems & ItemFlag.screwAttack) {
-							sfxRequestSquare1 = Square1SFX.screwAttacking;
+							audio.sfxRequestSquare1 = Square1SFX.screwAttacking;
 						}
 					}
 				}
@@ -832,7 +832,7 @@ void samusHandlePose() {
 						samusPose = cast(SamusPose)(SamusPose.running | 0x80);
 						samusFacingDirection = 1;
 						samusTurnAnimTimer = 2;
-						sfxRequestSquare1 = Square1SFX.standingTransition;
+						audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 					} else {
 						if (samusWalkRight()) {
 							return;
@@ -846,7 +846,7 @@ void samusHandlePose() {
 						samusPose = cast(SamusPose)(SamusPose.running | 0x80);
 						samusFacingDirection = 0;
 						samusTurnAnimTimer = 2;
-						sfxRequestSquare1 = Square1SFX.standingTransition;
+						audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 					} else {
 						if (samusWalkLeft()) {
 							return;
@@ -858,7 +858,7 @@ void samusHandlePose() {
 				if (inputRisingEdge & Pad.down) {
 					samusAnimationTimer = 0;
 					samusPose = SamusPose.crouching;
-					sfxRequestSquare1 = Square1SFX.crouchingTransition;
+					audio.sfxRequestSquare1 = Square1SFX.crouchingTransition;
 				}
 				if (inputRisingEdge & Pad.a) {
 					normalJump:
@@ -866,10 +866,10 @@ void samusHandlePose() {
 						return;
 					}
 					samusJumpArcCounter = samusJumpArrayBaseOffset - 0x1F;
-					sfxRequestSquare1 = Square1SFX.hiJumping;
+					audio.sfxRequestSquare1 = Square1SFX.hiJumping;
 					if (!(samusItems & ItemFlag.hiJump)) {
 						samusJumpArcCounter = samusJumpArrayBaseOffset - 0xF;
-						sfxRequestSquare1 = Square1SFX.jumping;
+						audio.sfxRequestSquare1 = Square1SFX.jumping;
 					}
 					if (waterContactFlag) {
 						samusJumpArcCounter += 16;
@@ -934,7 +934,7 @@ void samusHandlePose() {
 				}
 				static void breakSpin() {
 					if (samusItems & (ItemFlag.spaceJump | ItemFlag.screwAttack)) {
-						sfxRequestSquare1 = Square1SFX.standingTransition;
+						audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 					}
 					startFalling();
 				}
@@ -974,13 +974,13 @@ void samusHandlePose() {
 				if (inputRisingEdge & Pad.a) {
 					if ((spaceJumpTable[samusJumpArcCounter - samusJumpArrayBaseOffset]) && (samusItems & ItemFlag.spaceJump)) {
 						samusJumpArcCounter = samusJumpArrayBaseOffset - 40;
-						sfxRequestSquare1 = Square1SFX.hiJumping;
+						audio.sfxRequestSquare1 = Square1SFX.hiJumping;
 						if (!(samusItems & ItemFlag.hiJump)) {
 							samusJumpArcCounter = samusJumpArrayBaseOffset - 24;
-							sfxRequestSquare1 = Square1SFX.jumping;
+							audio.sfxRequestSquare1 = Square1SFX.jumping;
 						}
 						if (samusItems & ItemFlag.screwAttack) {
-							sfxRequestSquare1 = Square1SFX.screwAttacking;
+							audio.sfxRequestSquare1 = Square1SFX.screwAttacking;
 						}
 						if (samusAirDirection == 0) {
 							return;
@@ -1009,7 +1009,7 @@ void samusHandlePose() {
 						return;
 					}
 					samusJumpArcCounter = cast(ubyte)(samusJumpArrayBaseOffset - 31);
-					sfxRequestSquare1 = cast(Square1SFX)(Square1SFX.jumping + !!(samusItems & ItemFlag.hiJump));
+					audio.sfxRequestSquare1 = cast(Square1SFX)(Square1SFX.jumping + !!(samusItems & ItemFlag.hiJump));
 					if (!(samusItems & ItemFlag.hiJump)) {
 						samusJumpArcCounter = cast(ubyte)(samusJumpArrayBaseOffset - 15);
 					}
@@ -1019,7 +1019,7 @@ void samusHandlePose() {
 					samusPose = SamusPose.startingToSpinJump;
 					samusJumpStartCounter = 0;
 					if (samusItems & ItemFlag.screwAttack) {
-						sfxRequestSquare1 = Square1SFX.screwAttacking;
+						audio.sfxRequestSquare1 = Square1SFX.screwAttacking;
 					}
 					return;
 				}
@@ -1028,7 +1028,7 @@ void samusHandlePose() {
 						samusPose = cast(SamusPose)(SamusPose.running | 0x80);
 						samusFacingDirection = 1;
 						samusTurnAnimTimer = 2;
-						sfxRequestSquare1 = Square1SFX.standingTransition;
+						audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 					} else if (samusWalkRight()) {
 						samusPose = SamusPose.standing;
 					}
@@ -1039,7 +1039,7 @@ void samusHandlePose() {
 						samusPose = cast(SamusPose)(SamusPose.running | 0x80);
 						samusFacingDirection = 0;
 						samusTurnAnimTimer = 2;
-						sfxRequestSquare1 = Square1SFX.standingTransition;
+						audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 					} else if (samusWalkLeft()) {
 						samusPose = SamusPose.standing;
 					}
@@ -1049,7 +1049,7 @@ void samusHandlePose() {
 				if (inputRisingEdge & Pad.down) {
 					samusAnimationTimer = 0;
 					samusPose = SamusPose.crouching;
-					sfxRequestSquare1 = Square1SFX.crouchingTransition;
+					audio.sfxRequestSquare1 = Square1SFX.crouchingTransition;
 					return;
 				}
 				if (inputRisingEdge & Pad.a) {
@@ -1063,9 +1063,9 @@ void samusHandlePose() {
 					}
 					samusPose = SamusPose.startingToJump;
 					samusJumpStartCounter = 0;
-					sfxRequestSquare1 = Square1SFX.hiJumping;
+					audio.sfxRequestSquare1 = Square1SFX.hiJumping;
 					if (!(samusItems & ItemFlag.hiJump)) {
-						sfxRequestSquare1 = Square1SFX.jumping;
+						audio.sfxRequestSquare1 = Square1SFX.jumping;
 					}
 					if (waterContactFlag) {
 						samusJumpArcCounter += 16;
@@ -1083,7 +1083,7 @@ void samusHandlePose() {
 					if (samusFacingDirection == 1) {
 						if (samusTryStanding()) {
 							samusPose = SamusPose.morphBall;
-							sfxRequestSquare1 = Square1SFX.morphingTransition;
+							audio.sfxRequestSquare1 = Square1SFX.morphingTransition;
 						}
 					} else {
 						samusFacingDirection = 1;
@@ -1095,7 +1095,7 @@ void samusHandlePose() {
 					if (samusFacingDirection == 0) {
 						if (samusTryStanding()) {
 							samusPose = SamusPose.morphBall;
-							sfxRequestSquare1 = Square1SFX.morphingTransition;
+							audio.sfxRequestSquare1 = Square1SFX.morphingTransition;
 						}
 					} else {
 						samusFacingDirection = 0;
@@ -1103,11 +1103,11 @@ void samusHandlePose() {
 					return;
 				}
 				if (inputRisingEdge & Pad.a) {
-					sfxRequestSquare1 = cast(Square1SFX)(Square1SFX.jumping + !!(samusItems & ItemFlag.hiJump));
+					audio.sfxRequestSquare1 = cast(Square1SFX)(Square1SFX.jumping + !!(samusItems & ItemFlag.hiJump));
 					if (inputPressed & (Pad.left | Pad.right)) {
 						samusPose = SamusPose.spinJumping;
 						if (samusItems & ItemFlag.screwAttack) {
-							sfxRequestSquare1 = Square1SFX.screwAttacking;
+							audio.sfxRequestSquare1 = Square1SFX.screwAttacking;
 						}
 					} else {
 						samusPose = SamusPose.jumping;
@@ -1147,7 +1147,7 @@ void samusHandlePose() {
 					samusPose = SamusPose.spiderBall;
 					samusFallArcCounter = 1;
 					spiderRotationState = 0;
-					sfxRequestSquare1 = Square1SFX.spiderBall;
+					audio.sfxRequestSquare1 = Square1SFX.spiderBall;
 				}
 				if (!collisionSamusBottom()) {
 					samusPose = SamusPose.morphBallFalling;
@@ -1165,15 +1165,15 @@ void samusHandlePose() {
 					samusJumpArcCounter = samusJumpArrayBaseOffset - 18;
 					samusPose = SamusPose.morphBallJumping;
 					samusJumpStartCounter = 0;
-					sfxRequestSquare1 = Square1SFX.jumping;
+					audio.sfxRequestSquare1 = Square1SFX.jumping;
 				}
 				if (samusSpeedDown >= 2) {
 					if (inputPressed & Pad.down) {
 						return activateSpiderBall();
 					}
 					samusPose = SamusPose.morphBallJumping;
-					sfxRequestSquare1 = Square1SFX.jumping;
-					if (sfxRequestSquare1) { // k.
+					audio.sfxRequestSquare1 = Square1SFX.jumping;
+					if (audio.sfxRequestSquare1) { // k.
 						samusJumpArcCounter = samusJumpArrayBaseOffset + 8;
 					} else {
 						samusJumpArcCounter = samusJumpArrayBaseOffset + 4;
@@ -1191,7 +1191,7 @@ void samusHandlePose() {
 				if ((inputRisingEdge & Pad.down) && (samusItems & ItemFlag.spiderBall)) {
 					samusPose = SamusPose.spiderBallJumping;
 					spiderRotationState = 0;
-					sfxRequestSquare1 = Square1SFX.spiderBall;
+					audio.sfxRequestSquare1 = Square1SFX.spiderBall;
 					return;
 				}
 				goto case SamusPose.jumping;
@@ -1226,10 +1226,10 @@ void samusHandlePose() {
 						}
 						samusJumpArcCounter = samusJumpArrayBaseOffset - 31;
 					}
-					sfxRequestSquare1 = Square1SFX.hiJumping;
+					audio.sfxRequestSquare1 = Square1SFX.hiJumping;
 					if (!(samusItems & ItemFlag.hiJump)) {
 						samusJumpArcCounter = samusJumpArrayBaseOffset - 15;
-						sfxRequestSquare1 = Square1SFX.jumping;
+						audio.sfxRequestSquare1 = Square1SFX.jumping;
 					}
 					samusPose = SamusPose.startingToJump;
 					samusJumpStartCounter = 0;
@@ -1241,14 +1241,14 @@ void samusHandlePose() {
 				if ((inputRisingEdge & Pad.down) && (samusItems & ItemFlag.spiderBall)) {
 					samusPose = SamusPose.spiderBallFalling;
 					spiderRotationState = 0;
-					sfxRequestSquare1 = Square1SFX.spiderBall;
+					audio.sfxRequestSquare1 = Square1SFX.spiderBall;
 					return;
 				}
 				if ((inputRisingEdge & Pad.a) && acidContactFlag) {
 					samusJumpArcCounter = acidContactFlag;
 					samusPose = SamusPose.morphBallJumping;
 					samusJumpStartCounter = 0;
-					sfxRequestSquare1 = Square1SFX.jumping;
+					audio.sfxRequestSquare1 = Square1SFX.jumping;
 					return;
 				}
 				if (inputRisingEdge & Pad.up) {
@@ -1309,7 +1309,7 @@ void samusHandlePose() {
 			case SamusPose.spiderBallRolling:
 				if (inputRisingEdge & Pad.a) {
 					samusPose = SamusPose.morphBall;
-					sfxRequestSquare1 = Square1SFX.morphingTransition;
+					audio.sfxRequestSquare1 = Square1SFX.morphingTransition;
 					return;
 				}
 				if (!(inputPressed & (Pad.down | Pad.up | Pad.left | Pad.right))) {
@@ -1373,7 +1373,7 @@ void samusHandlePose() {
 			case SamusPose.spiderBallFalling:
 				if (inputRisingEdge & Pad.a) {
 					samusPose = SamusPose.morphBallFalling;
-					sfxRequestSquare1 = Square1SFX.morphingTransition;
+					audio.sfxRequestSquare1 = Square1SFX.morphingTransition;
 					return;
 				}
 				if (inputPressed & Pad.right) {
@@ -1403,7 +1403,7 @@ void samusHandlePose() {
 			case SamusPose.spiderBallJumping:
 				if (inputRisingEdge & Pad.a) {
 					samusPose = SamusPose.morphBallJumping;
-					sfxRequestSquare1 = Square1SFX.morphingTransition;
+					audio.sfxRequestSquare1 = Square1SFX.morphingTransition;
 					return;
 				}
 				static void moveVertical(byte amt) {
@@ -1448,7 +1448,7 @@ void samusHandlePose() {
 			case SamusPose.spiderBall:
 				if (inputRisingEdge & Pad.a) {
 					samusPose = SamusPose.morphBall;
-					sfxRequestSquare1 = Square1SFX.morphingTransition;
+					audio.sfxRequestSquare1 = Square1SFX.morphingTransition;
 					return;
 				}
 				collisionCheckSpiderSet();
@@ -1477,10 +1477,10 @@ void samusHandlePose() {
 				}
 				samusInvulnerableTimer = 0;
 				samusJumpArcCounter = samusJumpArrayBaseOffset - 0x1F;
-				sfxRequestSquare1 = Square1SFX.hiJumping;
+				audio.sfxRequestSquare1 = Square1SFX.hiJumping;
 				if (!(samusItems & ItemFlag.hiJump)) {
 					samusJumpArcCounter = samusJumpArrayBaseOffset - 0xF;
-					sfxRequestSquare1 = Square1SFX.jumping;
+					audio.sfxRequestSquare1 = Square1SFX.jumping;
 				}
 				if (waterContactFlag) {
 					samusJumpArcCounter += 0x10;
@@ -1498,7 +1498,7 @@ void samusHandlePose() {
 					samusJumpArcCounter = samusJumpArrayBaseOffset - 0x12;
 					samusPose = SamusPose.morphBallJumping;
 					samusJumpStartCounter = 0;
-					sfxRequestSquare1 = Square1SFX.jumping;
+					audio.sfxRequestSquare1 = Square1SFX.jumping;
 				}
 				goto case SamusPose.standingBombed;
 			case SamusPose.morphBallBombed:
@@ -1506,7 +1506,7 @@ void samusHandlePose() {
 				if ((inputRisingEdge & Pad.down) && (samusItems & ItemFlag.spiderBall)) {
 					samusPose = SamusPose.spiderBallFalling;
 					spiderRotationState = 0;
-					sfxRequestSquare1 = Square1SFX.spiderBall;
+					audio.sfxRequestSquare1 = Square1SFX.spiderBall;
 					return;
 				} else if (inputRisingEdge & Pad.up) {
 					samusUnmorphInAir();
@@ -1545,8 +1545,8 @@ void samusHandlePose() {
 				if (countdownTimer != 0) {
 					return;
 				}
-				if (currentRoomSong != songPlaying) {
-					songRequest = currentRoomSong;
+				if (currentRoomSong != audio.songPlaying) {
+					audio.songRequest = currentRoomSong;
 				}
 				if ((!loadingFromFile) && (inputPressed == 0)) {
 					return;
@@ -1765,7 +1765,7 @@ void samusGroundUnmorph() {
 		if (tile >= samusSolidityIndex) {
 			samusPose = SamusPose.crouching;
 			samusAnimationTimer = 0;
-			sfxRequestSquare1 = Square1SFX.crouchingTransition;
+			audio.sfxRequestSquare1 = Square1SFX.crouchingTransition;
 			return;
 		}
 	}
@@ -1773,7 +1773,7 @@ void samusGroundUnmorph() {
 	samusSpeedDown = 0;
 }
 bool samusTryStanding() {
-	sfxRequestSquare1 = Square1SFX.standingTransition;
+	audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 	tileX = cast(ubyte)(samusX.pixel + 12);
 	tileY = cast(ubyte)(samusY.pixel + 16);
 	if (samusGetTileIndex() < samusSolidityIndex) {
@@ -1784,13 +1784,13 @@ bool samusTryStanding() {
 		return true;
 	}
 	samusPose = SamusPose.standing;
-	sfxRequestSquare1 = Square1SFX.standingTransition;
+	audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 	return false;
 }
 void samusMorphOnGround() {
 	samusPose = SamusPose.morphBall;
 	samusSpeedDown = 0;
-	sfxRequestSquare1 = Square1SFX.morphingTransition;
+	audio.sfxRequestSquare1 = Square1SFX.morphingTransition;
 }
 void samusUnmorphInAir() {
 	tileY = cast(ubyte)(samusY.pixel + 8);
@@ -1812,7 +1812,7 @@ void samusUnmorphInAir() {
 		return;
 	}
 	samusPose = SamusPose.falling;
-	sfxRequestSquare1 = Square1SFX.standingTransition;
+	audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 }
 bool samusWalkRight() {
 	samusFacingDirection = 1;
@@ -2099,7 +2099,7 @@ ubyte samusGetTileIndex() {
 	if (!samusInvulnerableTimer) {
 		if (collisionArray[a] & BlockType.spike) {
 			debug(damagetrace) tracef("Samus (%s, %s) took %s damage from spikes", samusX, samusY, spikeDamageValue);
-			sfxRequestSquare1 = Square1SFX.standingTransition;
+			audio.sfxRequestSquare1 = Square1SFX.standingTransition;
 			samusHurtFlag = 1;
 			samusDamageBoostDirection = 0;
 			samusDamageValue = spikeDamageValue;
@@ -2276,7 +2276,7 @@ void samusTryShooting() {
 				bombArray[bombIndex].timer = 96; // was this supposed to be 60 frames or $60?
 				bombArray[bombIndex].y = cast(ubyte)(samusY.pixel + 38);
 				bombArray[bombIndex].x = cast(ubyte)(samusX.pixel + 16);
-				sfxRequestSquare1 = Square1SFX.bombLaid;
+				audio.sfxRequestSquare1 = Square1SFX.bombLaid;
 				return;
 			}
 			samusBeamCooldown = 0;
@@ -2315,7 +2315,7 @@ void samusTryShooting() {
 					projectileArray[slot].waveIndex = (frameCounter & 0x10) >> 1;
 					projectileArray[slot].frameCounter = 0;
 				}
-				sfxRequestSquare1 = beamSoundTable[samusActiveWeapon];
+				audio.sfxRequestSquare1 = beamSoundTable[samusActiveWeapon];
 			}
 			const slot = getFirstEmptyProjectileSlot();
 			if (slot >= projectileArray.length) {
@@ -2323,7 +2323,7 @@ void samusTryShooting() {
 			}
 			if (samusActiveWeapon == CollisionType.missiles) {
 				if (!samusCurMissiles) {
-					sfxRequestSquare1 = Square1SFX.noMissileDudShot;
+					audio.sfxRequestSquare1 = Square1SFX.noMissileDudShot;
 					return;
 				}
 				samusCurMissiles--;
@@ -2338,7 +2338,7 @@ void samusTryShooting() {
 				break beamLoop;
 			}
 		}
-		sfxRequestSquare1 = beamSoundTable[samusActiveWeapon];
+		audio.sfxRequestSquare1 = beamSoundTable[samusActiveWeapon];
 		return;
 	}
 	samusTryShootingToggleMissiles();
@@ -2355,12 +2355,12 @@ void samusTryShootingToggleMissiles() {
 	if (samusActiveWeapon == CollisionType.missiles) {
 		samusActiveWeapon = samusBeam;
 		loadGraphics(graphicsInfoCannonBeam);
-		sfxRequestSquare1 = Square1SFX.select;
+		audio.sfxRequestSquare1 = Square1SFX.select;
 	} else {
 		samusBeam = samusActiveWeapon;
 		samusActiveWeapon = CollisionType.missiles;
 		loadGraphics(graphicsInfoCannonMissile);
-		sfxRequestSquare1 = Square1SFX.select;
+		audio.sfxRequestSquare1 = Square1SFX.select;
 	}
 }
 
@@ -2501,7 +2501,7 @@ void executeDoorScript() {
 					samusOnScreenXPos = 0;
 					oamBufferIndex = 0;
 					soundPlayQueenRoar = 0;
-					songRequest = Song.metroidQueenBattle;
+					audio.songRequest = Song.metroidQueenBattle;
 					clearAllOAM();
 					waitOneFrame();
 					oamDMA();
@@ -2536,9 +2536,9 @@ void executeDoorScript() {
 					countdownTimer = 0;
 					break;
 				case DoorCommand.song:
-					if (songInterruptionPlaying != Song2.earthquake) {
+					if (audio.songInterruptionPlaying != Song2.earthquake) {
 						if ((script[0] & 0xF) != 0xA) {
-							songRequest = cast(Song)script[0];
+							audio.songRequest = cast(Song)script[0];
 							currentRoomSong = cast(Song)script[0];
 							if (currentRoomSong == Song.metroidQueenHallway) {
 								soundPlayQueenRoar = 0xFF;
@@ -2548,7 +2548,7 @@ void executeDoorScript() {
 								soundPlayQueenRoar = 0;
 							}
 						} else {
-							songRequest = Song.invalid;
+							audio.songRequest = Song.invalid;
 							currentRoomSong = Song.invalid;
 							songRequestAfterEarthquake = Song.nothing;
 							soundPlayQueenRoar = 0xFF;
@@ -2960,7 +2960,7 @@ void tryPausing() {
 		}
 		hl++;
 	}
-	audioPauseControl = 1;
+	audio.audioPauseControl = 1;
 	gameMode = GameMode.paused;
 }
 void handlePaused() {
@@ -3074,7 +3074,7 @@ void handlePaused() {
 		bgPalette = 147;
 		obPalette1 = 147;
 		clearUnusedOAMSlots();
-		audioPauseControl = 2;
+		audio.audioPauseControl = 2;
 		gameMode = GameMode.main;
 	}
 	if (!(inputRisingEdge & Pad.start)) {
@@ -3082,7 +3082,7 @@ void handlePaused() {
 	}
 	bgPalette = 147;
 	obPalette0 = 147;
-	audioPauseControl = 2;
+	audio.audioPauseControl = 2;
 	gameMode = GameMode.main;
 }
 
@@ -3109,7 +3109,7 @@ void applyDamageQueenStomach() {
 	if (frameCounter & 0x7) { // every 8 frames
 		return;
 	}
-	sfxRequestNoise = NoiseSFX.u07;
+	audio.sfxRequestNoise = NoiseSFX.u07;
 	if (frameCounter & 0xF) { // every 16 frames
 		return;
 	}
@@ -3119,21 +3119,21 @@ void applyDamageLarvaMetroid() {
 	if (frameCounter & 0x7) { // every 8 frames
 		return;
 	}
-	sfxRequestNoise = NoiseSFX.u07;
+	audio.sfxRequestNoise = NoiseSFX.u07;
 	applyDamage(3);
 }
 void applyDamageAcid(ubyte amount) {
 	if (frameCounter & 0xF) { // every 16 frames
 		return;
 	}
-	sfxRequestNoise = NoiseSFX.u07;
+	audio.sfxRequestNoise = NoiseSFX.u07;
 	applyDamage(amount);
 }
 void applyDamageEnemySpike(ubyte amount) {
 	if (amount > 60) {
 		return;
 	}
-	sfxRequestNoise = NoiseSFX.u06;
+	audio.sfxRequestNoise = NoiseSFX.u06;
 	applyDamage(amount);
 }
 void applyDamage(ubyte amount) {
@@ -3157,7 +3157,7 @@ void handleDying() {
 
 void killSamus() {
 	silenceAudio();
-	sfxRequestNoise = NoiseSFX.u0B;
+	audio.sfxRequestNoise = NoiseSFX.u0B;
 	waitOneFrame();
 	drawSamusIgnoreDamageFrames();
 	deathAnimTimer = 0x20;
@@ -3557,7 +3557,7 @@ immutable ubyte[] collisionSamusSpriteHitboxTopTable = [
 ];
 
 void handleDead() {
-	while (sfxPlayingNoise == 0xB) {
+	while (audio.sfxPlayingNoise == 0xB) {
 		handleAudio();
 		waitNextFrame();
 	}
@@ -3605,24 +3605,24 @@ void handleItemPickup() {
 	waitOneFrame();
 	waitOneFrame();
 	itemCollectedCopy = itemCollected;
-	sfxRequestSquare1 = Square1SFX.u12;
-	songInterruptionRequest = Song2.itemGet;
+	audio.sfxRequestSquare1 = Square1SFX.u12;
+	audio.songInterruptionRequest = Song2.itemGet;
 	countdownTimer = 352;
 	if (itemCollected - 1 >= ItemID.energyRefill) {
 		if (itemCollected - 1 < ItemID.missileRefill) {
-			songInterruptionRequest = Song2.missilePickup;
+			audio.songInterruptionRequest = Song2.missilePickup;
 			countdownTimer = 96;
 		} else {
-			songInterruptionRequest = Song2.nothing;
+			audio.songInterruptionRequest = Song2.nothing;
 			countdownTimer = 0;
-			sfxRequestSquare1 = Square1SFX.pickedUpSmallEnergyDrop;
-			if (sfxRequestSquare1 != 0) { // ok.
-				sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
+			audio.sfxRequestSquare1 = Square1SFX.pickedUpSmallEnergyDrop;
+			if (audio.sfxRequestSquare1 != 0) { // ok.
+				audio.sfxRequestSquare1 = Square1SFX.pickedUpMissileDrop;
 			}
 		}
 	}
-	if (songInterruptionPlaying == Song2.earthquake) {
-		songInterruptionRequest = Song2.nothing;
+	if (audio.songInterruptionPlaying == Song2.earthquake) {
+		audio.songInterruptionRequest = Song2.nothing;
 	}
 	final switch (cast(ItemID)(itemCollected - 1)) {
 		case ItemID.plasmaBeam:
@@ -3683,7 +3683,7 @@ void handleItemPickup() {
 			samusPose = cast(SamusPose)(SamusPose.standing | 0x80);
 			samusTurnAnimTimer = 0x10;
 			waitOneFrame();
-			sfxRequestSquare1 = Square1SFX.variaSuitTransformation;
+			audio.sfxRequestSquare1 = Square1SFX.variaSuitTransformation;
 			variaAnimationFlag = 0xFF;
 			animateGettingVaria(graphicsInfoVariaSuit);
 			variaAnimationFlag = 0;
@@ -3736,7 +3736,7 @@ void handleItemPickup() {
 		case ItemID.missileRefill:
 			if (metroidCountReal == 0) {
 				countdownTimer = 0xFF;
-				songInterruptionRequest = Song2.fadeOut;
+				audio.songInterruptionRequest = Song2.fadeOut;
 				gameMode = GameMode.prepareCredits;
 				return;
 			} else {
@@ -3755,8 +3755,8 @@ void handleItemPickup() {
 		}
 		waitNextFrame();
 	}
-	if ((itemCollectedCopy - 1 < ItemID.energyRefill) && (songInterruptionPlaying != Song2.earthquake)) {
-		songInterruptionRequest = Song2.endRequest;
+	if ((itemCollectedCopy - 1 < ItemID.energyRefill) && (audio.songInterruptionPlaying != Song2.earthquake)) {
+		audio.songInterruptionRequest = Song2.endRequest;
 	}
 	itemCollectedCopy = 0;
 	itemCollectionFlag = 3;
@@ -3836,7 +3836,7 @@ void variaLoadExtraGraphics() {
 }
 void handleUnusedA() {
 	silenceAudio();
-	sfxRequestLowHealthBeep = 0xFF;
+	audio.sfxRequestLowHealthBeep = 0xFF;
 	disableLCD();
 	clearTilemaps();
 	oamBufferIndex = 0;
@@ -3873,7 +3873,7 @@ bool handleUnusedB() {
 
 void handleUnusedC() {
 	silenceAudio();
-	sfxRequestLowHealthBeep = 0xFF;
+	audio.sfxRequestLowHealthBeep = 0xFF;
 	disableLCD();
 	clearTilemaps();
 	oamBufferIndex = 0;

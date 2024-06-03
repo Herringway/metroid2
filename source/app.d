@@ -221,20 +221,20 @@ void debugFunction(const UIState state) {
 	}
 	if (ImGui.TreeNode("Audio")) {
 		ImGui.SeparatorText("Song");
-		InputEditable("Next", songRequest);
-		InputEditable("Playing", songPlaying);
+		InputEditable("Next", audio.songRequest);
+		InputEditable("Playing", audio.songPlaying);
 		ImGui.SeparatorText("Song interruption");
-		InputEditable("Next", songInterruptionRequest);
-		InputEditable("Playing", songInterruptionPlaying);
+		InputEditable("Next", audio.songInterruptionRequest);
+		InputEditable("Playing", audio.songInterruptionPlaying);
 		ImGui.SeparatorText("SFX (Square 1)");
-		InputEditable("Next", sfxRequestSquare1);
-		InputEditable("Playing", sfxPlayingSquare1);
+		InputEditable("Next", audio.sfxRequestSquare1);
+		InputEditable("Playing", audio.sfxPlayingSquare1);
 		ImGui.SeparatorText("SFX (Square 2)");
-		InputEditable("Next", sfxRequestSquare2);
-		InputEditable("Playing", sfxPlayingSquare2);
+		InputEditable("Next", audio.sfxRequestSquare2);
+		InputEditable("Playing", audio.sfxPlayingSquare2);
 		ImGui.SeparatorText("Noise");
-		InputEditable("Next", sfxRequestNoise);
-		InputEditable("Playing", sfxPlayingNoise);
+		InputEditable("Next", audio.sfxRequestNoise);
+		InputEditable("Playing", audio.sfxPlayingNoise);
 		ImGui.TreePop();
 	}
 }

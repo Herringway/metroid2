@@ -483,9 +483,9 @@ void queenHeadCollision() {
 	}
 	queenBodyPalette = 0x93;
 	if (queenLowHealthFlag) {
-		sfxRequestNoise = NoiseSFX.u0A;
+		audio.sfxRequestNoise = NoiseSFX.u0A;
 	} else {
-		sfxRequestNoise = NoiseSFX.u09;
+		audio.sfxRequestNoise = NoiseSFX.u09;
 	}
 }
 
@@ -830,7 +830,7 @@ void queenMoveNeck() {
 			} else {
 				queenStunTimer = 96;
 				queenBodyPalette = 0x93;
-				sfxRequestNoise = NoiseSFX.u0A;
+				audio.sfxRequestNoise = NoiseSFX.u0A;
 				enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType = Actor.queenMouthOpen;
 			}
 			return;
@@ -988,7 +988,7 @@ void queenHandleState() {
 			} else {
 				queenHeadFrameNext = 2;
 				queenState = QueenState.introB;
-				sfxRequestNoise = queenLowHealthFlag ? NoiseSFX.u0A : NoiseSFX.u09;
+				audio.sfxRequestNoise = queenLowHealthFlag ? NoiseSFX.u0A : NoiseSFX.u09;
 				queenDelayTimer = 50;
 			}
 			break;
