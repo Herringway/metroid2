@@ -10,7 +10,7 @@ version(unittest) {
 	shared static this() {
 		import metroid2.bank00 : vblank;
 		import metroid2.bank03 : lcdcInterruptHandler;
-		import librehome.backend.common : Backend;
+		import replatform64.backend.common : Backend;
 		gb.interruptHandlerSTAT = &lcdcInterruptHandler;
 		gb.interruptHandlerVBlank = &vblank;
 		gb.initialize(Backend.none);
