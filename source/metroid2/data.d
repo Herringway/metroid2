@@ -12,7 +12,7 @@ import std.format;
 
 alias loadableDataModules = metroid2.data;
 
-void loadExtraData(const scope char[] name, const scope ubyte[] data, scope PlatformBackend) {
+void loadExtraData(scope const char[] name, const scope ubyte[] data, scope PlatformBackend) {
 	switch(name.findSplit("/")[0]) {
 		case "song":
 			songDataTable ~= readSongFile(data);
@@ -67,7 +67,7 @@ void writeArrays(K, V)(ref ubyte[] dest, const V[K] arrays) {
 		writeArray(dest, array);
 	}
 }
-void extractExtraAssets(scope void delegate(string, const ubyte[]) addFile, scope ProgressUpdateFunction reportProgress, immutable(ubyte)[] rom) {
+void extractExtraAssets(scope AddFileFunction addFile, scope ProgressUpdateFunction reportProgress, immutable(ubyte)[] rom) {
 	enum entries = 32;
 	foreach (songIdx, base; cast(const(ushort)[])(rom[0x11F30 .. 0x11F30 + entries * 2])) {
 		SongHeader song;
