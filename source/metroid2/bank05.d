@@ -192,7 +192,14 @@ void titleScreenRoutine() {
 }
 
 void titleLoadGraphics() {
-	copyToVRAM(&graphicsTitleScreen[0], &gb.vram[VRAMDest.titleTiles], 0x1000);
+	version(original) {
+		copyToVRAM(&graphicsTitleScreen[0], &gb.vram[VRAMDest.titleTiles], 0x1000);
+	} else {
+		gb.vram[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
+		gb.vram[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
+		gb.vram[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
+		gb.vram[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
+	}
 }
 void titleClearUnusedOAMSlots() {
 	oamBuffer[oamBufferIndex .. $] = oamBuffer[0].init;
