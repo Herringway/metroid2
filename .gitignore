@@ -22,3 +22,6 @@ dub.selections.json
 settings.yaml
 metroid2.yaml
 .vs
+data/
+dump/
+*.planet
