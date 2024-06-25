@@ -6,6 +6,7 @@ import metroid2.enemies;
 import metroid2.external;
 import metroid2.globals;
 import replatform64.gameboy;
+import replatform64;
 
 import std.logger;
 
@@ -1096,7 +1097,8 @@ auto initialSave = SaveFileData(
 	39,
 );
 
-immutable Square1SFX[] beamSoundTable = [
+@Asset("beamSounds.yaml", DataType.structured)
+Square1SFX[] beamSoundTable = [
 	CollisionType.powerBeam: Square1SFX.shootingBeam,
 	CollisionType.iceBeam: Square1SFX.shootingIceBeam,
 	CollisionType.waveBeam: Square1SFX.shootingWaveBeam,

@@ -1,5 +1,11 @@
 import metroid2.bank00;
+import metroid2.bank01;
+import metroid2.bank02;
 import metroid2.bank03;
+import metroid2.bank04;
+import metroid2.bank05;
+import metroid2.bank06;
+import metroid2.bank08;
 import metroid2.data;
 import metroid2.external;
 
@@ -11,6 +17,9 @@ import ImGui = d_imgui;
 
 import std.format;
 import std.functional;
+import std.meta;
+
+alias loadableDataModules = AliasSeq!(metroid2.bank00, metroid2.bank01, metroid2.bank02, metroid2.bank03, metroid2.bank04, metroid2.bank05, metroid2.bank06, metroid2.bank08, metroid2.data);
 
 struct GameSettings {}
 

@@ -10,8 +10,6 @@ import std.concurrency;
 import std.conv;
 import std.format;
 
-alias loadableDataModules = metroid2.data;
-
 void loadExtraData(scope const char[] name, const scope ubyte[] data, scope PlatformBackend) {
 	switch(name.findSplit("/")[0]) {
 		case "song":
