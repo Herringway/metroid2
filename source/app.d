@@ -34,10 +34,7 @@ void main() {
 	auto settings = gb.loadSettings!GameSettings();
 	gb.debugMenuRenderer = (&debugFunction).toDelegate;
 	gb.initialize();
-	if (!gb.assetsExist) {
-		gb.extractAssets!loadableDataModules(&extractExtraAssets);
-	}
-	gb.loadAssets!loadableDataModules(&loadExtraData);
+	gb.handleAssets!loadableDataModules(&extractExtraAssets, &loadExtraData);
 	gb.run();
 	gb.saveSettings(settings);
 }

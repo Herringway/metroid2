@@ -4,7 +4,6 @@ import metroid2.audiodata;
 import metroid2.external;
 import replatform64.backend.common;
 import replatform64.assets;
-import replatform64.planet;
 import std.algorithm.searching;
 import std.concurrency;
 import std.conv;
@@ -201,7 +200,7 @@ const(ubyte)[] graphicsLavaCavesC;
 @Asset("graphics/items.png", DataType.bpp2Intertwined)
 immutable(ubyte[0x40])[] graphicsItems;
 @ROMSource(0x020000, 0x80)
-@Asset("graphics/bg/queen.png", DataType.bpp2Intertwined)
+@Asset("graphics/bg/queenhead.bin", DataType.raw)
 const(ubyte)[] bgQueenHead;
 @ROMSource(0x0219BC, 0x400)
 @Asset("graphics/enemies/metroidAlpha.png", DataType.bpp2Intertwined)

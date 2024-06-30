@@ -1,5 +1,7 @@
 module metroid2.bank08;
 
+import replatform64.assets;
+
 import metroid2.defs;
 import metroid2.globals;
 
@@ -22,8 +24,8 @@ void earthquakeCheck() {
 		}
 	}
 }
-
-immutable ubyte[] earthquakeThresholds = [
+@Asset("earthquake thresholds.yaml", DataType.structured)
+immutable(ubyte)[] earthquakeThresholds = [
 	46, 42, 34, 24, 23, 21, 14, 13, 12, 9, 1, 0xFF
 ];
 
