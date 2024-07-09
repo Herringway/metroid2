@@ -670,7 +670,8 @@ enum QueenOAM {
 	spit = neck + 5,
 	wall = spit + 7,
 	wallBody = wall,
-	wallHead = wallBody + 7
+	wallHead = wallBody + 7,
+	wallEnd  = wallHead + 5,
 }
 
 enum QueenState {

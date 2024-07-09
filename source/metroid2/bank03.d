@@ -676,7 +676,22 @@ immutable ubyte[] queenFrontFootOffsets = [
 ];
 
 void queenWriteOAM() {
-	assert(0); // TODO
+	auto hl = &oamBuffer[QueenOAM.start];
+	auto de = &oamBuffer[oamBufferIndex];
+	for (ubyte c = 6; c != 0; c--) {
+		if (queenOAMScratchpad + 2 == hl) {
+			break;
+		}
+		(de++)[0] = (hl++)[0];
+		oamBufferIndex++;
+		(de++)[0] = (hl++)[0];
+		oamBufferIndex++;
+	}
+	hl = &oamBuffer[QueenOAM.wall];
+	for (short i = QueenOAM.wallEnd - QueenOAM.wall; i > 0; i--) {
+		(de++)[0] = (hl++)[0];
+		oamBufferIndex++;
+	}
 }
 
 void queenGetCameraDelta() {
