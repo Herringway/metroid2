@@ -1,10 +1,13 @@
 module metroid2.mapbanks;
 
+import std.logger;
+
 __gshared const(ubyte[])[] mapScreenPointers;
 __gshared const(ubyte)[] scrollData;
 __gshared const(ushort)[] roomTransitionIndices;
 
 void switchMapBank(ubyte bank) {
+	tracef("Switching to bank %s (phys %02X)", bank - 9, bank);
 	mapScreenPointers = mapBankScreenPointers[bank - 9];
 	scrollData = mapBankScrollData[bank - 9];
 	roomTransitionIndices = mapBankRoomTransitionIndices[bank - 9];
