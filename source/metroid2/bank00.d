@@ -2709,6 +2709,7 @@ void doorQueen(ref const(ubyte)* script) {
 	const bank = (script++)[0] & 0xF;
 	currentLevelBank = bank;
 	saveBuf.currentLevelBank = bank;
+	switchMapBank(bank);
 	cameraY = *cast(const(ushort)*)script;
 	scrollY = cast(ubyte)(cameraY.pixel - 72);
 	script += 2;
@@ -2880,6 +2881,7 @@ void vblankUpdateMapDuringTransition() {
 		vblankDoneFlag = 1;
 		return;
 	}
+	switchMapBank(currentLevelBank);
 	vblankUpdateMap();
 	vblankDoneFlag = 1;
 }
