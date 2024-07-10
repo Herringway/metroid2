@@ -220,6 +220,6 @@ const(ubyte)[] graphicsRuinsExt;
 @ROMSource(0x0231BC, 0x800)
 @Asset("graphics/bg/finalLab.png", DataType.bpp2Intertwined)
 const(ubyte)[] graphicsFinalLab;
-@ROMSource(0x0239BC, 0x800)
+@ROMSource(0x0239BC, 0x500)
 @Asset("graphics/enemies/metroidQueen.png", DataType.bpp2Intertwined)
 const(ubyte)[] graphicsQueenSPR;
