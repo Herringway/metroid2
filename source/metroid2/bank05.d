@@ -24,11 +24,11 @@ void creditsDrawOneDigit(ubyte a) {
 	hl.x = spriteXPixel;
 	spriteXPixel += 8;
 	hl.tile = a;
-	hl.flags = spriteAttr;
+	hl.flags.raw = spriteAttr;
 	oamBufferIndex++;
 }
 void creditsLoadFont() {
-	copyToVRAM(&graphicsCreditsFont[0], &gb.vram[VRAMDest.creditsFont], 0x200);
+	copyToVRAM(&graphicsCreditsFont[0], &gb.vram[VRAMDest.creditsFont - 0x8000], 0x200);
 }
 void vblankDrawCreditsLine() {
 	auto hl = creditsTextPointer;
@@ -36,11 +36,11 @@ void vblankDrawCreditsLine() {
 	enableSRAM(); // credits text buffer is in SRAM
 	if (hl[0] != 0xF1) {
 		for (int i = 20; i > 0; i--) {
-			gb.vram[de++] = cast(ubyte)((hl++)[0] - 0x21);
+			gb.vram[de++ - 0x8000] = cast(ubyte)((hl++)[0] - 0x21);
 		}
 	} else {
 		for (int i = 20; i > 0; i--) {
-			gb.vram[de++] = 0xFF;
+			gb.vram[de++ - 0x8000] = 0xFF;
 		}
 		hl++;
 	}
@@ -52,8 +52,8 @@ void vblankDrawCreditsLine() {
 }
 void loadTitleScreen() {
 	titleLoadGraphics();
-	gb.vram[VRAMDest.statusBar .. VRAMDest.statusBar + 0x14] = hudBaseTilemap[];
-	gb.vram[VRAMDest.itemText .. VRAMDest.itemText + 0x14] = saveTextTilemap[];
+	gb.vram[VRAMDest.statusBar - 0x8000 .. VRAMDest.statusBar - 0x8000 + 0x14] = hudBaseTilemap[];
+	gb.vram[VRAMDest.itemText - 0x8000 .. VRAMDest.itemText - 0x8000 + 0x14] = saveTextTilemap[];
 	screen0[0 .. 0x400] = titleTileMap[];
 	gb.WX = 7;
 	gb.WY = 136;
@@ -193,12 +193,12 @@ void titleScreenRoutine() {
 
 void titleLoadGraphics() {
 	version(original) {
-		copyToVRAM(&graphicsTitleScreen[0], &gb.vram[VRAMDest.titleTiles], 0x1000);
+		copyToVRAM(&graphicsTitleScreen[0], &gb.vram[VRAMDest.titleTiles - 0x8000], 0x1000);
 	} else {
-		gb.vram[VRAMDest.titleTiles .. VRAMDest.titleTiles + 0xA00] = graphicsTitleScreen[];
-		gb.vram[VRAMDest.titleTiles + 0xA00 .. VRAMDest.titleTiles + 0xD00] = graphicsCreditsFont[];
-		gb.vram[VRAMDest.titleTiles + 0xD00 .. VRAMDest.titleTiles + 0xF00] = graphicsItemFont[];
-		gb.vram[VRAMDest.titleTiles + 0xF00 .. VRAMDest.titleTiles + 0x1000] = graphicsCreditsNumbers[];
+		gb.vram[VRAMDest.titleTiles - 0x8000 .. VRAMDest.titleTiles - 0x8000 + 0xA00] = graphicsTitleScreen[];
+		gb.vram[VRAMDest.titleTiles - 0x8000 + 0xA00 .. VRAMDest.titleTiles - 0x8000 + 0xD00] = graphicsCreditsFont[];
+		gb.vram[VRAMDest.titleTiles - 0x8000 + 0xD00 .. VRAMDest.titleTiles - 0x8000 + 0xF00] = graphicsItemFont[];
+		gb.vram[VRAMDest.titleTiles - 0x8000 + 0xF00 .. VRAMDest.titleTiles - 0x8000 + 0x1000] = graphicsCreditsNumbers[];
 	}
 }
 void titleClearUnusedOAMSlots() {
@@ -474,9 +474,9 @@ void handlePrepareCredits() {
 	clearTilemaps();
 	oamBuffer = oamBuffer.init;
 	creditsLoadFont();
-	copyToVRAM(&graphicsCreditsSprTiles[0], &gb.vram[VRAMDest.creditsSpriteTiles], 0x1000);
-	copyToVRAM(&graphicsTheEnd[0], &gb.vram[VRAMDest.theEndTiles], 0x100);
-	copyToVRAM(&graphicsCreditsNumbers[0], &gb.vram[VRAMDest.creditsNumbers], 0x100);
+	copyToVRAM(&graphicsCreditsSprTiles[0], &gb.vram[VRAMDest.creditsSpriteTiles - 0x8000], 0x1000);
+	copyToVRAM(&graphicsTheEnd[0], &gb.vram[VRAMDest.theEndTiles - 0x8000], 0x100);
+	copyToVRAM(&graphicsCreditsNumbers[0], &gb.vram[VRAMDest.creditsNumbers - 0x8000], 0x100);
 	creditsTextPointer = &creditsTextBuffer[0];
 	creditsUnusedVar = 0;
 	creditsStarArray[0 .. 8] = creditsStarPositions[0 .. 8]; // only copy half...?

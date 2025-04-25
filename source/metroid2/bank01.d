@@ -731,31 +731,31 @@ void vblankUpdateStatusBar() {
 		hudTanks[0] = 0xAA; // E
 	}
 	const hudBase = (queenRoomFlag == 0x11) ? VRAMDest.queenStatusBar : VRAMDest.statusBar;
-	gb.vram[hudBase + 0] = hudTanks[4];
-	gb.vram[hudBase + 1] = hudTanks[3];
-	gb.vram[hudBase + 2] = hudTanks[2];
-	gb.vram[hudBase + 3] = hudTanks[1];
-	gb.vram[hudBase + 4] = hudTanks[0];
-	gb.vram[hudBase + 5] = 0x9E;
-	gb.vram[hudBase + 6] = ((samusDispHealth % 100) / 10) + 0xA0;
-	gb.vram[hudBase + 7] = (samusDispHealth % 10) + 0xA0;
-	gb.vram[hudBase + 11] = ((samusDispMissiles % 1000) / 100) + 0xA0;
-	gb.vram[hudBase + 12] = ((samusDispMissiles % 100) / 10) + 0xA0;
-	gb.vram[hudBase + 13] = (samusDispMissiles % 10) + 0xA0;
+	gb.vram[hudBase - 0x8000 + 0] = hudTanks[4];
+	gb.vram[hudBase - 0x8000 + 1] = hudTanks[3];
+	gb.vram[hudBase - 0x8000 + 2] = hudTanks[2];
+	gb.vram[hudBase - 0x8000 + 3] = hudTanks[1];
+	gb.vram[hudBase - 0x8000 + 4] = hudTanks[0];
+	gb.vram[hudBase - 0x8000 + 5] = 0x9E;
+	gb.vram[hudBase - 0x8000 + 6] = ((samusDispHealth % 100) / 10) + 0xA0;
+	gb.vram[hudBase - 0x8000 + 7] = (samusDispHealth % 10) + 0xA0;
+	gb.vram[hudBase - 0x8000 + 11] = ((samusDispMissiles % 1000) / 100) + 0xA0;
+	gb.vram[hudBase - 0x8000 + 12] = ((samusDispMissiles % 100) / 10) + 0xA0;
+	gb.vram[hudBase - 0x8000 + 13] = (samusDispMissiles % 10) + 0xA0;
 	if (gameMode != GameMode.paused) {
 		if (metroidCountShuffleTimer == 0) {
-			gb.vram[hudBase + 18] = ((metroidCountDisplayed % 100) / 10) + 0xA0;
-			gb.vram[hudBase + 19] = (metroidCountDisplayed % 10) + 0xA0;
+			gb.vram[hudBase - 0x8000 + 18] = ((metroidCountDisplayed % 100) / 10) + 0xA0;
+			gb.vram[hudBase - 0x8000 + 19] = (metroidCountDisplayed % 10) + 0xA0;
 		} else if (--metroidCountShuffleTimer < 0x80) {
-			gb.vram[hudBase + 18] = ((frameCounter % 100) / 10) + 0xA0;
-			gb.vram[hudBase + 19] = (frameCounter % 10) + 0xA0;
+			gb.vram[hudBase - 0x8000 + 18] = ((frameCounter % 100) / 10) + 0xA0;
+			gb.vram[hudBase - 0x8000 + 19] = (frameCounter % 10) + 0xA0;
 		}
 	} else if (metroidLCounterDisp) {
-		gb.vram[hudBase + 18] = ((metroidLCounterDisp % 100) / 10) + 0xA0;
-		gb.vram[hudBase + 19] = (metroidLCounterDisp % 10) + 0xA0;
+		gb.vram[hudBase - 0x8000 + 18] = ((metroidLCounterDisp % 100) / 10) + 0xA0;
+		gb.vram[hudBase - 0x8000 + 19] = (metroidLCounterDisp % 10) + 0xA0;
 	} else {
-		gb.vram[hudBase + 18] = 0x9E;
-		gb.vram[hudBase + 19] = 0x9E;
+		gb.vram[hudBase - 0x8000 + 18] = 0x9E;
+		gb.vram[hudBase - 0x8000 + 19] = 0x9E;
 	}
 }
 
@@ -804,7 +804,7 @@ void debugDrawNumberSprite(ubyte tile) {
 	hl.x = spriteXPixel;
 	spriteXPixel += 8;
 	hl.tile = tile;
-	hl.flags = spriteAttr;
+	hl.flags.raw = spriteAttr;
 	oamBufferIndex++;
 }
 
@@ -839,10 +839,10 @@ void drawSamusSprite() {
 		hl.tile = de.tile;
 		hl.flags = de.flags;
 		if (spriteAttr) {
-			hl.flags |= OAMFlags.palette;
+			hl.flags.raw |= OAMFlags.dmgPalette;
 		}
 		if (!samusScreenSpritePriority) {
-			hl.flags |= OAMFlags.priority;
+			hl.flags.raw |= OAMFlags.priority;
 		}
 		oamBufferIndex++;
 		de++;
@@ -1327,7 +1327,7 @@ void drawProjectiles() {
 				oamBuffer[oamBufferIndex].y = spriteYPixel;
 				oamBuffer[oamBufferIndex].x = spriteXPixel;
 				oamBuffer[oamBufferIndex].tile = spriteID;
-				oamBuffer[oamBufferIndex].flags = spriteAttr;
+				oamBuffer[oamBufferIndex].flags.raw = spriteAttr;
 				oamBufferIndex++;
 				spriteAttr = 0;
 			} else {
@@ -1646,10 +1646,10 @@ void destroyBlockEmpty() {
 	tilemapDest &= 0xFFDE; // make sure it's top-left corner
 	gb.waitHBlank();
 	gb.waitHBlank();
-	gb.vram[tilemapDest + 0x00] = 0xFF;
-	gb.vram[tilemapDest + 0x01] = 0xFF;
-	gb.vram[tilemapDest + 0x20] = 0xFF;
-	gb.vram[tilemapDest + 0x21] = 0xFF;
+	gb.vram[tilemapDest - 0x8000 + 0x00] = 0xFF;
+	gb.vram[tilemapDest - 0x8000 + 0x01] = 0xFF;
+	gb.vram[tilemapDest - 0x8000 + 0x20] = 0xFF;
+	gb.vram[tilemapDest - 0x8000 + 0x21] = 0xFF;
 	audio.sfxRequestNoise = NoiseSFX.u04;
 }
 void destroyBlockReform(ref ubyte timer) {
@@ -1658,10 +1658,10 @@ void destroyBlockReform(ref ubyte timer) {
 	tilemapDest &= 0xFFDE; // make sure it's top-left corner
 	gb.waitHBlank();
 	gb.waitHBlank();
-	gb.vram[tilemapDest + 0x00] = 0x00;
-	gb.vram[tilemapDest + 0x01] = 0x01;
-	gb.vram[tilemapDest + 0x20] = 0x02;
-	gb.vram[tilemapDest + 0x21] = 0x03;
+	gb.vram[tilemapDest - 0x8000 + 0x00] = 0x00;
+	gb.vram[tilemapDest - 0x8000 + 0x01] = 0x01;
+	gb.vram[tilemapDest - 0x8000 + 0x20] = 0x02;
+	gb.vram[tilemapDest - 0x8000 + 0x21] = 0x03;
 	if (samusInvulnerableTimer) {
 		return;
 	}
@@ -1672,20 +1672,20 @@ void destroyBlockFrameA() {
 	tilemapDest &= 0xFFDE; // make sure it's top-left corner
 	gb.waitHBlank();
 	gb.waitHBlank();
-	gb.vram[tilemapDest + 0x00] = 0x04;
-	gb.vram[tilemapDest + 0x01] = 0x05;
-	gb.vram[tilemapDest + 0x20] = 0x06;
-	gb.vram[tilemapDest + 0x21] = 0x07;
+	gb.vram[tilemapDest - 0x8000 + 0x00] = 0x04;
+	gb.vram[tilemapDest - 0x8000 + 0x01] = 0x05;
+	gb.vram[tilemapDest - 0x8000 + 0x20] = 0x06;
+	gb.vram[tilemapDest - 0x8000 + 0x21] = 0x07;
 }
 void destroyBlockFrameB() {
 	getTilemapAddress();
 	tilemapDest &= 0xFFDE; // make sure it's top-left corner
 	gb.waitHBlank();
 	gb.waitHBlank();
-	gb.vram[tilemapDest + 0x00] = 0x08;
-	gb.vram[tilemapDest + 0x01] = 0x09;
-	gb.vram[tilemapDest + 0x20] = 0x0A;
-	gb.vram[tilemapDest + 0x21] = 0x0B;
+	gb.vram[tilemapDest - 0x8000 + 0x00] = 0x08;
+	gb.vram[tilemapDest - 0x8000 + 0x01] = 0x09;
+	gb.vram[tilemapDest - 0x8000 + 0x20] = 0x0A;
+	gb.vram[tilemapDest - 0x8000 + 0x21] = 0x0B;
 }
 void destroyBlockHurtSamus() {
 	if (samusY.pixel + 24 - ((tileY - 16) & 0xF0) >= samusHeightTable[samusPose]) {
@@ -1843,7 +1843,7 @@ void drawEnemySprite(EnemySlot* enemy) {
 		}
 		dest.x = cast(ubyte)(x + drawEnemyXPos);
 		dest.tile = sprite.tile;
-		dest.flags = drawEnemyAttr ^ sprite.flags;
+		dest.flags.raw = drawEnemyAttr ^ sprite.flags.raw;
 		oamBufferIndex++;
 		sprite++;
 		dest++;
@@ -2110,7 +2110,7 @@ void drawNonGameSprite() {
 		}
 		hl.x = cast(ubyte)(x + spriteXPixel);
 		hl.tile = de.tile;
-		hl.flags = spriteAttr ^ de.flags;
+		hl.flags.raw = spriteAttr ^ de.flags.raw;
 		oamBufferIndex++;
 		de++;
 		hl++;

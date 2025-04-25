@@ -23,14 +23,17 @@ alias loadableDataModules = AliasSeq!(metroid2.bank00, metroid2.bank01, metroid2
 
 struct GameSettings {}
 
-void main() {
-	import std.logger;
-	(cast(Logger)sharedLog).logLevel = LogLevel.trace;
+void main(string[] args) {
+	repositoryURL = "https://github.com/Herringway/metroid2";
 	gb.entryPoint = &start;
 	gb.interruptHandlerVBlank = &vblank;
+	gb.interruptHandlerSTAT = &lcdcInterruptHandler;
 	gb.title = "Metroid II: Return of Samus";
 	gb.sourceFile = "metroid2.gb";
 	gb.gameID = "metroid2";
+	if (gb.parseArgs(args)) {
+		return;
+	}
 	auto settings = gb.loadSettings!GameSettings();
 	gb.debugMenuRenderer = (&debugFunction).toDelegate;
 	gb.initialize();

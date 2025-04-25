@@ -197,7 +197,7 @@ const(ubyte)[] graphicsLavaCavesB;
 @Asset("graphics/bg/lavaCavesC.png", DataType.bpp2Intertwined)
 const(ubyte)[] graphicsLavaCavesC;
 @ROMSource(0x01F790, 0x40 * 16)
-@Asset("graphics/items.png", DataType.bpp2Intertwined)
+@Asset("graphics/items", DataType.bpp2Intertwined)
 immutable(ubyte[0x40])[] graphicsItems;
 @ROMSource(0x020000, 0x80)
 @Asset("graphics/bg/queenhead.bin", DataType.raw)

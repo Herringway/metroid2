@@ -7,6 +7,7 @@ import metroid2.external;
 
 import std.format;
 import std.logger;
+import replatform64.gameboy;
 
 immutable ubyte channelSongProcessingStateSize = 9;
 immutable ubyte channelAllSongProcessingStateSizes = 45;

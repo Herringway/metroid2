@@ -839,9 +839,6 @@ ubyte rl(ubyte value) @safe pure {
 	value |= bit;
 	return value;
 }
-ubyte swap(ubyte value) @safe pure {
-	return cast(ubyte)((value >> 4) | (value << 4));
-}
 
 ubyte[] translateCreditsText(string input) {
 	ubyte[] result;
@@ -875,12 +872,12 @@ ubyte[] fixItemName(string input) {
 
 ubyte* screen0() {
 	import metroid2.external : gb;
-	return &gb.vram[0x9800];
+	return &gb.vram[0x1800];
 }
 
 ubyte* screen1() {
 	import metroid2.external : gb;
-	return &gb.vram[0x9C00];
+	return &gb.vram[0x1C00];
 }
 
 const(ubyte)* enGfx(ubyte id) {

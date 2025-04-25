@@ -366,7 +366,7 @@ void queenInitialize() {
 	oamScratchpad[] = OAMEntry.init;
 	queenBodyY = 103;
 	queenBodyHeight = 55;
-	gb.STAT = 0x44;
+	gb.STAT = 0b01000100;
 	queenBodyX = 92;
 	queenCameraX = scrollX;
 	gb.WX = 3;
@@ -383,11 +383,11 @@ void queenInitialize() {
 		oamScratchpad[i + QueenOAM.wall].y = cast(ubyte)(120 + 8 * i);
 		oamScratchpad[i + QueenOAM.wall].x = 162;
 		oamScratchpad[i + QueenOAM.wall].tile = 176;
-		oamScratchpad[i + QueenOAM.wall].flags = 0;
+		oamScratchpad[i + QueenOAM.wall].flags.raw = 0;
 	}
 	queenAdjustWallSpriteToHead();
 	queenNextState = &queenStateList[0];
-	queenState = 23;
+	queenState = QueenState.introA;
 
 	enemyDataSlots[0 .. 13] = EnemySlot.init;
 	queenHealth = 150;
@@ -436,7 +436,7 @@ void queenHandler() {
 	if (!(frameCounter & 3) && queenBodyPalette) {
 		queenBodyPalette ^= 0x90;
 		for (int i = 0; i < 12; i++) {
-			oamScratchpad[QueenOAM.start].flags ^= 0x10; // make queen flash
+			oamScratchpad[QueenOAM.start].flags.raw ^= 0x10; // make queen flash
 		}
 	}
 	if (queenHealth && (queenHealth < 100)) {
@@ -565,7 +565,7 @@ void queenDrawHead() {
 	static void resumeB(ushort destination, const(ubyte)* tiles) {
 		for (int i = 3; i > 0; i--) {
 			for (int j = 6; j > 0; j--) {
-				gb.vram[destination++] = (tiles++)[0];
+				gb.vram[destination++ - 0x8000] = (tiles++)[0];
 			}
 			destination += 26;
 		}
@@ -611,7 +611,7 @@ void queenDrawFeet() {
 	immutable(ubyte)* offset = &offsets[0];
 	immutable(ubyte)* tile = &tilemaps[(queenFootFrame & 0x7F) - 1][0];
 	while (tilesToUpdate--) {
-		gb.vram[VRAMDest.queenFeet + (offset++)[0]] = (tile++)[0];
+		gb.vram[VRAMDest.queenFeet - 0x8000 + (offset++)[0]] = (tile++)[0];
 	}
 	ubyte a = queenFootFrame;
 	if (a & 0x80) {
@@ -783,11 +783,11 @@ void queenDrawNeck() {
 	oamScratch[0].y = cast(ubyte)(queenHeadY + b);
 	oamScratch[0].x = queenHeadX - 0;
 	oamScratch[0].tile = 0xB5;
-	oamScratch[0].flags = OAMFlags.priority;
+	oamScratch[0].flags.raw = OAMFlags.priority;
 	oamScratch[1].y = cast(ubyte)(queenHeadY + b + 8);
 	oamScratch[1].x = queenHeadX;
 	oamScratch[1].tile = 0xC5;
-	oamScratch[1].flags = OAMFlags.priority;
+	oamScratch[1].flags.raw = OAMFlags.priority;
 	oamScratch += 2;
 	queenOAMScratchpad = oamScratch;
 }
@@ -1074,7 +1074,7 @@ void queenDisintegrate() {
 	}
 	auto chr = queenDeathChr;
 	for (int i = 26; i > 0; i--) {
-		gb.vram[chr] &= queenDeathBitmask;
+		gb.vram[chr - 0x8000] &= queenDeathBitmask;
 		chr += 8;
 		if (chr == VRAMDest.queenDeathLastTile) {
 			queenDeathBitmask = 0;
@@ -1199,5 +1199,5 @@ void vblankDrawQueen() {
 	(interrupt++)[0] = InterruptCommand(0xFF);
 	gb.LYC = queenInterruptListBuffer[0].scanline;
 	queenInterruptList = &queenInterruptListBuffer[0];
-	gb.LCDC = gb.LCDC | 0b00010000;
+	gb.LCDC = gb.LCDC | 0b00100000;
 }
