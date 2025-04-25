@@ -58,8 +58,9 @@ void vblank() {
 
 void start(ushort) {
 	while (true) {
-		gb.IF = 0;
-		gb.IE = 0;
+		gb.disableInterrupts();
+		gb.IF = 1;
+		gb.IE = 1;
 		gb.SCY = 0;
 		gb.SCX = 0;
 		gb.STAT = 0;
@@ -74,6 +75,7 @@ void start(ushort) {
 		enableSRAM();
 		// some ram initialization happened here
 		clearTilemaps();
+		gb.enableInterrupts();
 		gb.IE = 1;
 		gb.WX = 7;
 		gb.LCDC = 0x80;
@@ -206,8 +208,8 @@ void oamClearTable() {
 	}
 }
 void clearTilemaps() {
-	gb.getBGTilemap()[] = 0xFF;
-	gb.getWindowTilemap()[] = 0xFF;
+	gb.bgScreen[] = 0xFF;
+	gb.windowScreen[] = 0xFF;
 }
 // hl: src, de: dest, bc: length
 void copyToVRAM(const(void)* src, void* destination, size_t length) {
