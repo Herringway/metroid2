@@ -401,6 +401,17 @@ enum NoiseSFX {
 	uFF = 0xFF,
 }
 
+enum WaveSFX {
+	nothing = 0,
+	samusHealth10 = 1,
+	samusHealth20 = 2,
+	samusHealth30 = 3,
+	samusHealth40 = 4,
+	samusHealth50 = 5,
+	invalid,
+	clear = 0xFF,
+}
+
 enum Song {
 	nothing = 0x00,
 	babyMetroid = 0x01,
@@ -703,6 +714,18 @@ enum QueenState {
 	nothing = 25,
 }
 
+enum QueenDeathTile {
+	first = 0x8B10,
+	last = 0x9570,
+	bodyStart = 0x99A0,
+	bodyEnd = 0x9A80,
+}
+
+struct Coords {
+	ubyte y;
+	ubyte x;
+}
+
 struct EnemySlot {
 	align(1):
 	ubyte status;
@@ -826,6 +849,12 @@ struct EnemyData {
 struct InterruptCommand {
 	ubyte scanline;
 	ubyte command;
+}
+
+struct BentNeckSprite {
+	ubyte y;
+	ubyte x;
+	ubyte tile;
 }
 
 ubyte rr(ubyte value, bool carry) @safe pure {

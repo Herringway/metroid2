@@ -1261,16 +1261,17 @@ immutable ubyte[] unknown7 = script(
     FrequencyOptions( 0x200, 0),
 );
 
-immutable ubyte[][] pausedOptionSets = [
-	frame40,
-	frame3D,
-	frame3F,
-	frame3A,
-	frame32,
-	frame2F,
-	frame27,
-	frame24,
-];
+struct optionSetsPause {
+    alias frame64 = .frame40;
+    alias frame61 = .frame3D;
+    alias frame63 = .frame3F;
+    alias frame58 = .frame3A;
+    alias frame50 = .frame32;
+    alias frame47 = .frame2F;
+    alias frame39 = .frame27;
+    alias frame36 = .frame24;
+}
+
 immutable ubyte[] frame40 = script(
     LengthOptions(0x0),
     DescendingEnvelopeOptions(7, 0x8),
@@ -1319,6 +1320,33 @@ immutable ubyte[] frame24 = script(
     DescendingEnvelopeOptions(7, 0x4),
     FrequencyOptions(0x7D9, 0),
 );
+
+struct optionSetsWave {
+    alias healthUnder20_0 = .healthUnder20_0;
+    alias healthUnder20_1 = .healthUnder20_1;
+    alias healthUnder30_0 = .healthUnder30_0;
+    alias healthUnder30_1 = .healthUnder30_1;
+    alias healthUnder40_0 = .healthUnder40_0;
+    alias healthUnder40_1 = .healthUnder40_1;
+    alias healthUnder50_0 = .healthUnder50_0;
+    alias healthUnder50_1 = .healthUnder50_1;
+}
+
+ubyte[] waveHeader(ubyte volume, ushort frequency) @safe pure
+    in(volume < 4, "Invalid volume")
+    in(frequency < 0x800, "Invalid frequency")
+{
+    ushort freq = frequency | 0x8000;
+    return [0x80, 0x00, cast(ubyte)(volume << 5), freq & 0xFF, freq >> 8];
+}
+immutable healthUnder20_0 = waveHeader(1, 1264);
+immutable healthUnder20_1 = waveHeader(2, 1232);
+immutable healthUnder30_0 = waveHeader(1, 1220);
+immutable healthUnder30_1 = waveHeader(2, 1220);
+immutable healthUnder40_0 = waveHeader(1, 1206);
+immutable healthUnder40_1 = waveHeader(2, 1206);
+immutable healthUnder50_0 = waveHeader(1, 1187);
+immutable healthUnder50_1 = waveHeader(2, 1187);
 
 private ubyte EnvelopeOptions(ubyte a, ubyte b, ubyte c) {
 	assert(a < 8);

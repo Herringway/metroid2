@@ -85,8 +85,8 @@ __gshared ubyte queenDeathBitmask;
 __gshared ubyte queenProjectilesActive;
 __gshared ubyte queenProjectileTempDirection;
 __gshared ubyte queenProjectileChaseTimer;
-__gshared ubyte[2][3] queenSamusTargetPoints;
-__gshared void* queenDeleteBody;
+__gshared Coords[3] queenSamusTargetPoints;
+__gshared ubyte* queenDeleteBody;
 __gshared ubyte queenProjectileChaseCounter;
 __gshared ubyte queenLowHealthFlag;
 __gshared ubyte queenFlashTimer;
@@ -98,11 +98,7 @@ __gshared ubyte loadEnemiesUnusedVar;
 __gshared ubyte loadEnemiesOscillator;
 __gshared ubyte enBGCollisionResult;
 __gshared ubyte enemySolidityIndex;
-struct ScrollHistoryXYPair {
-	ubyte y;
-	ubyte x;
-}
-__gshared ScrollHistoryXYPair[3] scrollHistoryA;
+__gshared Coords[3] scrollHistoryA;
 __gshared ubyte samusDirectionFromEnemy;
 
 __gshared ushort bottomEdge;
@@ -263,7 +259,7 @@ struct AudioState {
 
 	SongState songStateBackup;
 
-	ushort songPlayingBackup;
+	Song songPlayingBackup;
 	ubyte audioPauseControl;
 	ubyte audioPauseSoundEffectTimer;
 	ubyte songSweepBackupSquare1;
@@ -321,6 +317,7 @@ struct SongState {
 	void songCounterControlWorking(ubyte v) {
 		songFrequencyWorking = (songFrequencyWorking & ~0xFF00) | (v << 8);
 	}
+	// audioChannelOptions
 	ubyte songSweepSquare1;
 	ubyte songSoundLengthSquare1;
 	ubyte songEnvelopeSquare1;

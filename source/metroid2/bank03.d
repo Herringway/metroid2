@@ -749,9 +749,9 @@ void queenSingleCameraAdjustment(EnemySlot* hl, ubyte b, ubyte c) {
 	hl.x -= b;
 }
 
-void queenSingleCameraAdjustment(ubyte[2]* hl, ubyte b, ubyte c) {
-	(*hl)[0] -= c;
-	(*hl)[1] -= b;
+void queenSingleCameraAdjustment(Coords* hl, ubyte b, ubyte c) {
+	hl.y -= c;
+	hl.x -= b;
 }
 
 void queenDrawNeck() {
@@ -830,7 +830,7 @@ void queenMoveNeck() {
 			queenOAMScratchpad = &oamScratchpad[0];
 			queenNeckXMovementSum = 9;
 			queenNeckYMovementSum = 9;
-			queenLoadNeckBasePointer();
+			neckPattern = queenNeckPatternBase;
 		}
 		queenNeckPattern = neckPattern;
 		return;
@@ -904,15 +904,29 @@ void queenMoveNeck() {
 }
 
 void queenMissileHurt() {
-	assert(0); // TODO
+	if (queenHealth == 0) {
+		return;
+	}
+	if (--queenHealth != 0) {
+		return;
+	}
+	queenNeckStatus = 0x81;
+	queenState = QueenState.preparingDeath;
+	queenNeckControl = 0;
+	queenWalkControl = 0;
+	queenFootFrame = 0;
+	queenHeadFrameNext = 0;
+	queenDeactivateActorsNeck();
+	queenDeactivateActorsArbitrary(&enemyDataSlots[ReservedEnemySlots.queenBody], 4);
+	queenCloseFloor();
 }
 
-void queenLoadNeckBasePointer() {
-	assert(0); // TODO
+const(ubyte)* queenLoadNeckBasePointer() {
+	return queenNeckPatternBase;
 }
 
 void queenSetNeckBasePointer() {
-	assert(0); // TODO
+	queenNeckPatternBase = &queenNeckPatterns[queenNeckPatternID][0];
 }
 
 /**
@@ -946,25 +960,148 @@ void queenHandleState() {
 			queenFootFrame = 0;
 			goto case QueenState.pickNextState;
 		case QueenState.preparingNeckExtension:
-			assert(0, "NYI"); //TODO
+			enemyDataSlots[ReservedEnemySlots.queenMouth].status = 0;
+			queenNeckControl = 1;
+			queenNeckDrawingState = 1;
+			queenState = QueenState.extendingNeck;
+			queenNeckSelectionFlag ^= 1;
+			if (!queenMidHealthFlag && queenNeckSelectionFlag) {
+				queenNeckPatternID = QueenNeckPattern.downCurveDown;
+				if (queenHeadY > 70) { // switch upwards if head below 70 pixels on screen (ie samus is high in the air)
+					queenNeckPatternID = QueenNeckPattern.upCurveDown;
+					queenHeadY -= 16;
+					queenHeadFrameNext = 3;
+					queenHeadFrame = 3;
+				}
+			} else {
+				queenNeckPatternID = QueenNeckPattern.downCurveUp;
+				if (queenHeadY > 41) {
+					queenNeckPatternID = QueenNeckPattern.forward;
+					if (queenHeadY > 76) {
+						queenNeckPatternID = QueenNeckPattern.upCurveUp;
+						queenHeadY -= 16;
+					}
+				}
+				queenHeadFrameNext = 3;
+				queenHeadFrame = 3;
+				if (queenNeckPatternID != QueenNeckPattern.upCurveUp) {
+					queenHeadFrameNext = 2;
+					queenHeadFrame = 2;
+					if ((gb.DIV & 3) != 0) {
+						enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType = Actor.queenMouthOpen;
+					}
+				}
+			}
+			queenSetNeckBasePointer();
+			queenNeckPattern = queenLoadNeckBasePointer() + 1;
+			break;
 		case QueenState.extendingNeck:
-			assert(0, "NYI"); //TODO
+			if (queenNeckStatus != 0x81) {
+				break;
+			}
+			goto case QueenState.pickNextState;
 		case QueenState.preparingNeckRetraction:
-			assert(0, "NYI"); //TODO
+			if (queenNeckPattern[0] == 0x81) { // fully extended
+				goto case QueenState.pickNextState;
+			}
+			queenNeckDrawingState = 2;
+			queenNeckControl = 2;
+			if (queenHeadFrame == 3) { // facing upwards, move down a lil bit
+				queenHeadY += 16;
+			}
+			queenHeadFrameNext = 1;
+			queenHeadFrame = 1;
+			enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType = Actor.queenMouthClosed;
+			queenState = QueenState.retractingNeck;
+			queenNeckPattern = queenNeckPattern - 1;
+			break;
 		case QueenState.retractingNeck:
-			assert(0, "NYI"); //TODO
+			if (queenNeckStatus == 0x82) { // wait until done retracting
+				goto case QueenState.pickNextState;
+			}
+			break;
 		case QueenState.preparingBackwardWalk:
-			assert(0, "NYI"); //TODO
+			queenWalkControl = 2;
+			queenNeckControl = 3;
+			queenNeckDrawingState = 0;
+			queenFootFrame = 2;
+			queenState = QueenState.backwardWalk;
+			break;
 		case QueenState.backwardWalk:
-			assert(0, "NYI"); //TODO
+			if (queenWalkStatus == 0x82) {
+				queenFootFrame = 0;
+				goto case QueenState.pickNextState;
+			}
+			break;
 		case QueenState.stomachBombed:
-			assert(0, "NYI"); //TODO
+			static immutable queenBentNeckSprite = [
+				BentNeckSprite(0, 0, 0xB5),
+				BentNeckSprite(8, 0, 0xC5),
+				BentNeckSprite(0, 8, 0xB6),
+				BentNeckSprite(0, 16, 0xB7),
+				BentNeckSprite(8, 12, 0xC6),
+			];
+			// dead code
+			if ((queenHeadY == 0x2C) || (queenHeadY == 0x71)) {}
+			queenNeckControl = 1;
+			queenNeckDrawingState = 0;
+			queenHeadFrameNext = 3;
+			queenHeadFrame = 3;
+			queenState = QueenState.preparingSamusVomit;
+			for (ubyte i = 0; i < queenBentNeckSprite.length; i++) {
+				oamScratchpad[QueenOAM.neck + i].y = cast(ubyte)(queenBentNeckSprite[i].y + queenHeadY + 20);
+				oamScratchpad[QueenOAM.neck + i].x = cast(ubyte)(queenBentNeckSprite[i].x + queenHeadX + 2);
+				oamScratchpad[QueenOAM.neck + i].tile = queenBentNeckSprite[i].tile;
+				oamScratchpad[QueenOAM.neck + i].flags.raw = OAMFlags.priority;
+			}
+			queenOAMScratchpad = &oamScratchpad[QueenOAM.neck + queenBentNeckSprite.length - 1];
+			queenNeckPatternID = QueenNeckPattern.vomiting;
+			queenStomachBombedFlag = 4;
+			queenSetNeckBasePointer();
+			queenNeckPattern++;
+			break;
 		case QueenState.preparingSamusVomit:
-			assert(0, "NYI"); //TODO
+			if (queenNeckStatus == 0x81) { // wait for neck to extend
+				queenDelayTimer = 80;
+				queenState = QueenState.vomittingSamus;
+			}
+			break;
 		case QueenState.vomittingSamus:
-			assert(0, "NYI"); //TODO
+			if (queenDelayTimer != 0) {
+				queenDelayTimer--;
+				if (queenFootFrame == 2) {
+					queenFootFrame = 0;
+				}
+			} else {
+				queenBodyPalette = 0;
+				if (queenHealth == 0) {
+					queenKillFromStomach();
+					break;
+				}
+				if (queenHealth <= 30) {
+					queenHealth -= 30;
+					queenKillFromStomach();
+					break;
+				}
+				queenHealth -= 30;
+				queenNeckControl = 2;
+				queenState = QueenState.doneVomittingSamus;
+				queenNeckPattern--;
+			}
+			break;
 		case QueenState.doneVomittingSamus:
-			assert(0, "NYI"); //TODO
+			if (queenNeckStatus != 0x82) { // wait for neck to retract
+				break;
+			}
+			queenHeadFrameNext = 1;
+			queenHeadFrame = 1;
+			queenStomachBombedFlag = 0;
+			for (ubyte i = 0; i != 5; i++) {
+				oamScratchpad[QueenOAM.neck + i].y = 0xFF;
+				oamScratchpad[QueenOAM.neck + i].flags.raw = OAMFlags.priority;
+			}
+			queenOAMScratchpad = &oamScratchpad[0];
+			goto case QueenState.pickNextState;
 		case QueenState.pickNextState:
 			auto nextState = queenNextState;
 			while (true) {
@@ -978,25 +1115,185 @@ void queenHandleState() {
 			}
 			break;
 		case QueenState.preparingEatSamus:
-			assert(0, "NYI"); //TODO
+			if (queenNeckPattern[0] == 0x81) { // pick something else if neck extended
+				goto case QueenState.pickNextState;
+			}
+			queenNeckDrawingState = 2;
+			queenNeckControl = 2;
+			if (queenHeadFrame == 3) { // adjust head downwards if open
+				queenHeadY += 16;
+			}
+			queenHeadFrameNext = 1;
+			queenHeadFrame = 1;
+			queenNeckStatus = 0;
+			// close mouth
+			enemyDataSlots[ReservedEnemySlots.queenMouth].status = 0xFF;
+			enemyDataSlots[ReservedEnemySlots.queenMouth].spriteType = Actor.queenMouthClosed;
+
+			queenState = QueenState.retractNeckEating;
+			queenNeckPattern--;
+			break;
 		case QueenState.retractNeckEating:
-			assert(0, "NYI"); //TODO
+			if (queenNeckStatus == 0x82) {
+				queenEatingState = 3;
+				queenState = QueenState.samusEaten;
+				queenFootFrame = 1;
+			}
+			break;
 		case QueenState.samusEaten:
-			assert(0, "NYI"); //TODO
+			if (queenEatingState == 4) {
+				if (queenHealth <= 10) {
+					queenHealth = 0;
+					queenEatingState = 32;
+					queenState = QueenState.stomachBombed;
+					queenBodyPalette = 0x93;
+					audio.sfxRequestNoise = NoiseSFX.u0A;
+				} else {
+					queenHealth -= 10;
+					queenEatingState = 5;
+					queenHeadFrameNext = 2;
+					queenHeadFrame = 2;
+					queenState = QueenState.vomittingOutMouth;
+					queenStunTimer = 62;
+					queenBodyPalette = 0x93;
+					audio.sfxRequestNoise = NoiseSFX.u0A;
+				}
+			} else if ((queenEatingState != 6) && (queenEatingState != 7)) {
+				queenEatingState = 8;
+				queenState = QueenState.stomachBombed;
+				queenBodyPalette = 0x93;
+				audio.sfxRequestNoise = NoiseSFX.u0A;
+			}
+			break;
 		case QueenState.vomittingOutMouth:
-			assert(0, "NYI"); //TODO
+			if (queenStunTimer != 0) {
+				if (--queenStunTimer == 46) { // end of damage flash
+					queenBodyPalette = 0;
+					queenSetDefaultNeckAttributes();
+				}
+				if (queenFootFrame == 2) {
+					queenFootFrame = 0;
+				}
+			} else {
+				queenEatingState = 0;
+				queenHeadFrameNext = 1;
+				queenHeadFrame = 1;
+				queenState = QueenState.preparingBackwardWalk;
+				queenNextState = &queenStateList[6];
+			}
+			break;
 		case QueenState.preparingDeath:
-			assert(0, "NYI"); //TODO
+			if (queenNeckStatus != 0x81) { // wait for head to fall
+				break;
+			}
+			queenDelayTimer = 80;
+			queenState = QueenState.disintegrating;
+			queenDeathAnimCounter = 5;
+			queenHealth = 0;
+			queenDeathArrayIndex = 0;
+			queenDeathArray = [0xEE, 0xBB, 0xDD, 0x77, 0xEE, 0xBB, 0xDD, 0x77];
+			earthquakeTimer = 0xD0;
+			audio.songRequest = Song.earthquake;
+			queenEatingState = 0x22;
+			break;
 		case QueenState.disintegrating:
-			assert(0, "NYI"); //TODO
+			if (queenDelayTimer != 0) {
+				queenDelayTimer--;
+				if (queenDelayTimer == 76) {
+					samusCurHealth = ((samusEnergyTanks + 1) * 100) - 1;
+				}
+				break;
+			}
+			if (queenDeathBitmask) {
+				break;
+			}
+			queenDeathChr = queenDeathArray[queenDeathArrayIndex] | QueenDeathTile.first;
+			queenDeathArrayIndex = (queenDeathArrayIndex + 3) & 7;
+			if (queenDeathArrayIndex == 0) {
+				if (--queenDeathAnimCounter == 0) {
+					queenDeleteBody = &gb.vram[QueenDeathTile.bodyStart - 0x8000];
+					queenState = QueenState.deleteBody;
+					break;
+				}
+			}
+			queenDeathArray[queenDeathArrayIndex] = rl(rl(rl(queenDeathArray[queenDeathArrayIndex])));
+			queenDeathBitmask = queenDeathArray[queenDeathArrayIndex];
+			break;
 		case QueenState.deleteBody:
-			assert(0, "NYI"); //TODO
+			auto queenDeleteBodyTmp = queenDeleteBody;
+			for (ubyte i = 0; i != 11; i++) {
+				// write twice, just to make sure it actually goes through
+				gb.waitHBlank();
+				queenDeleteBodyTmp[0] = 0xFF;
+				gb.waitHBlank();
+				queenDeleteBodyTmp[0] = 0xFF;
+				queenDeleteBodyTmp++;
+			}
+			queenDeleteBodyTmp += 21;
+			if (queenDeleteBodyTmp != &gb.vram[QueenDeathTile.bodyEnd - 0x8000]) {
+				queenDeleteBody = queenDeleteBodyTmp;
+			} else {
+				queenEatingState = 0;
+				metroidCountDisplayed = 0;
+				metroidCountReal = 0;
+				queenState = QueenState.deathDone;
+				metroidCountShuffleTimer = 128;
+				audio.sfxRequestNoise = NoiseSFX.u17;
+			}
+			break;
 		case QueenState.preparingProjectiles:
-			assert(0, "NYI"); //TODO
+			queenGetSamusTargets();
+			queenSpawnOneProjectile(&enemyDataSlots[ReservedEnemySlots.queenSpitA], cast(ubyte)(queenHeadY + 32), cast(ubyte)(queenHeadX + 28), 0x20);
+			queenSpawnOneProjectile(&enemyDataSlots[ReservedEnemySlots.queenSpitB], cast(ubyte)(queenHeadY + 32), cast(ubyte)(queenHeadX + 28), 0x20);
+			queenSpawnOneProjectile(&enemyDataSlots[ReservedEnemySlots.queenSpitC], cast(ubyte)(queenHeadY + 32), cast(ubyte)(queenHeadX + 28), 0x21);
+			queenDrawProjectiles();
+			queenProjectileChaseCounter = 14;
+			queenHeadFrameNext = 2;
+			queenDelayTimer = 32;
+			queenProjectileChaseTimer = 16;
+			queenState = QueenState.projectilesActive;
+			queenOAMScratchpad = &oamScratchpad[0];
+			break;
 		case QueenState.projectilesActive:
-			assert(0, "NYI"); //TODO
+			if (queenDelayTimer != 0) {
+				if (--queenDelayTimer == 0) {
+					queenHeadFrameNext = 1;
+				}
+			}
+			queenHandleProjectiles();
+			sw: switch (collision.weaponType) {
+				case CollisionType.screwAttack:
+				case CollisionType.missiles:
+					// prepare to delete if projectile enemy slots are hit with missiles/screw attack
+					if (collision.enemy >= &enemyDataSlots[ReservedEnemySlots.queenSpitA]) {
+						collision.enemy.status = 0xFF;
+					}
+					goto default;
+				case CollisionType.nothing:
+				case CollisionType.contact:
+				default:
+					collision.weaponType = CollisionType.nothing;
+					for (ubyte i = ReservedEnemySlots.queenSpitA; i != ReservedEnemySlots.queenSpitC + 1; i++) {
+						if (enemyDataSlots[i].status != 0xFF) {
+							queenDrawProjectiles();
+							break sw;
+						}
+					}
+					for (ubyte i = ReservedEnemySlots.queenSpitA; i != ReservedEnemySlots.queenSpitC + 1; i++) {
+						enemyDataSlots[i].status = 0xFF;
+					}
+					// move body + spit sprites offscreen. queen body gets redrawn anyways?
+					for (ubyte i = QueenOAM.start; i != QueenOAM.wall; i++) {
+						oamScratchpad[i].y = 0xFF;
+					}
+					queenProjectilesActive = 0;
+					queenOAMScratchpad = &oamScratchpad[0];
+					break;
+			}
+			goto case QueenState.pickNextState;
 		case QueenState.deathDone:
-			assert(0, "NYI"); //TODO
+			// nothing to do here
+			break;
 		case QueenState.introA:
 			if (queenDelayTimer) {
 				queenDelayTimer--;
@@ -1016,56 +1313,171 @@ void queenHandleState() {
 			}
 			break;
 		case QueenState.nothing:
-			assert(0, "NYI"); //TODO
+			// calls the null AI routine, which would normally crash since it's in a different bank...
+			break;
 	}
 }
 
 void queenGetSamusTargets() {
-	assert(0); // TODO
+	queenSamusTargetPoints[0].y = samusOnScreenYPos;
+	queenSamusTargetPoints[0].x = samusOnScreenXPos;
+
+	queenSamusTargetPoints[1].y = cast(ubyte)(samusOnScreenYPos - 16);
+	queenSamusTargetPoints[1].x = cast(ubyte)(samusOnScreenXPos - 16);
+
+	queenSamusTargetPoints[2].y = cast(ubyte)(samusOnScreenYPos + 16);
+	queenSamusTargetPoints[2].x = cast(ubyte)(samusOnScreenXPos + 16);
 }
 
-void queenSpawnOneProjectile() {
-	assert(0); // TODO
+void queenSpawnOneProjectile(EnemySlot* actor, ubyte y, ubyte x, ubyte direction) {
+	actor.status = 0;
+	actor.y = y;
+	actor.x = x;
+	actor.spriteType = Actor.queenProjectile;
+	actor.directionFlags = direction;
 }
 
 void queenDrawProjectiles() {
-	assert(0); // TODO
+	OAMEntry* sprites = &oamScratchpad[QueenOAM.start];
+	for (ubyte i = 0; i != 3; i++) {
+		auto enemy = &enemyDataSlots[ReservedEnemySlots.queenSpitA + i];
+		if (enemy.status == 0xFF) {
+			queenDrawOneProjectileMetasprite(sprites, 0xF0, 0xF0);
+		} else {
+			if ((enemy.y >= 0xE0) || (enemy.x >= 0xE0)) {
+				enemy.status = 0xFF;
+			} else {
+				queenDrawOneProjectileMetasprite(sprites, enemy.y, enemy.x);
+			}
+		}
+	}
 }
 
-void queenDrawOneProjectileMetasprite() {
-	assert(0); // TODO
+void queenDrawOneProjectileMetasprite(ref OAMEntry* sprites, ubyte y, ubyte x) {
+	queenDrawOneProjectileSprite(sprites, y, x, 0xF1, OAMFlags.priority | OAMFlags.yFlip);
+	queenDrawOneProjectileSprite(sprites, cast(ubyte)(y - 8), x, 0xF1, OAMFlags.priority);
+	queenDrawOneProjectileSprite(sprites, cast(ubyte)(y - 8), cast(ubyte)(x - 8), 0xF0, OAMFlags.priority);
+	queenDrawOneProjectileSprite(sprites, y, cast(ubyte)(x - 8), 0xF0, OAMFlags.priority | OAMFlags.yFlip);
 }
 
-void queenDrawOneProjectileSprite() {
-	assert(0); // TODO
+void queenDrawOneProjectileSprite(ref OAMEntry* sprite, ubyte y, ubyte x, ubyte tile, ubyte attr) {
+	sprite.y = y;
+	sprite.x = x;
+	sprite.tile = tile;
+	sprite.flags.raw = attr;
+	sprite++;
 }
 
 void queenHandleProjectiles() {
-	assert(0); // TODO
+	// move each projectile
+	for (ubyte i = ReservedEnemySlots.queenSpitA; i != 3; i++) {
+		if (enemyDataSlots[i].status != 0) {
+			queenMoveOneProjectile(&enemyDataSlots[i]);
+		}
+	}
+	// wait until timer is up
+	if (queenProjectileChaseTimer != 0) {
+		queenProjectileChaseTimer--;
+		return;
+	}
+	queenProjectileChaseTimer = 3;
+	// no projectiles left
+	if (queenProjectileChaseCounter == 0) {
+		return;
+	}
+	queenProjectileChaseCounter--;
+	queenGetSamusTargets();
+	for (ubyte i = 0; i != 3; i++) {
+		queenProjectileSeek(&enemyDataSlots[ReservedEnemySlots.queenSpitA + i], &queenSamusTargetPoints[i]);
+	}
 }
 
-void queenProjectileSeek() {
-	assert(0); // TODO
+void queenProjectileSeek(EnemySlot* actor, Coords* target) {
+	queenProjectileTempDirection = actor.directionFlags;
+	byte directionY = cast(byte)((queenProjectileTempDirection & 0b111) | ((queenProjectileTempDirection & 0b1000) ? 0b11111000 : 0b00000000));
+	queenProjectileSeekOneAxis(actor.y, target.y, directionY);
+	byte directionX = cast(byte)(((queenProjectileTempDirection >> 4) & 0b111) | (((queenProjectileTempDirection >> 4) & 0b1000) ? 0b11111000 : 0b00000000));
+	queenProjectileSeekOneAxis(actor.x, target.x, directionX);
+	actor.directionFlags = cast(ubyte)(directionY & 0xF) || cast(ubyte)((directionX & 0xF) << 4);
 }
 
-void queenProjectileSeekOneAxis() {
-	assert(0); // TODO
+void queenProjectileSeekOneAxis(ubyte actorCoord, ubyte targetCoord, ref byte direction) {
+	const diff = targetCoord - actorCoord;
+	if (diff == 0) {
+		return;
+	}
+	// don't do anything if direction is 0, unless far away from the target
+	if ((direction != 0) || (diff < -6) && (diff > 6)) {
+		if (direction < 0) {
+			// don't go below -2
+			if (direction == -2) {
+				return;
+			}
+			if (--direction == 0) {
+				direction--;
+			}
+		} else {
+			// don't go above 2
+			if (direction == 2) {
+				return;
+			}
+			if (++direction == 0) {
+				direction++;
+			}
+		}
+	}
 }
 
-void queenMoveOneProjectile() {
-	assert(0); // TODO
+void queenMoveOneProjectile(EnemySlot* enemy) {
+	queenProjectileTempDirection = enemy.directionFlags;
+	ubyte tmp = queenProjectileTempDirection;
+	for (int i = 2; i > 0; i--) {
+		if ((tmp & 0x0F) != 0) {
+			if ((tmp & 0x08) == 0) {
+				enemy.y += 2;
+			} else {
+				enemy.y -= 2;
+			}
+		}
+		enemy.x++;
+		tmp = ((tmp & 0xF) << 4) | ((tmp & 0xF0) >> 4);
+	}
 }
 
 void queenSetDefaultNeckAttributes() {
-	assert(0); // TODO
-}
-
-void queenCloseFloor() {
-	assert(0); // TODO
+	for (ubyte i = QueenOAM.start; i < QueenOAM.wall; i++) {
+		oamScratchpad[i].flags.raw = OAMFlags.priority;
+	}
 }
 
 void queenKillFromStomach() {
-	assert(0); // TODO
+	queenDeactivateActorsArbitrary(&enemyDataSlots[0], 13);
+	queenNeckControl = 1;
+	queenNeckDrawingState = 1;
+	queenState = QueenState.preparingDeath;
+	queenNeckXMovementSum = 0;
+	queenNeckYMovementSum = 0;
+	queenStomachBombedFlag = 0;
+	queenHealth = 0;
+	queenNeckStatus = 0;
+	queenFootFrame = 0;
+	queenHeadFrameNext = 0;
+	queenLowHealthFlag = 0;
+	queenOAMScratchpad = &oamScratchpad[QueenOAM.start];
+	queenOAMScratchpad[0].flags.raw = OAMFlags.priority;
+	queenOAMScratchpad[1].flags.raw = OAMFlags.priority;
+	queenCloseFloor();
+	audio.sfxRequestNoise = NoiseSFX.u0F;
+	queenNeckPatternID = QueenNeckPattern.dying;
+	queenNeckPattern = queenLoadNeckBasePointer() + 1;
+}
+
+void queenCloseFloor() {
+	// write tiles directly to VRAM
+	//while ((gb.STAT & 0x03) != 0) {} // wait for HBlank
+	gb.vram[0x1800 + 32 * 24 + 14] = 0x5D;
+	//while ((gb.STAT & 0x03) != 0) {} // wait for HBlank
+	gb.vram[0x1800 + 32 * 24 + 15] = 0x5E;
 }
 
 void queenDisintegrate() {
@@ -1092,7 +1504,7 @@ void queenWalk() {
 	if (queenWalkWaitTimer) {
 		queenWalkWaitTimer--;
 	} else {
-		const speed = queenWalkSpeedTable[queenWalkCounter];
+		const speed = queenWalkSpeedTable[queenWalkCounter++];
 		if (queenWalkControl == 1) {
 			if (speed == 0x81) {
 				queenWalkStatus = 0x81;
