@@ -8,8 +8,10 @@ import std.algorithm.searching;
 import std.concurrency;
 import std.conv;
 import std.format;
+import std.logger;
 
 void loadExtraData(scope const char[] name, const scope ubyte[] data, scope PlatformBackend) {
+	tracef("Loading %s", name);
 	switch(name.findSplit("/")[0]) {
 		case "song":
 			songDataTable ~= readSongFile(data);
